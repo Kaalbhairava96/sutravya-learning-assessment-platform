@@ -1,5 +1,6 @@
 const pages=[['index.html','Home'],['awards.html','Scholarship & Awards'],['syllabus.html','Syllabus'],['sample-papers.html','Sample Papers'],['faqs.html','FAQs'],['contact.html','Contact']];
 const current=location.pathname.split('/').pop()||'index.html';
+const enhancementStyles=document.createElement('link');enhancementStyles.rel='stylesheet';enhancementStyles.href='visuals.css';document.head.append(enhancementStyles);
 const header=document.querySelector('[data-header]');
 if(header){header.innerHTML=`<div class="topline"></div><div class="header"><div class="wrap headerin"><a class="brand" href="index.html" aria-label="Sutrāvya home"><img src="assets/sutravya-logo.png" alt="Sutrāvya — The Digital Thread of Healthcare"></a><button class="navtoggle" aria-label="Open navigation" aria-expanded="false">☰ Menu</button><nav class="nav" aria-label="Main navigation">${pages.map(([url,label])=>`<a href="${url}" class="${url===current?'active':''}">${label}</a>`).join('')}<a class="navcta" href="index.html#register">Register now <span aria-hidden="true">→</span></a></nav></div></div>`;const toggle=header.querySelector('.navtoggle'),nav=header.querySelector('.nav');toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));});}
 const footer=document.querySelector('[data-footer]');
@@ -26,5 +27,27 @@ if(current==='awards.html'){
 }
 
 if(current==='contact.html'){
-  document.querySelector('.contact-cards')?.insertAdjacentHTML('afterend','<div class="official-contact"><b>QualiNova public contact</b><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="tel:+919955521842">+91 99555 21842</a><span>QualiNova Solutions Pvt. Ltd. · Quality Institutions. Sustainable Impact.</span></div>');
+  document.querySelector('.contact-cards')?.insertAdjacentHTML('afterend','<div class="contact-ways"><a class="contact-way" href="tel:+919955521842"><span class="contact-way-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5 9 3l2 4.2-2 1.6a15 15 0 0 0 6.2 6.2l1.6-2 4.2 2-.5 2.4a3 3 0 0 1-3.3 2.4A16 16 0 0 1 4.2 6.8a3 3 0 0 1 2.4-3.3Z"/></svg></span><span><small>CALL QUALINOVA</small><b>+91 99555 21842</b></span><span class="contact-way-arrow">↗</span></a><a class="contact-way" href="mailto:info@qualinovahub.com"><span class="contact-way-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span><span><small>EMAIL THE TEAM</small><b>info@qualinovahub.com</b></span><span class="contact-way-arrow">↗</span></a></div><div class="official-contact"><span>QualiNova Solutions Pvt. Ltd.</span><span>Quality Institutions. Sustainable Impact.</span></div>');
 }
+
+// Give every information page its own original, non-generated vector illustration.
+const pageVisuals={
+  'awards.html':['assets/awards-hero.svg','Recognition for nursing talent'],
+  'syllabus.html':['assets/syllabus-hero.svg','Explore the learning map'],
+  'sample-papers.html':['assets/sample-hero.svg','Try a practice question'],
+  'faqs.html':['assets/faq-hero.svg','We’re here to help'],
+  'contact.html':['assets/contact-hero.svg','Talk to the event team']
+};
+if(pageVisuals[current]){
+  const hero=document.querySelector('.pagehero .wrap');
+  if(hero){const nodes=[...hero.children];const copy=document.createElement('div');copy.className='pagehero-copy';nodes.forEach(node=>copy.append(node));const art=document.createElement('figure');art.className='pagehero-art';art.innerHTML=`<img src="${pageVisuals[current][0]}" alt="${pageVisuals[current][1]}"><figcaption>${pageVisuals[current][1]}</figcaption>`;hero.append(copy,art);}
+}
+
+// Small interactions make the exam date and learning cards feel responsive.
+if(current==='index.html'){
+  const poster=document.querySelector('.poster');
+  if(poster){poster.insertAdjacentHTML('afterbegin','<div class="countdown-chip"><span class="countdown-dot"></span><span id="exam-countdown">Exam date coming up</span></div>');const display=document.getElementById('exam-countdown');const examAt=Date.parse('2026-11-04T11:00:00+05:30');const update=()=>{const remaining=examAt-Date.now();if(remaining<=0){display.textContent='Exam day is here';return;}const days=Math.floor(remaining/86400000);display.textContent=days===0?'Exam begins today':`${days} days to exam`;};update();setInterval(update,60000);}
+}
+
+document.querySelectorAll('.feature,.surface,.award-card,.topic,.faq,.contact-card').forEach((item,index)=>{item.classList.add('reveal-item');item.style.setProperty('--reveal-delay',`${Math.min(index%5,4)*65}ms`);});
+if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.12});document.querySelectorAll('.reveal-item').forEach(item=>observer.observe(item));}else document.querySelectorAll('.reveal-item').forEach(item=>item.classList.add('is-visible'));
