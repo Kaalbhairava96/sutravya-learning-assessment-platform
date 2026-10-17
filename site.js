@@ -6,3 +6,25 @@ const footer=document.querySelector('[data-footer]');
 if(footer){footer.innerHTML=`<footer class="footer"><div class="wrap"><div class="footergrid"><div class="footerbrand"><a href="index.html"><img src="assets/sutravya-logo.png" alt="Sutrāvya"></a><p>Nursing Talent Hunt Exam: a nursing knowledge assessment and digital-health idea challenge delivered by Sutrāvya for Bihar Healthcare Conclave 2026.</p></div><div><h4>Exam information</h4><div class="footerlinks"><a href="awards.html">Awards</a><a href="syllabus.html">Syllabus</a><a href="sample-papers.html">Sample papers</a><a href="faqs.html">FAQs</a></div></div><div><h4>About this event</h4><div class="footerlinks"><span>Organised by Qualinova</span><span>Assessment partner: Sutrāvya</span><a href="https://sutravya.in" target="_blank" rel="noopener">sutravya.in ↗</a><a href="contact.html">Contact</a></div></div></div><div class="copyright"><span>© 2026 Sutrāvya · Nursing Talent Hunt Exam</span><span>Built for Bihar Healthcare Conclave 2026</span></div></div></footer>`;}
 document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();const note=form.querySelector('.register-note');if(note){note.textContent='The registration screen is a prototype. Candidate registration will be connected to secure storage before the exam opens.';note.classList.add('show');}}));
 document.querySelectorAll('[data-sample]').forEach(group=>group.addEventListener('change',()=>{const q=group.closest('.sample-question');const answer=q.querySelector('.answer');if(answer)answer.classList.add('show');}));
+
+// Homepage visual refresh: keep the homepage focused on the exam, not the award table.
+if(current==='index.html'){
+  document.querySelector('.award-strip')?.remove();
+  const stats=document.querySelector('.hero-stats');
+  if(stats)stats.innerHTML='<div class="hero-stat"><strong>MCQ</strong><span>Nursing knowledge</span></div><div class="hero-stat"><strong>IDEA</strong><span>Digital health</span></div><div class="hero-stat"><strong>2 STAGES</strong><span>Scored separately</span></div>';
+  const heroCopy=document.querySelector('.hero-grid > div:first-child');
+  const intro=heroCopy?.querySelector('.hero-sub');
+  if(heroCopy&&intro){heroCopy.classList.add('hero-copy');const figure=document.createElement('figure');figure.className='hero-illustration';figure.innerHTML='<img src="assets/nurse-tech.svg" alt="Illustration of a nursing student beside a digital health monitor"><figcaption>CARE + TECHNOLOGY</figcaption>';intro.after(figure);}
+  const partnerSection=document.querySelector('.section.white');
+  if(partnerSection)partnerSection.innerHTML='<div class="wrap"><div class="sectionhead"><span class="eyebrow">ONE SHARED PURPOSE</span><h2>Better together, for better healthcare.</h2><p>QualiNova’s healthcare and medical education expertise meets Sutrāvya’s digital assessment experience.</p></div><div class="partnership-card"><div class="partner-logo"><span class="pill">EVENT ORGANISER</span><img src="assets/qualinova-logo.png" alt="QualiNova Solutions Pvt. Ltd."><p>Quality Institutions. Sustainable Impact.</p></div><div class="handshake-art"><img src="assets/handshake.svg" alt="Illustrated handshake representing the QualiNova and Sutrāvya partnership"><span>IN PARTNERSHIP</span></div><div class="partner-logo"><span class="pill">ASSESSMENT PARTNER</span><img class="sutravya-partner-logo" src="assets/sutravya-logo.png" alt="Sutrāvya — The Digital Thread of Healthcare"><p>Digital learning &amp; assessment for healthcare.</p></div></div><div class="partner-details"><span>QualiNova Solutions Pvt. Ltd. · Project Management Unit for higher education, healthcare and medical education</span><a href="https://www.qualinovahub.com/" target="_blank" rel="noopener">qualinovahub.com ↗</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="tel:+919955521842">+91 99555 21842</a></div></div>';
+}
+
+// Awards page poster uses the hand-drawn nursing illustration and the user-supplied award values.
+if(current==='awards.html'){
+  const awards=document.querySelector('.award-cards');
+  if(awards)awards.insertAdjacentHTML('beforebegin','<section class="poster-ad"><div class="poster-copy"><span class="eyebrow">QUALINOVA × SUTRĀVYA PRESENT</span><h2>Nursing Talent<br><em>Hunt Exam 2026</em></h2><p>Show your nursing knowledge. Share a digital-health idea. Step into the future of care.</p><div class="poster-meta"><span>4 NOV 2026</span><span>11:00 AM IST</span><span>ONLINE</span></div></div><img src="assets/nurse-tech.svg" alt="Original illustration of a nurse using a digital health monitor"><div class="poster-prizes"><b>TOP 3 CASH AWARDS</b><span>₹50,000</span><span>₹25,000</span><span>₹10,000</span></div></section>');
+}
+
+if(current==='contact.html'){
+  document.querySelector('.contact-cards')?.insertAdjacentHTML('afterend','<div class="official-contact"><b>QualiNova public contact</b><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="tel:+919955521842">+91 99555 21842</a><span>QualiNova Solutions Pvt. Ltd. · Quality Institutions. Sustainable Impact.</span></div>');
+}
