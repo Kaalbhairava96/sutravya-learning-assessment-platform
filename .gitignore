@@ -1,0 +1,16 @@
+# Local backend configuration and virtual environments
+.env
+backend/.env
+backend/.venv/
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Local logs and database files
+*.log
+*.sqlite
+*.sqlite3
+*.db

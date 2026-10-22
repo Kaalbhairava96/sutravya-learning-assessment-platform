@@ -27,10 +27,25 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Assemble public website from an explicit allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          site_dir="$RUNNER_TEMP/sutravya-public-site"
+          mkdir -p "$site_dir/assets"
+          cp index.html awards.html syllabus.html sample-papers.html faqs.html contact.html "$site_dir/"
+          cp styles.css visuals.css exam.css site.js sutravya-logo.png BIHAR-HEALTHCARE-CONCLAVE-2026.pdf "$site_dir/"
+          cp assets/handshake.svg assets/qualinova-logo.png assets/sutravya-logo.png \
+            assets/awards-hero.svg assets/contact-hero.svg assets/faq-hero.svg \
+            assets/nurse-tech.svg assets/sample-hero.svg assets/syllabus-hero.svg "$site_dir/assets/"
+          if find "$site_dir" -type f \( -name '.env' -o -name '*.db' -o -name '*.sqlite*' -o -name '*.xlsx' -o -iname '*answer*key*' \) | grep -q .; then
+            echo "Refusing to package a restricted file in the public website artifact."
+            exit 1
+          fi
       - name: Upload site files
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ${{ runner.temp }}/sutravya-public-site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,0 +1,1 @@
+"""SUTRAVYA assessment backend application."""
