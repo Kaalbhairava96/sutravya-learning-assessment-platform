@@ -136,6 +136,24 @@ def _challenge_message(outcome: ChallengeVerification) -> tuple[int, str]:
     }.get(outcome, (400, "The code request is unavailable."))
 
 
+_EMAIL_FAILURE_KINDS = {
+    "configuration_missing", "provider_http_error", "network_or_timeout", "unexpected_error"
+}
+
+
+def _log_email_delivery_failure(logger, *, purpose: str, error: Exception) -> None:
+    failure_kind = getattr(error, "failure_kind", "unexpected_error")
+    if failure_kind not in _EMAIL_FAILURE_KINDS:
+        failure_kind = "unexpected_error"
+    provider_status_code = getattr(error, "provider_status_code", None)
+    if type(provider_status_code) is not int or not 100 <= provider_status_code <= 599:
+        provider_status_code = None
+    details = {"purpose": purpose, "failure_kind": failure_kind}
+    if provider_status_code is not None:
+        details["provider_status_code"] = provider_status_code
+    logger.warning("email_delivery_failed", extra=details)
+
+
 def _send_otp(request: Request, pending) -> None:
     try:
         request.app.state.email_sender(
@@ -145,10 +163,8 @@ def _send_otp(request: Request, pending) -> None:
             purpose=pending.purpose,
             settings=request.app.state.settings,
         )
-    except Exception:
-        logging.getLogger("sutravya.api").warning(
-            "email_delivery_failed", extra={"purpose": pending.purpose}
-        )
+    except Exception as error:
+        _log_email_delivery_failure(logging.getLogger("sutravya.api"), purpose=pending.purpose, error=error)
         raise EmailDeliveryError("Email submission failed.") from None
 
 
@@ -307,8 +323,8 @@ def create_app(
                     settings=settings,
                 )
                 sent = True
-            except Exception:
-                logger.warning("email_delivery_failed", extra={"purpose": "registration_confirmation"})
+            except Exception as error:
+                _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
                 sent = False
             return {
                 "registration_id": registration.registration_id,
@@ -344,8 +360,8 @@ def create_app(
                         registration_id=registration_id or "", stream=stream or "",
                         settings=settings,
                     )
-                except Exception:
-                    logger.warning("email_delivery_failed", extra={"purpose": "registration_confirmation"})
+                except Exception as error:
+                    _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
             return {"message": "If the registration is eligible, a confirmation email will be sent."}
 
     @application.post("/api/auth/request-otp", status_code=202, tags=["candidate account"])

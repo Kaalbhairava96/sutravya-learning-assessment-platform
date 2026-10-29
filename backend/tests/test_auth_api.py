@@ -202,12 +202,21 @@ class PasswordlessApiTests(unittest.TestCase):
         import logging
         record = logging.LogRecord("sutravya.api", logging.WARNING, "test", 1, "email_delivery_failed", (), None)
         record.purpose = REGISTRATION_OTP_PURPOSE
+        record.failure_kind = "provider_http_error"
+        record.provider_status_code = 401
         record.otp = "123456"
         record.email = "candidate@example.invalid"
+        record.api_key = "synthetic-api-key"
+        record.body = "private provider body"
         output = SafeJsonFormatter().format(record)
         self.assertIn('"event":"email_delivery_failed"', output)
+        self.assertIn('"purpose":"registration_verification"', output)
+        self.assertIn('"failure_kind":"provider_http_error"', output)
+        self.assertIn('"provider_status_code":401', output)
         self.assertNotIn("123456", output)
         self.assertNotIn("candidate@example.invalid", output)
+        self.assertNotIn("synthetic-api-key", output)
+        self.assertNotIn("private provider body", output)
 
 
 if __name__ == "__main__":

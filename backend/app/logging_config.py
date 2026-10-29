@@ -21,9 +21,20 @@ class SafeJsonFormatter(logging.Formatter):
             "logger": record.name,
             "event": event,
         }
-        for key in ("request_id", "method", "status_code", "duration_ms", "scope", "purpose"):
+        for key in (
+            "request_id", "method", "status_code", "duration_ms", "scope", "purpose",
+            "failure_kind", "provider_status_code",
+        ):
             value = getattr(record, key, None)
             if value is not None:
+                if key == "failure_kind" and value not in {
+                    "configuration_missing", "provider_http_error", "network_or_timeout", "unexpected_error"
+                }:
+                    continue
+                if key == "provider_status_code" and (
+                    type(value) is not int or not 100 <= value <= 599
+                ):
+                    continue
                 payload[key] = value
         return json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
 

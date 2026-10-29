@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import unittest
+from io import BytesIO
 from datetime import datetime, timedelta, timezone
+from urllib.error import HTTPError
 from unittest.mock import Mock, patch
 
 from sqlalchemy import create_engine, event, select, func
@@ -11,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from app.config import Settings
-from app.email_provider import EmailDeliveryError, send_otp_email
+from app.email_provider import EmailDeliveryError, EmailProviderConfigurationError, send_otp_email
 from app.models import Base, Candidate, CandidateSession, RateLimitBucket, Registration, VerificationChallenge
 from app.registration import (
     LOGIN_OTP_PURPOSE,
@@ -330,6 +332,51 @@ class RegistrationAccountTests(unittest.TestCase):
                     otp="123456", purpose=REGISTRATION_OTP_PURPOSE, settings=configuration,
                 )
             self.assertNotIn("provider internal details", str(raised.exception))
+
+    def test_email_provider_failures_have_safe_diagnostic_categories(self) -> None:
+        configuration = Settings(
+            app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER,
+        )
+        with patch("app.email_provider.urlopen") as urlopen:
+            with self.assertRaises(EmailProviderConfigurationError) as raised:
+                send_otp_email(
+                    recipient_email="candidate@example.invalid", recipient_name="Candidate",
+                    otp="123456", purpose=REGISTRATION_OTP_PURPOSE, settings=configuration,
+                )
+            self.assertEqual(raised.exception.failure_kind, "configuration_missing")
+            urlopen.assert_not_called()
+
+        configured = Settings(
+            app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER, resend_api_key="synthetic-test-key",
+            resend_from_email="SUTRAVYA <test@example.invalid>",
+        )
+        for status_code in (401, 403, 422, 429):
+            with self.subTest(status_code=status_code):
+                provider_body = b"private provider response body"
+                error = HTTPError(
+                    "https://api.resend.com/emails", status_code, "provider error", {}, BytesIO(provider_body)
+                )
+                with patch("app.email_provider.urlopen", side_effect=error):
+                    with self.assertRaises(EmailDeliveryError) as raised:
+                        send_otp_email(
+                            recipient_email="candidate@example.invalid", recipient_name="Candidate",
+                            otp="123456", purpose=REGISTRATION_OTP_PURPOSE, settings=configured,
+                        )
+                self.assertEqual(raised.exception.failure_kind, "provider_http_error")
+                self.assertEqual(raised.exception.provider_status_code, status_code)
+                self.assertNotIn("private provider response body", str(raised.exception))
+
+        with patch("app.email_provider.urlopen", side_effect=TimeoutError("private timeout details")):
+            with self.assertRaises(EmailDeliveryError) as raised:
+                send_otp_email(
+                    recipient_email="candidate@example.invalid", recipient_name="Candidate",
+                    otp="123456", purpose=REGISTRATION_OTP_PURPOSE, settings=configured,
+                )
+        self.assertEqual(raised.exception.failure_kind, "network_or_timeout")
+        self.assertIsNone(raised.exception.provider_status_code)
+        self.assertNotIn("private timeout details", str(raised.exception))
 
 
 if __name__ == "__main__":

@@ -14,9 +14,23 @@ from app.config import Settings
 class EmailProviderConfigurationError(RuntimeError):
     """Raised when private Resend or sender configuration is missing."""
 
+    failure_kind = "configuration_missing"
+    provider_status_code = None
+
 
 class EmailDeliveryError(RuntimeError):
     """Raised when Resend does not accept an email request."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        failure_kind: str = "unexpected_error",
+        provider_status_code: int | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.failure_kind = failure_kind
+        self.provider_status_code = provider_status_code
 
 
 def _send(payload: dict[str, Any], *, settings: Settings) -> None:
@@ -36,12 +50,22 @@ def _send(payload: dict[str, Any], *, settings: Settings) -> None:
         with urlopen(request, timeout=8) as response:
             response.read(16_384)
             if not 200 <= response.status < 300:
-                raise EmailDeliveryError("Email provider rejected the message.")
-    except HTTPError:
+                raise EmailDeliveryError(
+                    "Email provider rejected the message.",
+                    failure_kind="provider_http_error",
+                    provider_status_code=response.status if isinstance(response.status, int) else None,
+                )
+    except HTTPError as error:
         # Never include provider bodies, request headers, recipient addresses, or tokens in errors.
-        raise EmailDeliveryError("Email provider rejected the message.") from None
+        raise EmailDeliveryError(
+            "Email provider rejected the message.",
+            failure_kind="provider_http_error",
+            provider_status_code=error.code if isinstance(error.code, int) else None,
+        ) from None
     except (URLError, TimeoutError, OSError):
-        raise EmailDeliveryError("Email provider is temporarily unavailable.") from None
+        raise EmailDeliveryError(
+            "Email provider is temporarily unavailable.", failure_kind="network_or_timeout"
+        ) from None
 
 
 def send_otp_email(
