@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import unittest
 from http.cookies import SimpleCookie
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
@@ -28,6 +28,7 @@ with patch.dict(os.environ, _test_environment), patch("app.config._read_dotenv",
     from app.main import app as module_app, create_app
 
 from app.main import (
+    _log_email_delivery_failure,
     SESSION_COOKIE,
     ConfirmationResendRequest,
     EmailOtpRequest,
@@ -204,19 +205,56 @@ class PasswordlessApiTests(unittest.TestCase):
         record.purpose = REGISTRATION_OTP_PURPOSE
         record.failure_kind = "provider_http_error"
         record.provider_status_code = 401
+        record.provider_error_name = "restricted_api_key"
+        record.provider_error_kind = "api_key_permission"
         record.otp = "123456"
         record.email = "candidate@example.invalid"
         record.api_key = "synthetic-api-key"
         record.body = "private provider body"
+        record.provider_message = "private exception message"
+        record.sender = "SUTRAVYA <private-sender@example.invalid>"
+        record.recipient = "private-recipient@example.invalid"
         output = SafeJsonFormatter().format(record)
         self.assertIn('"event":"email_delivery_failed"', output)
         self.assertIn('"purpose":"registration_verification"', output)
         self.assertIn('"failure_kind":"provider_http_error"', output)
         self.assertIn('"provider_status_code":401', output)
+        self.assertIn('"provider_error_name":"restricted_api_key"', output)
+        self.assertIn('"provider_error_kind":"api_key_permission"', output)
         self.assertNotIn("123456", output)
         self.assertNotIn("candidate@example.invalid", output)
         self.assertNotIn("synthetic-api-key", output)
         self.assertNotIn("private provider body", output)
+        self.assertNotIn("private exception message", output)
+        self.assertNotIn("private-sender@example.invalid", output)
+        self.assertNotIn("private-recipient@example.invalid", output)
+
+        record.provider_error_name = "unapproved provider text with PII"
+        record.provider_error_kind = "raw provider message"
+        output = SafeJsonFormatter().format(record)
+        self.assertNotIn("unapproved provider text", output)
+        self.assertNotIn("raw provider message", output)
+
+    def test_email_failure_logger_receives_only_allowlisted_diagnostics(self) -> None:
+        logger = Mock()
+        error = EmailDeliveryError(
+            "private exception with OTP 123456 and candidate@example.invalid",
+            failure_kind="provider_http_error",
+            provider_status_code=403,
+            provider_error_name="validation_error",
+            provider_error_kind="domain_verification",
+        )
+        _log_email_delivery_failure(logger, purpose=REGISTRATION_OTP_PURPOSE, error=error)
+        logger.warning.assert_called_once_with(
+            "email_delivery_failed",
+            extra={
+                "purpose": REGISTRATION_OTP_PURPOSE,
+                "failure_kind": "provider_http_error",
+                "provider_status_code": 403,
+                "provider_error_name": "validation_error",
+                "provider_error_kind": "domain_verification",
+            },
+        )
 
 
 if __name__ == "__main__":

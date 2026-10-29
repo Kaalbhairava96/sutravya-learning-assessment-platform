@@ -139,18 +139,38 @@ def _challenge_message(outcome: ChallengeVerification) -> tuple[int, str]:
 _EMAIL_FAILURE_KINDS = {
     "configuration_missing", "provider_http_error", "network_or_timeout", "unexpected_error"
 }
+_PROVIDER_ERROR_NAMES = {
+    "validation_error", "restricted_api_key", "invalid_api_key", "missing_api_key",
+    "unauthorized", "domain_not_verified", "sender_not_verified", "testing_mode",
+    "recipient_not_allowed", "account_suspended", "account_restricted", "sending_disabled",
+    "rate_limit_exceeded", "not_found", "unknown",
+}
+_PROVIDER_ERROR_KINDS = {
+    "domain_verification", "api_key_permission", "sender_address",
+    "testing_recipient_restriction", "account_sending_restriction",
+    "other_provider_rejection", "unknown",
+}
 
 
 def _log_email_delivery_failure(logger, *, purpose: str, error: Exception) -> None:
     failure_kind = getattr(error, "failure_kind", "unexpected_error")
-    if failure_kind not in _EMAIL_FAILURE_KINDS:
+    if not isinstance(failure_kind, str) or failure_kind not in _EMAIL_FAILURE_KINDS:
         failure_kind = "unexpected_error"
     provider_status_code = getattr(error, "provider_status_code", None)
     if type(provider_status_code) is not int or not 100 <= provider_status_code <= 599:
         provider_status_code = None
+    provider_error_name = getattr(error, "provider_error_name", "unknown")
+    if not isinstance(provider_error_name, str) or provider_error_name not in _PROVIDER_ERROR_NAMES:
+        provider_error_name = "unknown"
+    provider_error_kind = getattr(error, "provider_error_kind", "unknown")
+    if not isinstance(provider_error_kind, str) or provider_error_kind not in _PROVIDER_ERROR_KINDS:
+        provider_error_kind = "unknown"
     details = {"purpose": purpose, "failure_kind": failure_kind}
     if provider_status_code is not None:
         details["provider_status_code"] = provider_status_code
+    if failure_kind == "provider_http_error":
+        details["provider_error_name"] = provider_error_name
+        details["provider_error_kind"] = provider_error_kind
     logger.warning("email_delivery_failed", extra=details)
 
 

@@ -352,11 +352,22 @@ class RegistrationAccountTests(unittest.TestCase):
             otp_hmac_pepper=PEPPER, resend_api_key="synthetic-test-key",
             resend_from_email="SUTRAVYA <test@example.invalid>",
         )
-        for status_code in (401, 403, 422, 429):
-            with self.subTest(status_code=status_code):
-                provider_body = b"private provider response body"
+        provider_errors = (
+            (401, b'{"name":"unauthorized","message":"private API key detail"}', "unauthorized", "api_key_permission"),
+            (403, b'{"name":"validation_error","message":"mail.sutravya.in domain is not verified"}', "validation_error", "domain_verification"),
+            (403, b'{"name":"validation_error","message":"from address must be verified"}', "validation_error", "sender_address"),
+            (403, b'{"name":"validation_error","message":"testing mode only permits verified recipients"}', "validation_error", "testing_recipient_restriction"),
+            (403, b'{"name":"validation_error","message":"account is restricted from sending"}', "validation_error", "account_sending_restriction"),
+            (403, b'{"name":"unexpected_provider_name","message":"private opaque rejection"}', "unknown", "unknown"),
+            (403, b"not valid JSON with private response data", "unknown", "unknown"),
+            (403, b"", "unknown", "unknown"),
+            (422, b'{"name":"validation_error","message":"recipient format is invalid"}', "validation_error", "other_provider_rejection"),
+            (429, b'{"name":"rate_limit_exceeded","message":"private throttle detail"}', "rate_limit_exceeded", "other_provider_rejection"),
+        )
+        for status_code, provider_body, expected_name, expected_kind in provider_errors:
+            with self.subTest(status_code=status_code, expected_kind=expected_kind, body=bool(provider_body)):
                 error = HTTPError(
-                    "https://api.resend.com/emails", status_code, "provider error", {}, BytesIO(provider_body)
+                    "https://api.resend.com/emails", status_code, "private exception message", {}, BytesIO(provider_body)
                 )
                 with patch("app.email_provider.urlopen", side_effect=error):
                     with self.assertRaises(EmailDeliveryError) as raised:
@@ -366,7 +377,11 @@ class RegistrationAccountTests(unittest.TestCase):
                         )
                 self.assertEqual(raised.exception.failure_kind, "provider_http_error")
                 self.assertEqual(raised.exception.provider_status_code, status_code)
-                self.assertNotIn("private provider response body", str(raised.exception))
+                self.assertEqual(raised.exception.provider_error_name, expected_name)
+                self.assertEqual(raised.exception.provider_error_kind, expected_kind)
+                self.assertNotIn("private", str(raised.exception))
+                self.assertNotIn("private exception message", str(raised.exception))
+                self.assertNotIn("private API key detail", str(raised.exception))
 
         with patch("app.email_provider.urlopen", side_effect=TimeoutError("private timeout details")):
             with self.assertRaises(EmailDeliveryError) as raised:
