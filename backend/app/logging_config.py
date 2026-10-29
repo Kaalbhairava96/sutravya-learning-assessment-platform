@@ -11,7 +11,9 @@ class SafeJsonFormatter(logging.Formatter):
     """Exclude arbitrary messages, exception details, and request payloads."""
 
     def format(self, record: logging.LogRecord) -> str:
-        safe_events = {"request_complete", "request_failed"}
+        safe_events = {
+            "request_complete", "request_failed", "email_delivery_failed", "rate_limit_rejected"
+        }
         event = record.msg if type(record.msg) is str and record.msg in safe_events else "application_event"
         payload = {
             "timestamp": datetime.fromtimestamp(record.created, timezone.utc).isoformat(),
@@ -19,7 +21,7 @@ class SafeJsonFormatter(logging.Formatter):
             "logger": record.name,
             "event": event,
         }
-        for key in ("request_id", "method", "status_code", "duration_ms"):
+        for key in ("request_id", "method", "status_code", "duration_ms", "scope", "purpose"):
             value = getattr(record, key, None)
             if value is not None:
                 payload[key] = value

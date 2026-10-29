@@ -14,3 +14,10 @@ __pycache__/
 *.sqlite
 *.sqlite3
 *.db
+
+# Root Python virtual environment
+/.venv/
+
+# Local test reports and migration diagnostics
+/backend/*-test-output.txt
+/backend/alembic-error.txt

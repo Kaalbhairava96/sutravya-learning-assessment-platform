@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import re
 from contextlib import redirect_stdout
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -28,6 +27,7 @@ from app.models import (
     QuestionBank,
     Registration,
     Result,
+    VerificationChallenge,
 )
 
 
@@ -84,7 +84,8 @@ class ModelSchemaTests(unittest.TestCase):
         expected = {
             "candidates", "registrations", "exam_slots", "questions", "answer_options",
             "exam_attempts", "candidate_responses", "scoring_rules", "results",
-            "admin_users", "audit_events", "question_banks",
+            "admin_users", "audit_events", "question_banks", "verification_challenges",
+            "candidate_sessions", "rate_limit_buckets",
         }
         self.assertEqual(set(Base.metadata.tables), expected)
 
@@ -97,6 +98,52 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertIn("result", inspect(ExamAttempt).relationships)
         self.assertTrue(Base.metadata.tables["registrations"].foreign_keys)
         self.assertTrue(Base.metadata.tables["candidate_responses"].foreign_key_constraints)
+        self.assertIn("verification_challenges", inspect(Candidate).relationships)
+        self.assertIn("candidate", inspect(VerificationChallenge).relationships)
+
+    def test_candidate_contact_pair_unique_only_after_both_contacts_are_verified(self) -> None:
+        now = datetime.now(timezone.utc)
+        first = Candidate(
+            email="Nurse@example.invalid",
+            phone="+911234567890",
+            email_verified_at=now,
+            phone_verified_at=now,
+        )
+        second = Candidate(
+            email="nurse@example.invalid",
+            phone="+911234567890",
+            email_verified_at=now,
+            phone_verified_at=now,
+        )
+        self.session.add(first)
+        self.session.flush()
+        self.session.add(second)
+        with self.assertRaises(IntegrityError):
+            self.session.flush()
+        self.session.rollback()
+
+        unverified_duplicate = Candidate(email="nurse@example.invalid", phone="+911234567890")
+        self.session.add(unverified_duplicate)
+        self.session.commit()
+
+    def test_verification_challenge_persists_digest_and_lifecycle_fields_only(self) -> None:
+        challenge = VerificationChallenge(
+            candidate_id=self.candidate.id,
+            channel="mobile",
+            purpose="contact_verification",
+            destination_digest="b" * 64,
+            otp_digest="a" * 64,
+            expires_at=datetime.now(timezone.utc) + timedelta(minutes=5),
+        )
+        self.session.add(challenge)
+        self.session.flush()
+        columns = set(Base.metadata.tables["verification_challenges"].columns.keys())
+        self.assertIn("otp_digest", columns)
+        self.assertIn("attempt_count", columns)
+        self.assertIn("consumed_at", columns)
+        self.assertIn("invalidated_at", columns)
+        self.assertNotIn("otp", columns)
+        self.assertNotIn("code", columns)
 
     def test_question_options_relationship_and_one_correct_option_limit(self) -> None:
         question = self.session.get(Question, self.question.id)
@@ -194,10 +241,14 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0002_core_application_schema"])
+        self.assertEqual(script.get_heads(), ["0004_registration_accounts"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
-        self.assertEqual(len(Base.metadata.tables), 12)
+        verification_revision = script.get_revision("0003_secure_verify")
+        self.assertEqual(verification_revision.down_revision, "0002_core_application_schema")
+        account_revision = script.get_revision("0004_registration_accounts")
+        self.assertEqual(account_revision.down_revision, "0003_secure_verify")
+        self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
         test_env = {
@@ -205,7 +256,7 @@ class ModelSchemaTests(unittest.TestCase):
             "LOG_LEVEL": "CRITICAL",
             "DATABASE_URL": "postgresql+psycopg://test:test@127.0.0.1:55432/sutravya_m3_test",
         }
-        with patch.dict(os.environ, test_env):
+        with patch.dict(os.environ, test_env), patch("app.config._read_dotenv", return_value={}):
             output = StringIO()
             with redirect_stdout(output):
                 command.upgrade(Config("alembic.ini"), "head", sql=True)
@@ -214,22 +265,48 @@ class ModelSchemaTests(unittest.TestCase):
             self.assertIn(f"CREATE TABLE {table_name}", sql)
         for table in Base.metadata.tables.values():
             for constraint in table.constraints:
-                self.assertIn(f"CONSTRAINT {constraint.name}", sql)
+                if constraint.name is not None:
+                    self.assertIn(f"CONSTRAINT {constraint.name}", sql)
         self.assertIn("uq_answer_options_one_correct_per_question", sql)
         self.assertIn("uq_admin_users_email_lower", sql)
+        self.assertIn("uq_candidates_verified_contact_pair", sql)
+        self.assertIn("CREATE UNIQUE INDEX uq_candidates_verified_email", sql)
+        self.assertNotIn("SELECT lower(email)", sql)
 
-    def test_downgrade_only_renders_expected_schema_tables(self) -> None:
+    def test_verification_migration_downgrade_renders_only_new_schema_removal(self) -> None:
         test_env = {
             "APP_ENV": "test",
             "LOG_LEVEL": "CRITICAL",
             "DATABASE_URL": "postgresql+psycopg://test:test@127.0.0.1:55432/sutravya_m3_test",
         }
-        with patch.dict(os.environ, test_env):
+        with patch.dict(os.environ, test_env), patch("app.config._read_dotenv", return_value={}):
             output = StringIO()
             with redirect_stdout(output):
-                command.downgrade(Config("alembic.ini"), "0002_core_application_schema:base", sql=True)
-        dropped = set(re.findall(r"DROP TABLE ([a-z_]+)", output.getvalue(), flags=re.IGNORECASE))
-        self.assertEqual(dropped - {"alembic_version"}, set(Base.metadata.tables))
+                command.downgrade(
+                    Config("alembic.ini"),
+                    "0003_secure_verify:0002_core_application_schema",
+                    sql=True,
+                )
+        sql = output.getvalue()
+        self.assertIn("DROP TABLE verification_challenges", sql)
+        self.assertIn("DROP INDEX uq_candidates_verified_contact_pair", sql)
+        self.assertIn("DROP COLUMN email_verified_at", sql)
+        self.assertIn("DROP COLUMN phone_verified_at", sql)
+
+    def test_registration_migration_downgrade_fails_closed_offline(self) -> None:
+        test_env = {
+            "APP_ENV": "test",
+            "LOG_LEVEL": "CRITICAL",
+            "DATABASE_URL": "postgresql+psycopg://test:test@127.0.0.1:55432/sutravya_m3_test",
+        }
+        with patch.dict(os.environ, test_env), patch("app.config._read_dotenv", return_value={}):
+            output = StringIO()
+            with redirect_stdout(output), self.assertRaisesRegex(
+                RuntimeError, "live database checks are required"
+            ):
+                command.downgrade(Config("alembic.ini"), "head:base", sql=True)
+        self.assertNotIn("DROP TABLE candidate_sessions", output.getvalue())
+        self.assertNotIn("DROP TABLE rate_limit_buckets", output.getvalue())
 
 
 if __name__ == "__main__":

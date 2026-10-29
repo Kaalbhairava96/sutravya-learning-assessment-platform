@@ -56,14 +56,97 @@ class TimestampMixin:
 
 class Candidate(TimestampMixin, Base):
     __tablename__ = "candidates"
+    __table_args__ = (
+        CheckConstraint(
+            "email_verified_at IS NULL OR email IS NOT NULL",
+            name="ck_candidates_email_verification_requires_email",
+        ),
+        CheckConstraint(
+            "phone_verified_at IS NULL OR phone IS NOT NULL",
+            name="ck_candidates_phone_verification_requires_phone",
+        ),
+        Index(
+            "uq_candidates_verified_contact_pair",
+            func.lower(text("email")),
+            text("phone"),
+            unique=True,
+            postgresql_where=text("email_verified_at IS NOT NULL AND phone_verified_at IS NOT NULL"),
+            sqlite_where=text("email_verified_at IS NOT NULL AND phone_verified_at IS NOT NULL"),
+        ),
+        Index(
+            "uq_candidates_verified_email",
+            func.lower(text("email")),
+            unique=True,
+            postgresql_where=text("email_verified_at IS NOT NULL"),
+            sqlite_where=text("email_verified_at IS NOT NULL"),
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
     # Contact fields are nullable until QualiNova approves the registration form.
     full_name: Mapped[str | None] = mapped_column(String(200))
     email: Mapped[str | None] = mapped_column(String(320))
     phone: Mapped[str | None] = mapped_column(String(32))
+    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    phone_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    pending_stream: Mapped[str | None] = mapped_column(String(32))
 
     registrations: Mapped[list["Registration"]] = relationship(back_populates="candidate")
+    verification_challenges: Mapped[list["VerificationChallenge"]] = relationship(
+        back_populates="candidate", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class VerificationChallenge(Base):
+    """Persist an OTP digest and lifecycle timestamps, never the plaintext OTP."""
+
+    __tablename__ = "verification_challenges"
+    __table_args__ = (
+        CheckConstraint("channel IN ('mobile', 'email')", name="ck_verification_challenges_channel"),
+        CheckConstraint(
+            "purpose IN ('contact_verification', 'registration_verification', 'login')",
+            name="ck_verification_challenges_purpose",
+        ),
+        CheckConstraint("attempt_count >= 0", name="ck_verification_challenges_attempt_count_nonnegative"),
+        CheckConstraint(
+            "length(destination_digest) = 64",
+            name="ck_verification_challenges_destination_digest_length",
+        ),
+        CheckConstraint("length(otp_digest) = 64", name="ck_verification_challenges_digest_length"),
+        CheckConstraint("expires_at > created_at", name="ck_verification_challenges_expiry_after_creation"),
+        CheckConstraint(
+            "consumed_at IS NULL OR invalidated_at IS NULL",
+            name="ck_verification_challenges_single_terminal_state",
+        ),
+        Index(
+            "ix_verification_challenges_candidate_channel_purpose_created",
+            "candidate_id",
+            "channel",
+            "purpose",
+            "created_at",
+        ),
+        Index("ix_verification_challenges_expires_at", "expires_at"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    candidate_id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("candidates.id", ondelete="CASCADE", name="fk_verification_challenges_candidate_id_candidates"),
+        nullable=False,
+    )
+    channel: Mapped[str] = mapped_column(String(16), nullable=False)
+    purpose: Mapped[str] = mapped_column(String(40), nullable=False)
+    destination_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    otp_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    candidate: Mapped[Candidate] = relationship(back_populates="verification_challenges")
 
 
 class QuestionBank(TimestampMixin, Base):
@@ -110,6 +193,7 @@ class Registration(TimestampMixin, Base):
     __tablename__ = "registrations"
     __table_args__ = (
         UniqueConstraint("candidate_id", "event_key", name="uq_registrations_candidate_event"),
+        UniqueConstraint("registration_id", name="uq_registrations_public_id"),
         Index("ix_registrations_exam_slot_id", "exam_slot_id"),
     )
 
@@ -120,6 +204,9 @@ class Registration(TimestampMixin, Base):
         nullable=False,
     )
     event_key: Mapped[str] = mapped_column(String(100), nullable=False)
+    # Nullable for safe migration of any historical rows; registration services always set this.
+    registration_id: Mapped[str | None] = mapped_column(String(32))
+    stream: Mapped[str | None] = mapped_column(String(32))
     exam_slot_id: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("exam_slots.id", ondelete="RESTRICT", name="fk_registrations_exam_slot_id_exam_slots"),
@@ -131,6 +218,43 @@ class Registration(TimestampMixin, Base):
         back_populates="registrations", foreign_keys=[exam_slot_id]
     )
     attempts: Mapped[list["ExamAttempt"]] = relationship(back_populates="registration")
+
+
+class CandidateSession(Base):
+    """Persist only a digest of a random, HttpOnly-cookie session token."""
+
+    __tablename__ = "candidate_sessions"
+    __table_args__ = (Index("ix_candidate_sessions_candidate_expiry", "candidate_id", "expires_at"),)
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    candidate_id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("candidates.id", ondelete="CASCADE", name="fk_candidate_sessions_candidate_id_candidates"),
+        nullable=False,
+    )
+    token_digest: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class RateLimitBucket(Base):
+    """Database-backed abuse counters keyed by a keyed digest, never raw PII/IP."""
+
+    __tablename__ = "rate_limit_buckets"
+    __table_args__ = (
+        UniqueConstraint("scope", "subject_digest", name="uq_rate_limit_buckets_scope_subject"),
+        CheckConstraint("request_count >= 0", name="ck_rate_limit_buckets_nonnegative_count"),
+        Index("ix_rate_limit_buckets_window", "window_started_at"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    scope: Mapped[str] = mapped_column(String(40), nullable=False)
+    subject_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    window_started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    request_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
 
 
 class Question(TimestampMixin, Base):

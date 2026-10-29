@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           site_dir="$RUNNER_TEMP/sutravya-public-site"
           mkdir -p "$site_dir/assets"
-          cp index.html awards.html syllabus.html sample-papers.html faqs.html contact.html "$site_dir/"
+          cp index.html awards.html syllabus.html sample-papers.html faqs.html contact.html login.html "$site_dir/"
           cp styles.css visuals.css exam.css site.js sutravya-logo.png BIHAR-HEALTHCARE-CONCLAVE-2026.pdf "$site_dir/"
           cp assets/handshake.svg assets/qualinova-logo.png assets/sutravya-logo.png \
             assets/awards-hero.svg assets/contact-hero.svg assets/faq-hero.svg \

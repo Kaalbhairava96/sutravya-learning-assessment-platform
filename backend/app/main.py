@@ -1,18 +1,165 @@
-"""FastAPI entry point for the SUTRAVYA assessment backend foundation."""
+"""FastAPI registration and passwordless email OTP API."""
 
 from __future__ import annotations
 
 import time
 import uuid
+import logging
+from contextlib import contextmanager
+from datetime import datetime, timezone
+from typing import Callable, Iterator
+from uuid import UUID
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import Settings
+from app.database import create_database_engine
+from app.email_provider import (
+    EmailDeliveryError,
+    EmailProviderConfigurationError,
+    send_otp_email,
+    send_registration_confirmation,
+)
 from app.logging_config import configure_logging
+from app.models import Candidate, Registration, VerificationChallenge
+from app.registration import (
+    EVENT_KEY,
+    LOGIN_OTP_PURPOSE,
+    REGISTRATION_OTP_PURPOSE,
+    RegistrationError,
+    create_login_challenge,
+    create_registration_challenge,
+    enforce_rate_limit,
+    get_candidate_session,
+    invalidate_challenge,
+    normalize_email,
+    resend_email_challenge,
+    revoke_candidate_session,
+    verify_login_email,
+    verify_registration_email,
+)
+from app.verification import ChallengeVerification
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
-    """Create the API after validating required configuration; never connects on startup."""
+SESSION_COOKIE = "sutravya_candidate_session"
+
+
+class RegistrationRequest(BaseModel):
+    full_name: str = Field(min_length=1, max_length=200)
+    mobile: str = Field(min_length=10, max_length=20)
+    email: str = Field(min_length=3, max_length=320)
+    stream: str = Field(min_length=1, max_length=32)
+
+
+class EmailOtpRequest(BaseModel):
+    challenge_id: UUID
+    otp: str = Field(min_length=1, max_length=32)
+
+
+class ResendOtpRequest(BaseModel):
+    challenge_id: UUID
+
+
+class EmailRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=320)
+
+
+class LoginVerifyRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=320)
+    otp: str = Field(min_length=1, max_length=32)
+
+
+class ConfirmationResendRequest(BaseModel):
+    registration_id: str = Field(min_length=1, max_length=32)
+
+
+@contextmanager
+def _session(request: Request) -> Iterator[Session]:
+    factory: sessionmaker[Session] = request.app.state.session_factory
+    with factory() as session:
+        yield session
+
+
+def _client_ip(request: Request) -> str:
+    # Do not trust forwarded headers unless trusted-proxy middleware is explicitly configured.
+    return request.client.host if request.client else "unknown"
+
+
+def _registration_error(error: RegistrationError) -> HTTPException:
+    messages = {
+        "invalid_name": "Enter a valid full name.",
+        "invalid_email": "Enter a valid email address.",
+        "invalid_mobile": "Enter a valid Indian mobile number.",
+        "invalid_stream": "Select one of the available exam streams.",
+        "too_many_requests": "Too many requests. Please try again later.",
+        "resend_cooldown": "Please wait before requesting another code.",
+        "challenge_unavailable": "This code request is unavailable. Request a new code.",
+        "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
+    }
+    return HTTPException(status_code=error.status_code, detail=messages.get(error.code, "Request could not be completed."))
+
+
+def _limit(session: Session, settings: Settings, *, scope: str, subject: str, maximum: int) -> None:
+    try:
+        enforce_rate_limit(
+            session,
+            settings=settings,
+            scope=scope,
+            subject=subject,
+            limit=maximum,
+            window_seconds=3600,
+        )
+    except RegistrationError as error:
+        if error.code == "too_many_requests":
+            logging.getLogger("sutravya.api").warning("rate_limit_rejected", extra={"scope": scope})
+        raise
+
+
+def _delivery_error() -> HTTPException:
+    return HTTPException(status_code=503, detail="Email delivery is temporarily unavailable. Please try again later.")
+
+
+def _challenge_message(outcome: ChallengeVerification) -> tuple[int, str]:
+    return {
+        ChallengeVerification.INVALID_CODE: (400, "The code is incorrect."),
+        ChallengeVerification.ATTEMPTS_EXHAUSTED: (429, "The code request is locked. Request a new code later."),
+        ChallengeVerification.EXPIRED: (400, "The code has expired. Request a new code."),
+        ChallengeVerification.CONSUMED: (400, "The code has already been used."),
+        ChallengeVerification.INVALIDATED: (400, "The code is no longer valid. Request a new code."),
+        ChallengeVerification.NOT_FOUND: (400, "The code request is unavailable."),
+    }.get(outcome, (400, "The code request is unavailable."))
+
+
+def _send_otp(request: Request, pending) -> None:
+    try:
+        request.app.state.email_sender(
+            recipient_email=pending.email,
+            recipient_name="Candidate",
+            otp=pending.otp,
+            purpose=pending.purpose,
+            settings=request.app.state.settings,
+        )
+    except Exception:
+        logging.getLogger("sutravya.api").warning(
+            "email_delivery_failed", extra={"purpose": pending.purpose}
+        )
+        raise EmailDeliveryError("Email submission failed.") from None
+
+
+def create_app(
+    settings: Settings | None = None,
+    *,
+    session_factory: sessionmaker[Session] | None = None,
+    email_sender: Callable[..., None] = send_otp_email,
+    confirmation_sender: Callable[..., None] = send_registration_confirmation,
+) -> FastAPI:
+    """Build the API after configuration validation; engine creation is lazy."""
     active_settings = settings or Settings.from_env()
     logger = configure_logging(active_settings.log_level)
     docs_enabled = active_settings.app_env != "production"
@@ -22,6 +169,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
         openapi_url="/openapi.json" if docs_enabled else None,
     )
+    if session_factory is None:
+        engine = create_database_engine(active_settings, pool_pre_ping=True)
+        session_factory = sessionmaker(bind=engine, autoflush=True, expire_on_commit=False)
+        application.state.database_engine = engine
+    application.state.session_factory = session_factory
+    application.state.settings = active_settings
+    application.state.email_sender = email_sender
+    application.state.confirmation_sender = confirmation_sender
+    if active_settings.cors_origins:
+        application.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(active_settings.cors_origins),
+            allow_credentials=True,
+            allow_methods=["GET", "POST"],
+            allow_headers=["Content-Type"],
+        )
 
     @application.middleware("http")
     async def request_logging(request: Request, call_next):
@@ -29,34 +192,235 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         started = time.perf_counter()
         status_code = 500
         try:
+            origin = request.headers.get("origin")
+            if (
+                origin
+                and request.url.path.startswith("/api/")
+                and origin.rstrip("/") not in active_settings.cors_origins
+            ):
+                status_code = 403
+                return JSONResponse(status_code=403, content={"detail": "Origin is not allowed."})
             response = await call_next(request)
             status_code = response.status_code
             return response
         except Exception:
-            logger.error(
-                "request_failed",
-                extra={"request_id": request_id, "method": request.method, "status_code": status_code},
-            )
+            logger.error("request_failed", extra={"request_id": request_id, "method": request.method, "status_code": status_code})
             raise
         finally:
             logger.info(
                 "request_complete",
-                extra={
-                    "request_id": request_id,
-                    "method": request.method,
-                    "status_code": status_code,
-                    "duration_ms": round((time.perf_counter() - started) * 1000, 2),
-                },
+                extra={"request_id": request_id, "method": request.method, "status_code": status_code,
+                       "duration_ms": round((time.perf_counter() - started) * 1000, 2)},
             )
 
     @application.get("/health", tags=["operations"])
     async def health() -> dict[str, str]:
-        """Liveness only: deliberately does not connect to or reveal database state."""
         return {"status": "ok"}
+
+    @application.post("/api/registrations/start", status_code=202, tags=["registration"])
+    def start_registration(payload: RegistrationRequest, request: Request):
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                email = normalize_email(payload.email)
+                _limit(session, settings, scope="registration_ip", subject=_client_ip(request), maximum=30)
+                _limit(session, settings, scope="registration_email", subject=email, maximum=5)
+                _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+                pending = create_registration_challenge(
+                    session, settings=settings, name=payload.full_name, email=email,
+                    mobile=payload.mobile, stream=payload.stream,
+                )
+            except RegistrationError as error:
+                # Do not reveal whether an email already owns a completed registration.
+                if error.code == "registration_unavailable":
+                    return {"message": "If this email can be registered, a verification code will be sent."}
+                raise _registration_error(error)
+            try:
+                _send_otp(request, pending)
+            except (EmailProviderConfigurationError, EmailDeliveryError):
+                invalidate_challenge(session, pending.challenge_id)
+                raise _delivery_error()
+            return {"challenge_id": str(pending.challenge_id), "expires_in": settings.otp_expiry_seconds}
+
+    @application.post("/api/registrations/resend-otp", status_code=202, tags=["registration"])
+    def resend_registration_otp(payload: ResendOtpRequest, request: Request):
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                _limit(session, settings, scope="otp_resend_ip", subject=_client_ip(request), maximum=20)
+                with session.begin():
+                    prior = session.get(VerificationChallenge, payload.challenge_id)
+                    if prior is None or prior.purpose != REGISTRATION_OTP_PURPOSE:
+                        raise RegistrationError("challenge_unavailable", 400)
+                    candidate = session.get(Candidate, prior.candidate_id)
+                    email = normalize_email(candidate.email or "") if candidate else ""
+                if not email:
+                    raise RegistrationError("challenge_unavailable", 400)
+                _limit(session, settings, scope="registration_email", subject=email, maximum=5)
+                _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+                pending = resend_email_challenge(
+                    session, settings=settings, challenge_id=payload.challenge_id,
+                    expected_purpose=REGISTRATION_OTP_PURPOSE,
+                )
+            except RegistrationError as error:
+                raise _registration_error(error)
+            try:
+                _send_otp(request, pending)
+            except (EmailProviderConfigurationError, EmailDeliveryError):
+                invalidate_challenge(session, pending.challenge_id)
+                raise _delivery_error()
+            return {"challenge_id": str(pending.challenge_id), "expires_in": settings.otp_expiry_seconds}
+
+    @application.post("/api/registrations/verify-email", tags=["registration"])
+    def verify_registration(payload: EmailOtpRequest, request: Request):
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                _limit(session, settings, scope="otp_verify_ip", subject=_client_ip(request), maximum=60)
+                with session.begin():
+                    candidate_email = session.scalar(
+                        select(Candidate.email)
+                        .join(VerificationChallenge, VerificationChallenge.candidate_id == Candidate.id)
+                        .where(VerificationChallenge.id == payload.challenge_id)
+                    )
+                verification_subject = (
+                    normalize_email(candidate_email) if candidate_email else f"challenge:{payload.challenge_id}"
+                )
+                _limit(session, settings, scope="registration_verify_email", subject=verification_subject, maximum=20)
+                outcome, registration = verify_registration_email(
+                    session, settings=settings, challenge_id=payload.challenge_id, otp=payload.otp,
+                )
+            except RegistrationError as error:
+                raise _registration_error(error)
+            except IntegrityError:
+                # Includes a concurrent verified-email winner or Registration ID collision.
+                raise HTTPException(status_code=409, detail="Registration could not be completed. Please request a new code or contact support.")
+            if outcome != ChallengeVerification.VERIFIED or registration is None:
+                status, message = _challenge_message(outcome)
+                raise HTTPException(status_code=status, detail=message)
+            try:
+                request.app.state.confirmation_sender(
+                    recipient_email=registration.email,
+                    recipient_name=registration.full_name,
+                    registration_id=registration.registration_id,
+                    stream=registration.stream,
+                    settings=settings,
+                )
+                sent = True
+            except Exception:
+                logger.warning("email_delivery_failed", extra={"purpose": "registration_confirmation"})
+                sent = False
+            return {
+                "registration_id": registration.registration_id,
+                "confirmation_email_sent": sent,
+                "message": "Registration complete. Save your Registration ID.",
+            }
+
+    @application.post("/api/registrations/resend-confirmation", status_code=202, tags=["registration"])
+    def resend_confirmation(payload: ConfirmationResendRequest, request: Request):
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                _limit(session, settings, scope="confirmation_ip", subject=_client_ip(request), maximum=20)
+                _limit(session, settings, scope="confirmation_registration", subject=payload.registration_id, maximum=3)
+                with session.begin():
+                    registration = session.scalar(
+                        select(Registration).where(
+                            Registration.registration_id == payload.registration_id,
+                            Registration.event_key == EVENT_KEY,
+                        )
+                    )
+                    candidate = session.get(Candidate, registration.candidate_id) if registration else None
+                    recipient = (candidate.email, candidate.full_name, registration.registration_id, registration.stream) if (
+                        candidate and candidate.email_verified_at and candidate.email
+                    ) else None
+            except RegistrationError as error:
+                raise _registration_error(error)
+            if recipient:
+                recipient_email, recipient_name, registration_id, stream = recipient
+                try:
+                    request.app.state.confirmation_sender(
+                        recipient_email=recipient_email, recipient_name=recipient_name or "Candidate",
+                        registration_id=registration_id or "", stream=stream or "",
+                        settings=settings,
+                    )
+                except Exception:
+                    logger.warning("email_delivery_failed", extra={"purpose": "registration_confirmation"})
+            return {"message": "If the registration is eligible, a confirmation email will be sent."}
+
+    @application.post("/api/auth/request-otp", status_code=202, tags=["candidate account"])
+    def request_login_otp(payload: EmailRequest, request: Request):
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                email = normalize_email(payload.email)
+                _limit(session, settings, scope="login_ip", subject=_client_ip(request), maximum=30)
+                _limit(session, settings, scope="login_email", subject=email, maximum=10)
+                pending = create_login_challenge(session, settings=settings, email=email)
+                if pending is not None:
+                    _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+            except RegistrationError as error:
+                if error.code == "resend_cooldown":
+                    return {"message": "If an eligible account exists, a sign-in code will be sent."}
+                raise _registration_error(error)
+            if pending is not None:
+                try:
+                    _send_otp(request, pending)
+                except (EmailProviderConfigurationError, EmailDeliveryError):
+                    invalidate_challenge(session, pending.challenge_id)
+                    raise _delivery_error()
+            return {"message": "If an eligible account exists, a sign-in code will be sent."}
+
+    @application.post("/api/auth/verify-otp", tags=["candidate account"])
+    def verify_login(payload: LoginVerifyRequest, request: Request, response: Response):
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                email = normalize_email(payload.email)
+                _limit(session, settings, scope="login_verify_ip", subject=_client_ip(request), maximum=60)
+                _limit(session, settings, scope="login_verify_email", subject=email, maximum=10)
+                outcome, login = verify_login_email(session, settings=settings, email=email, otp=payload.otp)
+            except RegistrationError as error:
+                raise _registration_error(error)
+            if outcome != ChallengeVerification.VERIFIED or login is None:
+                raise HTTPException(status_code=400, detail="The code is invalid or expired. Request a new code.")
+            response.set_cookie(
+                SESSION_COOKIE,
+                login.raw_session_token,
+                max_age=max(0, int((login.expires_at - datetime.now(timezone.utc)).total_seconds())),
+                httponly=True,
+                secure=settings.app_env == "production",
+                samesite="lax",
+                path="/api",
+            )
+            return {"status": "authenticated"}
+
+    @application.get("/api/auth/session", tags=["candidate account"])
+    def current_session(request: Request):
+        with _session(request) as session:
+            summary = get_candidate_session(session, request.cookies.get(SESSION_COOKIE))
+            if summary is None:
+                raise HTTPException(status_code=401, detail="Authentication required.")
+            return {
+                "registration_id": summary.registration_id,
+                "stream": summary.stream,
+                "full_name": summary.full_name,
+                "email": summary.email,
+            }
+
+    @application.post("/api/auth/logout", status_code=204, tags=["candidate account"])
+    def logout(request: Request, response: Response):
+        with _session(request) as session:
+            revoke_candidate_session(session, request.cookies.get(SESSION_COOKIE))
+        response.delete_cookie(
+            SESSION_COOKIE, path="/api", secure=request.app.state.settings.app_env == "production",
+            httponly=True, samesite="lax",
+        )
+        response.status_code = 204
+        return response
 
     return application
 
 
-# Missing or invalid configuration fails the server process before it accepts traffic.
-# DATABASE_URL is validated here but no database connection is opened by this milestone.
+# Configuration validation occurs before serving traffic. No connection is opened here.
 app = create_app()

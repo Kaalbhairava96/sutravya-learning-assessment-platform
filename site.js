@@ -1,4 +1,7 @@
-const pages=[['index.html','Home'],['awards.html','Scholarship & Awards'],['syllabus.html','Syllabus'],['sample-papers.html','Sample Papers'],['faqs.html','FAQs'],['contact.html','Contact']];
+const pages=[['index.html','Home'],['awards.html','Scholarship & Awards'],['syllabus.html','Syllabus'],['sample-papers.html','Sample Papers'],['faqs.html','FAQs'],['contact.html','Contact'],['login.html','Candidate login']];
+const configuredApiBase=document.querySelector('meta[name="sutravya-api-base"]')?.content.trim();
+const apiBase=configuredApiBase||(['localhost','127.0.0.1'].includes(location.hostname)?'http://127.0.0.1:8000':'');
+async function apiRequest(path,payload,method='POST'){if(!apiBase)throw new Error('Registration is not connected to the secure application yet. Please try again later.');const response=await fetch(`${apiBase}${path}`,{method,credentials:'include',headers:payload?{'Content-Type':'application/json'}:{},body:payload?JSON.stringify(payload):undefined});let data={};try{data=await response.json();}catch{}if(!response.ok)throw new Error(data.detail||'The request could not be completed.');return data;}
 const current=location.pathname.split('/').pop()||'index.html';
 const enhancementStyles=document.createElement('link');enhancementStyles.rel='stylesheet';enhancementStyles.href='visuals.css';document.head.append(enhancementStyles);
 const examStyles=document.createElement('link');examStyles.rel='stylesheet';examStyles.href='exam.css';document.head.append(examStyles);
@@ -6,7 +9,71 @@ const header=document.querySelector('[data-header]');
 if(header){header.innerHTML=`<div class="topline"></div><div class="header"><div class="wrap headerin"><a class="brand" href="index.html" aria-label="Sutrāvya home"><img src="assets/sutravya-logo.png" alt="Sutrāvya — The Digital Thread of Healthcare"></a><button class="navtoggle" aria-label="Open navigation" aria-expanded="false">☰ Menu</button><nav class="nav" aria-label="Main navigation">${pages.map(([url,label])=>`<a href="${url}" class="${url===current?'active':''}">${label}</a>`).join('')}<a class="navcta" href="index.html#register">Register now <span aria-hidden="true">→</span></a></nav></div></div>`;const toggle=header.querySelector('.navtoggle'),nav=header.querySelector('.nav');toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));});}
 const footer=document.querySelector('[data-footer]');
 if(footer){footer.innerHTML=`<footer class="footer"><div class="wrap"><div class="footergrid"><div class="footerbrand"><a href="index.html"><img src="assets/sutravya-logo.png" alt="Sutrāvya"></a><p>Nursing Talent Hunt Exam: a nursing knowledge assessment and digital-health idea challenge delivered by Sutrāvya for Bihar Healthcare Conclave 2026.</p></div><div><h4>Exam information</h4><div class="footerlinks"><a href="awards.html">Awards</a><a href="syllabus.html">Syllabus</a><a href="sample-papers.html">Sample papers</a><a href="faqs.html">FAQs</a></div></div><div><h4>About this event</h4><div class="footerlinks"><span>Organised by Qualinova</span><span>Assessment partner: Sutrāvya</span><a href="https://sutravya.in" target="_blank" rel="noopener">sutravya.in ↗</a><a href="contact.html">Contact</a></div></div></div><div class="copyright"><span>© 2026 Sutrāvya · Nursing Talent Hunt Exam</span><span>Built for Bihar Healthcare Conclave 2026</span></div></div></footer>`;}
-document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();const note=form.querySelector('.register-note');if(note){note.textContent='The registration screen is a prototype. Candidate registration will be connected to secure storage before the exam opens.';note.classList.add('show');}}));
+document.querySelectorAll('[data-register-form]').forEach(form=>{
+  const note=form.querySelector('.register-note');
+  const otpStep=form.querySelector('[data-otp-step]');
+  const resendBox=form.querySelector('[data-confirmation-resend]');
+  let challengeId='';
+  const showMessage=(message,isError=false)=>{if(note){note.textContent=message;note.classList.add('show');note.classList.toggle('error',isError);}};
+  const setBusy=(busy)=>form.querySelectorAll('button').forEach(button=>{button.disabled=busy;});
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(challengeId)return;
+    setBusy(true);showMessage('Sending a verification code…');
+    try{
+      const result=await apiRequest('/api/registrations/start',{
+        full_name:form.elements.full_name.value,
+        mobile:form.elements.mobile.value,
+        email:form.elements.email.value,
+        stream:form.elements.stream.value
+      });
+      challengeId=result.challenge_id;
+      if(!challengeId){showMessage(result.message||'If this email can be registered, a verification code will be sent.');return;}
+      form.querySelectorAll('[data-registration-field]').forEach(field=>field.hidden=true);
+      const startButton=form.querySelector('[data-start-registration]');if(startButton)startButton.hidden=true;
+      if(otpStep)otpStep.hidden=false;
+      form.querySelector('#registration-otp')?.focus();
+      showMessage('If delivery succeeds, enter the 6-digit code sent to your email.');
+    }catch(error){showMessage(error.message,true);}
+    finally{setBusy(false);}
+  });
+  form.querySelector('[data-verify-otp]')?.addEventListener('click',async()=>{
+    const otp=form.querySelector('#registration-otp')?.value||'';
+    setBusy(true);showMessage('Verifying your email and saving registration…');
+    try{
+      const result=await apiRequest('/api/registrations/verify-email',{challenge_id:challengeId,otp});
+      showMessage(`Registration complete. Your Registration ID is ${result.registration_id}. ${result.confirmation_email_sent?'A confirmation email has been sent.':'The confirmation email could not be sent yet; use the resend option below.'}`);
+      if(resendBox){resendBox.hidden=false;const idInput=resendBox.querySelector('input');if(idInput)idInput.value=result.registration_id;}
+      if(otpStep)otpStep.hidden=true;
+      challengeId='';
+    }catch(error){showMessage(error.message,true);}
+    finally{setBusy(false);}
+  });
+  form.querySelector('[data-resend-otp]')?.addEventListener('click',async()=>{
+    if(!challengeId)return;
+    setBusy(true);showMessage('Requesting a new code…');
+    try{const result=await apiRequest('/api/registrations/resend-otp',{challenge_id:challengeId});challengeId=result.challenge_id;showMessage('A new code has been sent.');}
+    catch(error){showMessage(error.message,true);}
+    finally{setBusy(false);}
+  });
+  form.querySelector('[data-resend-confirmation]')?.addEventListener('click',async()=>{
+    const registrationId=resendBox?.querySelector('input')?.value||'';
+    setBusy(true);showMessage('Requesting the confirmation email…');
+    try{const result=await apiRequest('/api/registrations/resend-confirmation',{registration_id:registrationId});showMessage(result.message);}
+    catch(error){showMessage(error.message,true);}
+    finally{setBusy(false);}
+  });
+});
+document.querySelectorAll('[data-login-form]').forEach(form=>{
+  const note=form.querySelector('.register-note');const otpStep=form.querySelector('[data-login-otp-step]');
+  const resend=form.querySelector('[data-login-resend]');let requested=false;let resendTimer;
+  const show=(message,error=false)=>{note.textContent=message;note.classList.add('show');note.classList.toggle('error',error);};
+  const startCooldown=()=>{let remaining=60;resend.disabled=true;resend.textContent=`Resend code in ${remaining} seconds`;clearInterval(resendTimer);resendTimer=setInterval(()=>{remaining--;if(remaining<=0){clearInterval(resendTimer);resend.disabled=false;resend.textContent='Resend code';}else resend.textContent=`Resend code in ${remaining} seconds`;},1000);};
+  const requestCode=async()=>{show('Requesting a sign-in code…');try{const result=await apiRequest('/api/auth/request-otp',{email:form.elements.email.value});requested=true;otpStep.hidden=false;form.querySelector('#login-otp')?.focus();startCooldown();show(result.message);}catch(error){show(error.message,true);}};
+  form.addEventListener('submit',async event=>{event.preventDefault();if(requested)return;const button=form.querySelector('[type="submit"]');button.disabled=true;await requestCode();button.disabled=false;});
+  resend?.addEventListener('click',async()=>{if(resend.disabled)return;await requestCode();});
+  form.querySelector('[data-login-verify]')?.addEventListener('click',async()=>{const button=form.querySelector('[data-login-verify]');button.disabled=true;show('Verifying your code…');try{await apiRequest('/api/auth/verify-otp',{email:form.elements.email.value,otp:form.elements.otp.value});show('You are signed in. Your secure session will remain active across refreshes.');form.querySelectorAll('input,button').forEach(control=>control.disabled=true);}catch(error){show(error.message,true);}finally{button.disabled=false;}});
+});
 document.querySelectorAll('[data-sample]').forEach(group=>group.addEventListener('change',()=>{const q=group.closest('.sample-question');const answer=q.querySelector('.answer');if(answer)answer.classList.add('show');}));
 
 // Homepage visual refresh: keep the homepage focused on the exam, not the award table.

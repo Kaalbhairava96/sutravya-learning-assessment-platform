@@ -7,25 +7,22 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-# The module-level ASGI app must receive safe test-only configuration during import.
-_test_environment = patch.dict(
+from app.config import ConfigurationError, Settings
+from app.database import create_database_engine
+from app.logging_config import SafeJsonFormatter
+
+# Scope import-time configuration even when the optional TestClient dependency
+# is missing: failed imports must not leak a dummy DATABASE_URL to other tests.
+with patch.dict(
     os.environ,
     {
         "APP_ENV": "test",
         "LOG_LEVEL": "CRITICAL",
         "DATABASE_URL": "postgresql+psycopg://user:pass@127.0.0.1:55432/sutravya_m3_test",
     },
-)
-_test_environment.start()
-
-from fastapi.testclient import TestClient
-
-from app.config import ConfigurationError, Settings
-from app.database import create_database_engine
-from app.logging_config import SafeJsonFormatter
-from app.main import create_app
-
-_test_environment.stop()
+), patch("app.config._read_dotenv", return_value={}):
+    from fastapi.testclient import TestClient
+    from app.main import create_app
 
 
 class BackendFoundationTests(unittest.TestCase):
@@ -45,6 +42,67 @@ class BackendFoundationTests(unittest.TestCase):
     def test_missing_database_url_fails_configuration_validation(self) -> None:
         with self.assertRaisesRegex(ConfigurationError, "DATABASE_URL is required"):
             Settings.from_env(environ={"APP_ENV": "test"}, dotenv_path=Path("missing-test.env"))
+
+    def test_otp_configuration_defaults_and_pepper_is_optional_at_startup(self) -> None:
+        settings = Settings.from_env(
+            environ={
+                "APP_ENV": "test",
+                "DATABASE_URL": "postgresql+psycopg://user:pass@127.0.0.1:55432/sutravya_m3_test",
+            },
+            dotenv_path=Path("missing-test.env"),
+        )
+        self.assertEqual(settings.otp_expiry_seconds, 300)
+        self.assertEqual(settings.otp_max_attempts, 5)
+        self.assertEqual(settings.otp_resend_cooldown_seconds, 60)
+        self.assertIsNone(settings.otp_hmac_pepper)
+        with self.assertRaisesRegex(ConfigurationError, "required for OTP digest operations"):
+            settings.require_otp_hmac_pepper()
+
+    def test_otp_configuration_accepts_valid_overrides_and_hides_pepper(self) -> None:
+        pepper = "test-only-pepper-value-with-at-least-32-bytes"
+        settings = Settings.from_env(
+            environ={
+                "APP_ENV": "test",
+                "DATABASE_URL": "postgresql+psycopg://user:pass@127.0.0.1:55432/sutravya_m3_test",
+                "OTP_EXPIRY_SECONDS": "180",
+                "OTP_MAX_ATTEMPTS": "4",
+                "OTP_RESEND_COOLDOWN_SECONDS": "90",
+                "OTP_HMAC_PEPPER": pepper,
+            },
+            dotenv_path=Path("missing-test.env"),
+        )
+        self.assertEqual(settings.otp_expiry_seconds, 180)
+        self.assertEqual(settings.otp_max_attempts, 4)
+        self.assertEqual(settings.otp_resend_cooldown_seconds, 90)
+        self.assertEqual(settings.require_otp_hmac_pepper(), pepper)
+        self.assertNotIn(pepper, repr(settings))
+
+    def test_invalid_otp_policy_values_are_rejected(self) -> None:
+        for key in ("OTP_EXPIRY_SECONDS", "OTP_MAX_ATTEMPTS", "OTP_RESEND_COOLDOWN_SECONDS"):
+            for value in ("0", "-1", "not-an-integer"):
+                with self.subTest(key=key, value=value):
+                    with self.assertRaisesRegex(ConfigurationError, f"{key} must be a positive integer"):
+                        Settings.from_env(
+                            environ={
+                                "APP_ENV": "test",
+                                "DATABASE_URL": "postgresql+psycopg://user:pass@127.0.0.1:55432/sutravya_m3_test",
+                                key: value,
+                            },
+                            dotenv_path=Path("missing-test.env"),
+                        )
+
+    def test_short_otp_pepper_is_rejected_without_disclosing_value(self) -> None:
+        pepper = "too-short"
+        with self.assertRaisesRegex(ConfigurationError, "at least 32 UTF-8 bytes") as caught:
+            Settings.from_env(
+                environ={
+                    "APP_ENV": "test",
+                    "DATABASE_URL": "postgresql+psycopg://user:pass@127.0.0.1:55432/sutravya_m3_test",
+                    "OTP_HMAC_PEPPER": pepper,
+                },
+                dotenv_path=Path("missing-test.env"),
+            )
+        self.assertNotIn(pepper, str(caught.exception))
 
     def test_non_postgresql_url_fails_configuration_validation(self) -> None:
         with self.assertRaisesRegex(ConfigurationError, r"DATABASE_URL must use postgresql\+psycopg"):
