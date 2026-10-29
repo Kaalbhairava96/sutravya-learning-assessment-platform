@@ -5,8 +5,10 @@ from __future__ import annotations
 import time
 import uuid
 import logging
+import hashlib
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from email.utils import parseaddr
 from typing import Callable, Iterator
 from uuid import UUID
 
@@ -213,6 +215,25 @@ def create_app(
     application.state.settings = active_settings
     application.state.email_sender = email_sender
     application.state.confirmation_sender = confirmation_sender
+
+    def log_email_runtime_config_check() -> None:
+        api_key = active_settings.resend_api_key
+        sender = active_settings.resend_from_email or ""
+        _display_name, sender_address = parseaddr(sender)
+        sender_domain = sender_address.rsplit("@", 1)[1].lower() if "@" in sender_address else ""
+        logger.info(
+            "email_runtime_config_check",
+            extra={
+                "resend_key_present": bool(api_key),
+                "resend_key_fingerprint": hashlib.sha256(api_key.encode("utf-8")).hexdigest()[:12]
+                if api_key else "missing",
+                "resend_sender_expected_match": sender == "SUTRAVYA <noreply@mail.sutravya.in>",
+                "resend_sender_domain_match": sender_domain == "mail.sutravya.in",
+            },
+        )
+
+    application.router.on_startup.append(log_email_runtime_config_check)
+
     if active_settings.cors_origins:
         application.add_middleware(
             CORSMiddleware,

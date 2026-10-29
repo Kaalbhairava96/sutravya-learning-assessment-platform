@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
+import io
+import json
+import logging
 import os
 import unittest
 from http.cookies import SimpleCookie
@@ -84,6 +88,55 @@ class PasswordlessApiTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.engine.dispose()
+
+    def _capture_startup_config_event(self, *, api_key: str | None, sender: str | None) -> tuple[str, dict]:
+        settings = Settings(
+            app_env="test", log_level="INFO", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER, resend_api_key=api_key, resend_from_email=sender,
+        )
+        application = create_app(settings, session_factory=self.factory)
+        logger = logging.getLogger("sutravya.api")
+        output = io.StringIO()
+        handler = logging.StreamHandler(output)
+        handler.setFormatter(SafeJsonFormatter())
+        logger.addHandler(handler)
+        try:
+            for startup_handler in application.router.on_startup:
+                startup_handler()
+        finally:
+            logger.removeHandler(handler)
+        serialized = output.getvalue()
+        return serialized, json.loads(serialized)
+
+    def test_startup_email_runtime_check_logs_only_expected_safe_fields(self) -> None:
+        api_key = "synthetic-startup-api-key"
+        sender = "SUTRAVYA <noreply@mail.sutravya.in>"
+        serialized, event = self._capture_startup_config_event(api_key=api_key, sender=sender)
+        self.assertEqual(event["event"], "email_runtime_config_check")
+        self.assertTrue(event["resend_key_present"])
+        self.assertEqual(event["resend_key_fingerprint"], hashlib.sha256(api_key.encode()).hexdigest()[:12])
+        self.assertTrue(event["resend_sender_expected_match"])
+        self.assertTrue(event["resend_sender_domain_match"])
+        self.assertNotIn(api_key, serialized)
+        self.assertNotIn(hashlib.sha256(api_key.encode()).hexdigest(), serialized)
+        self.assertNotIn(sender, serialized)
+        self.assertNotIn("noreply@mail.sutravya.in", serialized)
+
+    def test_startup_email_runtime_check_reports_missing_and_mismatched_configuration_safely(self) -> None:
+        serialized, event = self._capture_startup_config_event(
+            api_key=None, sender="SUTRAVYA <noreply@other.example>",
+        )
+        self.assertFalse(event["resend_key_present"])
+        self.assertEqual(event["resend_key_fingerprint"], "missing")
+        self.assertFalse(event["resend_sender_expected_match"])
+        self.assertFalse(event["resend_sender_domain_match"])
+        self.assertNotIn("noreply@other.example", serialized)
+
+        _serialized, event = self._capture_startup_config_event(
+            api_key=None, sender="Other Sender <noreply@mail.sutravya.in>",
+        )
+        self.assertFalse(event["resend_sender_expected_match"])
+        self.assertTrue(event["resend_sender_domain_match"])
 
     def test_registration_then_email_otp_login_and_cookie_session(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")

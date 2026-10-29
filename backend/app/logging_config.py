@@ -25,7 +25,8 @@ class SafeJsonFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         safe_events = {
-            "request_complete", "request_failed", "email_delivery_failed", "rate_limit_rejected"
+            "request_complete", "request_failed", "email_delivery_failed", "rate_limit_rejected",
+            "email_runtime_config_check",
         }
         event = record.msg if type(record.msg) is str and record.msg in safe_events else "application_event"
         payload = {
@@ -37,6 +38,8 @@ class SafeJsonFormatter(logging.Formatter):
         for key in (
             "request_id", "method", "status_code", "duration_ms", "scope", "purpose",
             "failure_kind", "provider_status_code", "provider_error_name", "provider_error_kind",
+            "resend_key_present", "resend_key_fingerprint", "resend_sender_expected_match",
+            "resend_sender_domain_match",
         ):
             value = getattr(record, key, None)
             if value is not None:
@@ -54,6 +57,15 @@ class SafeJsonFormatter(logging.Formatter):
                     continue
                 if key == "provider_error_kind" and (
                     not isinstance(value, str) or value not in _PROVIDER_ERROR_KINDS
+                ):
+                    continue
+                if key in {
+                    "resend_key_present", "resend_sender_expected_match", "resend_sender_domain_match"
+                } and type(value) is not bool:
+                    continue
+                if key == "resend_key_fingerprint" and not (
+                    value == "missing"
+                    or (isinstance(value, str) and len(value) == 12 and all(ch in "0123456789abcdef" for ch in value))
                 ):
                     continue
                 payload[key] = value
