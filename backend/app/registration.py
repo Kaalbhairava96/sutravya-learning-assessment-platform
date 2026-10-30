@@ -9,8 +9,9 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
-from sqlalchemy import case, func, select
+from sqlalchemy import case, func, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
@@ -35,6 +36,8 @@ LEGACY_INTERNAL_TEST_SOURCE = "legacy_internal_test"
 REGISTRATION_SOURCES = frozenset({TEAM_PRELAUNCH_SOURCE, PUBLIC_REGISTRATION_SOURCE})
 ALLOWED_STREAMS = frozenset({"paramedical", "nursing", "mbbs_1st_year"})
 SESSION_SECONDS = 24 * 60 * 60
+REGISTRATION_ID_SEQUENCE = "registration_id_serial_seq"
+REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 _EMAIL = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
@@ -353,8 +356,25 @@ def resend_email_challenge(
         )
 
 
-def _new_registration_id() -> str:
-    return f"SUT26-{secrets.token_hex(8).upper()}"
+def _next_registration_serial(session: Session) -> int:
+    """Allocate a globally unique serial from PostgreSQL's non-transactional sequence."""
+    if session.get_bind().dialect.name != "postgresql":
+        raise RuntimeError("Registration IDs require the PostgreSQL serial sequence.")
+    serial = session.scalar(text(f"SELECT nextval('{REGISTRATION_ID_SEQUENCE}')"))
+    if serial is None:
+        raise RuntimeError("Registration ID sequence did not return a serial.")
+    return int(serial)
+
+
+def _format_registration_id(serial: int, successful_at: datetime) -> str:
+    if serial < 1 or serial > 99_999_999_999:
+        raise RuntimeError("Registration ID serial is outside the 11-digit range.")
+    india_date = _utc(successful_at).astimezone(REGISTRATION_TIMEZONE).strftime("%Y/%m/%d")
+    return f"SUT-{india_date}-{serial:011d}"
+
+
+def _new_registration_id(session: Session, successful_at: datetime) -> str:
+    return _format_registration_id(_next_registration_serial(session), successful_at)
 
 
 def verify_registration_email(
@@ -396,7 +416,7 @@ def verify_registration_email(
             registration = Registration(
                 candidate_id=candidate.id,
                 event_key=EVENT_KEY,
-                registration_id=_new_registration_id(),
+                registration_id=_new_registration_id(session, current),
                 stream=candidate.pending_stream,
                 status="active",
                 is_internal_test=False,
@@ -407,7 +427,7 @@ def verify_registration_email(
         else:
             # Complete any legacy/incomplete registration row without creating a duplicate.
             if not registration.registration_id:
-                registration.registration_id = _new_registration_id()
+                registration.registration_id = _new_registration_id(session, current)
             if not registration.stream:
                 registration.stream = candidate.pending_stream
             if not registration.status:

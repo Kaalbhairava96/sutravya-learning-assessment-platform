@@ -93,14 +93,20 @@ class PasswordlessApiTests(unittest.TestCase):
             app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
             otp_hmac_pepper=PEPPER,
         )
+        self.test_serials = iter(range(1, 100_000))
+        self.serial_allocator = Mock(side_effect=lambda _session: next(self.test_serials))
+        self.serial_patch = patch("app.registration._next_registration_serial", new=self.serial_allocator)
+        self.serial_patch.start()
+        self.addCleanup(self.serial_patch.stop)
         self.sent_codes: list[dict] = []
+        self.confirmations: list[dict] = []
 
         def sender(**kwargs):
             self.sent_codes.append(kwargs)
 
         self.application = create_app(
             self.settings, session_factory=self.factory, email_sender=sender,
-            confirmation_sender=lambda **kwargs: None,
+            confirmation_sender=lambda **kwargs: self.confirmations.append(kwargs),
         )
 
     def tearDown(self) -> None:
@@ -171,8 +177,21 @@ class PasswordlessApiTests(unittest.TestCase):
             EmailOtpRequest(challenge_id=result["challenge_id"], otp=self.sent_codes[-1]["otp"]),
             request_for(self.application, "/api/registrations/verify-email"),
         )
-        self.assertRegex(registered["registration_id"], r"^SUT26-[A-F0-9]{16}$")
+        self.assertEqual(registered["registration_id"], "SUT-2026/11/02-00000000001")
         self.assertTrue(registered["confirmation_email_sent"])
+        self.assertEqual(self.confirmations[-1]["registration_id"], registered["registration_id"])
+
+        export_settings = Settings(
+            app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER, registration_export_key=EXPORT_CODE,
+        )
+        export_app = create_app(export_settings, session_factory=self.factory)
+        csv_response = route_endpoint(export_app, "/api/admin/registrations/export")(
+            request_for(export_app, "/api/admin/registrations/export", method="GET"),
+            x_registration_export_key=EXPORT_CODE,
+        )
+        exported = list(csv.DictReader(io.StringIO(csv_response.body.decode("utf-8-sig"))))
+        self.assertEqual(exported[0]["registration_id"], registered["registration_id"])
 
         request_login = route_endpoint(self.application, "/api/auth/request-otp")
         known_message = request_login(
@@ -248,7 +267,7 @@ class PasswordlessApiTests(unittest.TestCase):
                 EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
                 request_for(self.application, "/api/registrations/verify-email"),
             )
-        self.assertRegex(verified["registration_id"], r"^SUT26-[A-F0-9]{16}$")
+        self.assertRegex(verified["registration_id"], r"^SUT-[0-9]{4}/[0-9]{2}/[0-9]{2}-[0-9]{11}$")
 
     def test_expired_registration_window_blocks_start_verify_and_otp_resend(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")

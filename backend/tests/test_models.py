@@ -242,7 +242,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0007_legacy_classification"])
+        self.assertEqual(script.get_heads(), ["0008_registration_serial_ids"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -255,6 +255,8 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(unified_source_revision.down_revision, "0005_internal_test_flags")
         legacy_classification_revision = script.get_revision("0007_legacy_classification")
         self.assertEqual(legacy_classification_revision.down_revision, "0006_reg_source")
+        registration_serial_revision = script.get_revision("0008_registration_serial_ids")
+        self.assertEqual(registration_serial_revision.down_revision, "0007_legacy_classification")
         self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -304,6 +306,10 @@ class ModelSchemaTests(unittest.TestCase):
             sql.rfind("UPDATE registrations SET registration_source = 'legacy_internal_test'"),
         )
         self.assertNotIn("DELETE FROM", sql)
+        self.assertIn("CREATE SEQUENCE registration_id_serial_seq", sql)
+        self.assertIn("START WITH 1", sql)
+        self.assertIn("INCREMENT BY 1", sql)
+        self.assertIn("MAXVALUE 99999999999", sql)
 
     def test_verification_migration_downgrade_renders_only_new_schema_removal(self) -> None:
         test_env = {
@@ -368,6 +374,39 @@ class ModelSchemaTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "legacy internal-test records exist"):
                 migration["downgrade"]()
         drop_constraint.assert_not_called()
+
+    def test_registration_id_sequence_downgrade_fails_closed_when_id_or_serial_was_allocated(self) -> None:
+        migration = runpy.run_path("migrations/versions/0008_registration_serial_ids.py")
+
+        class FakeResult:
+            def __init__(self, row):
+                self.row = row
+
+            def first(self):
+                return self.row
+
+            def one(self):
+                return self.row
+
+        for registration_exists, sequence_called in ((True, False), (False, True)):
+            with self.subTest(registration_exists=registration_exists, sequence_called=sequence_called):
+                bind = type("FakeBind", (), {})()
+
+                def execute(statement):
+                    sql = str(statement)
+                    if "WHERE registration_id ~" in sql:
+                        return FakeResult((1,) if registration_exists else None)
+                    return FakeResult((1, sequence_called))
+
+                bind.execute = execute
+                with (
+                    patch("alembic.context.is_offline_mode", return_value=False),
+                    patch("alembic.op.get_bind", return_value=bind),
+                    patch("alembic.op.execute") as execute,
+                ):
+                    with self.assertRaisesRegex(RuntimeError, "new-format IDs or allocated serials"):
+                        migration["downgrade"]()
+                execute.assert_not_called()
 
     def test_registration_source_fields_default_to_public_without_touching_legacy_flags(self) -> None:
         registration = Base.metadata.tables["registrations"]

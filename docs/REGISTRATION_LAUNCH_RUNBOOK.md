@@ -34,7 +34,7 @@ Inspect `assessment-public/` before upload. The builder fails if an unexpected o
 
 ## Backend update order
 
-This code revision requires Alembic `0007_legacy_classification`. First inspect the production database's current Alembic revision. Back up the managed database and run the approved migration job to `head`; verify the resulting revision is `0007_legacy_classification` before rolling out the matching backend code. Do not run the migration from a developer shell against an unverified or shared database.
+This code revision requires Alembic `0008_registration_serial_ids`. First inspect the production database's current Alembic revision. Back up the managed database and run the approved migration job to `head`; verify the resulting revision is `0008_registration_serial_ids` before rolling out the matching backend code. Do not run the migration from a developer shell against an unverified or shared database.
 
 ## Dedicated assessment subdomain deployment
 

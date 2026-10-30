@@ -29,8 +29,10 @@ from app.registration import (
     resend_email_challenge,
     revoke_candidate_session,
     validate_registration,
+    _new_registration_id,
     verify_login_email,
     verify_registration_email,
+    _format_registration_id,
 )
 from app.verification import ChallengeVerification, verify_and_consume_challenge
 
@@ -54,6 +56,11 @@ class RegistrationAccountTests(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         self.factory = sessionmaker(bind=self.engine, expire_on_commit=False)
         self.now = datetime(2026, 10, 28, 12, tzinfo=timezone.utc)
+        self.test_serials = iter(range(1, 100_000))
+        self.serial_allocator = Mock(side_effect=lambda _session: next(self.test_serials))
+        self.serial_patch = patch("app.registration._next_registration_serial", new=self.serial_allocator)
+        self.serial_patch.start()
+        self.addCleanup(self.serial_patch.stop)
 
     def tearDown(self) -> None:
         self.engine.dispose()
@@ -102,13 +109,15 @@ class RegistrationAccountTests(unittest.TestCase):
                 mobile="9876543210", stream="paramedical", now=self.now,
             )
             self.assertEqual(session.scalar(select(func.count(Registration.id))), 0)
+            self.assertEqual(self.serial_allocator.call_count, 0)
             session.rollback()
             outcome, result = verify_registration_email(
                 session, settings=settings(), challenge_id=pending.challenge_id,
                 otp=pending.otp, now=self.now + timedelta(seconds=1),
             )
             self.assertEqual(outcome, ChallengeVerification.VERIFIED)
-            self.assertRegex(result.registration_id, r"^SUT26-[A-F0-9]{16}$")
+            self.assertEqual(self.serial_allocator.call_count, 1)
+            self.assertEqual(result.registration_id, "SUT-2026/10/28-00000000001")
             saved = session.scalar(select(Registration))
             self.assertEqual(saved.registration_id, result.registration_id)
             self.assertEqual(saved.stream, "paramedical")
@@ -118,6 +127,18 @@ class RegistrationAccountTests(unittest.TestCase):
             self.assertIsNone(candidate.phone_verified_at)
             self.assertIsNone(candidate.pending_stream)
             session.rollback()
+
+    def test_registration_id_serial_format_and_india_date_boundaries(self) -> None:
+        before_india_midnight = datetime(2026, 10, 30, 18, 29, 59, tzinfo=timezone.utc)
+        at_india_midnight = datetime(2026, 10, 30, 18, 30, tzinfo=timezone.utc)
+        self.assertEqual(_format_registration_id(1, before_india_midnight), "SUT-2026/10/30-00000000001")
+        self.assertEqual(_format_registration_id(2, at_india_midnight), "SUT-2026/10/31-00000000002")
+        self.assertEqual(_format_registration_id(3, at_india_midnight), "SUT-2026/10/31-00000000003")
+        with self.factory() as session:
+            first = _new_registration_id(session, before_india_midnight)
+            second = _new_registration_id(session, at_india_midnight)
+        self.assertEqual(first, "SUT-2026/10/30-00000000001")
+        self.assertEqual(second, "SUT-2026/10/31-00000000002")
 
     def test_verified_email_is_database_unique_but_unverified_email_is_not(self) -> None:
         self.register_candidate("unique@example.invalid")
@@ -192,6 +213,8 @@ class RegistrationAccountTests(unittest.TestCase):
             )
             self.assertEqual(replay, ChallengeVerification.CONSUMED)
             self.assertIsNotNone(summary)
+            self.assertEqual(self.serial_allocator.call_count, 1)
+            self.assertEqual(session.scalar(select(func.count(Registration.id))), 1)
 
     def test_stale_candidate_email_is_refreshed_before_challenge_comparison(self) -> None:
         with self.factory() as create_session:

@@ -17,7 +17,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from threading import Barrier
+from threading import Barrier, Lock
 from urllib.parse import urlsplit
 from uuid import uuid4
 
@@ -33,6 +33,7 @@ from app.database import create_database_engine
 from app.models import (
     AnswerOption,
     Candidate,
+    CandidateSession,
     CandidateResponse,
     ExamAttempt,
     ExamSlot,
@@ -41,7 +42,12 @@ from app.models import (
     Registration,
     VerificationChallenge,
 )
-from app.registration import REGISTRATION_OTP_PURPOSE, verify_registration_email
+from app.registration import (
+    REGISTRATION_OTP_PURPOSE,
+    _new_registration_id,
+    create_registration_challenge,
+    verify_registration_email,
+)
 from app.verification import (
     ChallengeVerification,
     OTP_PURPOSE,
@@ -93,8 +99,8 @@ class PostgreSQLIntegrityTests(unittest.TestCase):
                     raise RuntimeError("PostgreSQL integration tests connected as an unapproved database user.")
 
                 revision = MigrationContext.configure(connection).get_current_revision()
-                if revision != "0007_legacy_classification":
-                    raise RuntimeError("PostgreSQL integration tests require schema revision 0007_legacy_classification.")
+                if revision != "0008_registration_serial_ids":
+                    raise RuntimeError("PostgreSQL integration tests require schema revision 0008_registration_serial_ids.")
         except Exception:
             cls.engine.dispose()
             raise
@@ -316,6 +322,63 @@ class PostgreSQLIntegrityTests(unittest.TestCase):
             "fk_registrations_candidate_id_candidates",
             invalid_registration,
         )
+
+    def test_concurrent_registrations_receive_unique_postgresql_sequence_ids(self) -> None:
+        worker_count = 8
+        start = Barrier(worker_count)
+        candidate_ids: list[UUID] = []
+        lock = Lock()
+        now = datetime.now(timezone.utc)
+        settings = replace(
+            self.settings,
+            otp_hmac_pepper="postgres-registration-id-test-pepper-at-least-32-bytes",
+        )
+
+        def register(index: int) -> tuple[UUID, str]:
+            with Session(self.engine) as session:
+                pending = create_registration_challenge(
+                    session,
+                    settings=settings,
+                    name=f"Synthetic Sequence Candidate {index}",
+                    email=f"sequence-{uuid4().hex}@example.invalid",
+                    mobile=f"98765432{index:02d}",
+                    stream="nursing",
+                    now=now,
+                )
+                with lock:
+                    candidate_ids.append(pending.candidate_id)
+                start.wait(timeout=15)
+                outcome, summary = verify_registration_email(
+                    session,
+                    settings=settings,
+                    challenge_id=pending.challenge_id,
+                    otp=pending.otp,
+                    now=now + timedelta(seconds=1),
+                )
+                if outcome != ChallengeVerification.VERIFIED or summary is None:
+                    raise AssertionError("Synthetic registration failed verification.")
+                return pending.candidate_id, summary.registration_id
+
+        try:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                rows = list(executor.map(register, range(worker_count)))
+            identifiers = [registration_id for _candidate_id, registration_id in rows]
+            self.assertEqual(len(set(identifiers)), worker_count)
+            for registration_id in identifiers:
+                self.assertRegex(registration_id, r"^SUT-[0-9]{4}/[0-9]{2}/[0-9]{2}-[0-9]{11}$")
+        finally:
+            if candidate_ids:
+                with Session(self.engine) as cleanup_session, cleanup_session.begin():
+                    cleanup_session.execute(
+                        delete(CandidateSession).where(CandidateSession.candidate_id.in_(candidate_ids))
+                    )
+                    cleanup_session.execute(
+                        delete(VerificationChallenge).where(VerificationChallenge.candidate_id.in_(candidate_ids))
+                    )
+                    cleanup_session.execute(
+                        delete(Registration).where(Registration.candidate_id.in_(candidate_ids))
+                    )
+                    cleanup_session.execute(delete(Candidate).where(Candidate.id.in_(candidate_ids)))
 
     def test_duplicate_candidate_registration_is_rejected(self) -> None:
         duplicate = Registration(
