@@ -93,8 +93,8 @@ class PostgreSQLIntegrityTests(unittest.TestCase):
                     raise RuntimeError("PostgreSQL integration tests connected as an unapproved database user.")
 
                 revision = MigrationContext.configure(connection).get_current_revision()
-                if revision != "0006_reg_source":
-                    raise RuntimeError("PostgreSQL integration tests require schema revision 0006_reg_source.")
+                if revision != "0007_legacy_classification":
+                    raise RuntimeError("PostgreSQL integration tests require schema revision 0007_legacy_classification.")
         except Exception:
             cls.engine.dispose()
             raise

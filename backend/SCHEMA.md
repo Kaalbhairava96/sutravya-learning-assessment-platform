@@ -45,7 +45,7 @@ Registration start, email verification, and OTP resend are enforced by the serve
 
 ## Schema and migration history
 
-Historical revisions `0001_backend_foundation` through `0005_internal_test_flags` are preserved. Revision `0006_reg_source` adds the source field to registrations and challenges, classifies legacy flagged rows as `legacy_internal_test`, and leaves false-flag rows at the historical/default `public_registration` source. It preserves the flags, candidate identities, and Registration IDs. It retains migration 0005's partial uniqueness rule for official registrations and checks for duplicate non-internal candidate/event rows before upgrade. Downgrade fails closed if team or legacy source values exist. It supports fresh installations and databases already at revision 0005; inspect the current revision before applying `upgrade head`.
+Historical revisions `0001_backend_foundation` through `0006_reg_source` are preserved. Revision `0007_legacy_classification` corrects historical flagged rows to `legacy_internal_test` in both registrations and verification challenges, preserving flags, candidate identities, Registration IDs, OTP records, and registration uniqueness. It safely replaces the source check constraints and supports fresh installations as well as databases already at 0006. Downgrade fails closed while legacy rows exist. Inspect the current revision before applying `upgrade head`.
 
 The core tables remain: candidates, registrations, exam slots, question banks, questions, answer options, attempts, responses, scoring rules, results, admin users, audit events, and verification challenges. `answer_options.is_correct` remains private server-side data and must not be returned by candidate APIs.
 

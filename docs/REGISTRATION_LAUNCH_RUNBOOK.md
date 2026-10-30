@@ -16,7 +16,7 @@ The API gates registration start, registration OTP verification, and registratio
 
 In the API service's private Render environment, set `INTERNAL_TEST_MODE=true` and create a high-entropy `INTERNAL_TEST_ACCESS_CODE` (at least 16 characters). Never put that code in this repository, static-host settings, screenshots, or public issue reports. Before opening, the landing page presents a clearly separated team access panel, then uses the same official candidate form, registration endpoints, email OTP, ID generation, and database journey. The browser sends the access code only in the `X-Internal-Test-Code` HTTPS request header. The API rate-limits attempts and compares the code in constant time. A completed team registration is active, is eligible for ordinary candidate login, and has `registration_source=team_prelaunch`; it is not a test-only registration.
 
-At **1 November 2026, 00:00 IST**, the access code is no longer required. Pending team OTP challenges can still be completed without the code and keep their `team_prelaunch` source. Disable `INTERNAL_TEST_MODE` and remove its code from Render by the opening time as an operational cleanup; server date enforcement independently makes the gate unnecessary. At and after the closing deadline, the backend rejects all registration start, verification, and resend requests. Migration `0006_reg_source` must be applied before deploying the matching backend code. It preserves existing IDs and flags, classifies historical `is_internal_test=true` rows as `legacy_internal_test`, and aborts safely if duplicate non-internal candidate/event registrations exist.
+At **1 November 2026, 00:00 IST**, the access code is no longer required. Pending team OTP challenges can still be completed without the code and keep their `team_prelaunch` source. Disable `INTERNAL_TEST_MODE` and remove its code from Render by the opening time as an operational cleanup; server date enforcement independently makes the gate unnecessary. At and after the closing deadline, the backend rejects all registration start, verification, and resend requests. Apply migration `0007_legacy_classification` before deploying the matching backend code. It reclassifies historical flagged records as `legacy_internal_test` without changing their flags or IDs.
 
 ## Frontend and API configuration
 
@@ -34,7 +34,7 @@ Inspect `assessment-public/` before upload. The builder fails if an unexpected o
 
 ## Backend update order
 
-This code revision requires Alembic `0006_reg_source`. First inspect the production database's current Alembic revision and confirm it is on the expected `0005_internal_test_flags` ancestry. Review the migration's duplicate candidate/event precheck; if it reports duplicates, stop and resolve them with the data owner rather than deleting rows. Back up the managed database and run the approved migration job to `head` before rolling out the matching backend code. Verify the resulting revision is `0006_reg_source`, then deploy the backend. Do not run the migration from a developer shell against an unverified or shared database.
+This code revision requires Alembic `0007_legacy_classification`. First inspect the production database's current Alembic revision. Back up the managed database and run the approved migration job to `head`; verify the resulting revision is `0007_legacy_classification` before rolling out the matching backend code. Do not run the migration from a developer shell against an unverified or shared database.
 
 ## Dedicated assessment subdomain deployment
 

@@ -242,7 +242,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0006_reg_source"])
+        self.assertEqual(script.get_heads(), ["0007_legacy_classification"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -253,6 +253,8 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(internal_test_revision.down_revision, "0004_registration_accounts")
         unified_source_revision = script.get_revision("0006_reg_source")
         self.assertEqual(unified_source_revision.down_revision, "0005_internal_test_flags")
+        legacy_classification_revision = script.get_revision("0007_legacy_classification")
+        self.assertEqual(legacy_classification_revision.down_revision, "0006_reg_source")
         self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -294,6 +296,14 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertNotIn("UPDATE registrations SET candidate_id", sql)
         self.assertNotIn("SET is_internal_test", sql)
         self.assertNotIn("SELECT lower(email)", sql)
+        self.assertIn("DROP CONSTRAINT ck_registrations_registration_source", sql)
+        self.assertIn("DROP CONSTRAINT ck_verification_challenges_registration_source", sql)
+        self.assertIn("UPDATE verification_challenges SET registration_source = 'legacy_internal_test'", sql)
+        self.assertLess(
+            sql.rfind("DROP CONSTRAINT ck_registrations_registration_source"),
+            sql.rfind("UPDATE registrations SET registration_source = 'legacy_internal_test'"),
+        )
+        self.assertNotIn("DELETE FROM", sql)
 
     def test_verification_migration_downgrade_renders_only_new_schema_removal(self) -> None:
         test_env = {
@@ -331,7 +341,7 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertNotIn("DROP TABLE rate_limit_buckets", output.getvalue())
 
     def test_registration_source_downgrade_refuses_to_drop_legacy_classification(self) -> None:
-        migration = runpy.run_path("migrations/versions/0006_unified_registration_source.py")
+        migration = runpy.run_path("migrations/versions/0007_legacy_classification.py")
         legacy_row = object()
 
         class FakeResult:
@@ -355,7 +365,7 @@ class ModelSchemaTests(unittest.TestCase):
             patch("alembic.op.get_bind", return_value=bind),
             patch("alembic.op.drop_constraint") as drop_constraint,
         ):
-            with self.assertRaisesRegex(RuntimeError, "team or legacy registration-source classifications"):
+            with self.assertRaisesRegex(RuntimeError, "legacy internal-test records exist"):
                 migration["downgrade"]()
         drop_constraint.assert_not_called()
 
