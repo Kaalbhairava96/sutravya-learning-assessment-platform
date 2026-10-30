@@ -80,6 +80,8 @@ class Settings:
     resend_api_key: str | None = field(default=None, repr=False)
     resend_from_email: str | None = None
     cors_origins: tuple[str, ...] = ()
+    internal_test_mode: bool = False
+    internal_test_access_code: str | None = field(default=None, repr=False)
 
     def __post_init__(self) -> None:
         if self.app_env not in {"development", "test", "production"}:
@@ -87,6 +89,12 @@ class Settings:
         if self.log_level not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
             raise ConfigurationError("LOG_LEVEL must be a standard logging level.")
         _validate_database_url(self.app_env, self.database_url)
+        if type(self.internal_test_mode) is not bool:
+            raise ConfigurationError("INTERNAL_TEST_MODE must be true or false.")
+        if self.internal_test_mode and not self.internal_test_access_code:
+            raise ConfigurationError("INTERNAL_TEST_ACCESS_CODE is required when internal test mode is enabled.")
+        if self.internal_test_access_code is not None and len(self.internal_test_access_code) < 16:
+            raise ConfigurationError("INTERNAL_TEST_ACCESS_CODE must contain at least 16 characters when configured.")
         for name, value in (
             ("OTP_EXPIRY_SECONDS", self.otp_expiry_seconds),
             ("OTP_MAX_ATTEMPTS", self.otp_max_attempts),
@@ -139,6 +147,9 @@ class Settings:
         database_url = values.get("DATABASE_URL", "").strip()
         pepper_value = values.get("OTP_HMAC_PEPPER", "")
         pepper = pepper_value if pepper_value else None
+        internal_mode_raw = values.get("INTERNAL_TEST_MODE", "false").strip().lower()
+        if internal_mode_raw not in {"true", "false"}:
+            raise ConfigurationError("INTERNAL_TEST_MODE must be true or false.")
         return cls(
             app_env=app_env,
             log_level=log_level,
@@ -154,4 +165,6 @@ class Settings:
                 for origin in values.get("CORS_ORIGINS", "").split(",")
                 if origin.strip()
             ),
+            internal_test_mode=internal_mode_raw == "true",
+            internal_test_access_code=values.get("INTERNAL_TEST_ACCESS_CODE") or None,
         )

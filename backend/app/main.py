@@ -6,6 +6,7 @@ import time
 import uuid
 import logging
 import hashlib
+import hmac
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from email.utils import parseaddr
@@ -52,7 +53,7 @@ from app.verification import ChallengeVerification
 
 SESSION_COOKIE = "sutravya_candidate_session"
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
-REGISTRATION_OPENS_AT = datetime(2026, 10, 31, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 REGISTRATION_CLOSES_AT = datetime(2026, 11, 16, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 
 
@@ -69,6 +70,38 @@ def _require_registration_window(now: datetime) -> datetime:
     if current >= REGISTRATION_CLOSES_AT:
         raise RegistrationError("registration_closed", 410)
     return current.astimezone(timezone.utc)
+
+
+def _authorize_registration_request(request: Request, settings: Settings, now: datetime) -> bool:
+    """Authorize pre-launch testing and return whether this request is internal."""
+    supplied_code = request.headers.get("x-internal-test-code", "")
+    current = now.replace(tzinfo=timezone.utc) if now.tzinfo is None else now
+    current = current.astimezone(REGISTRATION_TIMEZONE)
+    if current >= REGISTRATION_CLOSES_AT:
+        raise RegistrationError("registration_closed", 410)
+    if current >= REGISTRATION_OPENS_AT:
+        if supplied_code:
+            raise RegistrationError("internal_test_unavailable", 403)
+        return False
+    configured_code = settings.internal_test_access_code
+    if (
+        not settings.internal_test_mode
+        or not configured_code
+        or not supplied_code
+        or len(supplied_code) > 256
+        or not hmac.compare_digest(supplied_code.encode("utf-8"), configured_code.encode("utf-8"))
+    ):
+        raise RegistrationError("internal_test_unauthorized", 403)
+    return True
+
+
+def _require_internal_test_window(now: datetime) -> None:
+    current = now.replace(tzinfo=timezone.utc) if now.tzinfo is None else now
+    current = current.astimezone(REGISTRATION_TIMEZONE)
+    if current >= REGISTRATION_CLOSES_AT:
+        raise RegistrationError("registration_closed", 410)
+    if current >= REGISTRATION_OPENS_AT:
+        raise RegistrationError("internal_test_unavailable", 403)
 
 
 class RegistrationRequest(BaseModel):
@@ -122,8 +155,10 @@ def _registration_error(error: RegistrationError) -> HTTPException:
         "resend_cooldown": "Please wait before requesting another code.",
         "challenge_unavailable": "This code request is unavailable. Request a new code.",
         "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
-        "registration_not_open": "Registration opens 31 October 2026 at 12:00 AM IST.",
+        "registration_not_open": "Registration opens 1 November 2026 at 12:00 AM IST.",
         "registration_closed": "Registration closed on 15 November 2026 at 11:59:59 PM IST.",
+        "internal_test_unauthorized": "Internal testing access could not be authorized.",
+        "internal_test_unavailable": "Internal testing access is no longer available.",
     }
     return HTTPException(status_code=error.status_code, detail=messages.get(error.code, "Request could not be completed."))
 
@@ -261,7 +296,7 @@ def create_app(
             allow_origins=list(active_settings.cors_origins),
             allow_credentials=True,
             allow_methods=["GET", "POST"],
-            allow_headers=["Content-Type"],
+            allow_headers=["Content-Type", "X-Internal-Test-Code"],
         )
 
     @application.middleware("http")
@@ -300,15 +335,25 @@ def create_app(
         with _session(request) as session:
             settings = request.app.state.settings
             try:
-                _require_registration_window(_registration_now())
+                request_now = _registration_now()
+                if request_now.astimezone(REGISTRATION_TIMEZONE) < REGISTRATION_OPENS_AT:
+                    _limit(session, settings, scope="internal_test_ip", subject=_client_ip(request), maximum=10)
+                internal_test = _authorize_registration_request(request, settings, request_now)
+                if not internal_test:
+                    _require_registration_window(request_now)
                 email = normalize_email(payload.email)
                 _limit(session, settings, scope="registration_ip", subject=_client_ip(request), maximum=30)
                 _limit(session, settings, scope="registration_email", subject=email, maximum=5)
                 _limit(session, settings, scope="email_global", subject="all", maximum=1000)
-                registration_now = _require_registration_window(_registration_now())
+                registration_now = _registration_now()
+                if not internal_test:
+                    registration_now = _require_registration_window(registration_now)
+                else:
+                    _require_internal_test_window(registration_now)
                 pending = create_registration_challenge(
                     session, settings=settings, name=payload.full_name, email=email,
                     mobile=payload.mobile, stream=payload.stream, now=registration_now,
+                    is_internal_test=internal_test,
                 )
             except RegistrationError as error:
                 # Do not reveal whether an email already owns a completed registration.
@@ -327,22 +372,32 @@ def create_app(
         with _session(request) as session:
             settings = request.app.state.settings
             try:
-                _require_registration_window(_registration_now())
+                request_now = _registration_now()
+                if request_now.astimezone(REGISTRATION_TIMEZONE) < REGISTRATION_OPENS_AT:
+                    _limit(session, settings, scope="internal_test_ip", subject=_client_ip(request), maximum=10)
+                _authorize_registration_request(request, settings, request_now)
                 _limit(session, settings, scope="otp_resend_ip", subject=_client_ip(request), maximum=20)
                 with session.begin():
                     prior = session.get(VerificationChallenge, payload.challenge_id)
                     if prior is None or prior.purpose != REGISTRATION_OTP_PURPOSE:
                         raise RegistrationError("challenge_unavailable", 400)
+                    if prior.is_internal_test:
+                        _require_internal_test_window(request_now)
                     candidate = session.get(Candidate, prior.candidate_id)
                     email = normalize_email(candidate.email or "") if candidate else ""
                 if not email:
                     raise RegistrationError("challenge_unavailable", 400)
                 _limit(session, settings, scope="registration_email", subject=email, maximum=5)
                 _limit(session, settings, scope="email_global", subject="all", maximum=1000)
-                registration_now = _require_registration_window(_registration_now())
+                registration_now = _registration_now()
+                if prior.is_internal_test:
+                    _require_internal_test_window(registration_now)
+                if not prior.is_internal_test:
+                    registration_now = _require_registration_window(registration_now)
                 pending = resend_email_challenge(
                     session, settings=settings, challenge_id=payload.challenge_id,
                     expected_purpose=REGISTRATION_OTP_PURPOSE, now=registration_now,
+                    is_internal_test=prior.is_internal_test,
                 )
             except RegistrationError as error:
                 raise _registration_error(error)
@@ -358,7 +413,10 @@ def create_app(
         with _session(request) as session:
             settings = request.app.state.settings
             try:
-                _require_registration_window(_registration_now())
+                request_now = _registration_now()
+                if request_now.astimezone(REGISTRATION_TIMEZONE) < REGISTRATION_OPENS_AT:
+                    _limit(session, settings, scope="internal_test_ip", subject=_client_ip(request), maximum=10)
+                _authorize_registration_request(request, settings, request_now)
                 _limit(session, settings, scope="otp_verify_ip", subject=_client_ip(request), maximum=60)
                 with session.begin():
                     candidate_email = session.scalar(
@@ -370,7 +428,13 @@ def create_app(
                     normalize_email(candidate_email) if candidate_email else f"challenge:{payload.challenge_id}"
                 )
                 _limit(session, settings, scope="registration_verify_email", subject=verification_subject, maximum=20)
-                registration_now = _require_registration_window(_registration_now())
+                registration_now = _registration_now()
+                with session.begin():
+                    challenge = session.get(VerificationChallenge, payload.challenge_id)
+                    if challenge is not None and challenge.purpose == REGISTRATION_OTP_PURPOSE and challenge.is_internal_test:
+                        _require_internal_test_window(registration_now)
+                if not (challenge and challenge.is_internal_test):
+                    registration_now = _require_registration_window(registration_now)
                 outcome, registration = verify_registration_email(
                     session, settings=settings, challenge_id=payload.challenge_id, otp=payload.otp,
                     now=registration_now,
@@ -397,6 +461,7 @@ def create_app(
                 sent = False
             return {
                 "registration_id": registration.registration_id,
+                "is_internal_test": registration.is_internal_test,
                 "confirmation_email_sent": sent,
                 "message": "Registration complete. Save your Registration ID.",
             }
@@ -413,6 +478,7 @@ def create_app(
                         select(Registration).where(
                             Registration.registration_id == payload.registration_id,
                             Registration.event_key == EVENT_KEY,
+                        Registration.is_internal_test.is_(False),
                         )
                     )
                     candidate = session.get(Candidate, registration.candidate_id) if registration else None

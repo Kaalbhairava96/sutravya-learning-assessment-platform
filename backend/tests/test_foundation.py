@@ -58,6 +58,37 @@ class BackendFoundationTests(unittest.TestCase):
         with self.assertRaisesRegex(ConfigurationError, "required for OTP digest operations"):
             settings.require_otp_hmac_pepper()
 
+    def test_internal_test_mode_defaults_disabled_and_requires_private_code(self) -> None:
+        base = {
+            "APP_ENV": "test",
+            "DATABASE_URL": "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test",
+        }
+        settings = Settings.from_env(environ=base, dotenv_path=Path("missing-test.env"))
+        self.assertFalse(settings.internal_test_mode)
+        self.assertIsNone(settings.internal_test_access_code)
+        with self.assertRaisesRegex(ConfigurationError, "INTERNAL_TEST_ACCESS_CODE is required"):
+            Settings.from_env(
+                environ={**base, "INTERNAL_TEST_MODE": "true"}, dotenv_path=Path("missing-test.env")
+            )
+        code = "synthetic-private-code-for-test"
+        enabled = Settings.from_env(
+            environ={**base, "INTERNAL_TEST_MODE": "true", "INTERNAL_TEST_ACCESS_CODE": code},
+            dotenv_path=Path("missing-test.env"),
+        )
+        self.assertTrue(enabled.internal_test_mode)
+        self.assertNotIn(code, repr(enabled))
+
+    def test_invalid_internal_test_mode_value_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ConfigurationError, "INTERNAL_TEST_MODE must be true or false"):
+            Settings.from_env(
+                environ={
+                    "APP_ENV": "test",
+                    "DATABASE_URL": "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test",
+                    "INTERNAL_TEST_MODE": "yes",
+                },
+                dotenv_path=Path("missing-test.env"),
+            )
+
     def test_otp_configuration_accepts_valid_overrides_and_hides_pepper(self) -> None:
         pepper = "test-only-pepper-value-with-at-least-32-bytes"
         settings = Settings.from_env(

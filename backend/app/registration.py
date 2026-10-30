@@ -56,6 +56,7 @@ class RegistrationSummary:
     email: str
     full_name: str
     stream: str
+    is_internal_test: bool = False
 
 
 @dataclass(frozen=True)
@@ -179,6 +180,7 @@ def _add_email_challenge(
     settings: Settings,
     purpose: str,
     now: datetime,
+    is_internal_test: bool = False,
 ) -> PendingEmailChallenge:
     if purpose not in {REGISTRATION_OTP_PURPOSE, LOGIN_OTP_PURPOSE}:
         raise ValueError("Unsupported email OTP purpose.")
@@ -213,6 +215,7 @@ def _add_email_challenge(
         otp_digest="0" * 64,
         created_at=now,
         expires_at=now + timedelta(seconds=settings.otp_expiry_seconds),
+        is_internal_test=is_internal_test,
     )
     session.add(challenge)
     session.flush()
@@ -231,6 +234,7 @@ def create_registration_challenge(
     email: str,
     mobile: str,
     stream: str,
+    is_internal_test: bool = False,
     now: datetime | None = None,
 ) -> PendingEmailChallenge:
     current = now or datetime.now(timezone.utc)
@@ -244,7 +248,17 @@ def create_registration_challenge(
             .with_for_update()
         )
         if candidate is not None and candidate.email_verified_at is not None:
-            raise RegistrationError("registration_unavailable", 409)
+            existing_official = session.scalar(
+                select(Registration.id).where(
+                    Registration.candidate_id == candidate.id,
+                    Registration.event_key == EVENT_KEY,
+                    Registration.is_internal_test.is_(False),
+                ).limit(1)
+            )
+            # A rehearsal record must not prevent the same verified person from
+            # completing their one official event registration after launch.
+            if is_internal_test or existing_official is not None:
+                raise RegistrationError("registration_unavailable", 409)
         if candidate is None:
             candidate = Candidate(full_name=full_name, email=normalized_email, phone=normalized_mobile)
             session.add(candidate)
@@ -257,6 +271,7 @@ def create_registration_challenge(
         return _add_email_challenge(
             session, candidate=candidate, settings=settings,
             purpose=REGISTRATION_OTP_PURPOSE, now=current,
+            is_internal_test=is_internal_test,
         )
 
 
@@ -284,6 +299,7 @@ def create_login_challenge(
             select(Registration).where(
                 Registration.candidate_id == candidate.id,
                 Registration.event_key == EVENT_KEY,
+                Registration.is_internal_test.is_(False),
             )
         )
         if registration is None:
@@ -300,6 +316,7 @@ def resend_email_challenge(
     settings: Settings,
     challenge_id: UUID,
     expected_purpose: str,
+    is_internal_test: bool | None = None,
     now: datetime | None = None,
 ) -> PendingEmailChallenge:
     current = now or datetime.now(timezone.utc)
@@ -316,13 +333,16 @@ def resend_email_challenge(
         )
         if prior is None:
             raise RegistrationError("challenge_unavailable", 400)
+        if is_internal_test is not None and prior.is_internal_test != is_internal_test:
+            raise RegistrationError("challenge_unavailable", 400)
         candidate = session.scalar(select(Candidate).where(Candidate.id == prior.candidate_id).with_for_update())
         if candidate is None or not candidate.email:
             raise RegistrationError("challenge_unavailable", 400)
         if expected_purpose == LOGIN_OTP_PURPOSE and candidate.email_verified_at is None:
             raise RegistrationError("challenge_unavailable", 400)
         return _add_email_challenge(
-            session, candidate=candidate, settings=settings, purpose=expected_purpose, now=current
+            session, candidate=candidate, settings=settings, purpose=expected_purpose, now=current,
+            is_internal_test=prior.is_internal_test,
         )
 
 
@@ -359,6 +379,7 @@ def verify_registration_email(
             select(Registration).where(
                 Registration.candidate_id == candidate.id,
                 Registration.event_key == EVENT_KEY,
+                Registration.is_internal_test.is_(False),
             ).with_for_update()
         )
         if registration is None:
@@ -368,6 +389,7 @@ def verify_registration_email(
                 registration_id=_new_registration_id(),
                 stream=candidate.pending_stream,
                 status="active",
+                is_internal_test=challenge.is_internal_test,
             )
             session.add(registration)
             session.flush()
@@ -385,6 +407,7 @@ def verify_registration_email(
             email=candidate.email or "",
             full_name=candidate.full_name or "Candidate",
             stream=registration.stream or "",
+            is_internal_test=registration.is_internal_test,
         )
     return outcome, summary
 
@@ -414,6 +437,7 @@ def verify_login_email(
             select(Registration).where(
                 Registration.candidate_id == candidate.id,
                 Registration.event_key == EVENT_KEY,
+                Registration.is_internal_test.is_(False),
             )
         )
         challenge = session.scalar(
@@ -472,6 +496,7 @@ def get_candidate_session(
             CandidateSession.expires_at > current,
             Candidate.email_verified_at.is_not(None),
             Registration.event_key == EVENT_KEY,
+            Registration.is_internal_test.is_(False),
         )
     ).first()
     if row is None:
@@ -482,6 +507,7 @@ def get_candidate_session(
         email=candidate.email or "",
         full_name=candidate.full_name or "Candidate",
         stream=registration.stream or "",
+        is_internal_test=registration.is_internal_test,
     )
 
 

@@ -241,13 +241,15 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0004_registration_accounts"])
+        self.assertEqual(script.get_heads(), ["0005_internal_test_flags"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
         self.assertEqual(verification_revision.down_revision, "0002_core_application_schema")
         account_revision = script.get_revision("0004_registration_accounts")
         self.assertEqual(account_revision.down_revision, "0003_secure_verify")
+        internal_test_revision = script.get_revision("0005_internal_test_flags")
+        self.assertEqual(internal_test_revision.down_revision, "0004_registration_accounts")
         self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -302,7 +304,7 @@ class ModelSchemaTests(unittest.TestCase):
         with patch.dict(os.environ, test_env), patch("app.config._read_dotenv", return_value={}):
             output = StringIO()
             with redirect_stdout(output), self.assertRaisesRegex(
-                RuntimeError, "live database checks are required"
+                RuntimeError, "live checks are required"
             ):
                 command.downgrade(Config("alembic.ini"), "head:base", sql=True)
         self.assertNotIn("DROP TABLE candidate_sessions", output.getvalue())

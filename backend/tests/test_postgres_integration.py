@@ -93,8 +93,8 @@ class PostgreSQLIntegrityTests(unittest.TestCase):
                     raise RuntimeError("PostgreSQL integration tests connected as an unapproved database user.")
 
                 revision = MigrationContext.configure(connection).get_current_revision()
-                if revision != "0004_registration_accounts":
-                    raise RuntimeError("PostgreSQL integration tests require schema revision 0004_registration_accounts.")
+                if revision != "0005_internal_test_flags":
+                    raise RuntimeError("PostgreSQL integration tests require schema revision 0005_internal_test_flags.")
         except Exception:
             cls.engine.dispose()
             raise
@@ -323,7 +323,7 @@ class PostgreSQLIntegrityTests(unittest.TestCase):
             event_key=self.registration.event_key,
             exam_slot_id=self.slot.id,
         )
-        self.assert_constraint_violation("uq_registrations_candidate_event", duplicate)
+        self.assert_constraint_violation("uq_registrations_candidate_event_official", duplicate)
 
     def test_duplicate_attempt_number_for_registration_is_rejected(self) -> None:
         duplicate = ExamAttempt(
@@ -380,7 +380,7 @@ class PostgreSQLIntegrityTests(unittest.TestCase):
             event_key=self.registration.event_key,
             exam_slot_id=self.slot.id,
         )
-        self.assert_constraint_violation("uq_registrations_candidate_event", duplicate)
+        self.assert_constraint_violation("uq_registrations_candidate_event_official", duplicate)
 
         count_after_rollback = self.session.scalar(
             select(func.count())

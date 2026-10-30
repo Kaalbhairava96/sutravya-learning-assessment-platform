@@ -143,6 +143,7 @@ class VerificationChallenge(Base):
     )
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    is_internal_test: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default=false())
     consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -192,9 +193,16 @@ class ExamSlot(Base):
 class Registration(TimestampMixin, Base):
     __tablename__ = "registrations"
     __table_args__ = (
-        UniqueConstraint("candidate_id", "event_key", name="uq_registrations_candidate_event"),
         UniqueConstraint("registration_id", name="uq_registrations_public_id"),
         Index("ix_registrations_exam_slot_id", "exam_slot_id"),
+        Index(
+            "uq_registrations_candidate_event_official",
+            "candidate_id",
+            "event_key",
+            unique=True,
+            postgresql_where=text("is_internal_test IS FALSE"),
+            sqlite_where=text("is_internal_test = 0"),
+        ),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
@@ -212,6 +220,7 @@ class Registration(TimestampMixin, Base):
         ForeignKey("exam_slots.id", ondelete="RESTRICT", name="fk_registrations_exam_slot_id_exam_slots"),
     )
     status: Mapped[str | None] = mapped_column(String(40))
+    is_internal_test: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default=false())
 
     candidate: Mapped[Candidate] = relationship(back_populates="registrations")
     exam_slot: Mapped[ExamSlot | None] = relationship(

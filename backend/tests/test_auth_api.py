@@ -8,9 +8,10 @@ import json
 import logging
 import os
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from http.cookies import SimpleCookie
 from unittest.mock import Mock, patch
+from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import create_engine, event
@@ -21,7 +22,7 @@ from fastapi import HTTPException
 from app.config import Settings
 from app.email_provider import EmailDeliveryError
 from app.models import Base, Candidate, Registration, VerificationChallenge
-from app.registration import LOGIN_OTP_PURPOSE, REGISTRATION_OTP_PURPOSE
+from app.registration import LOGIN_OTP_PURPOSE, REGISTRATION_OTP_PURPOSE, create_login_challenge
 from app.logging_config import SafeJsonFormatter
 
 
@@ -49,16 +50,19 @@ from app.main import (
 
 TEST_DATABASE_URL = _test_environment["DATABASE_URL"]
 PEPPER = "api-test-pepper-value-with-at-least-32-bytes"
+INTERNAL_CODE = "synthetic-internal-test-code"
 
 
 def route_endpoint(application, path: str):
     return next(route.endpoint for route in application.routes if getattr(route, "path", None) == path)
 
 
-def request_for(application, path: str, *, method: str = "POST", cookie: str | None = None) -> Request:
+def request_for(application, path: str, *, method: str = "POST", cookie: str | None = None, extra_headers: dict[str, str] | None = None) -> Request:
     headers = [(b"host", b"test.local")]
     if cookie:
         headers.append((b"cookie", cookie.encode("ascii")))
+    for name, value in (extra_headers or {}).items():
+        headers.append((name.lower().encode("ascii"), value.encode("utf-8")))
     return Request({
         "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
         "method": method, "scheme": "http", "path": path, "raw_path": path.encode(),
@@ -218,7 +222,7 @@ class PasswordlessApiTests(unittest.TestCase):
             with self.assertRaises(HTTPException) as rejected:
                 start(payload, request_for(self.application, "/api/registrations/start"))
         self.assertEqual(rejected.exception.status_code, 403)
-        self.assertIn("opens 31 October", rejected.exception.detail)
+        self.assertIn("Internal testing access", rejected.exception.detail)
         self.assertEqual(self.sent_codes, [])
 
         with patch("app.main._registration_now", return_value=REGISTRATION_OPENS_AT):
@@ -291,6 +295,190 @@ class PasswordlessApiTests(unittest.TestCase):
                     request_for(self.application, "/api/registrations/start"),
                 )
                 self.assertIn("challenge_id", result)
+
+    def _internal_app(self):
+        settings = Settings(
+            app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER, internal_test_mode=True,
+            internal_test_access_code=INTERNAL_CODE,
+        )
+        return create_app(
+            settings, session_factory=self.factory, email_sender=lambda **kwargs: self.sent_codes.append(kwargs),
+            confirmation_sender=lambda **_kwargs: None,
+        )
+
+    def _start_payload(self, email="internal@example.invalid"):
+        return RegistrationRequest(full_name="Internal Rehearsal", mobile="9876543210", email=email, stream="nursing")
+
+    def _at(self, value):
+        return patch("app.main._registration_now", return_value=value)
+
+    def test_internal_mode_disabled_rejects_prelaunch_registration(self) -> None:
+        start = route_endpoint(self.application, "/api/registrations/start")
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            with self.assertRaises(HTTPException) as rejected:
+                start(self._start_payload(), request_for(self.application, "/api/registrations/start"))
+        self.assertEqual(rejected.exception.status_code, 403)
+        self.assertEqual(self.sent_codes, [])
+
+    def test_internal_mode_correct_code_creates_marked_challenge(self) -> None:
+        application = self._internal_app()
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            result = route_endpoint(application, "/api/registrations/start")(
+                self._start_payload(),
+                request_for(application, "/api/registrations/start", extra_headers={"X-Internal-Test-Code": INTERNAL_CODE}),
+            )
+        with self.factory() as session:
+            challenge = session.get(VerificationChallenge, UUID(result["challenge_id"]))
+            self.assertTrue(challenge.is_internal_test)
+
+    def test_incorrect_internal_code_is_rejected(self) -> None:
+        application = self._internal_app()
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            with self.assertRaises(HTTPException) as rejected:
+                route_endpoint(application, "/api/registrations/start")(
+                    self._start_payload(),
+                    request_for(application, "/api/registrations/start", extra_headers={"X-Internal-Test-Code": "wrong"}),
+                )
+        self.assertEqual(rejected.exception.status_code, 403)
+        self.assertEqual(self.sent_codes, [])
+
+    def test_internal_otp_verification_marks_registration_and_excludes_login(self) -> None:
+        application = self._internal_app()
+        header = {"X-Internal-Test-Code": INTERNAL_CODE}
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            started = route_endpoint(application, "/api/registrations/start")(
+                self._start_payload(), request_for(application, "/api/registrations/start", extra_headers=header),
+            )
+            verified = route_endpoint(application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                request_for(application, "/api/registrations/verify-email", extra_headers=header),
+            )
+        self.assertTrue(verified["is_internal_test"])
+        with self.factory() as session:
+            registration = session.query(Registration).one()
+            candidate = session.get(Candidate, registration.candidate_id)
+            candidate_email = candidate.email
+            self.assertTrue(registration.is_internal_test)
+        with self.factory() as session:
+            self.assertIsNone(create_login_challenge(session, settings=application.state.settings, email=candidate_email))
+
+    def test_internal_resend_requires_code_and_replacement_remains_marked(self) -> None:
+        application = self._internal_app()
+        header = {"X-Internal-Test-Code": INTERNAL_CODE}
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            started = route_endpoint(application, "/api/registrations/start")(
+                self._start_payload(), request_for(application, "/api/registrations/start", extra_headers=header),
+            )
+            resend = route_endpoint(application, "/api/registrations/resend-otp")
+            with self.assertRaises(HTTPException) as rejected:
+                resend(ResendOtpRequest(challenge_id=started["challenge_id"]), request_for(application, "/api/registrations/resend-otp"))
+            self.assertEqual(rejected.exception.status_code, 403)
+            with self.factory() as session:
+                session.get(VerificationChallenge, UUID(started["challenge_id"])).created_at = datetime(
+                    2026, 10, 31, 18, 25, tzinfo=timezone.utc
+                )
+                session.commit()
+            resent = resend(
+                ResendOtpRequest(challenge_id=started["challenge_id"]),
+                request_for(application, "/api/registrations/resend-otp", extra_headers=header),
+            )
+        with self.factory() as session:
+            self.assertTrue(session.get(VerificationChallenge, UUID(resent["challenge_id"])).is_internal_test)
+
+    def test_official_registration_opens_without_code_and_is_not_internal(self) -> None:
+        with self._at(REGISTRATION_OPENS_AT):
+            started = route_endpoint(self.application, "/api/registrations/start")(
+                self._start_payload("official@example.invalid"), request_for(self.application, "/api/registrations/start"),
+            )
+        with self.factory() as session:
+            self.assertFalse(session.get(VerificationChallenge, UUID(started["challenge_id"])).is_internal_test)
+
+    def test_internal_record_does_not_block_same_candidate_official_registration(self) -> None:
+        application = self._internal_app()
+        code_header = {"X-Internal-Test-Code": INTERNAL_CODE}
+        payload = self._start_payload("same-candidate@example.invalid")
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            internal = route_endpoint(application, "/api/registrations/start")(
+                payload, request_for(application, "/api/registrations/start", extra_headers=code_header),
+            )
+            route_endpoint(application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=internal["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                request_for(application, "/api/registrations/verify-email", extra_headers=code_header),
+            )
+        with self._at(REGISTRATION_OPENS_AT):
+            with self.factory() as session:
+                for challenge in session.query(VerificationChallenge).all():
+                    challenge.created_at = REGISTRATION_OPENS_AT.astimezone(timezone.utc) - timedelta(minutes=2)
+                session.commit()
+            official = route_endpoint(self.application, "/api/registrations/start")(
+                payload, request_for(self.application, "/api/registrations/start"),
+            )
+            official_result = route_endpoint(self.application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=official["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                request_for(self.application, "/api/registrations/verify-email"),
+            )
+        self.assertFalse(official_result["is_internal_test"])
+        with self.factory() as session:
+            rows = session.query(Registration).order_by(Registration.is_internal_test).all()
+            self.assertEqual([row.is_internal_test for row in rows], [False, True])
+
+    def test_internal_bypass_and_internal_challenge_are_rejected_at_open(self) -> None:
+        application = self._internal_app()
+        header = {"X-Internal-Test-Code": INTERNAL_CODE}
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            started = route_endpoint(application, "/api/registrations/start")(
+                self._start_payload(), request_for(application, "/api/registrations/start", extra_headers=header),
+            )
+        with self._at(REGISTRATION_OPENS_AT):
+            with self.assertRaises(HTTPException) as bypass:
+                route_endpoint(application, "/api/registrations/start")(
+                    self._start_payload("bypass@example.invalid"),
+                    request_for(application, "/api/registrations/start", extra_headers=header),
+                )
+            self.assertEqual(bypass.exception.status_code, 403)
+            with self.assertRaises(HTTPException) as verify:
+                route_endpoint(application, "/api/registrations/verify-email")(
+                    EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                    request_for(application, "/api/registrations/verify-email"),
+                )
+        self.assertEqual(verify.exception.status_code, 403)
+
+    def test_closing_boundary_rejects_internal_and_public_start_verify_and_resend(self) -> None:
+        application = self._internal_app()
+        header = {"X-Internal-Test-Code": INTERNAL_CODE}
+        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            started = route_endpoint(application, "/api/registrations/start")(
+                self._start_payload(), request_for(application, "/api/registrations/start", extra_headers=header),
+            )
+        operations = (
+            ("start", lambda: route_endpoint(application, "/api/registrations/start")(
+                self._start_payload("late@example.invalid"), request_for(application, "/api/registrations/start"))),
+            ("verify", lambda: route_endpoint(application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]), request_for(application, "/api/registrations/verify-email"))),
+            ("resend", lambda: route_endpoint(application, "/api/registrations/resend-otp")(
+                ResendOtpRequest(challenge_id=started["challenge_id"]), request_for(application, "/api/registrations/resend-otp"))),
+        )
+        with self._at(REGISTRATION_CLOSES_AT):
+            for name, invoke in operations:
+                with self.subTest(operation=name), self.assertRaises(HTTPException) as rejected:
+                    invoke()
+                self.assertEqual(rejected.exception.status_code, 410)
+            with self.assertRaises(HTTPException) as internal_start:
+                route_endpoint(application, "/api/registrations/start")(
+                    self._start_payload("late-internal@example.invalid"),
+                    request_for(application, "/api/registrations/start", extra_headers=header),
+                )
+            self.assertEqual(internal_start.exception.status_code, 410)
+
+    def test_internal_testing_cors_header_is_allowed(self) -> None:
+        settings = Settings(
+            app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER, cors_origins=("https://assessment.sutravya.in",),
+        )
+        application = create_app(settings, session_factory=self.factory)
+        cors = next(middleware for middleware in application.user_middleware if middleware.cls.__name__ == "CORSMiddleware")
+        self.assertIn("X-Internal-Test-Code", cors.kwargs["allow_headers"])
 
     def test_failed_otp_submission_returns_unavailable_and_invalidates_challenge(self) -> None:
         failing_app = create_app(

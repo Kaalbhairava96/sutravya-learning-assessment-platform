@@ -2,9 +2,11 @@
 
 ## Current scope
 
-The backend implements email-OTP registration and passwordless candidate authentication. It does not yet implement slot allocation, candidate exam sessions, exam delivery, scoring, results, admin workflows, or registration deadline enforcement. The mobile number is collected and normalized but remains unverified.
+The backend implements email-OTP registration and passwordless candidate authentication. It does not yet implement slot allocation, candidate exam sessions, exam delivery, scoring, results, or admin workflows. Registration timing is enforced server-side in Asia/Kolkata. The mobile number is collected and normalized but remains unverified.
 
 ## Registration and identity
+
+- Internal rehearsal is disabled by default. Before 1 November 2026, it can be enabled only by the backend-only `INTERNAL_TEST_MODE=true` setting plus a private `INTERNAL_TEST_ACCESS_CODE`. A validated internal challenge and its resulting registration are marked `is_internal_test=true`; ordinary rows default to false. The reversible `0005_internal_test_flags` migration adds these markers without changing existing records. Internal challenges cannot be verified or resent after public registration opens, and all registration activity is rejected after the deadline.
 
 - A candidate submits full name, mobile, email, and one allowlisted stream: `paramedical`, `nursing`, or `mbbs_1st_year`.
 - Email is stripped and lowercased before candidate lookup or persistence. Mobile is normalized to `+91` plus ten digits; it is not verified and is not unique by itself.
@@ -38,7 +40,7 @@ The product rule says registration, verification, and slot booking must finish b
 
 ## Schema and migration history
 
-Historical revisions `0001_backend_foundation`, `0002_core_application_schema`, and `0003_secure_verify` are preserved. Revision `0004_registration_accounts` adds `candidates.pending_stream`, the partial verified-email unique index, registration public ID and stream columns, registration/login challenge purposes, candidate sessions, and rate-limit buckets. The migration has not been applied to production. The current disposable database's state must be checked using the approved database rehearsal procedure before applying it there.
+Historical revisions `0001_backend_foundation`, `0002_core_application_schema`, `0003_secure_verify`, and `0004_registration_accounts` are preserved. Revision `0005_internal_test_flags` adds false-default internal markers to challenges and registrations and replaces the candidate/event unique constraint with a partial unique index covering official registrations only. Its downgrade fails closed when internal data exists, so internal test records cannot silently lose their label. Apply it through the approved migration procedure before enabling internal rehearsals or public launch.
 
 The core tables remain: candidates, registrations, exam slots, question banks, questions, answer options, attempts, responses, scoring rules, results, admin users, audit events, and verification challenges. `answer_options.is_correct` remains private server-side data and must not be returned by candidate APIs.
 

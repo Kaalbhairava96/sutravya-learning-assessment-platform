@@ -4,13 +4,19 @@
 
 This microsite supports candidate registration only. The exam engine and exam login are not available through this launch. The backend remains responsible for accepting or rejecting registration actions; the browser date check is only a usability aid.
 
-- Registration opens: **31 October 2026, 12:00 AM IST** (inclusive).
+- Registration opens: **1 November 2026, 12:00 AM IST** (inclusive).
 - Registration closes: **15 November 2026, 11:59:59 PM IST** (inclusive; the window closes at midnight starting 16 November).
 - Examination date: **4 December 2026**.
 - Streams: Paramedical, Nursing, and MBBS 1st Year.
 - Each stream: separate 100-MCQ paper, 30 minutes, no negative marking. Score display is after exam submission; exam delivery is outside this release.
 
 The API gates registration start, registration OTP verification, and registration OTP resend using Asia/Kolkata server-side time. Pending OTP challenges cannot complete registration after the deadline. The UI also disables registration outside the window.
+
+## Pre-launch internal rehearsal
+
+Internal testing is a temporary backend-only mode. In the API service's private Render environment, set `INTERNAL_TEST_MODE=true` and create a high-entropy `INTERNAL_TEST_ACCESS_CODE` (at least 16 characters). Never put that code in this repository, static-host settings, screenshots, or public issue reports. The landing page shows a separate Internal Team Testing panel before launch; the browser sends the entered code only in the `X-Internal-Test-Code` HTTPS request header. The API rate-limits these attempts, compares the code in constant time, and records internal challenge/registration flags. Internal records are excluded from ordinary candidate login and do not block the same verified person from making an official registration.
+
+The bypass ends in server logic at **1 November 2026, 00:00 IST**, even if the Render variables remain set. Internal OTP challenges cannot be verified or resent at/after that time. Before the opening instant, set `INTERNAL_TEST_MODE=false` and remove `INTERNAL_TEST_ACCESS_CODE` from Render; restart the API. At and after the closing deadline, the backend rejects all registration start, verification, and resend requests regardless of these settings. Apply Alembic revision `0005_internal_test_flags` to the intended production database before enabling this rehearsal or public registration; existing rows receive `false` and are not rewritten or deleted.
 
 ## Frontend and API configuration
 
@@ -45,7 +51,7 @@ The static site build contains no backend package, `.env`, database, question ba
 
 ### Before opening
 
-- Check the page shows “Registration opens 31 October 2026” and the form is disabled.
+- Check the page shows “Registration opens 1 November 2026” and the public form is disabled. For pre-launch internal rehearsal only, configure the two private internal-test variables in the backend and provide the access code through the UI; do not publish the code in frontend assets.
 - Check API health and confirm a registration attempt is rejected before opening.
 - Run the local automated tests below. They use mocked time and mocked email delivery.
 - Confirm the final CORS origin list is preserved and includes the exact HTTPS microsite origin.

@@ -23,7 +23,7 @@
             <span class="partnerbadge">Assessment platform <b>SUTRĀVYA</b></span>
           </div>
           <div class="launch-dates" aria-label="Important dates">
-            <article><span>REGISTRATION OPENS</span><strong>31 October 2026</strong><small>12:00 AM IST</small></article>
+            <article><span>REGISTRATION OPENS</span><strong>1 November 2026</strong><small>12:00 AM IST</small></article>
             <article><span>REGISTRATION CLOSES</span><strong>15 November 2026</strong><small>11:59:59 PM IST</small></article>
             <article><span>EXAMINATION DATE</span><strong>4 December 2026</strong><small>Online assessment</small></article>
           </div>
@@ -42,11 +42,23 @@
         <form class="register" id="register" data-register-form>
           <div class="reghead"><div><h2>Candidate registration</h2><p>Register with your email address and select one stream.</p></div><div class="regmark" aria-hidden="true">✦</div></div>
           <div class="window-notice" data-registration-window-note role="status" aria-live="polite">Checking registration dates…</div>
+          <section class="internal-testing-panel" data-internal-testing-panel aria-labelledby="internal-testing-title">
+            <span class="internal-kicker">PRIVATE REHEARSAL</span>
+            <h3 id="internal-testing-title">Internal Team Testing</h3>
+            <p>Official student registration is not open yet. Use your team access code to run a clearly marked internal test registration.</p>
+            <label for="internal-access-code">INTERNAL ACCESS CODE</label>
+            <input id="internal-access-code" type="password" autocomplete="off" maxlength="256" aria-describedby="internal-code-help" placeholder="Enter the code shared by the assessment team">
+            <button class="link-button" type="button" data-unlock-internal>Continue to internal test</button>
+            <small id="internal-code-help">The code is checked securely by the application and is never saved in the website.</small>
+          </section>
+          <div data-registration-fields hidden>
+          <div class="internal-record-label" data-internal-record-label hidden>INTERNAL TEST — NOT AN OFFICIAL CANDIDATE REGISTRATION</div>
           <div class="field" data-registration-field><label for="candidate-name">FULL NAME</label><input id="candidate-name" name="full_name" autocomplete="name" placeholder="Enter your full name" required></div>
           <div class="field" data-registration-field><label for="candidate-email">EMAIL ADDRESS</label><input id="candidate-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required></div>
           <div class="field" data-registration-field><label for="candidate-phone">MOBILE NUMBER</label><input id="candidate-phone" type="tel" name="mobile" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile number" required></div>
           <div class="field" data-registration-field><label for="candidate-stream">EXAM STREAM</label><select id="candidate-stream" name="stream" required><option value="">Select your exam stream</option><option value="paramedical">Paramedical</option><option value="nursing">Nursing</option><option value="mbbs_1st_year">MBBS 1st Year</option></select></div>
           <button class="btn" type="submit" data-start-registration>Send email verification code <span aria-hidden="true">→</span></button>
+          </div>
           <div class="otp-step" data-otp-step hidden>
             <div class="field"><label for="registration-otp">EMAIL VERIFICATION CODE</label><input id="registration-otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="Enter the 6-digit code" aria-describedby="otp-help"></div>
             <p id="otp-help" class="fineprint">The code expires after five minutes and can only be used once.</p>
@@ -55,6 +67,7 @@
           </div>
           <p class="fineprint">Email verification is required to complete registration. Mobile numbers are collected but not verified. Your details will be used to manage this assessment registration.</p>
           <section class="registration-success" data-registration-success hidden aria-live="polite">
+            <div class="internal-success-label" data-internal-success hidden>INTERNAL TEST — NOT AN OFFICIAL CANDIDATE REGISTRATION</div>
             <span class="success-mark" aria-hidden="true">✓</span><h3>Registration complete</h3>
             <p>Your Registration ID</p><strong class="registration-id" data-registration-id></strong>
             <button class="copy-id-button" type="button" data-copy-registration-id>Copy Registration ID</button>
