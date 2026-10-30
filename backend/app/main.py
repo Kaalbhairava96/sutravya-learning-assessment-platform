@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from email.utils import parseaddr
 from typing import Callable, Iterator
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,6 +51,24 @@ from app.verification import ChallengeVerification
 
 
 SESSION_COOKIE = "sutravya_candidate_session"
+REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
+REGISTRATION_OPENS_AT = datetime(2026, 10, 31, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+REGISTRATION_CLOSES_AT = datetime(2026, 11, 16, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+
+
+def _registration_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _require_registration_window(now: datetime) -> datetime:
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    current = now.astimezone(REGISTRATION_TIMEZONE)
+    if current < REGISTRATION_OPENS_AT:
+        raise RegistrationError("registration_not_open", 403)
+    if current >= REGISTRATION_CLOSES_AT:
+        raise RegistrationError("registration_closed", 410)
+    return current.astimezone(timezone.utc)
 
 
 class RegistrationRequest(BaseModel):
@@ -103,6 +122,8 @@ def _registration_error(error: RegistrationError) -> HTTPException:
         "resend_cooldown": "Please wait before requesting another code.",
         "challenge_unavailable": "This code request is unavailable. Request a new code.",
         "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
+        "registration_not_open": "Registration opens 31 October 2026 at 12:00 AM IST.",
+        "registration_closed": "Registration closed on 15 November 2026 at 11:59:59 PM IST.",
     }
     return HTTPException(status_code=error.status_code, detail=messages.get(error.code, "Request could not be completed."))
 
@@ -279,13 +300,15 @@ def create_app(
         with _session(request) as session:
             settings = request.app.state.settings
             try:
+                _require_registration_window(_registration_now())
                 email = normalize_email(payload.email)
                 _limit(session, settings, scope="registration_ip", subject=_client_ip(request), maximum=30)
                 _limit(session, settings, scope="registration_email", subject=email, maximum=5)
                 _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+                registration_now = _require_registration_window(_registration_now())
                 pending = create_registration_challenge(
                     session, settings=settings, name=payload.full_name, email=email,
-                    mobile=payload.mobile, stream=payload.stream,
+                    mobile=payload.mobile, stream=payload.stream, now=registration_now,
                 )
             except RegistrationError as error:
                 # Do not reveal whether an email already owns a completed registration.
@@ -304,6 +327,7 @@ def create_app(
         with _session(request) as session:
             settings = request.app.state.settings
             try:
+                _require_registration_window(_registration_now())
                 _limit(session, settings, scope="otp_resend_ip", subject=_client_ip(request), maximum=20)
                 with session.begin():
                     prior = session.get(VerificationChallenge, payload.challenge_id)
@@ -315,9 +339,10 @@ def create_app(
                     raise RegistrationError("challenge_unavailable", 400)
                 _limit(session, settings, scope="registration_email", subject=email, maximum=5)
                 _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+                registration_now = _require_registration_window(_registration_now())
                 pending = resend_email_challenge(
                     session, settings=settings, challenge_id=payload.challenge_id,
-                    expected_purpose=REGISTRATION_OTP_PURPOSE,
+                    expected_purpose=REGISTRATION_OTP_PURPOSE, now=registration_now,
                 )
             except RegistrationError as error:
                 raise _registration_error(error)
@@ -333,6 +358,7 @@ def create_app(
         with _session(request) as session:
             settings = request.app.state.settings
             try:
+                _require_registration_window(_registration_now())
                 _limit(session, settings, scope="otp_verify_ip", subject=_client_ip(request), maximum=60)
                 with session.begin():
                     candidate_email = session.scalar(
@@ -344,8 +370,10 @@ def create_app(
                     normalize_email(candidate_email) if candidate_email else f"challenge:{payload.challenge_id}"
                 )
                 _limit(session, settings, scope="registration_verify_email", subject=verification_subject, maximum=20)
+                registration_now = _require_registration_window(_registration_now())
                 outcome, registration = verify_registration_email(
                     session, settings=settings, challenge_id=payload.challenge_id, otp=payload.otp,
+                    now=registration_now,
                 )
             except RegistrationError as error:
                 raise _registration_error(error)

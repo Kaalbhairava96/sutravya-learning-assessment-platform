@@ -8,3 +8,36 @@
 @media(max-width:760px){.hero-copy{min-height:0}.hero-copy h1,.hero-copy .hero-sub{max-width:100%}.hero-illustration{position:relative;top:auto;right:auto;width:min(295px,80%);margin:-2px auto 5px;animation-duration:6s}.hero-illustration figcaption{right:10px}.partnership-card{grid-template-columns:1fr;gap:10px;padding:17px}.partner-logo{height:156px}.partner-logo img{height:64px}.partner-logo img.sutravya-partner-logo{height:52px}.handshake-art{order:2;margin:-5px 0}.partner-logo:last-child{order:3}.partner-details{flex-direction:column;text-align:center}.poster-ad{grid-template-columns:1fr 150px;gap:5px 12px;padding:20px}.poster-ad>img{grid-column:2;grid-row:1;max-height:170px}.poster-copy{grid-column:1;grid-row:1}.poster-prizes{grid-column:1/-1;grid-template-columns:auto repeat(3,1fr);align-items:center;justify-items:center;border-top:1px solid #ffffff36;padding-top:12px}.poster-prizes b{max-width:70px}.poster-prizes span{font-size:15px}}
 @media(max-width:420px){.poster-ad{grid-template-columns:1fr}.poster-ad>img{grid-column:1;grid-row:1;width:180px;justify-self:center}.poster-copy{grid-row:2}.poster-prizes{grid-row:3}.hero-copy .hero-illustration{margin-top:8px}.poster-meta{gap:5px}}
 .feature{transition:transform .24s ease,box-shadow .24s ease}.feature:hover{transform:translateY(-5px);box-shadow:0 22px 48px #123a5824}.partner-logo{transition:transform .24s ease,box-shadow .24s ease}.partner-logo:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 16px 35px #0b416024}.official-contact{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;border:1px solid #cfeaf2;border-radius:13px;background:#effafd;padding:15px 17px;margin-top:15px;font-size:12px}.official-contact b{font:800 13px Manrope;color:#0b4d71}.official-contact a{font-weight:700;color:#078cb9}.official-contact span{color:var(--muted)}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* 2026 registration launch */
+.launch-copy h1{max-width:690px;font-size:clamp(38px,5vw,59px);line-height:1.06;letter-spacing:-2px}
+.launch-dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px;max-width:720px}
+.launch-dates article{display:grid;gap:5px;padding:14px;border:1px solid #ffffff3d;border-radius:13px;background:#ffffff12}
+.launch-dates span{font-size:9px;font-weight:800;letter-spacing:.7px;color:#bceeff}
+.launch-dates strong{font:800 14px Manrope;color:#fff}
+.launch-dates small{font-size:11px;color:#d4ecf7}
+.exam-format{display:flex;gap:0;margin-top:15px;max-width:490px;border:1px solid #ffffff38;border-radius:13px;background:#003f72a8;overflow:hidden}
+.exam-format div{flex:1;padding:12px 15px;display:grid;gap:2px}
+.exam-format div+div{border-left:1px solid #ffffff38}
+.exam-format strong{font:800 21px Manrope;color:#ffda61}
+.exam-format span{font-size:11px;color:#e0f2f8}
+.launch-note{margin:18px 0 8px;color:#e5f4fa;font-size:12px;font-weight:700}
+.stream-list{display:flex;flex-wrap:wrap;gap:8px}
+.stream-list span,.stream-paper{border:1px solid #ffffff55;background:#ffffff12;color:#fff;padding:8px 11px;border-radius:999px;font-size:11px;font-weight:700}
+.exam-availability{max-width:600px;margin:17px 0 0;color:#d5eaf4;font-size:12px;line-height:1.6}
+.window-notice{padding:12px 14px;margin:0 0 14px;border:1px solid #b8e7f3;border-radius:11px;background:#eaf8fc;color:#075177;font-size:12px;font-weight:800;line-height:1.5}
+.window-notice.is-closed{background:#fff4e5;border-color:#f4d4a9;color:#814a08}
+.register button:disabled,.register input:disabled,.register select:disabled{opacity:.58;cursor:not-allowed}
+.registration-success{margin-top:18px;padding:19px;border:1px solid #bde8cc;border-radius:14px;background:#effaf2;text-align:center}
+.success-mark{width:38px;height:38px;margin:0 auto 8px;display:grid;place-items:center;border-radius:50%;background:#d5f2df;color:#187341;font-size:22px;font-weight:900}
+.registration-success h3{margin:0 0 5px;font:800 19px Manrope;color:#155d38}
+.registration-success p{margin:5px 0;color:#536f5e;font-size:12px}
+.registration-id{display:block;margin:8px 0 12px;color:#073f78;font:800 21px Manrope;letter-spacing:.5px;overflow-wrap:anywhere}
+.copy-id-button{border:0;border-radius:9px;background:#087dba;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer}
+.copy-id-button:hover{background:#05699e}
+.success-email-note{margin-top:12px!important}
+.register-note.error{background:#fff0ef;border-color:#ffd1cd;color:#922b21}
+.stream-paper{display:inline-block;margin-top:12px;border-color:#cfeaf2;background:#effafd;color:#087da7}
+.score-note{max-width:680px;margin:24px auto 0;padding:14px 18px;border-radius:12px;background:#effafd;color:#24566a;text-align:center;font-size:13px;line-height:1.6}
+@media(max-width:760px){.launch-copy h1{font-size:42px;letter-spacing:-1.4px}.launch-dates{grid-template-columns:1fr;gap:8px;margin-top:18px}.launch-dates article{grid-template-columns:1fr 1fr;align-items:center}.launch-dates article span{grid-column:1/-1}.launch-dates small{text-align:right}.exam-format div{padding:11px 9px;text-align:center}.exam-format strong{font-size:18px}.exam-format span{font-size:10px}}
+@media(max-width:390px){.launch-copy h1{font-size:36px}.launch-dates article{padding:11px}.exam-format div{padding:10px 6px}}

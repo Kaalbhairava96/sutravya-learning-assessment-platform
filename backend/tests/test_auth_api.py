@@ -8,8 +8,10 @@ import json
 import logging
 import os
 import unittest
+from datetime import datetime, timedelta
 from http.cookies import SimpleCookie
 from unittest.mock import Mock, patch
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
@@ -33,12 +35,15 @@ with patch.dict(os.environ, _test_environment), patch("app.config._read_dotenv",
 
 from app.main import (
     _log_email_delivery_failure,
+    REGISTRATION_CLOSES_AT,
+    REGISTRATION_OPENS_AT,
     SESSION_COOKIE,
     ConfirmationResendRequest,
     EmailOtpRequest,
     EmailRequest,
     LoginVerifyRequest,
     RegistrationRequest,
+    ResendOtpRequest,
 )
 
 
@@ -64,6 +69,12 @@ def request_for(application, path: str, *, method: str = "POST", cookie: str | N
 
 class PasswordlessApiTests(unittest.TestCase):
     def setUp(self) -> None:
+        self.window_time = patch(
+            "app.main._registration_now",
+            return_value=datetime(2026, 11, 2, 12, 0, tzinfo=ZoneInfo("Asia/Kolkata")),
+        )
+        self.window_time.start()
+        self.addCleanup(self.window_time.stop)
         self.engine = create_engine("sqlite:///:memory:")
 
         @event.listens_for(self.engine, "connect")
@@ -195,6 +206,91 @@ class PasswordlessApiTests(unittest.TestCase):
         with self.assertRaises(HTTPException) as unauthorized:
             current(request_for(self.application, "/api/auth/session", method="GET", cookie=f"{SESSION_COOKIE}={session_token}"))
         self.assertEqual(unauthorized.exception.status_code, 401)
+
+    def test_registration_opening_boundary_is_inclusive_and_earlier_time_is_blocked(self) -> None:
+        start = route_endpoint(self.application, "/api/registrations/start")
+        payload = RegistrationRequest(
+            full_name="Opening Boundary", mobile="9876543210",
+            email="opening-boundary@example.invalid", stream="paramedical",
+        )
+        before_open = REGISTRATION_OPENS_AT - timedelta(seconds=1)
+        with patch("app.main._registration_now", return_value=before_open):
+            with self.assertRaises(HTTPException) as rejected:
+                start(payload, request_for(self.application, "/api/registrations/start"))
+        self.assertEqual(rejected.exception.status_code, 403)
+        self.assertIn("opens 31 October", rejected.exception.detail)
+        self.assertEqual(self.sent_codes, [])
+
+        with patch("app.main._registration_now", return_value=REGISTRATION_OPENS_AT):
+            started = start(payload, request_for(self.application, "/api/registrations/start"))
+        self.assertIn("challenge_id", started)
+        self.assertEqual(len(self.sent_codes), 1)
+
+    def test_email_verification_is_allowed_at_the_last_instant_of_closing_date(self) -> None:
+        start = route_endpoint(self.application, "/api/registrations/start")
+        with patch("app.main._registration_now", return_value=datetime(2026, 11, 15, 23, 55, tzinfo=ZoneInfo("Asia/Kolkata"))):
+            started = start(
+                RegistrationRequest(
+                    full_name="Closing Boundary", mobile="9876543210",
+                    email="closing-boundary@example.invalid", stream="nursing",
+                ),
+                request_for(self.application, "/api/registrations/start"),
+            )
+        closing_instant = REGISTRATION_CLOSES_AT - timedelta(microseconds=1)
+        with patch("app.main._registration_now", return_value=closing_instant):
+            verified = route_endpoint(self.application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                request_for(self.application, "/api/registrations/verify-email"),
+            )
+        self.assertRegex(verified["registration_id"], r"^SUT26-[A-F0-9]{16}$")
+
+    def test_expired_registration_window_blocks_start_verify_and_otp_resend(self) -> None:
+        start = route_endpoint(self.application, "/api/registrations/start")
+        with patch("app.main._registration_now", return_value=REGISTRATION_OPENS_AT):
+            started = start(
+                RegistrationRequest(
+                    full_name="After Deadline", mobile="9876543210",
+                    email="after-deadline@example.invalid", stream="mbbs_1st_year",
+                ),
+                request_for(self.application, "/api/registrations/start"),
+            )
+        emails_before_expiry = len(self.sent_codes)
+        with patch("app.main._registration_now", return_value=REGISTRATION_CLOSES_AT):
+            for path, invoke in (
+                ("/api/registrations/start", lambda: start(
+                    RegistrationRequest(
+                        full_name="Late Candidate", mobile="9876543211",
+                        email="late-candidate@example.invalid", stream="nursing",
+                    ), request_for(self.application, "/api/registrations/start"),
+                )),
+                ("/api/registrations/verify-email", lambda: route_endpoint(self.application, path)(
+                    EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                    request_for(self.application, path),
+                )),
+                ("/api/registrations/resend-otp", lambda: route_endpoint(self.application, path)(
+                    ResendOtpRequest(challenge_id=started["challenge_id"]), request_for(self.application, path),
+                )),
+            ):
+                with self.subTest(path=path), self.assertRaises(HTTPException) as rejected:
+                    invoke()
+                self.assertEqual(rejected.exception.status_code, 410)
+                self.assertIn("Registration closed", rejected.exception.detail)
+        self.assertEqual(len(self.sent_codes), emails_before_expiry)
+        with self.factory() as session:
+            self.assertEqual(session.query(Registration).count(), 0)
+
+    def test_all_three_streams_are_accepted_during_registration_window(self) -> None:
+        start = route_endpoint(self.application, "/api/registrations/start")
+        for index, stream in enumerate(("paramedical", "nursing", "mbbs_1st_year")):
+            with self.subTest(stream=stream):
+                result = start(
+                    RegistrationRequest(
+                        full_name="Stream Candidate", mobile=f"987654321{index}",
+                        email=f"stream-{stream}@example.invalid", stream=stream,
+                    ),
+                    request_for(self.application, "/api/registrations/start"),
+                )
+                self.assertIn("challenge_id", result)
 
     def test_failed_otp_submission_returns_unavailable_and_invalidates_challenge(self) -> None:
         failing_app = create_app(

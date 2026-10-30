@@ -21,3 +21,6 @@ __pycache__/
 # Local test reports and migration diagnostics
 /backend/*-test-output.txt
 /backend/alembic-error.txt
+
+# Generated allowlisted public microsite bundle
+/assessment-public/
