@@ -117,6 +117,7 @@ def _send(payload: dict[str, Any], *, settings: Settings) -> None:
             "Authorization": f"Bearer {settings.resend_api_key}",
             "Content-Type": "application/json",
             "Accept": "application/json",
+            "User-Agent": "SUTRAVYA-Assessment-API/1.0",
         },
         method="POST",
     )

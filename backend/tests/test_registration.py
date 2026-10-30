@@ -324,6 +324,7 @@ class RegistrationAccountTests(unittest.TestCase):
             )
             request = urlopen.call_args.args[0]
             self.assertIn("Bearer synthetic-key-not-a-secret", request.get_header("Authorization"))
+            self.assertEqual(request.get_header("User-agent"), "SUTRAVYA-Assessment-API/1.0")
             self.assertIn(b"123456", request.data)
         with patch("app.email_provider.urlopen", side_effect=OSError("provider internal details")):
             with self.assertRaises(EmailDeliveryError) as raised:
