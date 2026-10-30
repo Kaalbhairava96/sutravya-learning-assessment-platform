@@ -107,6 +107,10 @@ class VerificationChallenge(Base):
             "purpose IN ('contact_verification', 'registration_verification', 'login')",
             name="ck_verification_challenges_purpose",
         ),
+        CheckConstraint(
+            "registration_source IN ('team_prelaunch', 'public_registration', 'legacy_internal_test')",
+            name="ck_verification_challenges_registration_source",
+        ),
         CheckConstraint("attempt_count >= 0", name="ck_verification_challenges_attempt_count_nonnegative"),
         CheckConstraint(
             "length(destination_digest) = 64",
@@ -144,6 +148,9 @@ class VerificationChallenge(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
     is_internal_test: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default=false())
+    registration_source: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="public_registration", server_default=text("'public_registration'")
+    )
     consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -197,11 +204,13 @@ class Registration(TimestampMixin, Base):
         Index("ix_registrations_exam_slot_id", "exam_slot_id"),
         Index(
             "uq_registrations_candidate_event_official",
-            "candidate_id",
-            "event_key",
-            unique=True,
+            "candidate_id", "event_key", unique=True,
             postgresql_where=text("is_internal_test IS FALSE"),
             sqlite_where=text("is_internal_test = 0"),
+        ),
+        CheckConstraint(
+            "registration_source IN ('team_prelaunch', 'public_registration', 'legacy_internal_test')",
+            name="ck_registrations_registration_source",
         ),
     )
 
@@ -221,6 +230,9 @@ class Registration(TimestampMixin, Base):
     )
     status: Mapped[str | None] = mapped_column(String(40))
     is_internal_test: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default=false())
+    registration_source: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="public_registration", server_default=text("'public_registration'")
+    )
 
     candidate: Mapped[Candidate] = relationship(back_populates="registrations")
     exam_slot: Mapped[ExamSlot | None] = relationship(

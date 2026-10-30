@@ -28,8 +28,8 @@ document.querySelectorAll('[data-register-form]').forEach(form=>{
   let challengeId='';
   let completed=false;
   let internalAccessCode='';
-  let challengeIsInternal=false;
-  const internalHeaders=()=>challengeIsInternal||registrationWindowState()==='before'?{'X-Internal-Test-Code':internalAccessCode}:{};
+  let challengeIsTeamPrelaunch=false;
+  const internalHeaders=()=>registrationWindowState()==='before'?{'X-Internal-Test-Code':internalAccessCode}:{};
   const showMessage=(message,isError=false)=>{if(note){note.textContent=message;note.classList.add('show');note.classList.toggle('error',isError);}};
   const updateRegistrationWindow=()=>{
     const state=registrationWindowState();
@@ -55,7 +55,7 @@ document.querySelectorAll('[data-register-form]').forEach(form=>{
     if(internalFields)internalFields.hidden=false;
     if(internalRecordLabel)internalRecordLabel.hidden=false;
     updateRegistrationWindow();
-    showMessage('Internal test mode selected. The server will validate your code when you request the email code.');
+    showMessage('Team pre-launch access selected. The server will validate your code when you request the email code.');
   });
   internalCodeInput?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();form.querySelector('[data-unlock-internal]')?.click();}});
   form.addEventListener('submit',async event=>{
@@ -66,7 +66,7 @@ document.querySelectorAll('[data-register-form]').forEach(form=>{
     if(!form.reportValidity())return;
     markBusy(true);showMessage('Sending your email verification code…');
     try{
-      challengeIsInternal=windowState==='before';
+      challengeIsTeamPrelaunch=windowState==='before';
       const result=await apiRequest('/api/registrations/start',{
         full_name:form.elements.full_name.value,
         mobile:form.elements.mobile.value,
@@ -85,7 +85,7 @@ document.querySelectorAll('[data-register-form]').forEach(form=>{
   });
   form.querySelector('[data-verify-otp]')?.addEventListener('click',async()=>{
     const state=registrationWindowState();
-    if(!challengeId||state==='closed'||(state==='before'&&!challengeIsInternal)){updateRegistrationWindow();return;}
+    if(!challengeId||state==='closed'||(state==='before'&&!challengeIsTeamPrelaunch)){updateRegistrationWindow();return;}
     if(!otpInput?.reportValidity())return;
     markBusy(true);showMessage('Verifying your email and completing registration…');
     try{
@@ -93,7 +93,7 @@ document.querySelectorAll('[data-register-form]').forEach(form=>{
       completed=true;
       const registrationId=result.registration_id||'';
       form.querySelector('[data-registration-id]').textContent=registrationId;
-      if(internalSuccess)internalSuccess.hidden=!result.is_internal_test;
+      if(internalSuccess)internalSuccess.hidden=result.registration_source!=='team_prelaunch';
       form.querySelector('[data-confirmation-message]').textContent=result.confirmation_email_sent?'A confirmation email has been sent.':'Your registration is complete, but the confirmation email could not be sent. You can request it again below.';
       if(successBox)successBox.hidden=false;
       if(resendBox){resendBox.hidden=!registrationId;const idInput=resendBox.querySelector('input');if(idInput)idInput.value=registrationId;}
@@ -111,7 +111,7 @@ document.querySelectorAll('[data-register-form]').forEach(form=>{
   });
   form.querySelector('[data-resend-otp]')?.addEventListener('click',async()=>{
     const state=registrationWindowState();
-    if(!challengeId||state==='closed'||(state==='before'&&!challengeIsInternal)){updateRegistrationWindow();return;}
+    if(!challengeId||state==='closed'||(state==='before'&&!challengeIsTeamPrelaunch)){updateRegistrationWindow();return;}
     markBusy(true);showMessage('Requesting a new verification code…');
     try{const result=await apiRequest('/api/registrations/resend-otp',{challenge_id:challengeId},'POST',internalHeaders());challengeId=result.challenge_id;showMessage('A new code has been sent if delivery succeeds.');}
     catch(error){showMessage(error.message,true);}

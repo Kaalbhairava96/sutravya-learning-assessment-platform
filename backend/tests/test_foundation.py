@@ -89,6 +89,23 @@ class BackendFoundationTests(unittest.TestCase):
                 dotenv_path=Path("missing-test.env"),
             )
 
+    def test_registration_export_key_is_private_and_requires_minimum_length(self) -> None:
+        base = {
+            "APP_ENV": "test",
+            "DATABASE_URL": "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test",
+        }
+        secret = "synthetic-registration-export-key-value-over-32-chars"
+        settings = Settings.from_env(
+            environ={**base, "REGISTRATION_EXPORT_KEY": secret}, dotenv_path=Path("missing-test.env")
+        )
+        self.assertEqual(settings.registration_export_key, secret)
+        self.assertNotIn(secret, repr(settings))
+        with self.assertRaisesRegex(ConfigurationError, "at least 32 characters"):
+            Settings.from_env(
+                environ={**base, "REGISTRATION_EXPORT_KEY": "short-key"},
+                dotenv_path=Path("missing-test.env"),
+            )
+
     def test_otp_configuration_accepts_valid_overrides_and_hides_pepper(self) -> None:
         pepper = "test-only-pepper-value-with-at-least-32-bytes"
         settings = Settings.from_env(

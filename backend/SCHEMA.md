@@ -6,18 +6,19 @@ The backend implements email-OTP registration and passwordless candidate authent
 
 ## Registration and identity
 
-- Internal rehearsal is disabled by default. Before 1 November 2026, it can be enabled only by the backend-only `INTERNAL_TEST_MODE=true` setting plus a private `INTERNAL_TEST_ACCESS_CODE`. A validated internal challenge and its resulting registration are marked `is_internal_test=true`; ordinary rows default to false. The reversible `0005_internal_test_flags` migration adds these markers without changing existing records. Internal challenges cannot be verified or resent after public registration opens, and all registration activity is rejected after the deadline.
+- Before 1 November 2026, authorised team members use the same registration form, endpoints, email OTP, candidate record, Registration ID, and account access as public candidates. `INTERNAL_TEST_MODE=true` plus the private `INTERNAL_TEST_ACCESS_CODE` only authorises starting or continuing the registration journey before opening. New team registrations are ordinary active registrations with `is_internal_test=false` and `registration_source='team_prelaunch'`; after public opening, the code is no longer required, including for a pending team OTP. At the closing deadline, all registration actions are rejected.
 
 - A candidate submits full name, mobile, email, and one allowlisted stream: `paramedical`, `nursing`, or `mbbs_1st_year`.
+- Historical rows with `is_internal_test=true` retain that flag and are classified as `legacy_internal_test`; they are excluded from official login and team/public export filters. A real registration for the same candidate/event may coexist with the retained legacy row.
 - Email is stripped and lowercased before candidate lookup or persistence. Mobile is normalized to `+91` plus ten digits; it is not verified and is not unique by itself.
 - A pending candidate and registration-purpose OTP challenge are persisted before the provider call. The OTP digest is HMAC-SHA-256, bound to the candidate, challenge, channel, and purpose; plaintext exists only in process memory long enough to submit the message.
-- Successful verification consumes the challenge, marks email verified, creates the event registration with a random `SUT26-…` ID, and clears `pending_stream` in one database transaction. A partial unique index on `lower(email)` for verified candidates is the database invariant for verified-email uniqueness.
-- The unique `(candidate_id, event_key)` constraint prevents duplicate registrations for one candidate/event. A concurrent duplicate email verification can fail at the partial unique index; the transaction rolls back as a whole.
+- Successful verification consumes the challenge, marks email verified, creates the event registration with a random `SUT26-…` ID, records the challenge's `registration_source`, and clears `pending_stream` in one database transaction. A partial unique index on `lower(email)` for verified candidates is the database invariant for verified-email uniqueness.
+- The partial unique index `uq_registrations_candidate_event_official` prevents duplicate non-internal registrations for one candidate/event while allowing a preserved legacy test row beside one real registration. A concurrent duplicate email verification can fail at this index; the transaction rolls back as a whole.
 - Confirmation email delivery is attempted only after commit. If it fails, the registration remains complete; the generic resend-confirmation endpoint can retry without creating another registration.
 
 ## Passwordless login and sessions
 
-- Login OTP challenges use purpose `login`, separate from `registration_verification`. Only a verified candidate with an event registration is eligible to receive one. The request endpoint uses a generic response for known and unknown emails.
+- Login OTP challenges use purpose `login`, separate from `registration_verification`. Only a verified candidate with a non-internal, non-legacy event registration is eligible to receive one. Legacy internal-only candidates and legacy OTP challenges cannot authenticate. The request endpoint uses a generic response for known and unknown emails.
 - A correct login code is atomically consumed while a candidate session is created. The browser receives a random opaque token in an HttpOnly cookie; only SHA-256(token) is stored in `candidate_sessions`.
 - Sessions expire after 24 hours, can be revoked by logout, and are resolved to candidate/registration data server-side. Candidate identity is never accepted from a client-supplied candidate ID. The cookie is HttpOnly and SameSite=Lax; Secure is enabled in production. For reliable cookie behavior, production website and API should use HTTPS hostnames under the same registrable domain (for example, `assessment.sutravya.in` and `api.sutravya.in`). A GitHub Pages origin talking to an unrelated API domain can be treated as third-party cookies by browsers and is not an approved production arrangement for this session design.
 - The API only exposes the authenticated account summary at `/api/auth/session`; it does not yet authorize exam APIs because those do not exist.
@@ -34,13 +35,17 @@ Resend is called using its email API over HTTPS. Configure `RESEND_API_KEY` and 
 
 Provider calls occur after database transactions commit. If OTP delivery fails, the challenge is invalidated and the API returns a safe unavailable response; it does not claim the code was sent. If confirmation delivery fails after registration commit, the registration remains and can be recovered through the resend endpoint.
 
-## Registration timing decision
+## Organiser registration export
 
-The product rule says registration, verification, and slot booking must finish by **15 November 2026, 11:59:59 PM Asia/Kolkata**. This phase does not enforce that deadline. Because slot booking is not implemented, the product owner must confirm whether the final registration step will later include slot assignment before the deadline.
+There is no existing admin authentication route. `GET /api/admin/registrations/export` is protected by the private `REGISTRATION_EXPORT_KEY`, which must be at least 32 characters and is compared in constant time. Omit `source` or use `source=all` to export all event registrations; the accepted filters are `team_prelaunch` and `public_registration`. The UTF-8-BOM CSV contains registration ID, candidate contact fields, stream, IST registration timestamp, email/mobile verification state, and source. Text cells are protected against spreadsheet formula execution. The key is accepted only in `X-Registration-Export-Key`; request logs do not include headers or exported data. Use `scripts/export_registrations.ps1` from an organiser's local PowerShell session; its prompt is secure and it writes into the local Downloads folder by default.
+
+## Registration timing
+
+Registration start, email verification, and OTP resend are enforced by the server through **15 November 2026, 11:59:59 PM Asia/Kolkata**. Slot allocation is not implemented, so the later booking step still needs to be integrated with this deadline.
 
 ## Schema and migration history
 
-Historical revisions `0001_backend_foundation`, `0002_core_application_schema`, `0003_secure_verify`, and `0004_registration_accounts` are preserved. Revision `0005_internal_test_flags` adds false-default internal markers to challenges and registrations and replaces the candidate/event unique constraint with a partial unique index covering official registrations only. Its downgrade fails closed when internal data exists, so internal test records cannot silently lose their label. Apply it through the approved migration procedure before enabling internal rehearsals or public launch.
+Historical revisions `0001_backend_foundation` through `0005_internal_test_flags` are preserved. Revision `0006_reg_source` adds the source field to registrations and challenges, classifies legacy flagged rows as `legacy_internal_test`, and leaves false-flag rows at the historical/default `public_registration` source. It preserves the flags, candidate identities, and Registration IDs. It retains migration 0005's partial uniqueness rule for official registrations and checks for duplicate non-internal candidate/event rows before upgrade. Downgrade fails closed if team or legacy source values exist. It supports fresh installations and databases already at revision 0005; inspect the current revision before applying `upgrade head`.
 
 The core tables remain: candidates, registrations, exam slots, question banks, questions, answer options, attempts, responses, scoring rules, results, admin users, audit events, and verification challenges. `answer_options.is_correct` remains private server-side data and must not be returned by candidate APIs.
 

@@ -7,14 +7,16 @@ import uuid
 import logging
 import hashlib
 import hmac
+import csv
+import io
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from email.utils import parseaddr
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Literal
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, Header, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -36,6 +38,8 @@ from app.registration import (
     EVENT_KEY,
     LOGIN_OTP_PURPOSE,
     REGISTRATION_OTP_PURPOSE,
+    PUBLIC_REGISTRATION_SOURCE,
+    TEAM_PRELAUNCH_SOURCE,
     RegistrationError,
     create_login_challenge,
     create_registration_challenge,
@@ -72,17 +76,15 @@ def _require_registration_window(now: datetime) -> datetime:
     return current.astimezone(timezone.utc)
 
 
-def _authorize_registration_request(request: Request, settings: Settings, now: datetime) -> bool:
-    """Authorize pre-launch testing and return whether this request is internal."""
+def _authorize_registration_request(request: Request, settings: Settings, now: datetime) -> str:
+    """Authorize registration before launch and return its reporting source."""
     supplied_code = request.headers.get("x-internal-test-code", "")
     current = now.replace(tzinfo=timezone.utc) if now.tzinfo is None else now
     current = current.astimezone(REGISTRATION_TIMEZONE)
     if current >= REGISTRATION_CLOSES_AT:
         raise RegistrationError("registration_closed", 410)
     if current >= REGISTRATION_OPENS_AT:
-        if supplied_code:
-            raise RegistrationError("internal_test_unavailable", 403)
-        return False
+        return PUBLIC_REGISTRATION_SOURCE
     configured_code = settings.internal_test_access_code
     if (
         not settings.internal_test_mode
@@ -92,16 +94,22 @@ def _authorize_registration_request(request: Request, settings: Settings, now: d
         or not hmac.compare_digest(supplied_code.encode("utf-8"), configured_code.encode("utf-8"))
     ):
         raise RegistrationError("internal_test_unauthorized", 403)
-    return True
+    return TEAM_PRELAUNCH_SOURCE
 
 
-def _require_internal_test_window(now: datetime) -> None:
+def _require_registration_deadline(now: datetime) -> None:
     current = now.replace(tzinfo=timezone.utc) if now.tzinfo is None else now
     current = current.astimezone(REGISTRATION_TIMEZONE)
     if current >= REGISTRATION_CLOSES_AT:
         raise RegistrationError("registration_closed", 410)
-    if current >= REGISTRATION_OPENS_AT:
-        raise RegistrationError("internal_test_unavailable", 403)
+
+
+def _csv_safe_cell(value: object) -> str:
+    """Prefix spreadsheet formula initiators so candidate text opens as text."""
+    cell = "" if value is None else str(value)
+    if cell.startswith(("\t", "\r", "\n")) or cell.lstrip("\ufeff").lstrip().startswith(("=", "+", "-", "@")):
+        return "'" + cell
+    return cell
 
 
 class RegistrationRequest(BaseModel):
@@ -338,22 +346,22 @@ def create_app(
                 request_now = _registration_now()
                 if request_now.astimezone(REGISTRATION_TIMEZONE) < REGISTRATION_OPENS_AT:
                     _limit(session, settings, scope="internal_test_ip", subject=_client_ip(request), maximum=10)
-                internal_test = _authorize_registration_request(request, settings, request_now)
-                if not internal_test:
+                registration_source = _authorize_registration_request(request, settings, request_now)
+                if registration_source == PUBLIC_REGISTRATION_SOURCE:
                     _require_registration_window(request_now)
                 email = normalize_email(payload.email)
                 _limit(session, settings, scope="registration_ip", subject=_client_ip(request), maximum=30)
                 _limit(session, settings, scope="registration_email", subject=email, maximum=5)
                 _limit(session, settings, scope="email_global", subject="all", maximum=1000)
                 registration_now = _registration_now()
-                if not internal_test:
+                if registration_source == PUBLIC_REGISTRATION_SOURCE:
                     registration_now = _require_registration_window(registration_now)
                 else:
-                    _require_internal_test_window(registration_now)
+                    _require_registration_deadline(registration_now)
                 pending = create_registration_challenge(
                     session, settings=settings, name=payload.full_name, email=email,
                     mobile=payload.mobile, stream=payload.stream, now=registration_now,
-                    is_internal_test=internal_test,
+                    registration_source=registration_source,
                 )
             except RegistrationError as error:
                 # Do not reveal whether an email already owns a completed registration.
@@ -375,14 +383,19 @@ def create_app(
                 request_now = _registration_now()
                 if request_now.astimezone(REGISTRATION_TIMEZONE) < REGISTRATION_OPENS_AT:
                     _limit(session, settings, scope="internal_test_ip", subject=_client_ip(request), maximum=10)
-                _authorize_registration_request(request, settings, request_now)
+                request_source = _authorize_registration_request(request, settings, request_now)
                 _limit(session, settings, scope="otp_resend_ip", subject=_client_ip(request), maximum=20)
                 with session.begin():
                     prior = session.get(VerificationChallenge, payload.challenge_id)
-                    if prior is None or prior.purpose != REGISTRATION_OTP_PURPOSE:
+                    if (
+                        prior is None
+                        or prior.purpose != REGISTRATION_OTP_PURPOSE
+                        or prior.is_internal_test
+                        or prior.registration_source == "legacy_internal_test"
+                    ):
                         raise RegistrationError("challenge_unavailable", 400)
-                    if prior.is_internal_test:
-                        _require_internal_test_window(request_now)
+                    if request_source == TEAM_PRELAUNCH_SOURCE and prior.registration_source != TEAM_PRELAUNCH_SOURCE:
+                        raise RegistrationError("challenge_unavailable", 400)
                     candidate = session.get(Candidate, prior.candidate_id)
                     email = normalize_email(candidate.email or "") if candidate else ""
                 if not email:
@@ -390,14 +403,13 @@ def create_app(
                 _limit(session, settings, scope="registration_email", subject=email, maximum=5)
                 _limit(session, settings, scope="email_global", subject="all", maximum=1000)
                 registration_now = _registration_now()
-                if prior.is_internal_test:
-                    _require_internal_test_window(registration_now)
-                if not prior.is_internal_test:
+                if prior.registration_source == PUBLIC_REGISTRATION_SOURCE:
                     registration_now = _require_registration_window(registration_now)
+                else:
+                    _require_registration_deadline(registration_now)
                 pending = resend_email_challenge(
                     session, settings=settings, challenge_id=payload.challenge_id,
                     expected_purpose=REGISTRATION_OTP_PURPOSE, now=registration_now,
-                    is_internal_test=prior.is_internal_test,
                 )
             except RegistrationError as error:
                 raise _registration_error(error)
@@ -416,7 +428,7 @@ def create_app(
                 request_now = _registration_now()
                 if request_now.astimezone(REGISTRATION_TIMEZONE) < REGISTRATION_OPENS_AT:
                     _limit(session, settings, scope="internal_test_ip", subject=_client_ip(request), maximum=10)
-                _authorize_registration_request(request, settings, request_now)
+                request_source = _authorize_registration_request(request, settings, request_now)
                 _limit(session, settings, scope="otp_verify_ip", subject=_client_ip(request), maximum=60)
                 with session.begin():
                     candidate_email = session.scalar(
@@ -431,10 +443,23 @@ def create_app(
                 registration_now = _registration_now()
                 with session.begin():
                     challenge = session.get(VerificationChallenge, payload.challenge_id)
-                    if challenge is not None and challenge.purpose == REGISTRATION_OTP_PURPOSE and challenge.is_internal_test:
-                        _require_internal_test_window(registration_now)
-                if not (challenge and challenge.is_internal_test):
+                    if (
+                        challenge is not None
+                        and challenge.purpose == REGISTRATION_OTP_PURPOSE
+                        and (
+                            challenge.is_internal_test
+                            or challenge.registration_source == "legacy_internal_test"
+                            or (
+                                request_source == TEAM_PRELAUNCH_SOURCE
+                                and challenge.registration_source != TEAM_PRELAUNCH_SOURCE
+                            )
+                        )
+                    ):
+                        raise RegistrationError("challenge_unavailable", 400)
+                if request_source == PUBLIC_REGISTRATION_SOURCE:
                     registration_now = _require_registration_window(registration_now)
+                else:
+                    _require_registration_deadline(registration_now)
                 outcome, registration = verify_registration_email(
                     session, settings=settings, challenge_id=payload.challenge_id, otp=payload.otp,
                     now=registration_now,
@@ -461,7 +486,7 @@ def create_app(
                 sent = False
             return {
                 "registration_id": registration.registration_id,
-                "is_internal_test": registration.is_internal_test,
+                "registration_source": registration.registration_source,
                 "confirmation_email_sent": sent,
                 "message": "Registration complete. Save your Registration ID.",
             }
@@ -478,7 +503,6 @@ def create_app(
                         select(Registration).where(
                             Registration.registration_id == payload.registration_id,
                             Registration.event_key == EVENT_KEY,
-                        Registration.is_internal_test.is_(False),
                         )
                     )
                     candidate = session.get(Candidate, registration.candidate_id) if registration else None
@@ -498,6 +522,70 @@ def create_app(
                 except Exception as error:
                     _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
             return {"message": "If the registration is eligible, a confirmation email will be sent."}
+
+    @application.get("/api/admin/registrations/export", tags=["organiser export"])
+    def export_registrations(
+        request: Request,
+        source: Literal["all", "team_prelaunch", "public_registration"] = "all",
+        x_registration_export_key: str | None = Header(default=None),
+    ) -> Response:
+        settings = request.app.state.settings
+        configured_key = settings.registration_export_key
+        if not configured_key:
+            raise HTTPException(status_code=503, detail="Registration export is not configured.")
+        if (
+            not x_registration_export_key
+            or len(x_registration_export_key) > 512
+            or not hmac.compare_digest(x_registration_export_key, configured_key)
+        ):
+            raise HTTPException(status_code=403, detail="Export authorization failed.")
+
+        statement = (
+            select(Registration, Candidate)
+            .join(Candidate, Candidate.id == Registration.candidate_id)
+            .where(Registration.event_key == EVENT_KEY)
+            .order_by(Registration.created_at, Registration.registration_id)
+        )
+        if source != "all":
+            statement = statement.where(
+                Registration.registration_source == source,
+                Registration.is_internal_test.is_(False),
+            )
+
+        output = io.StringIO(newline="")
+        writer = csv.writer(output, lineterminator="\r\n")
+        writer.writerow((
+            "registration_id", "full_name", "email", "mobile", "stream", "registration_date_ist",
+            "email_verified", "mobile_verified", "registration_source",
+        ))
+        with _session(request) as session:
+            for registration, candidate in session.execute(statement):
+                created_at = registration.created_at
+                if created_at.tzinfo is None:
+                    created_at = created_at.replace(tzinfo=timezone.utc)
+                date_value = created_at.astimezone(REGISTRATION_TIMEZONE).isoformat(timespec="seconds")
+                writer.writerow(tuple(_csv_safe_cell(value) for value in (
+                    registration.registration_id,
+                    candidate.full_name,
+                    candidate.email,
+                    candidate.phone,
+                    registration.stream,
+                    date_value,
+                    "yes" if candidate.email_verified_at is not None else "no",
+                    "yes" if candidate.phone_verified_at is not None else "no",
+                    (
+                        "legacy_internal_test"
+                        if registration.is_internal_test
+                        or registration.registration_source == "legacy_internal_test"
+                        else registration.registration_source
+                    ),
+                )))
+        csv_bytes = ("\ufeff" + output.getvalue()).encode("utf-8")
+        return Response(
+            content=csv_bytes,
+            media_type="text/csv; charset=utf-8",
+            headers={"Content-Disposition": 'attachment; filename="sutravya-registrations.csv"'},
+        )
 
     @application.post("/api/auth/request-otp", status_code=202, tags=["candidate account"])
     def request_login_otp(payload: EmailRequest, request: Request):

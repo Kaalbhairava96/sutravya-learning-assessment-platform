@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import runpy
 from contextlib import redirect_stdout
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -241,7 +242,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0005_internal_test_flags"])
+        self.assertEqual(script.get_heads(), ["0006_reg_source"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -250,6 +251,8 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(account_revision.down_revision, "0003_secure_verify")
         internal_test_revision = script.get_revision("0005_internal_test_flags")
         self.assertEqual(internal_test_revision.down_revision, "0004_registration_accounts")
+        unified_source_revision = script.get_revision("0006_reg_source")
+        self.assertEqual(unified_source_revision.down_revision, "0005_internal_test_flags")
         self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -273,6 +276,23 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertIn("uq_admin_users_email_lower", sql)
         self.assertIn("uq_candidates_verified_contact_pair", sql)
         self.assertIn("CREATE UNIQUE INDEX uq_candidates_verified_email", sql)
+        self.assertIn("registration_source", sql)
+        self.assertIn("uq_registrations_candidate_event_official", sql)
+        self.assertIn(
+            "UPDATE registrations SET registration_source = 'legacy_internal_test' WHERE is_internal_test IS TRUE",
+            sql,
+        )
+        self.assertIn(
+            "UPDATE verification_challenges SET registration_source = 'legacy_internal_test' WHERE is_internal_test IS TRUE",
+            sql,
+        )
+        self.assertIn("'legacy_internal_test'", sql)
+        self.assertIn("WHERE is_internal_test IS FALSE", sql)
+        self.assertNotIn("DELETE FROM registrations", sql)
+        self.assertNotIn("DELETE FROM candidates", sql)
+        self.assertNotIn("UPDATE registrations SET registration_id", sql)
+        self.assertNotIn("UPDATE registrations SET candidate_id", sql)
+        self.assertNotIn("SET is_internal_test", sql)
         self.assertNotIn("SELECT lower(email)", sql)
 
     def test_verification_migration_downgrade_renders_only_new_schema_removal(self) -> None:
@@ -309,6 +329,51 @@ class ModelSchemaTests(unittest.TestCase):
                 command.downgrade(Config("alembic.ini"), "head:base", sql=True)
         self.assertNotIn("DROP TABLE candidate_sessions", output.getvalue())
         self.assertNotIn("DROP TABLE rate_limit_buckets", output.getvalue())
+
+    def test_registration_source_downgrade_refuses_to_drop_legacy_classification(self) -> None:
+        migration = runpy.run_path("migrations/versions/0006_unified_registration_source.py")
+        legacy_row = object()
+
+        class FakeResult:
+            def __init__(self, row):
+                self.row = row
+
+            def first(self):
+                return self.row
+
+        bind = type("FakeBind", (), {})()
+
+        def execute(statement):
+            sql = str(statement)
+            if "registrations" in sql and "legacy_internal_test" in sql:
+                return FakeResult(legacy_row)
+            return FakeResult(None)
+
+        bind.execute = execute
+        with (
+            patch("alembic.context.is_offline_mode", return_value=False),
+            patch("alembic.op.get_bind", return_value=bind),
+            patch("alembic.op.drop_constraint") as drop_constraint,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "team or legacy registration-source classifications"):
+                migration["downgrade"]()
+        drop_constraint.assert_not_called()
+
+    def test_registration_source_fields_default_to_public_without_touching_legacy_flags(self) -> None:
+        registration = Base.metadata.tables["registrations"]
+        challenges = Base.metadata.tables["verification_challenges"]
+        for table in (registration, challenges):
+            source = table.c.registration_source
+            self.assertFalse(source.nullable)
+            self.assertEqual(source.default.arg, "public_registration")
+            self.assertEqual(str(source.server_default.arg), "'public_registration'")
+        self.assertIn("ck_registrations_registration_source", {c.name for c in registration.constraints})
+        self.assertIn("ck_verification_challenges_registration_source", {c.name for c in challenges.constraints})
+        registration_source_check = next(
+            c for c in registration.constraints if c.name == "ck_registrations_registration_source"
+        )
+        self.assertIn("legacy_internal_test", str(registration_source_check.sqltext))
+        self.assertIn("uq_registrations_candidate_event_official", {i.name for i in registration.indexes})
 
 
 if __name__ == "__main__":

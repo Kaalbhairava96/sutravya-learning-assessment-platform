@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import unittest
+import csv
 from datetime import datetime, timedelta, timezone
 from http.cookies import SimpleCookie
 from unittest.mock import Mock, patch
@@ -22,7 +23,7 @@ from fastapi import HTTPException
 from app.config import Settings
 from app.email_provider import EmailDeliveryError
 from app.models import Base, Candidate, Registration, VerificationChallenge
-from app.registration import LOGIN_OTP_PURPOSE, REGISTRATION_OTP_PURPOSE, create_login_challenge
+from app.registration import LOGIN_OTP_PURPOSE, REGISTRATION_OTP_PURPOSE, create_login_challenge, verify_login_email
 from app.logging_config import SafeJsonFormatter
 
 
@@ -51,6 +52,7 @@ from app.main import (
 TEST_DATABASE_URL = _test_environment["DATABASE_URL"]
 PEPPER = "api-test-pepper-value-with-at-least-32-bytes"
 INTERNAL_CODE = "synthetic-internal-test-code"
+EXPORT_CODE = "synthetic-export-secret-value-at-least-32-characters-long"
 
 
 def route_endpoint(application, path: str):
@@ -321,7 +323,7 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertEqual(rejected.exception.status_code, 403)
         self.assertEqual(self.sent_codes, [])
 
-    def test_internal_mode_correct_code_creates_marked_challenge(self) -> None:
+    def test_internal_mode_correct_code_creates_team_prelaunch_challenge_not_internal_test(self) -> None:
         application = self._internal_app()
         with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
             result = route_endpoint(application, "/api/registrations/start")(
@@ -330,7 +332,8 @@ class PasswordlessApiTests(unittest.TestCase):
             )
         with self.factory() as session:
             challenge = session.get(VerificationChallenge, UUID(result["challenge_id"]))
-            self.assertTrue(challenge.is_internal_test)
+            self.assertFalse(challenge.is_internal_test)
+            self.assertEqual(challenge.registration_source, "team_prelaunch")
 
     def test_incorrect_internal_code_is_rejected(self) -> None:
         application = self._internal_app()
@@ -343,7 +346,7 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertEqual(rejected.exception.status_code, 403)
         self.assertEqual(self.sent_codes, [])
 
-    def test_internal_otp_verification_marks_registration_and_excludes_login(self) -> None:
+    def test_team_prelaunch_verification_creates_normal_candidate_eligible_for_login(self) -> None:
         application = self._internal_app()
         header = {"X-Internal-Test-Code": INTERNAL_CODE}
         with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
@@ -354,16 +357,27 @@ class PasswordlessApiTests(unittest.TestCase):
                 EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
                 request_for(application, "/api/registrations/verify-email", extra_headers=header),
             )
-        self.assertTrue(verified["is_internal_test"])
+        self.assertEqual(verified["registration_source"], "team_prelaunch")
         with self.factory() as session:
             registration = session.query(Registration).one()
             candidate = session.get(Candidate, registration.candidate_id)
             candidate_email = candidate.email
-            self.assertTrue(registration.is_internal_test)
+            self.assertFalse(registration.is_internal_test)
+            self.assertEqual(registration.status, "active")
+            self.assertEqual(registration.registration_source, "team_prelaunch")
         with self.factory() as session:
-            self.assertIsNone(create_login_challenge(session, settings=application.state.settings, email=candidate_email))
+            login_challenge = create_login_challenge(
+                session, settings=application.state.settings, email=candidate_email,
+            )
+            self.assertIsNotNone(login_challenge)
+            outcome, login = verify_login_email(
+                session, settings=application.state.settings, email=candidate_email, otp=login_challenge.otp,
+            )
+        self.assertEqual(outcome.value, "verified")
+        self.assertIsNotNone(login)
+        self.assertEqual(login.registration_id, verified["registration_id"])
 
-    def test_internal_resend_requires_code_and_replacement_remains_marked(self) -> None:
+    def test_internal_resend_requires_code_and_keeps_team_registration_source(self) -> None:
         application = self._internal_app()
         header = {"X-Internal-Test-Code": INTERNAL_CODE}
         with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
@@ -384,17 +398,21 @@ class PasswordlessApiTests(unittest.TestCase):
                 request_for(application, "/api/registrations/resend-otp", extra_headers=header),
             )
         with self.factory() as session:
-            self.assertTrue(session.get(VerificationChallenge, UUID(resent["challenge_id"])).is_internal_test)
+            replacement = session.get(VerificationChallenge, UUID(resent["challenge_id"]))
+            self.assertFalse(replacement.is_internal_test)
+            self.assertEqual(replacement.registration_source, "team_prelaunch")
 
-    def test_official_registration_opens_without_code_and_is_not_internal(self) -> None:
+    def test_public_registration_opens_without_code_and_has_public_source(self) -> None:
         with self._at(REGISTRATION_OPENS_AT):
             started = route_endpoint(self.application, "/api/registrations/start")(
                 self._start_payload("official@example.invalid"), request_for(self.application, "/api/registrations/start"),
             )
         with self.factory() as session:
-            self.assertFalse(session.get(VerificationChallenge, UUID(started["challenge_id"])).is_internal_test)
+            challenge = session.get(VerificationChallenge, UUID(started["challenge_id"]))
+            self.assertFalse(challenge.is_internal_test)
+            self.assertEqual(challenge.registration_source, "public_registration")
 
-    def test_internal_record_does_not_block_same_candidate_official_registration(self) -> None:
+    def test_team_prelaunch_candidate_needs_no_second_registration_on_opening_day(self) -> None:
         application = self._internal_app()
         code_header = {"X-Internal-Test-Code": INTERNAL_CODE}
         payload = self._start_payload("same-candidate@example.invalid")
@@ -402,47 +420,33 @@ class PasswordlessApiTests(unittest.TestCase):
             internal = route_endpoint(application, "/api/registrations/start")(
                 payload, request_for(application, "/api/registrations/start", extra_headers=code_header),
             )
-            route_endpoint(application, "/api/registrations/verify-email")(
-                EmailOtpRequest(challenge_id=internal["challenge_id"], otp=self.sent_codes[-1]["otp"]),
-                request_for(application, "/api/registrations/verify-email", extra_headers=code_header),
-            )
         with self._at(REGISTRATION_OPENS_AT):
-            with self.factory() as session:
-                for challenge in session.query(VerificationChallenge).all():
-                    challenge.created_at = REGISTRATION_OPENS_AT.astimezone(timezone.utc) - timedelta(minutes=2)
-                session.commit()
-            official = route_endpoint(self.application, "/api/registrations/start")(
-                payload, request_for(self.application, "/api/registrations/start"),
+            team_result = route_endpoint(application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=internal["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                request_for(application, "/api/registrations/verify-email"),
             )
-            official_result = route_endpoint(self.application, "/api/registrations/verify-email")(
-                EmailOtpRequest(challenge_id=official["challenge_id"], otp=self.sent_codes[-1]["otp"]),
-                request_for(self.application, "/api/registrations/verify-email"),
+        self.assertEqual(team_result["registration_source"], "team_prelaunch")
+        with self._at(REGISTRATION_OPENS_AT):
+            duplicate_attempt = route_endpoint(application, "/api/registrations/start")(
+                payload, request_for(application, "/api/registrations/start"),
             )
-        self.assertFalse(official_result["is_internal_test"])
+        self.assertNotIn("challenge_id", duplicate_attempt)
         with self.factory() as session:
-            rows = session.query(Registration).order_by(Registration.is_internal_test).all()
-            self.assertEqual([row.is_internal_test for row in rows], [False, True])
+            self.assertEqual(session.query(Registration).count(), 1)
 
-    def test_internal_bypass_and_internal_challenge_are_rejected_at_open(self) -> None:
+    def test_prelaunch_access_code_is_unnecessary_at_open_for_new_public_registration(self) -> None:
         application = self._internal_app()
         header = {"X-Internal-Test-Code": INTERNAL_CODE}
-        with self._at(datetime(2026, 10, 31, 23, 59, tzinfo=ZoneInfo("Asia/Kolkata"))):
-            started = route_endpoint(application, "/api/registrations/start")(
-                self._start_payload(), request_for(application, "/api/registrations/start", extra_headers=header),
-            )
         with self._at(REGISTRATION_OPENS_AT):
-            with self.assertRaises(HTTPException) as bypass:
-                route_endpoint(application, "/api/registrations/start")(
-                    self._start_payload("bypass@example.invalid"),
-                    request_for(application, "/api/registrations/start", extra_headers=header),
-                )
-            self.assertEqual(bypass.exception.status_code, 403)
-            with self.assertRaises(HTTPException) as verify:
-                route_endpoint(application, "/api/registrations/verify-email")(
-                    EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
-                    request_for(application, "/api/registrations/verify-email"),
-                )
-        self.assertEqual(verify.exception.status_code, 403)
+            started = route_endpoint(application, "/api/registrations/start")(
+                self._start_payload("public-after-open@example.invalid"),
+                request_for(application, "/api/registrations/start"),
+            )
+        with self.factory() as session:
+            self.assertEqual(
+                session.get(VerificationChallenge, UUID(started["challenge_id"])).registration_source,
+                "public_registration",
+            )
 
     def test_closing_boundary_rejects_internal_and_public_start_verify_and_resend(self) -> None:
         application = self._internal_app()
@@ -479,6 +483,111 @@ class PasswordlessApiTests(unittest.TestCase):
         application = create_app(settings, session_factory=self.factory)
         cors = next(middleware for middleware in application.user_middleware if middleware.cls.__name__ == "CORSMiddleware")
         self.assertIn("X-Internal-Test-Code", cors.kwargs["allow_headers"])
+
+    def _export_app_with_synthetic_rows(self):
+        settings = Settings(
+            app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
+            otp_hmac_pepper=PEPPER, registration_export_key=EXPORT_CODE,
+        )
+        application = create_app(settings, session_factory=self.factory)
+        with self.factory() as session:
+            team = Candidate(
+                full_name='=HYPERLINK("https://formula.invalid","click")',
+                email="team@example.invalid", phone="+919876543210",
+                email_verified_at=datetime(2026, 10, 30, tzinfo=ZoneInfo("Asia/Kolkata")),
+            )
+            public = Candidate(
+                full_name="Public Candidate", email="public@example.invalid", phone="+919876543211",
+                email_verified_at=datetime(2026, 11, 2, tzinfo=ZoneInfo("Asia/Kolkata")),
+            )
+            session.add_all([team, public])
+            session.flush()
+            session.add_all([
+                Registration(
+                    candidate_id=team.id, event_key="BHC-2026", registration_id="SUT26-TEAMTEST",
+                    stream="nursing", status="active", registration_source="team_prelaunch",
+                ),
+                Registration(
+                    candidate_id=team.id, event_key="BHC-2026", registration_id="SUT26-LEGACYTEST",
+                    stream="nursing", status="active", is_internal_test=True,
+                    registration_source="legacy_internal_test",
+                ),
+                Registration(
+                    candidate_id=public.id, event_key="BHC-2026", registration_id="SUT26-PUBLICTEST",
+                    stream="paramedical", status="active", registration_source="public_registration",
+                ),
+            ])
+            session.commit()
+        return application
+
+    def test_registration_export_requires_configured_key_and_rejects_invalid_token(self) -> None:
+        endpoint = route_endpoint(self.application, "/api/admin/registrations/export")
+        with self.assertRaises(HTTPException) as missing_config:
+            endpoint(request_for(self.application, "/api/admin/registrations/export"))
+        self.assertEqual(missing_config.exception.status_code, 503)
+        application = self._export_app_with_synthetic_rows()
+        with self.assertRaises(HTTPException) as unauthorized:
+            route_endpoint(application, "/api/admin/registrations/export")(
+                request_for(application, "/api/admin/registrations/export"),
+                x_registration_export_key="incorrect-export-key",
+            )
+        self.assertEqual(unauthorized.exception.status_code, 403)
+
+    def test_registration_export_filters_sources_includes_verification_and_has_utf8_bom(self) -> None:
+        application = self._export_app_with_synthetic_rows()
+        export = route_endpoint(application, "/api/admin/registrations/export")
+        request = request_for(application, "/api/admin/registrations/export", method="GET")
+        all_response = export(request, x_registration_export_key=EXPORT_CODE)
+        self.assertEqual(all_response.status_code, 200)
+        self.assertTrue(all_response.body.startswith(b"\xef\xbb\xbf"))
+        rows = list(csv.DictReader(io.StringIO(all_response.body.decode("utf-8-sig"))))
+        self.assertEqual(len(rows), 3)
+        legacy_rows = [row for row in rows if row["registration_id"] == "SUT26-LEGACYTEST"]
+        self.assertEqual(len(legacy_rows), 1)
+        self.assertEqual(legacy_rows[0]["registration_source"], "legacy_internal_test")
+        self.assertEqual(set(rows[0]), {
+            "registration_id", "full_name", "email", "mobile", "stream", "registration_date_ist",
+            "email_verified", "mobile_verified", "registration_source",
+        })
+        team = export(request, source="team_prelaunch", x_registration_export_key=EXPORT_CODE)
+        team_rows = list(csv.DictReader(io.StringIO(team.body.decode("utf-8-sig"))))
+        self.assertEqual(len(team_rows), 1)
+        self.assertEqual(team_rows[0]["registration_id"], "SUT26-TEAMTEST")
+        self.assertEqual(team_rows[0]["registration_source"], "team_prelaunch")
+        self.assertEqual(team_rows[0]["email_verified"], "yes")
+        self.assertEqual(team_rows[0]["mobile_verified"], "no")
+        public = export(request, source="public_registration", x_registration_export_key=EXPORT_CODE)
+        public_rows = list(csv.DictReader(io.StringIO(public.body.decode("utf-8-sig"))))
+        self.assertEqual(len(public_rows), 1)
+        self.assertEqual(public_rows[0]["registration_source"], "public_registration")
+
+    def test_registration_export_all_labels_legacy_and_official_filters_exclude_it(self) -> None:
+        application = self._export_app_with_synthetic_rows()
+        export = route_endpoint(application, "/api/admin/registrations/export")
+        request = request_for(application, "/api/admin/registrations/export", method="GET")
+        all_rows = list(csv.DictReader(io.StringIO(export(
+            request, source="all", x_registration_export_key=EXPORT_CODE,
+        ).body.decode("utf-8-sig"))))
+        self.assertEqual(
+            [row["registration_id"] for row in all_rows if row["registration_source"] == "legacy_internal_test"],
+            ["SUT26-LEGACYTEST"],
+        )
+        for source in ("team_prelaunch", "public_registration"):
+            rows = list(csv.DictReader(io.StringIO(export(
+                request, source=source, x_registration_export_key=EXPORT_CODE,
+            ).body.decode("utf-8-sig"))))
+            self.assertTrue(all(row["registration_source"] == source for row in rows))
+            self.assertNotIn("SUT26-LEGACYTEST", {row["registration_id"] for row in rows})
+
+    def test_registration_export_neutralizes_formula_in_candidate_text(self) -> None:
+        application = self._export_app_with_synthetic_rows()
+        response = route_endpoint(application, "/api/admin/registrations/export")(
+            request_for(application, "/api/admin/registrations/export", method="GET"),
+            source="team_prelaunch", x_registration_export_key=EXPORT_CODE,
+        )
+        rows = list(csv.DictReader(io.StringIO(response.body.decode("utf-8-sig"))))
+        self.assertTrue(rows[0]["full_name"].startswith("'=HYPERLINK("))
+        self.assertNotIn(EXPORT_CODE, response.body.decode("utf-8-sig"))
 
     def test_failed_otp_submission_returns_unavailable_and_invalidates_challenge(self) -> None:
         failing_app = create_app(

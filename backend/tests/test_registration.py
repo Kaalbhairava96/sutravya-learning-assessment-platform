@@ -258,6 +258,113 @@ class RegistrationAccountTests(unittest.TestCase):
             revoke_candidate_session(session, login.raw_session_token, now=self.now + timedelta(seconds=64))
             self.assertIsNone(get_candidate_session(session, login.raw_session_token, now=self.now + timedelta(seconds=65)))
 
+    def test_legacy_test_only_candidate_cannot_login_but_can_complete_one_real_registration(self) -> None:
+        with self.factory() as session:
+            candidate = Candidate(
+                full_name="Legacy Synthetic Candidate", email="legacy-candidate@example.invalid",
+                phone="+919876543210", email_verified_at=self.now,
+            )
+            session.add(candidate)
+            session.flush()
+            legacy = Registration(
+                candidate_id=candidate.id, event_key="BHC-2026", registration_id="SUT26-LEGACY001",
+                stream="nursing", status="active", is_internal_test=True,
+                registration_source="legacy_internal_test",
+            )
+            session.add(legacy)
+            session.commit()
+            candidate_id, legacy_id = candidate.id, legacy.id
+
+            self.assertIsNone(create_login_challenge(
+                session, settings=settings(), email="legacy-candidate@example.invalid", now=self.now,
+            ))
+
+            pending = create_registration_challenge(
+                session, settings=settings(), name="Legacy Synthetic Candidate",
+                email="legacy-candidate@example.invalid", mobile="9876543210", stream="paramedical",
+                now=self.now + timedelta(seconds=61),
+            )
+            outcome, summary = verify_registration_email(
+                session, settings=settings(), challenge_id=pending.challenge_id,
+                otp=pending.otp, now=self.now + timedelta(seconds=62),
+            )
+            self.assertEqual(outcome, ChallengeVerification.VERIFIED)
+            self.assertEqual(summary.registration_source, "public_registration")
+            session.expire_all()
+            saved_legacy = session.get(Registration, legacy_id)
+            self.assertEqual(saved_legacy.registration_id, "SUT26-LEGACY001")
+            self.assertTrue(saved_legacy.is_internal_test)
+            self.assertEqual(saved_legacy.registration_source, "legacy_internal_test")
+            registrations = session.scalars(
+                select(Registration).where(Registration.candidate_id == candidate_id)
+            ).all()
+            self.assertEqual(len(registrations), 2)
+            official = next(row for row in registrations if not row.is_internal_test)
+            self.assertEqual(official.registration_source, "public_registration")
+            self.assertEqual(official.status, "active")
+            session.rollback()
+
+            login_challenge = create_login_challenge(
+                session, settings=settings(), email="legacy-candidate@example.invalid",
+                now=self.now + timedelta(seconds=123),
+            )
+            self.assertIsNotNone(login_challenge)
+            outcome, login = verify_login_email(
+                session, settings=settings(), email="legacy-candidate@example.invalid",
+                otp=login_challenge.otp, now=self.now + timedelta(seconds=124),
+            )
+            self.assertEqual(outcome, ChallengeVerification.VERIFIED)
+            self.assertIsNotNone(get_candidate_session(
+                session, login.raw_session_token, now=self.now + timedelta(seconds=125),
+            ))
+
+    def test_legacy_internal_challenge_cannot_verify_or_be_resent(self) -> None:
+        with self.factory() as session:
+            candidate = Candidate(
+                full_name="Legacy Challenge Candidate", email="legacy-challenge@example.invalid",
+                phone="+919876543210",
+            )
+            session.add(candidate)
+            session.flush()
+            challenge = VerificationChallenge(
+                candidate_id=candidate.id, channel="email", purpose=REGISTRATION_OTP_PURPOSE,
+                destination_digest="d" * 64, otp_digest="e" * 64,
+                created_at=self.now, expires_at=self.now + timedelta(minutes=5),
+                is_internal_test=True, registration_source="legacy_internal_test",
+            )
+            session.add(challenge)
+            session.commit()
+            challenge_id = challenge.id
+
+            outcome, summary = verify_registration_email(
+                session, settings=settings(), challenge_id=challenge_id, otp="123456",
+                now=self.now + timedelta(seconds=1),
+            )
+            self.assertEqual(outcome, ChallengeVerification.NOT_FOUND)
+            self.assertIsNone(summary)
+            with self.assertRaises(RegistrationError):
+                resend_email_challenge(
+                    session, settings=settings(), challenge_id=challenge_id,
+                    expected_purpose=REGISTRATION_OTP_PURPOSE, now=self.now + timedelta(seconds=61),
+                )
+
+    def test_public_candidate_login_eligibility(self) -> None:
+        candidate_id, summary = self.register_candidate("public-login@example.invalid")
+        self.assertEqual(summary.registration_source, "public_registration")
+        with self.factory() as session:
+            challenge = create_login_challenge(
+                session, settings=settings(), email="public-login@example.invalid",
+                now=self.now + timedelta(seconds=61),
+            )
+            self.assertIsNotNone(challenge)
+            outcome, login = verify_login_email(
+                session, settings=settings(), email="public-login@example.invalid", otp=challenge.otp,
+                now=self.now + timedelta(seconds=62),
+            )
+            self.assertEqual(outcome, ChallengeVerification.VERIFIED)
+            self.assertEqual(login.registration_id, summary.registration_id)
+            self.assertEqual(session.get(Candidate, candidate_id).email, "public-login@example.invalid")
+
     def test_session_expiry_and_rate_limit_persistence(self) -> None:
         _, summary = self.register_candidate("expiry@example.invalid")
         with self.factory() as session:

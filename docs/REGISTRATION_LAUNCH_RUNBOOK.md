@@ -12,11 +12,11 @@ This microsite supports candidate registration only. The exam engine and exam lo
 
 The API gates registration start, registration OTP verification, and registration OTP resend using Asia/Kolkata server-side time. Pending OTP challenges cannot complete registration after the deadline. The UI also disables registration outside the window.
 
-## Pre-launch internal rehearsal
+## Team pre-launch registration
 
-Internal testing is a temporary backend-only mode. In the API service's private Render environment, set `INTERNAL_TEST_MODE=true` and create a high-entropy `INTERNAL_TEST_ACCESS_CODE` (at least 16 characters). Never put that code in this repository, static-host settings, screenshots, or public issue reports. The landing page shows a separate Internal Team Testing panel before launch; the browser sends the entered code only in the `X-Internal-Test-Code` HTTPS request header. The API rate-limits these attempts, compares the code in constant time, and records internal challenge/registration flags. Internal records are excluded from ordinary candidate login and do not block the same verified person from making an official registration.
+In the API service's private Render environment, set `INTERNAL_TEST_MODE=true` and create a high-entropy `INTERNAL_TEST_ACCESS_CODE` (at least 16 characters). Never put that code in this repository, static-host settings, screenshots, or public issue reports. Before opening, the landing page presents a clearly separated team access panel, then uses the same official candidate form, registration endpoints, email OTP, ID generation, and database journey. The browser sends the access code only in the `X-Internal-Test-Code` HTTPS request header. The API rate-limits attempts and compares the code in constant time. A completed team registration is active, is eligible for ordinary candidate login, and has `registration_source=team_prelaunch`; it is not a test-only registration.
 
-The bypass ends in server logic at **1 November 2026, 00:00 IST**, even if the Render variables remain set. Internal OTP challenges cannot be verified or resent at/after that time. Before the opening instant, set `INTERNAL_TEST_MODE=false` and remove `INTERNAL_TEST_ACCESS_CODE` from Render; restart the API. At and after the closing deadline, the backend rejects all registration start, verification, and resend requests regardless of these settings. Apply Alembic revision `0005_internal_test_flags` to the intended production database before enabling this rehearsal or public registration; existing rows receive `false` and are not rewritten or deleted.
+At **1 November 2026, 00:00 IST**, the access code is no longer required. Pending team OTP challenges can still be completed without the code and keep their `team_prelaunch` source. Disable `INTERNAL_TEST_MODE` and remove its code from Render by the opening time as an operational cleanup; server date enforcement independently makes the gate unnecessary. At and after the closing deadline, the backend rejects all registration start, verification, and resend requests. Migration `0006_reg_source` must be applied before deploying the matching backend code. It preserves existing IDs and flags, classifies historical `is_internal_test=true` rows as `legacy_internal_test`, and aborts safely if duplicate non-internal candidate/event registrations exist.
 
 ## Frontend and API configuration
 
@@ -32,6 +32,10 @@ bash scripts/build_assessment_site.sh
 
 Inspect `assessment-public/` before upload. The builder fails if an unexpected or restricted file is present. Its output directory is ignored by Git.
 
+## Backend update order
+
+This code revision requires Alembic `0006_reg_source`. First inspect the production database's current Alembic revision and confirm it is on the expected `0005_internal_test_flags` ancestry. Review the migration's duplicate candidate/event precheck; if it reports duplicates, stop and resolve them with the data owner rather than deleting rows. Back up the managed database and run the approved migration job to `head` before rolling out the matching backend code. Verify the resulting revision is `0006_reg_source`, then deploy the backend. Do not run the migration from a developer shell against an unverified or shared database.
+
 ## Dedicated assessment subdomain deployment
 
 The existing `.github/workflows/pages.yml` deploys only on pushes to `main` (or manual dispatch), stages the existing Pages allowlist, and invokes GitHub Pages configuration. The active working branch is `registration-launch`. **Do not merge this branch to `main` or run that workflow until the repository’s current Pages custom domain and ownership are confirmed.** Do not change the GitHub Pages custom domain for the existing SUTRAVYA homepage.
@@ -43,7 +47,8 @@ Recommended isolated deployment procedure:
 3. Deploy the preview URL first. Confirm the registration page, contact page, sign-in page, logo/assets, responsive layout, and API base URL.
 4. In that static site’s custom-domain settings, add exactly `assessment.sutravya.in`. Configure the DNS record type and target exactly as Render specifies for that service, then wait for domain verification and TLS provisioning. Do not alter apex-domain DNS records.
 5. Before opening registration, update the API service’s existing `CORS_ORIGINS` value by **preserving every current origin** and appending `https://assessment.sutravya.in` as another comma-separated exact origin. Do not replace the existing list with only the new origin. Save the Render setting and redeploy/restart the API as Render requires. No CORS value is changed by this runbook.
-6. Verify the deployed static page over HTTPS, then confirm browser API requests use the configured API host and include credentials. Check the browser console and network panel for CORS errors.
+6. In the API service's private environment, set `REGISTRATION_EXPORT_KEY` to a separate high-entropy value of at least 32 characters. Do not set it on the static site.
+7. Verify the deployed static page over HTTPS, then confirm browser API requests use the configured API host and include credentials. Check the browser console and network panel for CORS errors.
 
 The static site build contains no backend package, `.env`, database, question bank, answer key, or candidate records. The GitHub Pages workflow remains unchanged and is not the deployment path for this subdomain.
 
@@ -51,10 +56,22 @@ The static site build contains no backend package, `.env`, database, question ba
 
 ### Before opening
 
-- Check the page shows “Registration opens 1 November 2026” and the public form is disabled. For pre-launch internal rehearsal only, configure the two private internal-test variables in the backend and provide the access code through the UI; do not publish the code in frontend assets.
+- Check the page shows “Registration opens 1 November 2026” and the public form is disabled. If authorised team early registration is intentionally enabled, configure the two private backend variables and use the panel; this creates a real active candidate registration and sends a real OTP email. Never use disposable data on production.
 - Check API health and confirm a registration attempt is rejected before opening.
 - Run the local automated tests below. They use mocked time and mocked email delivery.
 - Confirm the final CORS origin list is preserved and includes the exact HTTPS microsite origin.
+
+## Organiser CSV export
+
+The API has no admin login yet, so the export endpoint uses a dedicated `REGISTRATION_EXPORT_KEY` kept only in the API service's private environment. An organiser can download all registrations or one source from Windows PowerShell:
+
+```powershell
+.\scripts\export_registrations.ps1 -Source all
+.\scripts\export_registrations.ps1 -Source team_prelaunch
+.\scripts\export_registrations.ps1 -Source public_registration
+```
+
+The script prompts for the key without echoing it and saves a UTF-8-BOM CSV under the local Downloads folder by default. Choose an access-controlled local folder, do not commit or email the CSV, and delete it when the organiser's approved retention period ends. The endpoint returns only registration/contact/export fields and protects text fields from spreadsheet formulas.
 
 ### During the open window
 

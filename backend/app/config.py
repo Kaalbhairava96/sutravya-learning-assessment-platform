@@ -82,6 +82,7 @@ class Settings:
     cors_origins: tuple[str, ...] = ()
     internal_test_mode: bool = False
     internal_test_access_code: str | None = field(default=None, repr=False)
+    registration_export_key: str | None = field(default=None, repr=False)
 
     def __post_init__(self) -> None:
         if self.app_env not in {"development", "test", "production"}:
@@ -95,6 +96,8 @@ class Settings:
             raise ConfigurationError("INTERNAL_TEST_ACCESS_CODE is required when internal test mode is enabled.")
         if self.internal_test_access_code is not None and len(self.internal_test_access_code) < 16:
             raise ConfigurationError("INTERNAL_TEST_ACCESS_CODE must contain at least 16 characters when configured.")
+        if self.registration_export_key is not None and len(self.registration_export_key) < 32:
+            raise ConfigurationError("REGISTRATION_EXPORT_KEY must contain at least 32 characters when configured.")
         for name, value in (
             ("OTP_EXPIRY_SECONDS", self.otp_expiry_seconds),
             ("OTP_MAX_ATTEMPTS", self.otp_max_attempts),
@@ -167,4 +170,5 @@ class Settings:
             ),
             internal_test_mode=internal_mode_raw == "true",
             internal_test_access_code=values.get("INTERNAL_TEST_ACCESS_CODE") or None,
+            registration_export_key=values.get("REGISTRATION_EXPORT_KEY") or None,
         )
