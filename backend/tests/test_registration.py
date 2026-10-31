@@ -94,6 +94,10 @@ class RegistrationAccountTests(unittest.TestCase):
             validate_registration("  A   Candidate ", "Person@Example.com", "+91 98765-43210", "NURSING"),
             ("A Candidate", "person@example.com", "+919876543210", "nursing"),
         )
+        self.assertEqual(
+            validate_registration("Other Candidate", "other@example.com", "9876543211", "OTHER"),
+            ("Other Candidate", "other@example.com", "+919876543211", "other"),
+        )
         for values in (
             ("Candidate", "invalid", "9876543210", "nursing"),
             ("Candidate", "candidate@example.invalid", "12345", "nursing"),

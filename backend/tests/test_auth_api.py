@@ -304,9 +304,9 @@ class PasswordlessApiTests(unittest.TestCase):
         with self.factory() as session:
             self.assertEqual(session.query(Registration).count(), 0)
 
-    def test_all_three_streams_are_accepted_during_registration_window(self) -> None:
+    def test_all_four_streams_are_accepted_during_registration_window(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
-        for index, stream in enumerate(("paramedical", "nursing", "mbbs_1st_year")):
+        for index, stream in enumerate(("paramedical", "nursing", "mbbs_1st_year", "other")):
             with self.subTest(stream=stream):
                 result = start(
                     RegistrationRequest(
