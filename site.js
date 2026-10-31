@@ -1,18 +1,25 @@
 /* Shared microsite shell and interactions. Keep event facts in this object. */
 const eventConfig = Object.freeze({
-  title: 'QualiNova Assessment 2026',
+  title: 'Healthcare Talent Search Exam 2026',
+  shortTitle: 'Healthcare Talent Search Exam',
+  examFee: 'Free of Cost',
+  registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
+  registrationOpensDate: '1 November 2026',
+  registrationOpensTime: '12:00 AM IST',
+  registrationClosesLabel: '15 November 2026 at 11:59:59 PM IST',
+  registrationClosesDate: '15 November 2026',
+  registrationClosesTime: '11:59:59 PM IST',
   examDate: '4 December 2026',
   registrationOpensAt: Date.parse('2026-10-31T18:30:00.000Z'), // 1 Nov, 00:00 IST
   registrationClosesAt: Date.parse('2026-11-15T18:29:59.999Z'), // 15 Nov, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
-  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
+  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year', 'Other']),
   questionCount: 100,
   durationMinutes: 30,
+  negativeMarking: false,
   awardsPublished: false,
-  ideaRoundEnabled: false,
   nursingSyllabusApproved: false,
-  officialSampleAnswersPublished: false,
-  examStartTimeApproved: false
+  officialSampleAnswersPublished: false
 });
 
 const navigation = [
@@ -53,7 +60,7 @@ function icon(name) {
 const header = document.querySelector('[data-header]');
 if (header) {
   const links = navigation.map(([url, label]) => `<a href="${url}"${url === currentPage ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  header.innerHTML = `<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner"><a class="brand" href="index.html" aria-label="SUTRAVYA Assessment home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a><button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">${icon('menu')}</span><span>Menu</span></button><nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">${links}<a class="nav-register" href="index.html#register">Register now ${icon('arrow')}</a></nav></div></header>`;
+  header.innerHTML = `<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner"><div class="header-brand-lockup"><a class="brand" href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a><span class="header-brand-divider" aria-hidden="true"></span><a class="partner-brand" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova, event organiser"><small>EVENT ORGANISER</small><img src="assets/qualinova-logo.png" alt="QualiNova"></a></div><button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">${icon('menu')}</span><span>Menu</span></button><nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">${links}<a class="nav-register" href="index.html#register">Register now ${icon('arrow')}</a></nav></div></header>`;
   const toggle = header.querySelector('.nav-toggle');
   const nav = header.querySelector('.primary-nav');
   const closeMenu = () => { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation'); toggle.querySelector('.nav-toggle-icon').innerHTML = icon('menu'); };
@@ -70,7 +77,7 @@ if (header) {
 
 const footer = document.querySelector('[data-footer]');
 if (footer) {
-  footer.innerHTML = `<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid"><div class="footer-brand"><a href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA"></a><p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for QualiNova Assessment 2026.</p><a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in ${icon('arrow')}</a></div><div class="footer-column"><h2>Explore</h2>${navigation.slice(0, 5).map(([url, label]) => `<a href="${url}">${label}</a>`).join('')}</div><div class="footer-column"><h2>Assessment</h2><span>4 December 2026</span><span>Online · 3 streams</span><span>100 MCQs · 30 minutes</span><span>No negative marking</span><a href="index.html#register">Registration details ${icon('arrow')}</a></div><div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com ${icon('arrow')}</a><h2 class="footer-subheading">Assessment partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Assessment microsite</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>`;
+  footer.innerHTML = `<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid"><div class="footer-brand"><a href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA"></a><p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p><a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in ${icon('arrow')}</a></div><div class="footer-column"><h2>Explore</h2>${navigation.slice(0, 5).map(([url, label]) => `<a href="${url}">${label}</a>`).join('')}</div><div class="footer-column"><h2>Exam details</h2><span>4 December 2026</span><span>Online · ${eventConfig.streams.length} registration categories</span><span>100 MCQs · 30 minutes</span><span>No negative marking</span><span class="footer-free">Free of cost</span><a href="index.html#register">Registration details ${icon('arrow')}</a></div><div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com ${icon('arrow')}</a><h2 class="footer-subheading">Assessment &amp; technology partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>`;
 }
 
 function registrationState(now = Date.now()) {
@@ -78,6 +85,127 @@ function registrationState(now = Date.now()) {
   if (now > eventConfig.registrationClosesAt) return 'closed';
   return 'open';
 }
+
+function applyCentralEventContent() {
+  document.querySelectorAll('[data-event-name]').forEach(node => { node.textContent = eventConfig.title; });
+  document.querySelectorAll('[data-event-date]').forEach(node => { node.textContent = eventConfig.examDate; });
+  document.querySelectorAll('[data-event-fee]').forEach(node => { node.textContent = eventConfig.examFee; });
+  document.querySelectorAll('[data-event-question-count]').forEach(node => { node.textContent = String(eventConfig.questionCount); });
+  document.querySelectorAll('[data-event-duration]').forEach(node => { node.textContent = String(eventConfig.durationMinutes); });
+  document.querySelectorAll('[data-event-stream-count]').forEach(node => { node.textContent = String(eventConfig.streams.length); });
+  document.querySelectorAll('[data-registration-open-date]').forEach(node => { node.textContent = eventConfig.registrationOpensDate; });
+  document.querySelectorAll('[data-registration-open-time]').forEach(node => { node.textContent = eventConfig.registrationOpensTime; });
+  document.querySelectorAll('[data-registration-close-date]').forEach(node => { node.textContent = eventConfig.registrationClosesDate; });
+  document.querySelectorAll('[data-registration-close-time]').forEach(node => { node.textContent = eventConfig.registrationClosesTime; });
+}
+applyCentralEventContent();
+
+function initCampaignCarousel() {
+  const carousel = document.querySelector('[data-campaign-carousel]');
+  if (!carousel) return;
+  const slides = [...carousel.querySelectorAll('[data-campaign-slide]')];
+  const dots = [...carousel.querySelectorAll('[data-campaign-dot]')];
+  const previous = carousel.querySelector('[data-campaign-prev]');
+  const next = carousel.querySelector('[data-campaign-next]');
+  const toggle = carousel.querySelector('[data-campaign-toggle]');
+  const toggleIcon = carousel.querySelector('[data-campaign-toggle-icon]');
+  const toggleLabel = carousel.querySelector('[data-campaign-toggle-label]');
+  if (slides.length !== 3 || dots.length !== 3) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let active = 0;
+  let timer = null;
+  let userPaused = reducedMotion.matches;
+  let hoverPaused = false;
+  let focusPaused = false;
+  let pointerStart = null;
+
+  const isPaused = () => userPaused || hoverPaused || focusPaused || document.hidden || reducedMotion.matches;
+  const syncPauseControl = () => {
+    const paused = isPaused();
+    carousel.classList.toggle('is-paused', paused);
+    toggle?.setAttribute('aria-pressed', String(userPaused));
+    toggle?.setAttribute('aria-label', userPaused ? 'Play automatic slides' : 'Pause automatic slides');
+    if (toggleIcon) toggleIcon.textContent = userPaused ? '▶' : 'Ⅱ';
+    if (toggleLabel) toggleLabel.textContent = userPaused ? 'Play automatic slides' : 'Pause automatic slides';
+  };
+  const stop = () => { if (timer) window.clearInterval(timer); timer = null; };
+  const schedule = () => {
+    stop();
+    syncPauseControl();
+    if (!isPaused()) timer = window.setInterval(() => show(active + 1), 6000);
+  };
+  function show(index) {
+    active = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const current = i === active;
+      slide.hidden = !current;
+      slide.classList.toggle('is-active', current);
+      slide.setAttribute('aria-hidden', String(!current));
+    });
+    dots.forEach((dot, i) => {
+      const current = i === active;
+      dot.classList.toggle('is-active', current);
+      dot.setAttribute('aria-pressed', String(current));
+    });
+    carousel.dataset.activeSlide = String(active + 1);
+    if (timer) schedule();
+  }
+
+  previous?.addEventListener('click', () => { show(active - 1); schedule(); });
+  next?.addEventListener('click', () => { show(active + 1); schedule(); });
+  dots.forEach(dot => dot.addEventListener('click', () => { show(Number(dot.dataset.campaignDot)); schedule(); }));
+  toggle?.addEventListener('click', () => { userPaused = !userPaused; schedule(); });
+  carousel.addEventListener('pointerenter', () => { hoverPaused = true; schedule(); });
+  carousel.addEventListener('pointerleave', () => { hoverPaused = false; schedule(); });
+  carousel.addEventListener('focusin', event => {
+    if (event.target.matches(':focus-visible')) { focusPaused = true; schedule(); }
+  });
+  carousel.addEventListener('focusout', () => {
+    window.setTimeout(() => {
+      focusPaused = [...carousel.querySelectorAll(':focus')].some(element => element.matches(':focus-visible'));
+      schedule();
+    }, 0);
+  });
+  carousel.addEventListener('keydown', event => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowLeft') { event.preventDefault(); show(active - 1); schedule(); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); show(active + 1); schedule(); }
+  });
+  carousel.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'touch') pointerStart = { x: event.clientX, y: event.clientY };
+  }, { passive: true });
+  carousel.addEventListener('pointerup', event => {
+    if (!pointerStart) return;
+    const dx = event.clientX - pointerStart.x;
+    const dy = event.clientY - pointerStart.y;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+      show(active + (dx < 0 ? 1 : -1));
+      schedule();
+    }
+    pointerStart = null;
+  }, { passive: true });
+  carousel.addEventListener('pointercancel', () => { pointerStart = null; });
+  document.addEventListener('visibilitychange', schedule);
+  reducedMotion.addEventListener?.('change', event => {
+    if (event.matches) userPaused = true;
+    schedule();
+  });
+  show(0);
+  schedule();
+}
+initCampaignCarousel();
+
+function updateRegistrationSlideStatus() {
+  const status = document.querySelector('[data-registration-slide-status]');
+  if (!status) return;
+  const state = registrationState();
+  status.textContent = state === 'before' ? 'REGISTRATION OPENS 1 NOVEMBER'
+    : state === 'open' ? 'REGISTRATION IS OPEN'
+      : 'REGISTRATION CLOSED';
+  status.dataset.state = state;
+}
+updateRegistrationSlideStatus();
 function formatRemaining(milliseconds) {
   const total = Math.max(0, Math.floor(milliseconds / 1000));
   return { days: Math.floor(total / 86400), hours: Math.floor(total % 86400 / 3600), minutes: Math.floor(total % 3600 / 60), seconds: total % 60 };
@@ -98,10 +226,11 @@ function updateCountdown() {
   const description = document.querySelector('[data-window-description]');
   if (title) title.textContent = state === 'before' ? 'Registration opens soon' : state === 'open' ? 'Registration is open' : 'Registration is closed';
   if (description) description.textContent = state === 'before'
-    ? 'Public registration opens 1 November 2026 at 12:00 AM IST.'
-    : state === 'open' ? 'Complete registration by 15 November 2026 at 11:59:59 PM IST.'
+    ? `Public registration opens ${eventConfig.registrationOpensLabel}.`
+    : state === 'open' ? `Complete registration by ${eventConfig.registrationClosesLabel}.`
       : 'The registration period ended on 15 November 2026.';
   box.classList.toggle('countdown-closed', state === 'closed');
+  updateRegistrationSlideStatus();
 }
 updateCountdown();
 window.setInterval(updateCountdown, 1000);
@@ -119,11 +248,25 @@ document.querySelectorAll('[data-register-form]').forEach(form => {
   const internalFields = form.querySelector('[data-registration-fields]');
   const internalRecordLabel = form.querySelector('[data-internal-record-label]');
   const internalSuccess = form.querySelector('[data-internal-success]');
+  const progressSteps = [...form.querySelectorAll('[data-reg-progress]')];
+  const updateProgress = current => {
+    progressSteps.forEach((step, index) => {
+      const number = index + 1;
+      step.classList.toggle('is-complete', number < current);
+      if (number === current) step.setAttribute('aria-current', 'step');
+      else step.removeAttribute('aria-current');
+    });
+  };
+  updateProgress(1);
   let challengeId = '';
   let completed = false;
   let internalAccessCode = '';
   let challengeIsTeamPrelaunch = false;
-  const internalHeaders = () => registrationState() === 'before' ? { 'X-Internal-Test-Code': internalAccessCode } : {};
+  // Preserve pre-launch authorization for the lifetime of a challenge. A team
+  // candidate may request OTP before midnight IST and verify it after public opening.
+  const internalHeaders = () => (challengeIsTeamPrelaunch || registrationState() === 'before') && internalAccessCode
+    ? { 'X-Internal-Test-Code': internalAccessCode }
+    : {};
   const showMessage = (message, isError = false) => {
     if (!note) return;
     note.textContent = message;
@@ -132,10 +275,13 @@ document.querySelectorAll('[data-register-form]').forEach(form => {
   };
   const updateRegistrationWindow = () => {
     const state = registrationState();
+    updateRegistrationSlideStatus();
     if (windowNote) {
       windowNote.classList.toggle('is-closed', state === 'closed');
       windowNote.classList.toggle('is-open', state === 'open');
-      windowNote.textContent = state === 'before' ? 'Public registration opens 1 November 2026 at 12:00 AM IST.' : state === 'closed' ? 'Registration closed on 15 November 2026 at 11:59:59 PM IST.' : 'Registration is open until 15 November 2026 at 11:59:59 PM IST.';
+      const message = state === 'before' ? `Public registration opens ${eventConfig.registrationOpensLabel}.` : state === 'closed' ? `Registration closed on ${eventConfig.registrationClosesLabel}.` : `Registration is open until ${eventConfig.registrationClosesLabel}.`;
+      // Only update this live status when the registration state/message changes.
+      if (windowNote.textContent !== message) windowNote.textContent = message;
     }
     const before = state === 'before';
     const closed = state === 'closed';
@@ -185,6 +331,7 @@ document.querySelectorAll('[data-register-form]').forEach(form => {
       form.querySelectorAll('[data-registration-field]').forEach(field => { field.hidden = true; });
       if (startButton) startButton.hidden = true;
       if (otpStep) otpStep.hidden = false;
+      updateProgress(2);
       otpInput?.focus();
       showMessage('If delivery succeeds, enter the 6-digit code sent to your email.');
     } catch (error) { showMessage(error.message, true); }
@@ -198,6 +345,10 @@ document.querySelectorAll('[data-register-form]').forEach(form => {
     try {
       const result = await apiRequest('/api/registrations/verify-email', { challenge_id: challengeId, otp: otpInput.value }, 'POST', internalHeaders());
       completed = true;
+      updateProgress(3);
+      // The challenge is complete; discard the internal access code from page memory.
+      internalAccessCode = '';
+      challengeIsTeamPrelaunch = false;
       const registrationId = result.registration_id || '';
       form.querySelector('[data-registration-id]').textContent = registrationId;
       if (internalSuccess) internalSuccess.hidden = result.registration_source !== 'team_prelaunch';
@@ -268,6 +419,19 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
     finally { if (!signedIn) button.disabled = false; }
   });
 });
+
+
+// Keep publication states driven by the single event configuration object.
+const awardsGrid = document.querySelector('.award-preview-grid');
+if (awardsGrid) {
+  document.body.dataset.awardsStatus = eventConfig.awardsPublished ? 'published' : 'pending';
+  awardsGrid.querySelectorAll('.award-preview').forEach(card => card.classList.toggle('is-pending', !eventConfig.awardsPublished));
+}
+const nursingFramework = document.querySelector('.syllabus-stream-ready');
+if (nursingFramework) {
+  nursingFramework.classList.toggle('is-proposed', !eventConfig.nursingSyllabusApproved);
+  document.body.dataset.nursingSyllabusStatus = eventConfig.nursingSyllabusApproved ? 'approved' : 'proposed';
+}
 
 document.querySelectorAll('[data-sample]').forEach(group => group.addEventListener('change', event => {
   const pending = group.querySelector('.answer-pending');

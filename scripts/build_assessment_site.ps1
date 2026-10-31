@@ -1,53 +1,68 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $PublishDir = Join-Path $RepoRoot 'assessment-public'
 
-$SourceFiles = @(
-    'index.html', 'awards.html', 'syllabus.html',
-    'sample-papers.html', 'faqs.html', 'contact.html',
-    'login.html', 'styles.css', 'site.js'
-)
+if (Test-Path -LiteralPath $PublishDir) {
+    $publishItem = Get-Item -LiteralPath $PublishDir -Force
+    if (($publishItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+        throw 'Refusing to stage the public site through a symlink or reparse point.'
+    }
+}
 
-$AssetFiles = @(
-    'awards-hero.svg', 'contact-hero.svg', 'faq-hero.svg',
-    'favicon.svg', 'handshake.svg', 'nurse-tech.svg',
-    'qualinova-logo.png', 'sample-hero.svg',
-    'sutravya-logo.png', 'syllabus-hero.svg'
+$SourceFiles = @(
+    'index.html', 'awards.html', 'syllabus.html', 'sample-papers.html',
+    'faqs.html', 'contact.html', 'login.html', 'team-prelaunch.html', 'styles.css', 'site.js'
 )
+$AssetFiles = @(
+    'awards-hero.svg'
+    'contact-hero.svg'
+    'faq-hero.svg'
+    'favicon.svg'
+    'handshake.svg'
+    'nurse-tech.svg'
+    'qualinova-logo.png'
+    'sample-hero.svg'
+    'sutravya-logo.png'
+    'syllabus-hero.svg'
+    'hero-registration.webp'
+    'hero-free.webp'
+    'hero-talent.webp'
+    'healthcare-talent-search-og.jpg'
+)
+$AllowedPublicFiles = @($SourceFiles) + @($AssetFiles | ForEach-Object { "assets/$_" })
 
 New-Item -ItemType Directory -Path $PublishDir -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $PublishDir 'assets') -Force | Out-Null
 
 foreach ($file in $SourceFiles) {
-    $src = Join-Path $RepoRoot $file
-    if (!(Test-Path -LiteralPath $src -PathType Leaf)) {
-        throw "Missing source file: $file"
+    $source = Join-Path $RepoRoot $file
+    if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
+        throw "Missing required public file: $file"
     }
-    Copy-Item -LiteralPath $src -Destination $PublishDir -Force
+    Copy-Item -LiteralPath $source -Destination (Join-Path $PublishDir $file) -Force
 }
-
 foreach ($file in $AssetFiles) {
-    $src = Join-Path (Join-Path $RepoRoot 'assets') $file
-    if (!(Test-Path -LiteralPath $src -PathType Leaf)) {
-        throw "Missing asset: assets/$file"
+    $source = Join-Path (Join-Path $RepoRoot 'assets') $file
+    if (-not (Test-Path -LiteralPath $source -PathType Leaf)) {
+        throw "Missing required public asset: assets/$file"
     }
-    Copy-Item -LiteralPath $src -Destination (Join-Path $PublishDir 'assets') -Force
+    Copy-Item -LiteralPath $source -Destination (Join-Path (Join-Path $PublishDir 'assets') $file) -Force
 }
 
-$Allowed = @($SourceFiles) + @($AssetFiles | ForEach-Object { "assets/$_" })
-
-$Unexpected = @(
-    Get-ChildItem -LiteralPath $PublishDir -Recurse -File |
-    ForEach-Object {
-        $relative = $_.FullName.Substring($PublishDir.Length).TrimStart('\','/') -replace '\\','/'
-        if ($Allowed -notcontains $relative) { $relative }
-    }
-)
-
+$Unexpected = @()
+Get-ChildItem -LiteralPath $PublishDir -Recurse -File | ForEach-Object {
+    $relative = $_.FullName.Substring($PublishDir.Length).TrimStart('\', '/') -replace '\\', '/'
+    if ($AllowedPublicFiles -notcontains $relative) { $Unexpected += $relative }
+}
 if ($Unexpected.Count -gt 0) {
-    throw "Unexpected files in public bundle: $($Unexpected -join ', ')"
+    throw "Unexpected file(s) in public bundle: $($Unexpected -join ', '). Remove or review them before building."
 }
 
-Write-Host "Assessment microsite staged successfully!" -ForegroundColor Green
-Write-Host "Files staged: $((Get-ChildItem $PublishDir -Recurse -File).Count)"
+$Restricted = Get-ChildItem -LiteralPath $PublishDir -Recurse -File | Where-Object {
+    $_.Name -eq '.env' -or $_.Extension -in @('.db', '.sqlite', '.xlsx') -or $_.Name -match 'answer.?key'
+}
+if ($Restricted) { throw 'A restricted file was found in the public bundle. Build aborted.' }
+
+Write-Host "Assessment microsite staged successfully in $PublishDir" -ForegroundColor Green
+Write-Host "Files staged: $((Get-ChildItem -LiteralPath $PublishDir -Recurse -File).Count)"
