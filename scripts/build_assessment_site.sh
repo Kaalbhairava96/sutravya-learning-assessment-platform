@@ -10,12 +10,14 @@ if [[ -L "$publish_dir" ]]; then
 fi
 mkdir -p "$publish_dir/assets"
 
-# Stage only the registration microsite allowlist. Never publish the repository root.
-for file in index.html contact.html login.html styles.css visuals.css exam.css site.js; do
+# Stage only the assessment microsite allowlist. Never publish the repository root.
+for file in index.html awards.html syllabus.html sample-papers.html faqs.html contact.html login.html styles.css site.js; do
   [[ -f "$repo_root/$file" ]] || { echo "Missing required public file: $file" >&2; exit 1; }
   cp "$repo_root/$file" "$publish_dir/$file"
 done
-for file in assets/contact-hero.svg assets/handshake.svg assets/qualinova-logo.png assets/sutravya-logo.png; do
+for file in assets/awards-hero.svg assets/contact-hero.svg assets/faq-hero.svg assets/handshake.svg \
+  assets/nurse-tech.svg assets/qualinova-logo.png assets/sample-hero.svg assets/sutravya-logo.png \
+  assets/syllabus-hero.svg; do
   [[ -f "$repo_root/$file" ]] || { echo "Missing required public asset: $file" >&2; exit 1; }
   cp "$repo_root/$file" "$publish_dir/$file"
 done
@@ -23,8 +25,9 @@ done
 # Fail closed if a stale or unexpected file remains in a reused build directory.
 while IFS= read -r relative_path; do
   case "$relative_path" in
-    ./index.html|./contact.html|./login.html|./styles.css|./visuals.css|./exam.css|./site.js|\
-    ./assets/contact-hero.svg|./assets/handshake.svg|./assets/qualinova-logo.png|./assets/sutravya-logo.png)
+    ./index.html|./awards.html|./syllabus.html|./sample-papers.html|./faqs.html|./contact.html|./login.html|./styles.css|./site.js|\
+    ./assets/awards-hero.svg|./assets/contact-hero.svg|./assets/faq-hero.svg|./assets/handshake.svg|\
+    ./assets/nurse-tech.svg|./assets/qualinova-logo.png|./assets/sample-hero.svg|./assets/sutravya-logo.png|./assets/syllabus-hero.svg)
       ;;
     *) echo "Unexpected file in public site bundle: $relative_path" >&2; exit 1 ;;
   esac
