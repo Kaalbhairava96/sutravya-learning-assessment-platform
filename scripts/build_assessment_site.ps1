@@ -11,8 +11,9 @@ if (Test-Path -LiteralPath $PublishDir) {
 }
 
 $SourceFiles = @(
-    'index.html', 'awards.html', 'syllabus.html', 'sample-papers.html',
-    'faqs.html', 'contact.html', 'login.html', 'team-prelaunch.html', 'styles.css', 'site.js'
+    'index.html', 'awards.html', 'syllabus.html', 'sample-papers.html', 'mock-test.html',
+    'faqs.html', 'contact.html', 'login.html', 'team-prelaunch.html', 'styles.css', 'site.js',
+    'sample-papers.js', 'mock-test.js', 'question-bank.js'
 )
 $AssetFiles = @(
     'awards-hero.svg'
@@ -29,6 +30,8 @@ $AssetFiles = @(
     'hero-free.webp'
     'hero-talent.webp'
     'healthcare-talent-search-og.jpg'
+    'awards-podium.webp'
+    'htse-campaign-postcard.webp'
 )
 $AllowedPublicFiles = @($SourceFiles) + @($AssetFiles | ForEach-Object { "assets/$_" })
 
