@@ -44,8 +44,8 @@ class CandidateExamServiceTests(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         self.factory = sessionmaker(bind=self.engine, expire_on_commit=False)
         self.session = self.factory()
-        self.addCleanup(self.session.close)
         self.addCleanup(self.engine.dispose)
+        self.addCleanup(self.session.close)
         candidate = Candidate(
             full_name="Synthetic Candidate",
             email="exam-candidate@example.invalid",
@@ -124,23 +124,30 @@ class CandidateExamServiceTests(unittest.TestCase):
         self.assertNotIn("correct_option", started["questions"][0])
         self.assertNotIn("is_correct", started["questions"][0])
         attempt_id = started["attempt_id"]
-        first = self.questions[0]
-        second = self.questions[1]
+        from uuid import UUID
+        first_id = UUID(started["questions"][0]["question_id"])
+        second_id = UUID(started["questions"][1]["question_id"])
+        first_index = next(index for index, question in enumerate(self.questions) if question.id == first_id)
+        second_index = next(index for index, question in enumerate(self.questions) if question.id == second_id)
+        first = self.questions[first_index]
+        second = self.questions[second_index]
+        first_correct = self.correct_options[first_index]
+        second_wrong = self.wrong_options[second_index]
 
         self.assertTrue(save_answer(
-            self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id),
-            question_id=first.id, option_id=self.correct_options[0].id, now=NOW + timedelta(minutes=1),
+            self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
+            question_id=first.id, option_id=first_correct.id, now=NOW + timedelta(minutes=1),
         )["saved"])
         save_answer(
-            self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id),
-            question_id=second.id, option_id=self.wrong_options[1].id, now=NOW + timedelta(minutes=1),
+            self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
+            question_id=second.id, option_id=second_wrong.id, now=NOW + timedelta(minutes=1),
         )
-        resumed = get_attempt(self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id), now=NOW + timedelta(minutes=2))
-        self.assertEqual(resumed["questions"][0]["selected_option_id"], str(self.correct_options[0].id))
+        resumed = get_attempt(self.session, RAW_TOKEN, attempt_id=UUID(attempt_id), now=NOW + timedelta(minutes=2))
+        self.assertEqual(resumed["questions"][0]["selected_option_id"], str(first_correct.id))
         self.assertNotIn("correct_option", resumed["questions"][0])
 
         result = submit_exam(
-            self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id),
+            self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
             now=NOW + timedelta(minutes=5),
         )
         self.assertEqual(result["status"], "submitted")
@@ -161,7 +168,7 @@ class CandidateExamServiceTests(unittest.TestCase):
         with self.assertRaises(ExamError) as locked:
             save_answer(
                 self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id),
-                question_id=first.id, option_id=self.wrong_options[0].id,
+                question_id=first.id, option_id=self.wrong_options[first_index].id,
                 now=NOW + timedelta(minutes=6),
             )
         self.assertEqual(locked.exception.code, "attempt_not_in_progress")
