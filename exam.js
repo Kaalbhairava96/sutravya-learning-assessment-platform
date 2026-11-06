@@ -155,8 +155,15 @@
   };
   const moveNext = async automatic => {
     if (moving || busy || !attempt) return;
-    if (!automatic && !currentQuestion?.answered && !currentQuestion?.selected_option_id) {
-      if (!window.confirm('No answer is selected. Continue and record this question as unanswered?')) return;
+    const unanswered = !currentQuestion?.answered && !currentQuestion?.selected_option_id;
+    if (!automatic && unanswered) {
+      if (!window.confirm('No answer is selected. Skip this question? You cannot return to it.')) return;
+      try {
+        await request('/api/exam/attempts/' + attempt.attempt_id + '/questions/' + currentPosition + '/skip','POST');
+      } catch (error) {
+        message(error.message,true);
+        return;
+      }
     }
     stopQuestionTimer();
     if (currentPosition >= 99) {
