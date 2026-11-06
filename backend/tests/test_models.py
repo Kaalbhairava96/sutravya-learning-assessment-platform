@@ -268,8 +268,12 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(question_timing_revision.down_revision, "0009_exam_slot_stream")
         self.assertIn("stream", Base.metadata.tables["exam_slots"].columns)
         self.assertIn("section", Base.metadata.tables["questions"].columns)
+        self.assertIn("difficulty", Base.metadata.tables["questions"].columns)
         self.assertIn("time_limit_seconds", Base.metadata.tables["questions"].columns)
+        self.assertIn("position", Base.metadata.tables["candidate_responses"].columns)
+        self.assertIn("presented_at", Base.metadata.tables["candidate_responses"].columns)
         self.assertIn("deadline_at", Base.metadata.tables["candidate_responses"].columns)
+        self.assertIn("answered_at", Base.metadata.tables["candidate_responses"].columns)
         self.assertIn("option_order", Base.metadata.tables["candidate_responses"].columns)
         self.assertEqual(len(Base.metadata.tables), 15)
 
