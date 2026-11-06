@@ -121,3 +121,9 @@ and 0 for unanswered. Each question has its own server-enforced timer and shuffl
 option order; candidates receive one question at a time and cannot revisit passed
 questions. The overall attempt ceiling is 55 minutes, while question-level timers
 are individually configured (15–60 seconds).
+
+
+The candidate portal also requests full-screen mode, blocks page copy/paste, and
+records authenticated focus/visibility/full-screen integrity events against the
+attempt. These controls are deterrents and audit signals, not a guarantee against
+external devices or off-screen assistance.
