@@ -18,6 +18,7 @@ from sqlalchemy import (
     ForeignKeyConstraint,
     Index,
     Integer,
+    JSON,
     MetaData,
     Numeric,
     String,
@@ -289,6 +290,12 @@ class Question(TimestampMixin, Base):
     __table_args__ = (
         UniqueConstraint("question_bank_id", "id", name="uq_questions_bank_id_id"),
         Index("ix_questions_question_bank_id", "question_bank_id"),
+        CheckConstraint(
+            "section IN ('anatomy', 'physiology', 'biology', 'quantitative_reasoning', 'english_communication')",
+            name="ck_questions_approved_section",
+        ),
+        CheckConstraint("difficulty IN ('easy', 'moderate')", name="ck_questions_difficulty"),
+        CheckConstraint("time_limit_seconds BETWEEN 15 AND 60", name="ck_questions_time_limit"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
@@ -299,6 +306,9 @@ class Question(TimestampMixin, Base):
     )
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     category: Mapped[str | None] = mapped_column(String(120))
+    section: Mapped[str] = mapped_column(String(40), nullable=False, default="biology", server_default="biology")
+    difficulty: Mapped[str] = mapped_column(String(20), nullable=False, default="easy", server_default="easy")
+    time_limit_seconds: Mapped[int] = mapped_column(Integer, nullable=False, default=20, server_default="20")
     explanation: Mapped[str | None] = mapped_column(Text)
     source_reference: Mapped[str | None] = mapped_column(String(200))
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default=false())
@@ -406,6 +416,8 @@ class CandidateResponse(TimestampMixin, Base):
             name="fk_responses_option_belongs_to_question",
         ),
         Index("ix_candidate_responses_question_id", "question_id"),
+        UniqueConstraint("attempt_id", "position", name="uq_responses_attempt_position"),
+        Index("ix_candidate_responses_attempt_position", "attempt_id", "position"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
@@ -421,6 +433,11 @@ class CandidateResponse(TimestampMixin, Base):
     )
     # Null is allowed for an unanswered question; composite FK binds selections to their question.
     selected_option_id: Mapped[UUID | None] = mapped_column(Uuid(as_uuid=True))
+    position: Mapped[int | None] = mapped_column(Integer)
+    presented_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    option_order: Mapped[list[str] | None] = mapped_column(JSON)
 
     attempt: Mapped[ExamAttempt] = relationship(back_populates="responses")
     question: Mapped[Question] = relationship(back_populates="responses")
