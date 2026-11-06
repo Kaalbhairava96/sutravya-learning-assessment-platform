@@ -109,7 +109,7 @@ def _scoring_rule(session: Session, bank: QuestionBank) -> ScoringRule:
         or rule.correct_points is None
         or rule.incorrect_points is None
         or rule.unanswered_points is None
-        or rule.correct_points <= 0
+        or rule.correct_points != Decimal('1')
         or rule.incorrect_points != Decimal('-0.25')
         or rule.unanswered_points != 0
     ):
@@ -161,7 +161,7 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
             )
         ) or 0)
         try:
-            _question_set(session, bank)
+            _ordered_questions(session, bank)
             _scoring_rule(session, bank)
             ready = True
         except ExamError:
@@ -188,7 +188,11 @@ def _ordered_questions(session: Session, bank: QuestionBank) -> list[Question]:
         grouped[question.section].append(question)
     if any(len(grouped[section]) != 20 for section in section_order):
         raise ExamError("question_bank_invalid", 503)
-    return [question for section in section_order for question in grouped[section]]
+    ordered = []
+    for section in section_order:
+        secrets.SystemRandom().shuffle(grouped[section])
+        ordered.extend(grouped[section])
+    return ordered
 
 
 def start_exam(session: Session, raw_token: str | None, *, now: datetime | None = None) -> dict:
@@ -287,7 +291,7 @@ def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
         options_by_key = {option.identifier: option for option in question.options}
         option_order = response.option_order or ["A", "B", "C", "D"]
         return {
-            "position": position, "total_questions": QUESTION_COUNT,
+            "question_id": str(question.id), "position": position, "total_questions": QUESTION_COUNT,
             "section": question.section, "category": question.category,
             "difficulty": question.difficulty, "question_text": question.question_text,
             "time_limit_seconds": question.time_limit_seconds,
