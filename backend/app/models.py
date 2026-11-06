@@ -176,7 +176,12 @@ class ExamSlot(Base):
     __table_args__ = (
         CheckConstraint("ends_at > starts_at", name="ck_exam_slots_end_after_start"),
         CheckConstraint("capacity IS NULL OR capacity > 0", name="ck_exam_slots_positive_capacity"),
+        CheckConstraint(
+            "stream IS NULL OR stream IN ('paramedical', 'nursing', 'mbbs_1st_year')",
+            name="ck_exam_slots_stream_approved",
+        ),
         Index("ix_exam_slots_event_start", "event_key", "starts_at"),
+        Index("ix_exam_slots_event_stream_start", "event_key", "stream", "starts_at"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
