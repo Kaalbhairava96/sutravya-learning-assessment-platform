@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#063b67">
+  <meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com">
+  <title>Assessment Administration | SUTRAVYA</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-shell{max-width:1120px;margin:48px auto;padding:0 22px 64px}
+    .admin-hero{background:#063b67;color:#fff;border-radius:22px;padding:30px;margin-bottom:22px}
+    .admin-hero h1{margin:8px 0;font-size:clamp(28px,4vw,42px)}
+    .admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .admin-card{background:#fff;border:1px solid #dce5ec;border-radius:18px;padding:22px;box-shadow:0 8px 30px #0b2c4510}
+    .admin-card h2{font-size:20px;margin:0 0 14px;color:#063b67}
+    .admin-field{display:grid;gap:7px;margin:12px 0}
+    .admin-field label{font-size:13px;font-weight:700;color:#28485f}
+    .admin-field input,.admin-field select,.admin-field textarea{width:100%;border:1px solid #c8d4de;border-radius:10px;padding:12px;font:inherit;background:#fff;color:#172b3b}
+    .admin-field textarea{min-height:110px;resize:vertical}
+    .admin-button{border:0;border-radius:10px;background:#063b67;color:#fff;padding:12px 18px;font-weight:700;cursor:pointer}
+    .admin-button:disabled{opacity:.55;cursor:not-allowed}
+    .admin-muted{color:#63798a;font-size:13px}
+    .admin-status{min-height:24px;margin-top:12px;font-size:13px;white-space:pre-wrap}
+    .admin-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+    .admin-metric{background:#ffffff18;border:1px solid #ffffff30;border-radius:12px;padding:12px}
+    .admin-metric strong{display:block;font-size:25px}
+    .admin-streams{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+    .admin-stream{background:#f2f6f9;border-radius:12px;padding:13px;color:#17364d}
+    .admin-stream strong{display:block;margin-bottom:6px}
+    .admin-span{grid-column:1/-1}
+    @media(max-width:760px){.admin-grid{grid-template-columns:1fr}.admin-metrics,.admin-streams{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="admin-hero">
+      <span class="admin-muted" style="color:#d6e6f2">SUTRAVYA · QUALINOVA HTSE 2026</span>
+      <h1>Assessment administration</h1>
+      <p>Private organiser workspace for stream-wise slots, verified registrations and question-bank provisioning.</p>
+      <div class="admin-field">
+        <label for="admin-key" style="color:#fff">Administrator API key</label>
+        <input id="admin-key" type="password" autocomplete="off" placeholder="Enter the private ADMIN_API_KEY">
+      </div>
+      <button class="admin-button" id="connect" type="button">Connect securely</button>
+      <p class="admin-muted" style="color:#d6e6f2">The key stays in this page's memory only. It is not saved in browser storage.</p>
+      <div id="overview" aria-live="polite"></div>
+    </section>
+
+    <div class="admin-grid">
+      <section class="admin-card">
+        <h2>Create an exam slot</h2>
+        <form id="slot-form">
+          <div class="admin-field"><label for="slot-stream">Assessment stream</label><select id="slot-stream" required><option value="paramedical">Paramedical</option><option value="nursing">Nursing</option><option value="mbbs_1st_year">MBBS 1st Year</option></select></div>
+          <div class="admin-field"><label for="slot-start">Starts at (IST)</label><input id="slot-start" type="datetime-local" required></div>
+          <div class="admin-field"><label for="slot-end">Ends at (IST)</label><input id="slot-end" type="datetime-local" required></div>
+          <div class="admin-field"><label for="slot-capacity">Maximum simultaneous attempts</label><input id="slot-capacity" type="number" min="1" max="1500" value="1000" required></div>
+          <button class="admin-button" type="submit">Create slot</button>
+        </form>
+        <div class="admin-status" id="slot-status" aria-live="polite"></div>
+      </section>
+
+      <section class="admin-card">
+        <h2>Assign registrations</h2>
+        <form id="assign-form">
+          <div class="admin-field"><label for="assign-slot">Slot ID</label><input id="assign-slot" required placeholder="UUID of the stream slot"></div>
+          <div class="admin-field"><label for="registration-ids">Registration IDs</label><textarea id="registration-ids" required placeholder="Paste registration IDs separated by commas or new lines"></textarea></div>
+          <button class="admin-button" type="submit">Assign candidates</button>
+        </form>
+        <div class="admin-status" id="assign-status" aria-live="polite"></div>
+      </section>
+
+      <section class="admin-card admin-span">
+        <h2>Import official question bank</h2>
+        <p class="admin-muted">Upload a JSON file containing exactly 100 approved MCQs, four options (A–D) per question, one correct identifier and the approved marks per correct answer. The import is rejected if that stream already has questions or attempts.</p>
+        <div class="admin-field"><label for="question-file">Question-bank JSON</label><input id="question-file" type="file" accept=".json,application/json"></div>
+        <button class="admin-button" id="import-bank" type="button">Validate and import question bank</button>
+        <div class="admin-status" id="import-status" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>
