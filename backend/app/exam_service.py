@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -152,7 +152,9 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
         return {"eligible": True, "assigned": False, "stream": registration.stream, "message": "Exam slot is not assigned yet."}
     bank = session.scalar(select(QuestionBank).where(QuestionBank.bank_code == registration.stream))
     count = 0 if bank is None else int(session.scalar(
-        select(Question.id).where(Question.question_bank_id == bank.id, Question.is_active.is_(True)).count()
+        select(func.count(Question.id)).where(
+            Question.question_bank_id == bank.id, Question.is_active.is_(True)
+        )
     ) or 0)
     return {
         "eligible": True,
