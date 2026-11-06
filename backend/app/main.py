@@ -43,6 +43,7 @@ from app.exam_service import (
     exam_availability,
     get_attempt,
     get_current_attempt,
+    get_question,
     save_answer,
     start_exam,
     submit_exam,
@@ -173,6 +174,9 @@ class AdminOptionRequest(BaseModel):
 
 class AdminQuestionRequest(BaseModel):
     question_text: str = Field(min_length=1, max_length=10000)
+    section: Literal["anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication"]
+    difficulty: Literal["easy", "moderate"]
+    time_limit_seconds: int = Field(ge=15, le=60)
     category: str | None = Field(default=None, max_length=120)
     explanation: str | None = Field(default=None, max_length=10000)
     source_reference: str | None = Field(default=None, max_length=200)
@@ -215,6 +219,9 @@ def _exam_error(error: ExamError) -> HTTPException:
         "exam_slot_capacity_reached": "Your exam slot has reached its configured capacity. Please contact the organiser.",
         "question_bank_incomplete": "Your assessment paper is being prepared. Please contact the organiser.",
         "question_bank_invalid": "Your assessment paper is not ready. Please contact the organiser.",
+        "question_time_expired": "This question time has expired. Move to the next question.",
+        "question_not_presented": "Open this question before submitting an answer.",
+        "question_not_found": "This question is not available.",
         "scoring_rule_not_configured": "Your assessment scoring is not configured yet.",
         "attempt_already_submitted": "Your assessment attempt has already been submitted.",
         "attempt_not_found": "Assessment attempt not found.",
@@ -635,6 +642,19 @@ def create_app(
         except ExamError as error:
             raise _exam_error(error)
 
+    @application.get("/api/exam/attempts/{attempt_id}/questions/{position}", tags=["candidate assessment"])
+    def candidate_exam_question(attempt_id: UUID, position: int, request: Request):
+        if position < 0 or position >= 100:
+            raise HTTPException(status_code=404, detail="Question not found.")
+        try:
+            with _session(request) as session:
+                return get_question(
+                    session, request.cookies.get(SESSION_COOKIE),
+                    attempt_id=attempt_id, position=position,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
     @application.get("/api/exam/attempts/{attempt_id}", tags=["candidate assessment"])
     def candidate_exam_attempt(attempt_id: UUID, request: Request):
         try:
@@ -785,6 +805,12 @@ def create_app(
     ):
         _require_admin(request.app.state.settings, x_admin_key)
         expected = {"A", "B", "C", "D"}
+        section_order = ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")
+        section_counts = {section: 0 for section in section_order}
+        for question in payload.questions:
+            section_counts[question.section] += 1
+        if any(section_counts[section] != 20 for section in section_order):
+            raise HTTPException(status_code=422, detail="Question bank must contain exactly 20 questions in each of the five approved sections.")
         for index, question in enumerate(payload.questions, start=1):
             identifiers = [option.identifier.strip().upper() for option in question.options]
             if set(identifiers) != expected or len(set(identifiers)) != 4:
@@ -814,19 +840,20 @@ def create_app(
             if rule is None:
                 rule = ScoringRule(
                     question_bank_id=bank.id, rule_code="htse_2026",
-                    correct_points=payload.correct_points, incorrect_points=Decimal("0"),
+                    correct_points=payload.correct_points, incorrect_points=Decimal("-0.25"),
                     unanswered_points=Decimal("0"),
                 )
                 session.add(rule)
             else:
                 rule.correct_points = payload.correct_points
-                rule.incorrect_points = Decimal("0")
+                rule.incorrect_points = Decimal("-0.25")
                 rule.unanswered_points = Decimal("0")
             for item in payload.questions:
                 question = Question(
                     question_bank_id=bank.id, question_text=item.question_text.strip(),
-                    category=item.category, explanation=item.explanation,
-                    source_reference=item.source_reference, is_active=True,
+                    category=item.category, section=item.section,
+                    difficulty=item.difficulty, time_limit_seconds=item.time_limit_seconds,
+                    explanation=item.explanation, source_reference=item.source_reference, is_active=True,
                 )
                 session.add(question)
                 session.flush()
@@ -843,7 +870,7 @@ def create_app(
             session.commit()
             return {"question_bank_id": str(bank.id), "stream": payload.stream,
                     "question_count": len(payload.questions), "correct_points": str(payload.correct_points),
-                    "negative_marking": False}
+                    "negative_marking": True, "incorrect_points": "-0.25"}
 
     @application.get("/api/admin/registrations/export", tags=["organiser export"])
     def export_registrations(
