@@ -125,7 +125,7 @@
       message('Your answer is saved securely when selected.');
       autoAdvance = questionRemaining <= 0;
     } catch (error) {
-      if (error.message.toLowerCase().includes('exam time has expired')) expiredOverall = true;
+      if (error.message.toLowerCase().includes('time has expired')) expiredOverall = true;
       else message(error.message, true);
     } finally { moving = false; }
     if (expiredOverall) await finish(true);
