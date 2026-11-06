@@ -51,10 +51,9 @@ def _candidate_registration(session: Session, raw_token: str | None, *, lock: bo
         raise ExamError("authentication_required", 401)
     digest = hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
     statement = (
-        select(Registration, Candidate, ExamSlot)
+        select(Registration, Candidate)
         .join(Candidate, Candidate.id == Registration.candidate_id)
         .join(CandidateSession, CandidateSession.candidate_id == Candidate.id)
-        .outerjoin(ExamSlot, ExamSlot.id == Registration.exam_slot_id)
         .where(
             CandidateSession.token_digest == digest,
             CandidateSession.revoked_at.is_(None),
@@ -179,6 +178,21 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
         bank = _bank_for_stream(session, registration.stream or "")
         questions = _question_set(session, bank)
         _scoring_rule(session, bank)
+        if slot.capacity is not None:
+            active_attempts = int(session.scalar(
+                select(func.count(ExamAttempt.id)).where(
+                    ExamAttempt.exam_slot_id == slot.id,
+                    ExamAttempt.status == "in_progress",
+                )
+            ) or 0)
+            existing_for_registration = session.scalar(
+                select(ExamAttempt.id).where(
+                    ExamAttempt.registration_id == registration.id,
+                    ExamAttempt.status == "in_progress",
+                )
+            )
+            if active_attempts >= slot.capacity and existing_for_registration is None:
+                raise ExamError("exam_slot_capacity_reached", 429)
         existing = session.scalar(
             select(ExamAttempt).where(ExamAttempt.registration_id == registration.id)
             .order_by(ExamAttempt.attempt_number.desc()).with_for_update()
