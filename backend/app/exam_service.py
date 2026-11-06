@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.models import (
     AnswerOption,
+    AuditEvent,
     Candidate,
     CandidateResponse,
     CandidateSession,
@@ -319,6 +320,31 @@ def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
                 for key in option_order if key in options_by_key
             ],
         }
+
+def record_integrity_event(
+    session: Session, raw_token: str | None, *, attempt_id: UUID,
+    event_type: str,
+) -> dict:
+    allowed = {
+        "candidate_tab_hidden", "candidate_window_blur", "candidate_fullscreen_exit",
+        "candidate_copy_attempt", "candidate_paste_attempt",
+    }
+    if event_type not in allowed:
+        raise ExamError("invalid_integrity_event", 422)
+    with session.begin():
+        registration, _candidate, _slot = _candidate_registration(session, raw_token, lock=True)
+        attempt = session.scalar(select(ExamAttempt).where(
+            ExamAttempt.id == attempt_id, ExamAttempt.registration_id == registration.id
+        ).with_for_update())
+        if attempt is None:
+            raise ExamError("attempt_not_found", 404)
+        if attempt.status != "in_progress":
+            raise ExamError("attempt_not_in_progress", 409)
+        session.add(AuditEvent(
+            action=event_type, target_type="exam_attempt", target_id=attempt.id,
+        ))
+        return {"recorded": True}
+
 
 def skip_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
                   position: int, now: datetime | None = None) -> dict:
