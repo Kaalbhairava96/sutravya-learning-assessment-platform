@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import unittest
 from datetime import datetime, timedelta, timezone
+from uuid import UUID
 from decimal import Decimal
 
 from sqlalchemy import create_engine, event
