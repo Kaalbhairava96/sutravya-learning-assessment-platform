@@ -61,6 +61,7 @@ HttpOnly candidate sessions. It exposes:
 
 - `GET /api/exam/availability` — assigned stream, slot window and question-bank readiness.
 - `POST /api/exam/attempts/start` — create or resume the single in-progress attempt.
+- `GET /api/exam/attempts/current` — retrieve the candidate's active attempt or submitted result after refresh.
 - `GET /api/exam/attempts/{attempt_id}` — resume saved answers and remaining time.
 - `PUT /api/exam/attempts/{attempt_id}/answer` — persist one selected option.
 - `POST /api/exam/attempts/{attempt_id}/submit` — finalize and score an attempt.
@@ -105,3 +106,11 @@ The private noindex organiser page is `/admin.html`. Its API key remains in page
 memory only and is not stored in localStorage or sessionStorage. Configure
 `ADMIN_API_KEY` only in the private Render API environment; never put it in static
 site HTML, JavaScript, GitHub secrets exposed to browser builds, or a public file.
+
+
+The static candidate portal is `/exam.html`. After passwordless sign-in, the
+candidate account page exposes the assessment link. The portal checks the
+candidate session and assigned slot, resumes an in-progress attempt after refresh,
+saves each selected option through the answer endpoint, submits at the timer
+boundary, and displays the persisted result/review. Candidate exam and organiser
+assessment API responses are marked `Cache-Control: no-store`.
