@@ -226,6 +226,24 @@ class CandidateExamServiceTests(unittest.TestCase):
             )
         self.assertEqual(invalid.exception.code, "invalid_question_or_option")
 
+    def test_quarter_mark_negative_score_is_applied(self) -> None:
+        started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        attempt_id = UUID(started["attempt_id"])
+        for position in range(4):
+            question = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=position, now=NOW + timedelta(seconds=position))
+            question_id = UUID(question["question_id"])
+            question_index = next(i for i, item in enumerate(self.questions) if item.id == question_id)
+            wrong_id = next(option.id for option in self.questions[question_index].options if not option.is_correct)
+            save_answer(
+                self.session, RAW_TOKEN, attempt_id=attempt_id,
+                question_id=question_id, option_id=wrong_id,
+                now=NOW + timedelta(seconds=position + 1),
+            )
+        self.session.rollback()
+        result = submit_exam(self.session, RAW_TOKEN, attempt_id=attempt_id, now=NOW + timedelta(seconds=10))
+        self.assertEqual(result["incorrect_count"], 4)
+        self.assertEqual(result["score"], "-1.000")
+
     def test_unauthenticated_candidate_cannot_access_exam(self) -> None:
         with self.assertRaises(ExamError) as rejected:
             exam_availability(self.session, None, now=NOW)
