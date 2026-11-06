@@ -175,6 +175,8 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
         registration, _candidate, slot = _candidate_registration(session, raw_token, lock=True)
         if slot is None:
             raise ExamError("exam_slot_not_assigned", 409)
+        if slot.stream != registration.stream:
+            raise ExamError("exam_slot_stream_mismatch", 409)
         if not (_aware(slot.starts_at) <= current < _aware(slot.ends_at)):
             raise ExamError("exam_slot_not_open", 409)
         bank = _bank_for_stream(session, registration.stream or "")
@@ -185,6 +187,7 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
                 select(func.count(ExamAttempt.id)).where(
                     ExamAttempt.exam_slot_id == slot.id,
                     ExamAttempt.status == "in_progress",
+                    ExamAttempt.started_at > current - timedelta(seconds=EXAM_DURATION_SECONDS),
                 )
             ) or 0)
             existing_for_registration = session.scalar(
