@@ -216,13 +216,16 @@ class CandidateExamServiceTests(unittest.TestCase):
 
     def test_wrong_question_option_pair_is_rejected(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
-        question = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
-        other = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=1, now=NOW)
+        attempt_id = UUID(started["attempt_id"])
+        question = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW)
+        wrong_question_option_id = UUID(question["options"][0]["option_id"])
+        skip_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW + timedelta(seconds=1))
+        other = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=1, now=NOW + timedelta(seconds=2))
         with self.assertRaises(ExamError) as invalid:
             save_answer(
-                self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
-                question_id=UUID(question["question_id"]), option_id=UUID(other["options"][0]["option_id"]),
-                now=NOW + timedelta(seconds=1),
+                self.session, RAW_TOKEN, attempt_id=attempt_id,
+                question_id=UUID(other["question_id"]), option_id=wrong_question_option_id,
+                now=NOW + timedelta(seconds=3),
             )
         self.assertEqual(invalid.exception.code, "invalid_question_or_option")
 
