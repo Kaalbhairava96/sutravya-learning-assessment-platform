@@ -1,7 +1,7 @@
-"""Private persistence models for future assessment workflows.
+"""Persistence models for candidate registration and assessment workflows.
 
-These models define storage only. They do not implement registration, exam delivery,
-scoring, authorization, or result-release behavior.
+Exam tables are shared by the exam service; candidate-facing schemas must never
+serialize private answer-key columns before an attempt has been submitted.
 """
 
 from __future__ import annotations
