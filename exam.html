@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#063b67">
+  <meta name="description" content="Secure candidate assessment portal for Healthcare Talent Search Exam 2026.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com">
+  <title>My Assessment | Healthcare Talent Search Exam 2026</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .exam-shell{max-width:1120px;margin:38px auto;padding:0 20px 60px}
+    .exam-top{background:#063b67;color:#fff;border-radius:20px;padding:24px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+    .exam-top h1{font-size:clamp(24px,4vw,36px);margin:5px 0}
+    .exam-timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;background:#ffffff1c;border:1px solid #ffffff38;border-radius:12px;padding:10px 16px;min-width:112px;text-align:center}
+    .exam-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:18px;margin-top:18px}
+    .exam-card{background:#fff;border:1px solid #dce5ec;border-radius:16px;padding:22px}
+    .exam-q-meta{display:flex;justify-content:space-between;color:#5d7487;font-size:13px;margin-bottom:15px}
+    .exam-question{font-size:21px;line-height:1.5;color:#12354c;margin:0 0 20px}
+    .exam-options{display:grid;gap:10px}
+    .exam-option{display:flex;align-items:flex-start;gap:12px;border:1px solid #cfdae3;border-radius:12px;padding:14px;cursor:pointer}
+    .exam-option:has(input:checked){border-color:#0c5b8a;background:#eef6fb}
+    .exam-option input{margin-top:4px;accent-color:#063b67}
+    .exam-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .exam-button{border:0;border-radius:10px;padding:12px 17px;background:#063b67;color:white;font-weight:700;cursor:pointer}
+    .exam-button.secondary{background:#eaf0f5;color:#163b55}
+    .exam-button:disabled{opacity:.5;cursor:not-allowed}
+    .exam-nav{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+    .exam-nav button{border:1px solid #d0dbe4;border-radius:8px;padding:9px 2px;background:#fff;color:#23465d;cursor:pointer}
+    .exam-nav button.answered{background:#e6f3ec;border-color:#8dc3a5}
+    .exam-nav button.current{outline:2px solid #0a5b8b}
+    .exam-status{min-height:26px;color:#456176;font-size:14px;margin-top:14px;white-space:pre-wrap}
+    .exam-review{display:grid;gap:12px;margin-top:20px}
+    .exam-review-item{border:1px solid #d8e2e9;border-radius:12px;padding:14px}
+    .exam-review-item.correct{border-left:5px solid #34845c}
+    .exam-review-item.incorrect{border-left:5px solid #b94c4c}
+    .exam-muted{color:#62798b;font-size:13px}
+    .exam-score{font-size:34px;font-weight:800;color:#063b67}
+    @media(max-width:800px){.exam-layout{grid-template-columns:1fr}.exam-top{align-items:flex-start;flex-direction:column}.exam-timer{font-size:24px}}
+  </style>
+</head>
+<body>
+  <main class="exam-shell">
+    <a class="text-link" href="index.html">← Healthcare Talent Search Exam 2026</a>
+    <section class="exam-top">
+      <div><span class="exam-muted" style="color:#d4e4ef">CANDIDATE ASSESSMENT PORTAL</span><h1>My examination</h1><div id="candidate-info">Checking your secure session…</div></div>
+      <div id="timer" class="exam-timer" aria-live="off">30:00</div>
+    </section>
+    <section id="exam-content" class="exam-card" style="margin-top:18px" aria-live="polite">
+      <h2>Preparing your assessment</h2><p class="exam-muted">Your account and assigned exam slot are being checked.</p>
+    </section>
+    <div id="exam-status" class="exam-status" role="status" aria-live="polite"></div>
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>
