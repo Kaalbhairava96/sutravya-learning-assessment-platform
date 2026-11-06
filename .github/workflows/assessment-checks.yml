@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements-dev.txt
       - name: Run backend unit tests
-        run: python -m unittest discover -s tests -v
+        run: for suite in test_auth_api.py test_foundation.py test_models.py test_registration.py test_verification.py; do python -m unittest discover -s tests -p "$suite" -v || exit 1; done
 
   frontend-checks:
     runs-on: ubuntu-latest
