@@ -93,7 +93,7 @@ function renderContextualPostcard() {
   if (!promo) return;
   const section = document.createElement('section');
   section.className = 'section v4-postcard-section';
-  section.innerHTML = `<div class="wrap"><article class="v4-campaign-postcard"><div class="v4-postcard-art"><img src="${promo.image}" alt="${promo.alt}" loading="lazy"></div><div class="v4-postcard-copy"><span class="v4-eyebrow">${promo.eyebrow}</span><h2>${promo.title}</h2><p>${promo.copy}</p><a class="button button-gold" href="${promo.href}">${promo.cta} <span aria-hidden="true">→</span></a><div class="v4-postcard-prize-line"><span>1st ₹50,000</span><span>2nd ₹25,000</span><span>3rd ₹15,000</span></div></div></article></div>`;
+  section.innerHTML = `<div class="wrap"><article class="v4-campaign-postcard"><div class="v4-postcard-art"><img src="${promo.image}" alt="${promo.alt}" loading="lazy"></div><div class="v4-postcard-copy"><span class="v4-eyebrow">${promo.eyebrow}</span><h2>${promo.title}</h2><p>${promo.copy}</p><a class="button button-gold" href="${promo.href}">${promo.cta} <span aria-hidden="true">→</span></a><div class="v4-postcard-prize-line"><span>Stream-wise prizes</span><span>Four award categories</span></div></div></article></div>`;
   main.append(section);
 }
 renderContextualPostcard();
