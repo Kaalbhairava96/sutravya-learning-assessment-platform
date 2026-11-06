@@ -15,6 +15,7 @@ from app.exam_service import (
     exam_availability,
     get_attempt,
     get_current_attempt,
+    get_question,
     save_answer,
     start_exam,
     submit_exam,
@@ -89,6 +90,9 @@ class CandidateExamServiceTests(unittest.TestCase):
                 question_bank_id=bank.id,
                 question_text=f"Synthetic question {index + 1}",
                 category="General",
+                section=("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")[index // 20],
+                difficulty="easy" if index % 2 == 0 else "moderate",
+                time_limit_seconds=20 + (index % 5),
                 is_active=True,
             )
             self.session.add(question)
@@ -105,7 +109,7 @@ class CandidateExamServiceTests(unittest.TestCase):
             question_bank_id=bank.id,
             rule_code="htse_2026",
             correct_points=Decimal("1"),
-            incorrect_points=Decimal("0"),
+            incorrect_points=Decimal("-0.25"),
             unanswered_points=Decimal("0"),
         ))
         self.session.commit()
@@ -123,104 +127,80 @@ class CandidateExamServiceTests(unittest.TestCase):
     def test_start_hides_answer_key_saves_answers_and_reveals_review_after_submit(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
         self.assertEqual(started["status"], "in_progress")
-        self.assertEqual(len(started["questions"]), 100)
-        self.assertNotIn("correct_option", started["questions"][0])
-        self.assertNotIn("is_correct", started["questions"][0])
-        attempt_id = started["attempt_id"]
-        from uuid import UUID
-        first_id = UUID(started["questions"][0]["question_id"])
-        second_id = UUID(started["questions"][1]["question_id"])
-        first_index = next(index for index, question in enumerate(self.questions) if question.id == first_id)
-        second_index = next(index for index, question in enumerate(self.questions) if question.id == second_id)
-        first = self.questions[first_index]
-        second = self.questions[second_index]
-        first_correct = self.correct_options[first_index]
-        second_wrong = self.wrong_options[second_index]
-
+        self.assertEqual(started["total_questions"], 100)
+        self.assertNotIn("questions", started)
+        first = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
+        self.assertEqual(first["section"], "anatomy")
+        self.assertGreaterEqual(first["time_limit_seconds"], 20)
+        self.assertEqual(len(first["options"]), 4)
+        self.assertNotIn("correct_option", first)
+        first_id = UUID(first["question_id"])
+        first_index = next(i for i, q in enumerate(self.questions) if q.id == first_id)
+        correct_id = next(o.id for o in self.questions[first_index].options if o.is_correct)
         self.assertTrue(save_answer(
-            self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
-            question_id=first.id, option_id=first_correct.id, now=NOW + timedelta(minutes=1),
+            self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
+            question_id=first_id, option_id=correct_id, now=NOW + timedelta(seconds=3),
         )["saved"])
-        save_answer(
-            self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
-            question_id=second.id, option_id=second_wrong.id, now=NOW + timedelta(minutes=1),
-        )
-        resumed = get_attempt(self.session, RAW_TOKEN, attempt_id=UUID(attempt_id), now=NOW + timedelta(minutes=2))
-        self.assertEqual(resumed["questions"][0]["selected_option_id"], str(first_correct.id))
-        self.assertNotIn("correct_option", resumed["questions"][0])
-        # A read request is a separate request/session from the later submit request.
+        second = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=1, now=NOW + timedelta(seconds=4))
+        second_id = UUID(second["question_id"])
+        second_index = next(i for i, q in enumerate(self.questions) if q.id == second_id)
+        wrong_id = next(o.id for o in self.questions[second_index].options if not o.is_correct)
+        self.assertTrue(save_answer(
+            self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
+            question_id=second_id, option_id=wrong_id, now=NOW + timedelta(seconds=5),
+        )["saved"])
         self.session.rollback()
-
-        result = submit_exam(
-            self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
-            now=NOW + timedelta(minutes=5),
-        )
+        result = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(seconds=6))
         self.assertEqual(result["status"], "submitted")
-        self.assertEqual(result["score"], "1.000")
+        self.assertEqual(result["score"], "0.750")
         self.assertEqual(result["correct_count"], 1)
         self.assertEqual(result["incorrect_count"], 1)
         self.assertEqual(result["unanswered_count"], 98)
         self.assertEqual(result["total_questions"], 100)
-        self.assertEqual(result["review"][0]["correct_option"]["identifier"], "A")
-        self.assertTrue(result["review"][0]["is_correct"])
-        self.assertFalse(result["review"][1]["is_correct"])
-
-        repeated = submit_exam(
-            self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id),
-            now=NOW + timedelta(minutes=6),
-        )
+        repeated = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(seconds=7))
         self.assertEqual(repeated["score"], result["score"])
-        with self.assertRaises(ExamError) as locked:
+
+    def test_question_timer_is_server_enforced_and_unanswered_is_zero(self) -> None:
+        started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        question = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
+        question_id = UUID(question["question_id"])
+        index = next(i for i, q in enumerate(self.questions) if q.id == question_id)
+        wrong_id = next(o.id for o in self.questions[index].options if not o.is_correct)
+        with self.assertRaises(ExamError) as expired:
             save_answer(
-                self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(attempt_id),
-                question_id=first.id, option_id=self.wrong_options[first_index].id,
-                now=NOW + timedelta(minutes=6),
+                self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
+                question_id=question_id, option_id=wrong_id,
+                now=NOW + timedelta(seconds=question["time_limit_seconds"] + 1),
             )
-        self.assertEqual(locked.exception.code, "attempt_not_in_progress")
+        self.assertEqual(expired.exception.code, "question_time_expired")
+        self.session.rollback()
+        result = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(seconds=60))
+        self.assertEqual(result["unanswered_count"], 100)
+        self.assertEqual(result["score"], "0.000")
 
     def test_current_attempt_supports_resume_and_persisted_result_review(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
         self.session.rollback()
         current = get_current_attempt(self.session, RAW_TOKEN, now=NOW + timedelta(minutes=1))
         self.assertEqual(current["attempt"]["status"], "in_progress")
-        self.assertNotIn("correct_option", current["attempt"]["questions"][0])
+        self.assertEqual(current["attempt"]["current_position"], 0)
         self.session.rollback()
-        submitted = submit_exam(
-            self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
-            now=NOW + timedelta(minutes=2),
-        )
-        self.assertEqual(submitted["status"], "submitted")
+        submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(minutes=2))
         self.session.rollback()
         current_result = get_current_attempt(self.session, RAW_TOKEN, now=NOW + timedelta(minutes=3))
         self.assertEqual(current_result["attempt"]["status"], "submitted")
         self.assertEqual(len(current_result["attempt"]["review"]), 100)
 
-    def test_answer_cannot_be_saved_after_thirty_minute_deadline(self) -> None:
-        started = start_exam(self.session, RAW_TOKEN, now=NOW)
-        with self.assertRaises(ExamError) as expired:
-            save_answer(
-                self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(started["attempt_id"]),
-                question_id=self.questions[0].id, option_id=self.correct_options[0].id,
-                now=NOW + timedelta(minutes=31),
-            )
-        self.assertEqual(expired.exception.code, "exam_time_expired")
-        self.session.rollback()
-        # The candidate may still submit after the timer; no late answers are accepted.
-        result = submit_exam(
-            self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
-            now=NOW + timedelta(minutes=31),
-        )
-        self.assertEqual(result["status"], "submitted")
-        self.assertEqual(result["unanswered_count"], 100)
-        self.assertEqual(result["score"], "0.000")
-
     def test_wrong_question_option_pair_is_rejected(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        question = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
+        other = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=1, now=NOW)
         with self.assertRaises(ExamError) as invalid:
             save_answer(
-                self.session, RAW_TOKEN, attempt_id=__import__("uuid").UUID(started["attempt_id"]),
-                question_id=self.questions[0].id, option_id=self.wrong_options[1].id,
-                now=NOW + timedelta(minutes=1),
+                self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
+                question_id=UUID(question["question_id"]), option_id=UUID(other["options"][0]["option_id"]),
+                now=NOW + timedelta(seconds=1),
             )
         self.assertEqual(invalid.exception.code, "invalid_question_or_option")
 
