@@ -253,7 +253,7 @@ class PasswordlessApiTests(unittest.TestCase):
 
     def test_email_verification_is_allowed_at_the_last_instant_of_closing_date(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
-        with patch("app.main._registration_now", return_value=datetime(2026, 11, 15, 23, 55, tzinfo=ZoneInfo("Asia/Kolkata"))):
+        with patch("app.main._registration_now", return_value=datetime(2026, 11, 25, 23, 55, tzinfo=ZoneInfo("Asia/Kolkata"))):
             started = start(
                 RegistrationRequest(
                     full_name="Closing Boundary", mobile="9876543210",
