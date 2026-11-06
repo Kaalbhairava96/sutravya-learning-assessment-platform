@@ -16,6 +16,7 @@ from app.exam_service import (
     get_attempt,
     get_current_attempt,
     get_question,
+    record_integrity_event,
     save_answer,
     start_exam,
     skip_question,
@@ -26,6 +27,7 @@ from app.models import (
     Base,
     Candidate,
     CandidateSession,
+    AuditEvent,
     ExamSlot,
     Question,
     QuestionBank,
@@ -246,6 +248,26 @@ class CandidateExamServiceTests(unittest.TestCase):
         result = submit_exam(self.session, RAW_TOKEN, attempt_id=attempt_id, now=NOW + timedelta(seconds=10))
         self.assertEqual(result["incorrect_count"], 4)
         self.assertEqual(result["score"], "-1.000")
+
+    def test_integrity_events_are_audited_for_active_candidate_attempts(self) -> None:
+        started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        attempt_id = UUID(started["attempt_id"])
+        recorded = record_integrity_event(
+            self.session, RAW_TOKEN, attempt_id=attempt_id,
+            event_type="candidate_tab_hidden",
+        )
+        self.assertTrue(recorded["recorded"])
+        self.session.rollback()
+        event = self.session.query(AuditEvent).filter_by(
+            action="candidate_tab_hidden", target_id=attempt_id
+        ).one()
+        self.assertEqual(event.target_type, "exam_attempt")
+        with self.assertRaises(ExamError) as invalid:
+            record_integrity_event(
+                self.session, RAW_TOKEN, attempt_id=attempt_id,
+                event_type="candidate_ip_address",
+            )
+        self.assertEqual(invalid.exception.code, "invalid_integrity_event")
 
     def test_unauthenticated_candidate_cannot_access_exam(self) -> None:
         with self.assertRaises(ExamError) as rejected:
