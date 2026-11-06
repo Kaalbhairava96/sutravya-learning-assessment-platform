@@ -406,6 +406,12 @@ def save_answer(
         ).with_for_update())
         if response is None or response.presented_at is None or response.deadline_at is None:
             raise ExamError("question_not_presented", 409)
+        active_position = session.scalar(select(func.max(CandidateResponse.position)).where(
+            CandidateResponse.attempt_id == attempt.id,
+            CandidateResponse.presented_at.is_not(None),
+        ))
+        if response.position != active_position:
+            raise ExamError("question_already_passed", 409)
         if current >= _aware(response.deadline_at):
             raise ExamError("question_time_expired", 410)
         response.selected_option_id = option.id
