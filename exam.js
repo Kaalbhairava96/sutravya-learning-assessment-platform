@@ -6,11 +6,23 @@
   const timer = document.getElementById('timer');
   const candidateInfo = document.getElementById('candidate-info');
   let attempt = null;
-  let currentIndex = 0;
-  let countdown = null;
-  let remaining = 0;
+  let currentPosition = 0;
+  let currentQuestion = null;
+  let questionInterval = null;
+  let overallInterval = null;
+  let questionRemaining = 0;
+  let overallRemaining = 0;
   let busy = false;
+  let moving = false;
+  let answeredCount = 0;
 
+  const sections = [
+    {key:'anatomy', label:'Anatomy', start:0, end:20},
+    {key:'physiology', label:'Physiology', start:20, end:40},
+    {key:'biology', label:'Biology', start:40, end:60},
+    {key:'quantitative_reasoning', label:'Mathematics & Analytics', start:60, end:80},
+    {key:'english_communication', label:'English & Communication', start:80, end:100}
+  ];
   const message = (text, error = false) => {
     status.textContent = text;
     status.style.color = error ? '#a22d2d' : '#456176';
@@ -18,10 +30,8 @@
   const request = async (path, method = 'GET', body) => {
     if (!apiBase) throw new Error('Assessment API is not configured.');
     const response = await fetch(apiBase + path, {
-      method,
-      credentials: 'include',
-      cache: 'no-store',
-      headers: body ? {'Content-Type': 'application/json'} : {},
+      method, credentials:'include', cache:'no-store',
+      headers: body ? {'Content-Type':'application/json'} : {},
       body: body ? JSON.stringify(body) : undefined
     });
     let data = {};
@@ -34,126 +44,164 @@
   }[char]));
   const formatTime = seconds => {
     const safe = Math.max(0, seconds);
-    return String(Math.floor(safe / 60)).padStart(2, '0') + ':' + String(safe % 60).padStart(2, '0');
+    return String(Math.floor(safe / 60)).padStart(2,'0') + ':' + String(safe % 60).padStart(2,'0');
   };
-  const stopTimer = () => { if (countdown) clearInterval(countdown); countdown = null; };
-  const startTimer = seconds => {
-    stopTimer();
-    remaining = Math.max(0, seconds);
-    timer.textContent = formatTime(remaining);
-    countdown = setInterval(() => {
-      remaining = Math.max(0, remaining - 1);
-      timer.textContent = formatTime(remaining);
-      if (remaining === 0) {
-        stopTimer();
-        submit(true).catch(error => message(error.message, true));
+  const stopQuestionTimer = () => { if (questionInterval) clearInterval(questionInterval); questionInterval = null; };
+  const stopOverallTimer = () => { if (overallInterval) clearInterval(overallInterval); overallInterval = null; };
+  const sectionFor = position => sections.find(section => position >= section.start && position < section.end);
+  const renderProgress = () => {
+    const currentSection = sectionFor(currentPosition);
+    return '<div class="exam-progress"><div class="exam-progress-row"><span>Question ' +
+      (currentPosition + 1) + ' of 100</span><b>' + currentSection.label + '</b><span>' +
+      Math.round((currentPosition + 1) / 100 * 100) + '%</span></div><div class="exam-progress-track"><i style="width:' +
+      ((currentPosition + 1) / 100 * 100) + '%"></i></div><div class="exam-section-strip">' +
+      sections.map((section,index) => '<span class="' + (index === sections.indexOf(currentSection) ? 'active' : '') +
+      '">' + section.label + '</span>').join('') + '</div></div>';
+  };
+  const startOverallTimer = seconds => {
+    stopOverallTimer();
+    overallRemaining = Math.max(0, seconds);
+    overallInterval = setInterval(() => {
+      overallRemaining = Math.max(0, overallRemaining - 1);
+      const node = document.getElementById('overall-clock');
+      if (node) node.textContent = formatTime(overallRemaining);
+      if (overallRemaining <= 0) {
+        stopOverallTimer();
+        finish(true).catch(error => message(error.message, true));
       }
-    }, 1000);
+    },1000);
   };
-  const showIntro = (availability) => {
-    const start = availability.slot_starts_at ? new Date(availability.slot_starts_at).toLocaleString('en-IN', {timeZone:'Asia/Kolkata'}) : '';
-    content.innerHTML = '<h2>' + (availability.assigned ? 'Your assessment slot' : 'Slot assignment pending') + '</h2>' +
-      '<p class="exam-muted">' + (availability.assigned
-        ? 'Stream: ' + escapeHtml(availability.stream) + ' · ' + escapeHtml(start)
-        : 'Your registration is eligible. The organiser has not assigned an exam slot yet.') + '</p>' +
-      '<p>' + (availability.question_bank_ready
-        ? 'Your paper is ready: 100 MCQs, 30 minutes, no negative marking.'
-        : 'The organiser is still preparing your question paper. Please check again later.') + '</p>' +
-      '<button id="start-exam" class="exam-button" ' +
-      (availability.assigned && availability.opens_now && availability.question_bank_ready ? '' : 'disabled') +
-      '>Start / resume assessment</button>';
-    document.getElementById('start-exam').addEventListener('click', start);
+  const startQuestionTimer = seconds => {
+    stopQuestionTimer();
+    questionRemaining = Math.max(0, seconds);
+    const node = document.getElementById('question-clock');
+    if (node) node.textContent = formatTime(questionRemaining);
+    questionInterval = setInterval(() => {
+      questionRemaining = Math.max(0, questionRemaining - 1);
+      const clock = document.getElementById('question-clock');
+      if (clock) clock.textContent = formatTime(questionRemaining);
+      if (questionRemaining <= 0) {
+        stopQuestionTimer();
+        message('Time for this question is over. Moving to the next question.');
+        moveNext(true).catch(error => message(error.message, true));
+      }
+    },1000);
   };
   const renderQuestion = () => {
-    if (!attempt || attempt.status !== 'in_progress') return;
-    const question = attempt.questions[currentIndex];
-    const answered = attempt.questions.filter(item => item.selected_option_id).length;
-    content.innerHTML =
-      '<div class="exam-q-meta"><span>Question ' + (currentIndex + 1) + ' of ' + attempt.questions.length +
-      '</span><span>' + answered + ' answered</span></div>' +
-      '<h2 class="exam-question">' + escapeHtml(question.question_text) + '</h2>' +
-      '<div class="exam-options">' + question.options.map(option =>
+    if (!currentQuestion) return;
+    const q = currentQuestion;
+    const section = sectionFor(currentPosition);
+    const answered = q.answered || Boolean(q.selected_option_id);
+    content.innerHTML = renderProgress() +
+      '<div class="exam-question-panel"><div class="exam-question-top"><span class="exam-kicker">' +
+      escapeHtml(section.label) + ' · ' + escapeHtml(q.difficulty) + '</span><div class="exam-question-clock"><small>THIS QUESTION</small><strong id="question-clock">' +
+      formatTime(questionRemaining) + '</strong></div></div>' +
+      '<div class="exam-question-number">QUESTION ' + String(currentPosition + 1).padStart(2,'0') + ' / 100</div>' +
+      '<h2 class="exam-question">' + escapeHtml(q.question_text) + '</h2>' +
+      '<div class="exam-options">' + q.options.map(option =>
         '<label class="exam-option"><input type="radio" name="answer" value="' + escapeHtml(option.option_id) + '" ' +
-        (question.selected_option_id === option.option_id ? 'checked' : '') + '>' +
+        (q.selected_option_id === option.option_id ? 'checked' : '') + '>' +
         '<span><b>' + escapeHtml(option.identifier) + '.</b> ' + escapeHtml(option.option_text) + '</span></label>'
-      ).join('') + '</div>' +
-      '<div class="exam-actions"><button class="exam-button secondary" id="previous" ' + (currentIndex === 0 ? 'disabled' : '') + '>Previous</button>' +
-      '<button class="exam-button secondary" id="next" ' + (currentIndex === attempt.questions.length - 1 ? 'disabled' : '') + '>Next</button>' +
-      '<button class="exam-button" id="submit">Submit assessment</button></div>' +
-      '<p class="exam-muted">Answers are saved when you select an option. Keep this page open until submission is confirmed.</p>' +
-      '<div class="exam-nav">' + attempt.questions.map((item, index) =>
-        '<button type="button" data-question-index="' + index + '" class="' +
-        (index === currentIndex ? 'current ' : '') + (item.selected_option_id ? 'answered' : '') +
-        '" aria-label="Go to question ' + (index + 1) + '">' + (index + 1) + '</button>'
-      ).join('') + '</div>';
+      ).join('') + '</div><div class="exam-actions">' +
+      '<span class="exam-saved">' + (answered ? 'Answer saved on server' : 'Select one answer to save') + '</span>' +
+      '<button class="exam-button" id="next-question">' + (currentPosition === 99 ? 'Review & submit' : 'Save & continue') + ' →</button>' +
+      '</div><p class="exam-muted">Each question has its own server-controlled timer. Once you continue, you cannot return to a previous question.</p></div>';
     content.querySelectorAll('input[name="answer"]').forEach(input => input.addEventListener('change', () => save(input.value)));
-    document.getElementById('previous').addEventListener('click', () => { currentIndex--; renderQuestion(); });
-    document.getElementById('next').addEventListener('click', () => { currentIndex++; renderQuestion(); });
-    document.getElementById('submit').addEventListener('click', () => submit(false));
-    content.querySelectorAll('[data-question-index]').forEach(button => button.addEventListener('click', () => {
-      currentIndex = Number(button.dataset.questionIndex);
+    document.getElementById('next-question').addEventListener('click', () => moveNext(false));
+  };
+  const loadQuestion = async position => {
+    if (moving || !attempt || position < 0 || position >= 100) return;
+    moving = true;
+    stopQuestionTimer();
+    currentPosition = position;
+    message('Loading question ' + (position + 1) + '…');
+    try {
+      currentQuestion = await request('/api/exam/attempts/' + attempt.attempt_id + '/questions/' + position);
+      questionRemaining = currentQuestion.remaining_seconds;
       renderQuestion();
-    }));
+      startQuestionTimer(questionRemaining);
+      message('Your answer is saved securely when selected.');
+      if (questionRemaining <= 0) await moveNext(true);
+    } catch (error) {
+      if (error.message.toLowerCase().includes('time has expired')) {
+        await finish(true);
+      } else {
+        message(error.message, true);
+      }
+    } finally { moving = false; }
   };
   const save = async optionId => {
-    if (busy || remaining <= 0) return;
-    const question = attempt.questions[currentIndex];
+    if (busy || !currentQuestion || questionRemaining <= 0) return;
     busy = true;
     try {
-      await request('/api/exam/attempts/' + attempt.attempt_id + '/answer', 'PUT', {
-        question_id: question.question_id, option_id: optionId
+      await request('/api/exam/attempts/' + attempt.attempt_id + '/answer','PUT',{
+        question_id: currentQuestion.question_id,
+        option_id: optionId
       });
-      question.selected_option_id = optionId;
+      currentQuestion.selected_option_id = optionId;
+      currentQuestion.answered = true;
+      const saved = document.querySelector('.exam-saved');
+      if (saved) saved.textContent = 'Answer saved on server';
       message('Answer saved.');
-      renderQuestion();
     } catch (error) {
-      message(error.message + ' Your previous saved answer is unchanged.', true);
-      renderQuestion();
-    } finally {
-      busy = false;
-      if (remaining <= 0 && attempt?.status === 'in_progress') {
-        submit(true).catch(error => message(error.message, true));
+      message(error.message, true);
+      if (error.message.toLowerCase().includes('question time has expired')) {
+        stopQuestionTimer();
+        await moveNext(true);
       }
+    } finally { busy = false; }
+  };
+  const moveNext = async automatic => {
+    if (moving || busy || !attempt) return;
+    if (!automatic && !currentQuestion?.answered && !currentQuestion?.selected_option_id) {
+      if (!window.confirm('No answer is selected. Continue and record this question as unanswered?')) return;
     }
+    stopQuestionTimer();
+    if (currentPosition >= 99) {
+      await finish(false);
+      return;
+    }
+    await loadQuestion(currentPosition + 1);
   };
   const start = async () => {
     if (busy) return;
     busy = true;
-    message('Opening your assessment…');
     try {
-      attempt = await request('/api/exam/attempts/start', 'POST');
-      currentIndex = 0;
-      startTimer(attempt.remaining_seconds);
-      renderQuestion();
-      message('Assessment started. Your answers are saved as you go.');
-    } catch (error) { message(error.message, true); }
+      attempt = await request('/api/exam/attempts/start','POST');
+      startOverallTimer(attempt.remaining_seconds);
+      await loadQuestion(0);
+    } catch (error) { message(error.message,true); }
     finally { busy = false; }
   };
-  const submit = async automatic => {
-    if (!attempt || attempt.status !== 'in_progress' || busy) return;
-    if (!automatic && !window.confirm('Submit your assessment now? You cannot change answers after submission.')) return;
+  const finish = async automatic => {
+    if (!attempt || busy) return;
+    if (!automatic && !window.confirm('Submit the complete 100-question assessment? You cannot change answers afterwards.')) return;
     busy = true;
-    stopTimer();
-    message('Submitting and calculating your result…');
+    stopQuestionTimer();
+    stopOverallTimer();
+    message('Submitting your answers and calculating negative marking…');
     try {
-      const result = await request('/api/exam/attempts/' + attempt.attempt_id + '/submit', 'POST');
+      const result = await request('/api/exam/attempts/' + attempt.attempt_id + '/submit','POST');
       attempt.status = 'submitted';
       renderResult(result);
       timer.textContent = 'Submitted';
-      message('Your assessment has been submitted successfully.');
+      message('Assessment submitted successfully.');
     } catch (error) {
-      message(error.message, true);
-      if (!automatic && remaining > 0) startTimer(remaining);
+      message(error.message,true);
+      if (attempt.status === 'in_progress') {
+        startOverallTimer(overallRemaining);
+        if (currentQuestion) startQuestionTimer(questionRemaining);
+      }
     } finally { busy = false; }
   };
   const renderResult = result => {
     const review = result.review || [];
-    content.innerHTML = '<span class="exam-muted">ASSESSMENT RESULT</span><h2>Submission complete</h2>' +
-      '<div class="exam-score">' + escapeHtml(result.score) + '</div>' +
-      '<p>' + result.correct_count + ' correct · ' + result.incorrect_count + ' incorrect · ' +
-      result.unanswered_count + ' unanswered out of ' + result.total_questions + '</p>' +
-      '<p class="exam-muted">Submitted: ' + escapeHtml(new Date(result.submitted_at).toLocaleString('en-IN', {timeZone:'Asia/Kolkata'})) + '</p>' +
-      '<h3>Answer review</h3><div class="exam-review">' + review.map((item, index) =>
+    const maxScore = 100;
+    content.innerHTML = '<div class="exam-result-head"><span class="exam-kicker">HTSE 2026 · RESULT</span><h2>Assessment completed</h2><div class="exam-score">' +
+      escapeHtml(result.score) + '<small> / ' + maxScore + '</small></div><p>' +
+      result.correct_count + ' correct · ' + result.incorrect_count + ' incorrect · ' +
+      result.unanswered_count + ' unanswered</p><p class="exam-muted">Scoring: +1 correct, −0.25 incorrect, 0 unanswered</p></div>' +
+      '<h3>Answer review</h3><div class="exam-review">' + review.map((item,index) =>
         '<article class="exam-review-item ' + (item.is_correct ? 'correct' : (item.selected_option ? 'incorrect' : '')) + '">' +
         '<b>Q' + (index + 1) + '. ' + escapeHtml(item.question_text) + '</b>' +
         '<p>Your answer: ' + (item.selected_option ? escapeHtml(item.selected_option.identifier + '. ' + item.selected_option.option_text) : 'Not answered') + '</p>' +
@@ -161,6 +209,18 @@
         (item.explanation ? '<p class="exam-muted">' + escapeHtml(item.explanation) + '</p>' : '') +
         '</article>'
       ).join('') + '</div>';
+  };
+  const showIntro = availability => {
+    const slotStart = availability.slot_starts_at
+      ? new Date(availability.slot_starts_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) : 'Not assigned';
+    content.innerHTML = '<h2>' + (availability.assigned ? 'Your assessment slot' : 'Slot assignment pending') + '</h2>' +
+      '<p class="exam-muted">Stream: ' + escapeHtml(availability.stream) + ' · ' + escapeHtml(slotStart) + '</p>' +
+      '<p>100 questions · 5 sections · approximately 47 minutes · +1 / −0.25 marking.</p>' +
+      '<p class="exam-muted">Individual question timers vary from 18 to 45 seconds according to the reading and reasoning required.</p>' +
+      '<button id="start-exam" class="exam-button" ' +
+      (availability.assigned && availability.opens_now && availability.question_bank_ready ? '' : 'disabled') +
+      '>Start assessment</button>';
+    document.getElementById('start-exam').addEventListener('click',start);
   };
   const init = async () => {
     try {
@@ -172,23 +232,28 @@
         attempt = current.attempt;
         timer.textContent = 'Submitted';
         renderResult(current.attempt);
-        message('Your submitted assessment and answer review are available.');
+        message('Your submitted result and answer review are available.');
         return;
       }
       if (current.attempt?.status === 'in_progress') {
         attempt = current.attempt;
-        currentIndex = 0;
-        startTimer(attempt.remaining_seconds);
-        renderQuestion();
-        message('Your saved assessment has been resumed.');
+        startOverallTimer(current.attempt.remaining_seconds);
+        await loadQuestion(current.attempt.current_position || 0);
         return;
       }
       showIntro(availability);
-      if (availability.opens_now && availability.question_bank_ready) message('Your slot is open. Start your assessment when ready.');
+      if (availability.opens_now && availability.question_bank_ready) message('Your slot is open. Start when ready.');
     } catch (error) {
-      content.innerHTML = '<h2>Sign-in required</h2><p>' + escapeHtml(error.message) + '</p><a class="exam-button" href="login.html">Candidate sign in</a>';
+      content.innerHTML = '<h2>Sign-in required</h2><p>' + escapeHtml(error.message) +
+        '</p><a class="exam-button" href="login.html">Candidate sign in</a>';
       candidateInfo.textContent = 'No active candidate session';
     }
   };
+  window.addEventListener('beforeunload', event => {
+    if (attempt?.status === 'in_progress') {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  });
   init();
 })();
