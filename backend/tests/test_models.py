@@ -89,6 +89,11 @@ class ModelSchemaTests(unittest.TestCase):
             "candidate_sessions", "rate_limit_buckets",
         }
         self.assertEqual(set(Base.metadata.tables), expected)
+        slot_columns = Base.metadata.tables["exam_slots"].columns
+        self.assertIn("stream", slot_columns)
+        self.assertIn("ck_exam_slots_stream_approved", {
+            constraint.name for constraint in Base.metadata.tables["exam_slots"].constraints
+        })
 
     def test_relationships_and_foreign_keys_are_registered(self) -> None:
         self.assertIn("candidate", inspect(Registration).relationships)
