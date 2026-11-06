@@ -44,6 +44,7 @@ from app.exam_service import (
     get_attempt,
     get_current_attempt,
     get_question,
+    record_integrity_event,
     save_answer,
     start_exam,
     skip_question,
@@ -161,6 +162,13 @@ class ExamAnswerRequest(BaseModel):
     option_id: UUID
 
 
+class ExamIntegrityEventRequest(BaseModel):
+    event_type: Literal[
+        "candidate_tab_hidden", "candidate_window_blur", "candidate_fullscreen_exit",
+        "candidate_copy_attempt", "candidate_paste_attempt",
+    ]
+
+
 class AdminSlotRequest(BaseModel):
     stream: Literal["paramedical", "nursing", "mbbs_1st_year"]
     starts_at: datetime
@@ -223,6 +231,7 @@ def _exam_error(error: ExamError) -> HTTPException:
         "question_time_expired": "This question time has expired. Move to the next question.",
         "question_not_presented": "Open this question before submitting an answer.",
         "question_not_found": "This question is not available.",
+        "invalid_integrity_event": "This assessment event is not valid.",
         "question_already_passed": "You cannot return to a previous question.",
         "question_sequence_locked": "Answer or skip the current question before continuing.",
         "question_time_not_complete": "The current question timer is still running. Answer or skip it to continue.",
@@ -687,6 +696,19 @@ def create_app(
                 return save_answer(
                     session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id,
                     question_id=payload.question_id, option_id=payload.option_id,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/{attempt_id}/integrity-events", tags=["candidate assessment"])
+    def candidate_exam_integrity_event(
+        attempt_id: UUID, payload: ExamIntegrityEventRequest, request: Request,
+    ):
+        try:
+            with _session(request) as session:
+                return record_integrity_event(
+                    session, request.cookies.get(SESSION_COOKIE),
+                    attempt_id=attempt_id, event_type=payload.event_type,
                 )
         except ExamError as error:
             raise _exam_error(error)
