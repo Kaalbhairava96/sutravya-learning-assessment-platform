@@ -409,6 +409,14 @@ document.querySelectorAll('[data-register-form]').forEach(form => {
 });
 
 document.querySelectorAll('[data-login-form]').forEach(form => {
+  const examAccess = form.querySelector('[data-exam-access]');
+  const revealExamAccess = async () => {
+    try {
+      await apiRequest('/api/auth/session', undefined, 'GET');
+      if (examAccess) examAccess.hidden = false;
+    } catch { if (examAccess) examAccess.hidden = true; }
+  };
+  revealExamAccess();
   const note = form.querySelector('.register-note');
   const otpStep = form.querySelector('[data-login-otp-step]');
   const resend = form.querySelector('[data-login-resend]');
@@ -438,7 +446,7 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
     if (!form.querySelector('#login-otp')?.reportValidity()) return;
     button.disabled = true; show('Verifying your code…');
     let signedIn = false;
-    try { await apiRequest('/api/auth/verify-otp', { email: form.elements.email.value, otp: form.elements.otp.value }); signedIn = true; show('You are signed in. Your secure session will remain active across refreshes.'); form.querySelectorAll('input,button').forEach(control => { control.disabled = true; }); }
+    try { await apiRequest('/api/auth/verify-otp', { email: form.elements.email.value, otp: form.elements.otp.value }); signedIn = true; await revealExamAccess(); show('You are signed in. Your secure session will remain active across refreshes.'); form.querySelectorAll('input,button').forEach(control => { control.disabled = true; }); }
     catch (error) { show(error.message, true); }
     finally { if (!signedIn) button.disabled = false; }
   });
