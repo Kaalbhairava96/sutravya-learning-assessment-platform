@@ -8,7 +8,7 @@ The backend implements email-OTP registration and passwordless candidate authent
 
 - Before 1 November 2026, authorised team members use the same registration form, endpoints, email OTP, candidate record, Registration ID, and account access as public candidates. `INTERNAL_TEST_MODE=true` plus the private `INTERNAL_TEST_ACCESS_CODE` only authorises starting or continuing the registration journey before opening. New team registrations are ordinary active registrations with `is_internal_test=false` and `registration_source='team_prelaunch'`; after public opening, the code is no longer required, including for a pending team OTP. At the closing deadline, all registration actions are rejected.
 
-- A candidate submits full name, mobile, email, and one allowlisted stream: `paramedical`, `nursing`, or `mbbs_1st_year`.
+- A candidate submits full name, mobile, email, and one allowlisted stream: `paramedical`, `nursing`, or `mbbs_1st_year`. Historical `other` values, if present, are retained for reporting but are no longer accepted for new registrations.
 - Historical rows with `is_internal_test=true` retain that flag and are classified as `legacy_internal_test`; they are excluded from official login and team/public export filters. A real registration for the same candidate/event may coexist with the retained legacy row.
 - Email is stripped and lowercased before candidate lookup or persistence. Mobile is normalized to `+91` plus ten digits; it is not verified and is not unique by itself.
 - A pending candidate and registration-purpose OTP challenge are persisted before the provider call. The OTP digest is HMAC-SHA-256, bound to the candidate, challenge, channel, and purpose; plaintext exists only in process memory long enough to submit the message.
@@ -41,7 +41,7 @@ There is no existing admin authentication route. `GET /api/admin/registrations/e
 
 ## Registration timing
 
-Registration start, email verification, and OTP resend are enforced by the server through **15 November 2026, 11:59:59 PM Asia/Kolkata**. Slot allocation is not implemented, so the later booking step still needs to be integrated with this deadline.
+Registration start, email verification, and OTP resend are enforced by the server through **25 November 2026, 11:59:59 PM Asia/Kolkata**. Slot allocation is not implemented, so the later booking step still needs to be integrated with this deadline.
 
 ## Schema and migration history
 
