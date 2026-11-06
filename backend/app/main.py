@@ -161,6 +161,7 @@ def _exam_error(error: ExamError) -> HTTPException:
         "exam_not_configured": "Your assessment is not configured yet. Please contact the organiser.",
         "exam_slot_not_assigned": "Your exam slot has not been assigned yet.",
         "exam_slot_not_open": "Your assigned exam slot is not currently open.",
+        "exam_slot_capacity_reached": "Your exam slot has reached its configured capacity. Please contact the organiser.",
         "question_bank_incomplete": "Your assessment paper is being prepared. Please contact the organiser.",
         "question_bank_invalid": "Your assessment paper is not ready. Please contact the organiser.",
         "scoring_rule_not_configured": "Your assessment scoring is not configured yet.",
