@@ -270,10 +270,24 @@ def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
         slot = session.get(ExamSlot, attempt.exam_slot_id)
         if current >= _deadline(attempt, slot):
             raise ExamError("exam_time_expired", 410)
-        response = session.scalar(select(CandidateResponse).where(
-            CandidateResponse.attempt_id == attempt.id,
-            CandidateResponse.position == position,
-        ).with_for_update())
+        responses = session.scalars(select(CandidateResponse).where(
+            CandidateResponse.attempt_id == attempt.id
+        ).order_by(CandidateResponse.position).with_for_update()).all()
+        presented = [row.position for row in responses if row.presented_at is not None]
+        active_position = max(presented) if presented else -1
+        if position < active_position:
+            raise ExamError("question_already_passed", 409)
+        if position > active_position + 1:
+            raise ExamError("question_sequence_locked", 409)
+        if active_position >= 0 and position == active_position + 1:
+            previous = next(row for row in responses if row.position == active_position)
+            if (
+                previous.selected_option_id is None
+                and previous.deadline_at is not None
+                and current < _aware(previous.deadline_at)
+            ):
+                raise ExamError("question_time_not_complete", 409)
+        response = next((row for row in responses if row.position == position), None)
         if response is None:
             raise ExamError("question_not_found", 404)
         question = session.scalar(select(Question).where(
@@ -305,6 +319,33 @@ def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
                 for key in option_order if key in options_by_key
             ],
         }
+
+def skip_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
+                  position: int, now: datetime | None = None) -> dict:
+    current = _aware(now or datetime.now(timezone.utc))
+    with session.begin():
+        registration, _candidate, _slot = _candidate_registration(session, raw_token, lock=True)
+        attempt = session.scalar(select(ExamAttempt).where(
+            ExamAttempt.id == attempt_id, ExamAttempt.registration_id == registration.id
+        ).with_for_update())
+        if attempt is None:
+            raise ExamError("attempt_not_found", 404)
+        if attempt.status != "in_progress":
+            raise ExamError("attempt_not_in_progress", 409)
+        response = session.scalar(select(CandidateResponse).where(
+            CandidateResponse.attempt_id == attempt.id,
+            CandidateResponse.position == position,
+        ).with_for_update())
+        if response is None or response.presented_at is None:
+            raise ExamError("question_not_presented", 409)
+        if response.selected_option_id is not None:
+            return {"skipped": False, "answered": True, "position": position}
+        if response.deadline_at is None:
+            raise ExamError("question_not_presented", 409)
+        if current < _aware(response.deadline_at):
+            response.deadline_at = current
+        return {"skipped": True, "position": position}
+
 
 def save_answer(
     session: Session, raw_token: str | None, *, attempt_id: UUID,
