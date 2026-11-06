@@ -109,7 +109,12 @@
     } catch (error) {
       message(error.message + ' Your previous saved answer is unchanged.', true);
       renderQuestion();
-    } finally { busy = false; }
+    } finally {
+      busy = false;
+      if (remaining <= 0 && attempt?.status === 'in_progress') {
+        submit(true).catch(error => message(error.message, true));
+      }
+    }
   };
   const start = async () => {
     if (busy) return;
@@ -162,6 +167,22 @@
       const session = await request('/api/auth/session');
       candidateInfo.textContent = session.full_name + ' · ' + session.registration_id + ' · ' + session.stream;
       const availability = await request('/api/exam/availability');
+      const current = await request('/api/exam/attempts/current');
+      if (current.attempt?.status === 'submitted') {
+        attempt = current.attempt;
+        timer.textContent = 'Submitted';
+        renderResult(current.attempt);
+        message('Your submitted assessment and answer review are available.');
+        return;
+      }
+      if (current.attempt?.status === 'in_progress') {
+        attempt = current.attempt;
+        currentIndex = 0;
+        startTimer(attempt.remaining_seconds);
+        renderQuestion();
+        message('Your saved assessment has been resumed.');
+        return;
+      }
       showIntro(availability);
       if (availability.opens_now && availability.question_bank_ready) message('Your slot is open. Start your assessment when ready.');
     } catch (error) {
