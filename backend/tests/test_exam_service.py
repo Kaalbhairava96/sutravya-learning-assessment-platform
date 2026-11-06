@@ -145,6 +145,8 @@ class CandidateExamServiceTests(unittest.TestCase):
         resumed = get_attempt(self.session, RAW_TOKEN, attempt_id=UUID(attempt_id), now=NOW + timedelta(minutes=2))
         self.assertEqual(resumed["questions"][0]["selected_option_id"], str(first_correct.id))
         self.assertNotIn("correct_option", resumed["questions"][0])
+        # A read request is a separate request/session from the later submit request.
+        self.session.rollback()
 
         result = submit_exam(
             self.session, RAW_TOKEN, attempt_id=UUID(attempt_id),
