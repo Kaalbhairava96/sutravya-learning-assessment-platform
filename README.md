@@ -98,3 +98,10 @@ attempt is in progress.
 The organiser question-bank/slot management interface, production database
 upgrade/backup plan, PostgreSQL integration run, and 1,000-session load test are
 still pending. Do not treat this branch as exam-day production-ready.
+
+
+The implementation branch also includes a noindex organiser page at `/admin.html`
+and key-protected organiser APIs for slot creation, same-stream registration
+assignment, question-bank import and an aggregate overview. Configure a separate
+private `ADMIN_API_KEY` (minimum 32 bytes) in the API service environment before
+using the organiser tools. The key is not embedded in the website.
