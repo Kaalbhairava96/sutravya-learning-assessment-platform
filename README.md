@@ -105,3 +105,9 @@ and key-protected organiser APIs for slot creation, same-stream registration
 assignment, question-bank import and an aggregate overview. Configure a separate
 private `ADMIN_API_KEY` (minimum 32 bytes) in the API service environment before
 using the organiser tools. The key is not embedded in the website.
+
+
+A candidate exam portal is available at `/exam.html`; it is linked from the
+candidate sign-in page after an authenticated session is confirmed. It resumes
+active attempts and persisted submitted results, saves answers through the API,
+and presents the answer review only after submission.
