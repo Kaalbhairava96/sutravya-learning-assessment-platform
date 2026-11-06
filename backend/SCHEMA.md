@@ -52,3 +52,33 @@ The core tables remain: candidates, registrations, exam slots, question banks, q
 ## Remaining operational limits
 
 No real Resend email has been delivered or verified in production. PostgreSQL registration/login concurrency, cookie behavior across the intended hostnames, database backups/restore, rate-limit retention, monitoring/alerting, and load behavior remain unverified. Do not treat this phase as production-ready. No exam functionality is included.
+
+
+## Candidate assessment API
+
+The candidate exam service uses the existing assessment tables and authenticated
+HttpOnly candidate sessions. It exposes:
+
+- `GET /api/exam/availability` — assigned stream, slot window and question-bank readiness.
+- `POST /api/exam/attempts/start` — create or resume the single in-progress attempt.
+- `GET /api/exam/attempts/{attempt_id}` — resume saved answers and remaining time.
+- `PUT /api/exam/attempts/{attempt_id}/answer` — persist one selected option.
+- `POST /api/exam/attempts/{attempt_id}/submit` — finalize and score an attempt.
+
+A configured paper must contain exactly 100 active questions, four options per
+question and exactly one correct option. Each stream uses a question bank whose
+`bank_code` matches `paramedical`, `nursing` or `mbbs_1st_year`. The scoring
+rule code is `htse_2026`; its positive correct mark must be approved and configured,
+while incorrect and unanswered marks are zero. Missing or incomplete configuration
+fails closed with a service-unavailable response.
+
+Correct options and explanations are omitted from all in-progress candidate
+responses. They are included in the post-submission review. The server enforces
+the earlier of 30 minutes after attempt start or the assigned slot end. Repeated
+start and submit requests are idempotent for an existing attempt. Configured slot
+capacity limits the number of simultaneous in-progress attempts.
+
+These APIs do not create slots, seed question content, or provision organiser
+accounts. Those operations require an authenticated organiser workflow before
+candidate exam day. PostgreSQL integration testing and production load testing
+remain release gates.
