@@ -126,6 +126,9 @@ class AssessmentAdminApiTests(unittest.TestCase):
         questions = [
             AdminQuestionRequest(
                 question_text=f"Approved synthetic question {number}",
+                section=("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")[(number - 1) // 20],
+                difficulty="easy" if number % 2 == 0 else "moderate",
+                time_limit_seconds=20 + (number % 5),
                 category="General",
                 explanation="Synthetic explanation",
                 options=options,
@@ -144,7 +147,8 @@ class AssessmentAdminApiTests(unittest.TestCase):
             x_admin_key=ADMIN_KEY,
         )
         self.assertEqual(imported["question_count"], 100)
-        self.assertEqual(imported["negative_marking"], False)
+        self.assertEqual(imported["negative_marking"], True)
+        self.assertEqual(imported["incorrect_points"], "-0.25")
         overview = endpoint(self.application, "/api/admin/assessment/overview")(
             request_for(self.application, "/api/admin/assessment/overview", "GET"),
             x_admin_key=ADMIN_KEY,
