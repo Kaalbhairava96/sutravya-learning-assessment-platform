@@ -15,14 +15,20 @@ from starlette.requests import Request
 from app.config import Settings
 from app.models import Base, Candidate, Registration
 from app.registration import EVENT_KEY
-from app.main import (
-    AdminQuestionBankRequest,
-    AdminQuestionRequest,
-    AdminOptionRequest,
-    AdminSlotAssignmentRequest,
-    AdminSlotRequest,
-    create_app,
-)
+_test_environment = {
+    "APP_ENV": "test",
+    "LOG_LEVEL": "CRITICAL",
+    "DATABASE_URL": TEST_DATABASE_URL,
+}
+with patch.dict(os.environ, _test_environment), patch("app.config._read_dotenv", return_value={}):
+    from app.main import (
+        AdminQuestionBankRequest,
+        AdminQuestionRequest,
+        AdminOptionRequest,
+        AdminSlotAssignmentRequest,
+        AdminSlotRequest,
+        create_app,
+    )
 
 TEST_DATABASE_URL = "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test"
 ADMIN_KEY = "synthetic-admin-api-key-at-least-32-bytes"
