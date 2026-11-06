@@ -189,7 +189,7 @@ class AdminQuestionBankRequest(BaseModel):
     stream: Literal["paramedical", "nursing", "mbbs_1st_year"]
     title: str = Field(min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=2000)
-    correct_points: Decimal = Field(gt=0, max_digits=10, decimal_places=3)
+    correct_points: Decimal = Field(default=Decimal("1"), ge=1, le=1, max_digits=10, decimal_places=3)
     questions: list[AdminQuestionRequest] = Field(min_length=100, max_length=100)
 
 
