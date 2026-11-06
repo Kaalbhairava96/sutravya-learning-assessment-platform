@@ -336,7 +336,7 @@ def create_app(
             CORSMiddleware,
             allow_origins=list(active_settings.cors_origins),
             allow_credentials=True,
-            allow_methods=["GET", "POST"],
+            allow_methods=["GET", "POST", "PUT"],
             allow_headers=["Content-Type", "X-Internal-Test-Code"],
         )
 
