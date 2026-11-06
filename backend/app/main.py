@@ -46,6 +46,7 @@ from app.exam_service import (
     get_question,
     save_answer,
     start_exam,
+    skip_question,
     submit_exam,
 )
 from app.registration import (
@@ -222,6 +223,9 @@ def _exam_error(error: ExamError) -> HTTPException:
         "question_time_expired": "This question time has expired. Move to the next question.",
         "question_not_presented": "Open this question before submitting an answer.",
         "question_not_found": "This question is not available.",
+        "question_already_passed": "You cannot return to a previous question.",
+        "question_sequence_locked": "Answer or skip the current question before continuing.",
+        "question_time_not_complete": "The current question timer is still running. Answer or skip it to continue.",
         "scoring_rule_not_configured": "Your assessment scoring is not configured yet.",
         "attempt_already_submitted": "Your assessment attempt has already been submitted.",
         "attempt_not_found": "Assessment attempt not found.",
@@ -660,6 +664,19 @@ def create_app(
         try:
             with _session(request) as session:
                 return get_attempt(session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id)
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/{attempt_id}/questions/{position}/skip", tags=["candidate assessment"])
+    def candidate_exam_skip_question(attempt_id: UUID, position: int, request: Request):
+        if position < 0 or position >= 100:
+            raise HTTPException(status_code=404, detail="Question not found.")
+        try:
+            with _session(request) as session:
+                return skip_question(
+                    session, request.cookies.get(SESSION_COOKIE),
+                    attempt_id=attempt_id, position=position,
+                )
         except ExamError as error:
             raise _exam_error(error)
 
