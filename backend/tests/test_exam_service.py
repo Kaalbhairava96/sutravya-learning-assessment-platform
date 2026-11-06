@@ -56,6 +56,7 @@ class CandidateExamServiceTests(unittest.TestCase):
         self.session.flush()
         slot = ExamSlot(
             event_key="BHC-2026",
+            stream="paramedical",
             starts_at=datetime(2026, 12, 4, 10, 0, tzinfo=timezone.utc),
             ends_at=datetime(2026, 12, 4, 11, 0, tzinfo=timezone.utc),
             capacity=1000,
