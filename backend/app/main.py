@@ -42,6 +42,7 @@ from app.exam_service import (
     ExamError,
     exam_availability,
     get_attempt,
+    get_current_attempt,
     save_answer,
     start_exam,
     submit_exam,
@@ -623,6 +624,14 @@ def create_app(
         try:
             with _session(request) as session:
                 return start_exam(session, request.cookies.get(SESSION_COOKIE))
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.get("/api/exam/attempts/current", tags=["candidate assessment"])
+    def candidate_exam_current_attempt(request: Request):
+        try:
+            with _session(request) as session:
+                return get_current_attempt(session, request.cookies.get(SESSION_COOKIE))
         except ExamError as error:
             raise _exam_error(error)
 
