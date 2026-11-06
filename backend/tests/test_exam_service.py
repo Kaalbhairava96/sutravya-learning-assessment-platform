@@ -185,6 +185,15 @@ class CandidateExamServiceTests(unittest.TestCase):
                 now=NOW + timedelta(minutes=31),
             )
         self.assertEqual(expired.exception.code, "exam_time_expired")
+        self.session.rollback()
+        # The candidate may still submit after the timer; no late answers are accepted.
+        result = submit_exam(
+            self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
+            now=NOW + timedelta(minutes=31),
+        )
+        self.assertEqual(result["status"], "submitted")
+        self.assertEqual(result["unanswered_count"], 100)
+        self.assertEqual(result["score"], "0.000")
 
     def test_wrong_question_option_pair_is_rejected(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
