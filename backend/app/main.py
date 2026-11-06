@@ -34,6 +34,14 @@ from app.email_provider import (
 )
 from app.logging_config import configure_logging
 from app.models import Candidate, Registration, VerificationChallenge
+from app.exam_service import (
+    ExamError,
+    exam_availability,
+    get_attempt,
+    save_answer,
+    start_exam,
+    submit_exam,
+)
 from app.registration import (
     EVENT_KEY,
     LOGIN_OTP_PURPOSE,
@@ -139,6 +147,31 @@ class LoginVerifyRequest(BaseModel):
 
 class ConfirmationResendRequest(BaseModel):
     registration_id: str = Field(min_length=1, max_length=32)
+
+
+class ExamAnswerRequest(BaseModel):
+    question_id: UUID
+    option_id: UUID
+
+
+def _exam_error(error: ExamError) -> HTTPException:
+    messages = {
+        "authentication_required": "Sign in to access your assessment.",
+        "eligible_registration_required": "An eligible verified registration is required.",
+        "exam_not_configured": "Your assessment is not configured yet. Please contact the organiser.",
+        "exam_slot_not_assigned": "Your exam slot has not been assigned yet.",
+        "exam_slot_not_open": "Your assigned exam slot is not currently open.",
+        "question_bank_incomplete": "Your assessment paper is being prepared. Please contact the organiser.",
+        "question_bank_invalid": "Your assessment paper is not ready. Please contact the organiser.",
+        "scoring_rule_not_configured": "Your assessment scoring is not configured yet.",
+        "attempt_already_submitted": "Your assessment attempt has already been submitted.",
+        "attempt_not_found": "Assessment attempt not found.",
+        "attempt_not_in_progress": "This assessment attempt is no longer active.",
+        "exam_time_expired": "The assessment time has expired. Submit your attempt to view the result.",
+        "invalid_question_or_option": "The selected answer is not valid for this question.",
+        "result_not_available": "Your result is not available yet. Please contact the organiser.",
+    }
+    return HTTPException(status_code=error.status_code, detail=messages.get(error.code, "Assessment request could not be completed."))
 
 
 @contextmanager
@@ -522,6 +555,49 @@ def create_app(
                 except Exception as error:
                     _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
             return {"message": "If the registration is eligible, a confirmation email will be sent."}
+
+    @application.get("/api/exam/availability", tags=["candidate assessment"])
+    def candidate_exam_availability(request: Request):
+        try:
+            with _session(request) as session:
+                return exam_availability(session, request.cookies.get(SESSION_COOKIE))
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/start", status_code=201, tags=["candidate assessment"])
+    def candidate_exam_start(request: Request):
+        try:
+            with _session(request) as session:
+                return start_exam(session, request.cookies.get(SESSION_COOKIE))
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.get("/api/exam/attempts/{attempt_id}", tags=["candidate assessment"])
+    def candidate_exam_attempt(attempt_id: UUID, request: Request):
+        try:
+            with _session(request) as session:
+                return get_attempt(session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id)
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.put("/api/exam/attempts/{attempt_id}/answer", tags=["candidate assessment"])
+    def candidate_exam_save_answer(attempt_id: UUID, payload: ExamAnswerRequest, request: Request):
+        try:
+            with _session(request) as session:
+                return save_answer(
+                    session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id,
+                    question_id=payload.question_id, option_id=payload.option_id,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/{attempt_id}/submit", tags=["candidate assessment"])
+    def candidate_exam_submit(attempt_id: UUID, request: Request):
+        try:
+            with _session(request) as session:
+                return submit_exam(session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id)
+        except ExamError as error:
+            raise _exam_error(error)
 
     @application.get("/api/admin/registrations/export", tags=["organiser export"])
     def export_registrations(
