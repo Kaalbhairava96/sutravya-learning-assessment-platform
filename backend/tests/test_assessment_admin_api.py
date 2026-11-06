@@ -155,6 +155,17 @@ class AssessmentAdminApiTests(unittest.TestCase):
         )
         self.assertEqual(overview["streams"]["paramedical"]["question_count"], 100)
         self.assertEqual(overview["streams"]["paramedical"]["registrations"], 1)
+        with self.factory() as session:
+            from app.models import Question, ScoringRule
+            bank = session.query(Question).first().question_bank
+            rule = session.query(ScoringRule).filter_by(question_bank_id=bank.id).one()
+            self.assertEqual(str(rule.correct_points), "1.000")
+            self.assertEqual(str(rule.incorrect_points), "-0.250")
+            self.assertEqual(session.query(Question).filter_by(section="anatomy").count(), 20)
+            self.assertEqual(session.query(Question).filter_by(section="physiology").count(), 20)
+            self.assertEqual(session.query(Question).filter_by(section="biology").count(), 20)
+            self.assertEqual(session.query(Question).filter_by(section="quantitative_reasoning").count(), 20)
+            self.assertEqual(session.query(Question).filter_by(section="english_communication").count(), 20)
 
 
 if __name__ == "__main__":
