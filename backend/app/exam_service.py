@@ -380,6 +380,19 @@ def _result_payload(session: Session, attempt: ExamAttempt, result: Result) -> d
     }
 
 
+def get_current_attempt(session: Session, raw_token: str | None, *, now: datetime | None = None) -> dict:
+    registration, _candidate, _slot = _candidate_registration(session, raw_token)
+    attempt = session.scalar(
+        select(ExamAttempt)
+        .where(ExamAttempt.registration_id == registration.id)
+        .order_by(ExamAttempt.attempt_number.desc())
+        .limit(1)
+    )
+    if attempt is None:
+        return {"attempt": None}
+    return {"attempt": get_attempt(session, raw_token, attempt_id=attempt.id, now=now)}
+
+
 def get_attempt(session: Session, raw_token: str | None, *, attempt_id: UUID, now: datetime | None = None) -> dict:
     current = _aware(now or datetime.now(timezone.utc))
     registration, _candidate, _slot = _candidate_registration(session, raw_token)
