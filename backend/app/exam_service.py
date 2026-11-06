@@ -12,7 +12,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.models import (
     AnswerOption,
@@ -86,14 +86,13 @@ def _question_set(session: Session, bank: QuestionBank) -> list[Question]:
     questions = list(session.scalars(
         select(Question)
         .where(Question.question_bank_id == bank.id, Question.is_active.is_(True))
+        .options(selectinload(Question.options))
         .order_by(Question.id)
     ).all())
     if len(questions) != QUESTION_COUNT:
         raise ExamError("question_bank_incomplete", 503)
     for question in questions:
-        options = list(session.scalars(
-            select(AnswerOption).where(AnswerOption.question_id == question.id)
-        ).all())
+        options = list(question.options)
         if len(options) != OPTIONS_PER_QUESTION or sum(1 for option in options if option.is_correct) != 1:
             raise ExamError("question_bank_invalid", 503)
     return questions
@@ -123,9 +122,7 @@ def _deadline(attempt: ExamAttempt, slot: ExamSlot) -> datetime:
 
 
 def _question_payload(session: Session, question: Question, *, reveal: bool) -> dict:
-    options = list(session.scalars(
-        select(AnswerOption).where(AnswerOption.question_id == question.id).order_by(AnswerOption.identifier)
-    ).all())
+    options = list(question.options)
     payload = {
         "question_id": str(question.id),
         "question_text": question.question_text,
@@ -151,12 +148,23 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
     registration, _candidate, slot = _candidate_registration(session, raw_token)
     if slot is None:
         return {"eligible": True, "assigned": False, "stream": registration.stream, "message": "Exam slot is not assigned yet."}
+    if slot.stream != registration.stream:
+        raise ExamError("exam_slot_stream_mismatch", 409)
     bank = session.scalar(select(QuestionBank).where(QuestionBank.bank_code == registration.stream))
-    count = 0 if bank is None else int(session.scalar(
-        select(func.count(Question.id)).where(
-            Question.question_bank_id == bank.id, Question.is_active.is_(True)
-        )
-    ) or 0)
+    count = 0
+    ready = False
+    if bank is not None:
+        count = int(session.scalar(
+            select(func.count(Question.id)).where(
+                Question.question_bank_id == bank.id, Question.is_active.is_(True)
+            )
+        ) or 0)
+        try:
+            _question_set(session, bank)
+            _scoring_rule(session, bank)
+            ready = True
+        except ExamError:
+            ready = False
     return {
         "eligible": True,
         "assigned": True,
@@ -164,7 +172,7 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
         "slot_starts_at": _aware(slot.starts_at).isoformat(),
         "slot_ends_at": _aware(slot.ends_at).isoformat(),
         "opens_now": _aware(slot.starts_at) <= current < _aware(slot.ends_at),
-        "question_bank_ready": count == QUESTION_COUNT,
+        "question_bank_ready": ready,
         "question_count": count,
     }
 
@@ -311,9 +319,10 @@ def submit_exam(session: Session, raw_token: str | None, *, attempt_id: UUID, no
             if selected_id is None:
                 unanswered_count += 1
                 continue
-            selected = session.scalar(select(AnswerOption).where(
-                AnswerOption.id == selected_id, AnswerOption.question_id == question.id
-            ))
+            selected = next(
+                (option for option in question.options if option.id == selected_id),
+                None,
+            )
             if selected is not None and selected.is_correct:
                 correct_count += 1
             else:
