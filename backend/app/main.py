@@ -36,7 +36,7 @@ from app.email_provider import (
 from app.logging_config import configure_logging
 from app.models import (
     AnswerOption, AuditEvent, Candidate, ExamAttempt, ExamSlot, Question,
-    QuestionBank, Registration, ScoringRule, VerificationChallenge,
+    QuestionBank, Registration, Result, ScoringRule, VerificationChallenge,
 )
 from app.exam_service import (
     ExamError,
