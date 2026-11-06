@@ -18,7 +18,7 @@ from app.registration import EVENT_KEY
 _test_environment = {
     "APP_ENV": "test",
     "LOG_LEVEL": "CRITICAL",
-    "DATABASE_URL": TEST_DATABASE_URL,
+    "DATABASE_URL": "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test",
 }
 with patch.dict(os.environ, _test_environment), patch("app.config._read_dotenv", return_value={}):
     from app.main import (
