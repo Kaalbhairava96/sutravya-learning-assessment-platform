@@ -70,7 +70,9 @@ def _candidate_registration(session: Session, raw_token: str | None, *, lock: bo
     row = session.execute(statement).first()
     if row is None:
         raise ExamError("eligible_registration_required", 403)
-    return row
+    registration, candidate = row
+    slot = session.get(ExamSlot, registration.exam_slot_id) if registration.exam_slot_id else None
+    return registration, candidate, slot
 
 
 def _bank_for_stream(session: Session, stream: str) -> QuestionBank:
