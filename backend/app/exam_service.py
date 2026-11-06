@@ -7,6 +7,7 @@ Correct answers are never included in an in-progress attempt response.
 from __future__ import annotations
 
 import hashlib
+import secrets
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import UUID
@@ -29,7 +30,7 @@ from app.models import (
 )
 from app.registration import EVENT_KEY, PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE
 
-EXAM_DURATION_SECONDS = 30 * 60
+EXAM_MAX_DURATION_SECONDS = 55 * 60
 QUESTION_COUNT = 100
 OPTIONS_PER_QUESTION = 4
 SCORING_RULE_CODE = "htse_2026"
@@ -109,7 +110,7 @@ def _scoring_rule(session: Session, bank: QuestionBank) -> ScoringRule:
         or rule.incorrect_points is None
         or rule.unanswered_points is None
         or rule.correct_points <= 0
-        or rule.incorrect_points != 0
+        or rule.incorrect_points != Decimal('-0.25')
         or rule.unanswered_points != 0
     ):
         raise ExamError("scoring_rule_not_configured", 503)
@@ -118,7 +119,7 @@ def _scoring_rule(session: Session, bank: QuestionBank) -> ScoringRule:
 
 def _deadline(attempt: ExamAttempt, slot: ExamSlot) -> datetime:
     started = _aware(attempt.started_at)
-    return min(started + timedelta(seconds=EXAM_DURATION_SECONDS), _aware(slot.ends_at))
+    return min(started + timedelta(seconds=EXAM_MAX_DURATION_SECONDS), _aware(slot.ends_at))
 
 
 def _question_payload(session: Session, question: Question, *, reveal: bool) -> dict:
@@ -177,6 +178,19 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
     }
 
 
+def _ordered_questions(session: Session, bank: QuestionBank) -> list[Question]:
+    questions = _question_set(session, bank)
+    section_order = ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")
+    grouped = {section: [] for section in section_order}
+    for question in questions:
+        if question.section not in grouped:
+            raise ExamError("question_bank_invalid", 503)
+        grouped[question.section].append(question)
+    if any(len(grouped[section]) != 20 for section in section_order):
+        raise ExamError("question_bank_invalid", 503)
+    return [question for section in section_order for question in grouped[section]]
+
+
 def start_exam(session: Session, raw_token: str | None, *, now: datetime | None = None) -> dict:
     current = _aware(now or datetime.now(timezone.utc))
     with session.begin():
@@ -188,61 +202,105 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
         if not (_aware(slot.starts_at) <= current < _aware(slot.ends_at)):
             raise ExamError("exam_slot_not_open", 409)
         bank = _bank_for_stream(session, registration.stream or "")
-        questions = _question_set(session, bank)
+        questions = _ordered_questions(session, bank)
         _scoring_rule(session, bank)
         if slot.capacity is not None:
-            active_attempts = int(session.scalar(
-                select(func.count(ExamAttempt.id)).where(
-                    ExamAttempt.exam_slot_id == slot.id,
-                    ExamAttempt.status == "in_progress",
-                    ExamAttempt.started_at > current - timedelta(seconds=EXAM_DURATION_SECONDS),
-                )
-            ) or 0)
-            existing_for_registration = session.scalar(
-                select(ExamAttempt.id).where(
-                    ExamAttempt.registration_id == registration.id,
-                    ExamAttempt.status == "in_progress",
-                )
-            )
+            active_attempts = int(session.scalar(select(func.count(ExamAttempt.id)).where(
+                ExamAttempt.exam_slot_id == slot.id,
+                ExamAttempt.status == "in_progress",
+                ExamAttempt.started_at > current - timedelta(seconds=EXAM_MAX_DURATION_SECONDS),
+            )) or 0)
+            existing_for_registration = session.scalar(select(ExamAttempt.id).where(
+                ExamAttempt.registration_id == registration.id,
+                ExamAttempt.status == "in_progress",
+            ))
             if active_attempts >= slot.capacity and existing_for_registration is None:
                 raise ExamError("exam_slot_capacity_reached", 429)
-        existing = session.scalar(
-            select(ExamAttempt).where(ExamAttempt.registration_id == registration.id)
-            .order_by(ExamAttempt.attempt_number.desc()).with_for_update()
-        )
+        existing = session.scalar(select(ExamAttempt).where(
+            ExamAttempt.registration_id == registration.id
+        ).order_by(ExamAttempt.attempt_number.desc()).with_for_update())
         if existing is not None:
             if existing.status != "in_progress":
                 raise ExamError("attempt_already_submitted", 409)
             attempt = existing
         else:
             attempt = ExamAttempt(
-                registration_id=registration.id,
-                exam_slot_id=slot.id,
-                question_bank_id=bank.id,
-                attempt_number=1,
-                status="in_progress",
-                started_at=current,
+                registration_id=registration.id, exam_slot_id=slot.id,
+                question_bank_id=bank.id, attempt_number=1,
+                status="in_progress", started_at=current,
             )
             session.add(attempt)
             session.flush()
+            for position, question in enumerate(questions):
+                identifiers = [option.identifier for option in question.options]
+                secrets.SystemRandom().shuffle(identifiers)
+                session.add(CandidateResponse(
+                    attempt_id=attempt.id, question_id=question.id, position=position,
+                    option_order=identifiers,
+                ))
+            session.flush()
         due = _deadline(attempt, slot)
-        responses = {
-            str(row.question_id): str(row.selected_option_id) if row.selected_option_id else None
-            for row in session.scalars(select(CandidateResponse).where(CandidateResponse.attempt_id == attempt.id))
-        }
+        total_seconds = sum(question.time_limit_seconds for question in questions)
         return {
-            "attempt_id": str(attempt.id),
-            "status": attempt.status,
-            "duration_seconds": EXAM_DURATION_SECONDS,
-            "deadline": due.isoformat(),
+            "attempt_id": str(attempt.id), "status": attempt.status,
+            "total_questions": len(questions), "total_question_time_seconds": total_seconds,
+            "overall_deadline": due.isoformat(),
             "remaining_seconds": max(0, int((due - current).total_seconds())),
-            "questions": [
-                {**_question_payload(session, question, reveal=False),
-                 "selected_option_id": responses.get(str(question.id))}
-                for question in questions
-            ],
+            "sections": [{"section": section, "question_count": 20} for section in
+                ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")],
         }
 
+
+def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
+                 position: int, now: datetime | None = None) -> dict:
+    current = _aware(now or datetime.now(timezone.utc))
+    with session.begin():
+        registration, _candidate, _slot = _candidate_registration(session, raw_token, lock=True)
+        attempt = session.scalar(select(ExamAttempt).where(
+            ExamAttempt.id == attempt_id, ExamAttempt.registration_id == registration.id
+        ).with_for_update())
+        if attempt is None:
+            raise ExamError("attempt_not_found", 404)
+        if attempt.status != "in_progress":
+            raise ExamError("attempt_not_in_progress", 409)
+        slot = session.get(ExamSlot, attempt.exam_slot_id)
+        if current >= _deadline(attempt, slot):
+            raise ExamError("exam_time_expired", 410)
+        response = session.scalar(select(CandidateResponse).where(
+            CandidateResponse.attempt_id == attempt.id,
+            CandidateResponse.position == position,
+        ).with_for_update())
+        if response is None:
+            raise ExamError("question_not_found", 404)
+        question = session.scalar(select(Question).where(
+            Question.id == response.question_id, Question.is_active.is_(True)
+        ).options(selectinload(Question.options)))
+        if question is None:
+            raise ExamError("question_not_found", 404)
+        if response.presented_at is None:
+            response.presented_at = current
+            response.deadline_at = min(
+                current + timedelta(seconds=question.time_limit_seconds), _deadline(attempt, slot)
+            )
+            session.flush()
+        deadline = _aware(response.deadline_at)
+        options_by_key = {option.identifier: option for option in question.options}
+        option_order = response.option_order or ["A", "B", "C", "D"]
+        return {
+            "position": position, "total_questions": QUESTION_COUNT,
+            "section": question.section, "category": question.category,
+            "difficulty": question.difficulty, "question_text": question.question_text,
+            "time_limit_seconds": question.time_limit_seconds,
+            "remaining_seconds": max(0, int((deadline - current).total_seconds())),
+            "deadline": deadline.isoformat(),
+            "selected_option_id": str(response.selected_option_id) if response.selected_option_id else None,
+            "answered": response.selected_option_id is not None,
+            "options": [
+                {"option_id": str(options_by_key[key].id), "identifier": key,
+                 "option_text": options_by_key[key].option_text}
+                for key in option_order if key in options_by_key
+            ],
+        }
 
 def save_answer(
     session: Session, raw_token: str | None, *, attempt_id: UUID,
@@ -260,8 +318,6 @@ def save_answer(
         if attempt.status != "in_progress":
             raise ExamError("attempt_not_in_progress", 409)
         slot = session.get(ExamSlot, attempt.exam_slot_id)
-        if current >= _deadline(attempt, slot):
-            raise ExamError("exam_time_expired", 410)
         question = session.scalar(select(Question).where(
             Question.id == question_id,
             Question.question_bank_id == attempt.question_bank_id,
@@ -277,14 +333,13 @@ def save_answer(
             CandidateResponse.attempt_id == attempt.id,
             CandidateResponse.question_id == question.id,
         ).with_for_update())
-        if response is None:
-            response = CandidateResponse(
-                attempt_id=attempt.id, question_id=question.id, selected_option_id=option.id
-            )
-            session.add(response)
-        else:
-            response.selected_option_id = option.id
-        return {"saved": True, "question_id": str(question.id)}
+        if response is None or response.presented_at is None or response.deadline_at is None:
+            raise ExamError("question_not_presented", 409)
+        if current >= _aware(response.deadline_at):
+            raise ExamError("question_time_expired", 410)
+        response.selected_option_id = option.id
+        response.answered_at = current
+        return {"saved": True, "question_id": str(question.id), "position": response.position}
 
 
 def submit_exam(session: Session, raw_token: str | None, *, attempt_id: UUID, now: datetime | None = None) -> dict:
@@ -393,7 +448,8 @@ def get_current_attempt(session: Session, raw_token: str | None, *, now: datetim
     return {"attempt": get_attempt(session, raw_token, attempt_id=attempt.id, now=now)}
 
 
-def get_attempt(session: Session, raw_token: str | None, *, attempt_id: UUID, now: datetime | None = None) -> dict:
+def get_attempt(session: Session, raw_token: str | None, *, attempt_id: UUID,
+               now: datetime | None = None) -> dict:
     current = _aware(now or datetime.now(timezone.utc))
     registration, _candidate, _slot = _candidate_registration(session, raw_token)
     attempt = session.scalar(select(ExamAttempt).where(
@@ -409,21 +465,15 @@ def get_attempt(session: Session, raw_token: str | None, *, attempt_id: UUID, no
     if attempt.status != "in_progress":
         raise ExamError("attempt_not_in_progress", 409)
     slot = session.get(ExamSlot, attempt.exam_slot_id)
-    bank = session.get(QuestionBank, attempt.question_bank_id)
-    questions = _question_set(session, bank)
+    responses = session.scalars(select(CandidateResponse).where(
+        CandidateResponse.attempt_id == attempt.id
+    )).all()
+    presented = [row.position for row in responses if row.presented_at is not None]
     due = _deadline(attempt, slot)
-    responses = {
-        str(row.question_id): str(row.selected_option_id) if row.selected_option_id else None
-        for row in session.scalars(select(CandidateResponse).where(CandidateResponse.attempt_id == attempt.id))
-    }
     return {
-        "attempt_id": str(attempt.id),
-        "status": "in_progress",
+        "attempt_id": str(attempt.id), "status": "in_progress",
+        "total_questions": QUESTION_COUNT,
+        "current_position": max(presented) if presented else 0,
         "deadline": due.isoformat(),
         "remaining_seconds": max(0, int((due - current).total_seconds())),
-        "questions": [
-            {**_question_payload(session, question, reveal=False),
-             "selected_option_id": responses.get(str(question.id))}
-            for question in questions
-        ],
     }
