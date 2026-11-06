@@ -6,16 +6,16 @@ const eventConfig = Object.freeze({
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
-  registrationClosesLabel: '15 November 2026 at 11:59:59 PM IST',
-  registrationClosesDate: '15 November 2026',
+  registrationClosesLabel: '25 November 2026 at 11:59:59 PM IST',
+  registrationClosesDate: '25 November 2026',
   registrationClosesTime: '11:59:59 PM IST',
   examDate: '4 December 2026',
   registrationOpensAt: Date.parse('2026-10-31T18:30:00.000Z'), // 1 Nov, 00:00 IST
-  registrationClosesAt: Date.parse('2026-11-15T18:29:59.999Z'), // 15 Nov, 23:59:59 IST
+  registrationClosesAt: Date.parse('2026-11-25T18:29:59.999Z'), // 25 Nov, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
   assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
-  registrationCategories: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year', 'Other']),
-  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year', 'Other']),
+  registrationCategories: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
+  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
   prizes: Object.freeze([{place: 1, amount: 50000}, {place: 2, amount: 25000}, {place: 3, amount: 15000}]),
   questionCount: 100,
   durationMinutes: 30,
@@ -93,7 +93,7 @@ function renderContextualPostcard() {
   if (!promo) return;
   const section = document.createElement('section');
   section.className = 'section v4-postcard-section';
-  section.innerHTML = `<div class="wrap"><article class="v4-campaign-postcard"><div class="v4-postcard-art"><img src="${promo.image}" alt="${promo.alt}" loading="lazy"></div><div class="v4-postcard-copy"><span class="v4-eyebrow">${promo.eyebrow}</span><h2>${promo.title}</h2><p>${promo.copy}</p><a class="button button-gold" href="${promo.href}">${promo.cta} <span aria-hidden="true">→</span></a><div class="v4-postcard-prize-line"><span>1st ₹50,000</span><span>2nd ₹25,000</span><span>3rd ₹15,000</span></div></div></article></div>`;
+  section.innerHTML = `<div class="wrap"><article class="v4-campaign-postcard"><div class="v4-postcard-art"><img src="${promo.image}" alt="${promo.alt}" loading="lazy"></div><div class="v4-postcard-copy"><span class="v4-eyebrow">${promo.eyebrow}</span><h2>${promo.title}</h2><p>${promo.copy}</p><a class="button button-gold" href="${promo.href}">${promo.cta} <span aria-hidden="true">→</span></a><div class="v4-postcard-prize-line"><span>Stream-wise prizes</span><span>Four award categories</span></div></div></article></div>`;
   main.append(section);
 }
 renderContextualPostcard();
@@ -252,7 +252,7 @@ function updateCountdown() {
   if (description) description.textContent = state === 'before'
     ? `Public registration opens ${eventConfig.registrationOpensLabel}.`
     : state === 'open' ? `Complete registration by ${eventConfig.registrationClosesLabel}.`
-      : 'The registration period ended on 15 November 2026.';
+      : 'The registration period ended on 25 November 2026.';
   box.classList.toggle('countdown-closed', state === 'closed');
   updateRegistrationSlideStatus();
 }
@@ -409,6 +409,14 @@ document.querySelectorAll('[data-register-form]').forEach(form => {
 });
 
 document.querySelectorAll('[data-login-form]').forEach(form => {
+  const examAccess = form.querySelector('[data-exam-access]');
+  const revealExamAccess = async () => {
+    try {
+      await apiRequest('/api/auth/session', undefined, 'GET');
+      if (examAccess) examAccess.hidden = false;
+    } catch { if (examAccess) examAccess.hidden = true; }
+  };
+  revealExamAccess();
   const note = form.querySelector('.register-note');
   const otpStep = form.querySelector('[data-login-otp-step]');
   const resend = form.querySelector('[data-login-resend]');
@@ -438,7 +446,7 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
     if (!form.querySelector('#login-otp')?.reportValidity()) return;
     button.disabled = true; show('Verifying your code…');
     let signedIn = false;
-    try { await apiRequest('/api/auth/verify-otp', { email: form.elements.email.value, otp: form.elements.otp.value }); signedIn = true; show('You are signed in. Your secure session will remain active across refreshes.'); form.querySelectorAll('input,button').forEach(control => { control.disabled = true; }); }
+    try { await apiRequest('/api/auth/verify-otp', { email: form.elements.email.value, otp: form.elements.otp.value }); signedIn = true; await revealExamAccess(); show('You are signed in. Your secure session will remain active across refreshes.'); form.querySelectorAll('input,button').forEach(control => { control.disabled = true; }); }
     catch (error) { show(error.message, true); }
     finally { if (!signedIn) button.disabled = false; }
   });

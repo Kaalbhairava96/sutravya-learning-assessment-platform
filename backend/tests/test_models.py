@@ -89,6 +89,11 @@ class ModelSchemaTests(unittest.TestCase):
             "candidate_sessions", "rate_limit_buckets",
         }
         self.assertEqual(set(Base.metadata.tables), expected)
+        slot_columns = Base.metadata.tables["exam_slots"].columns
+        self.assertIn("stream", slot_columns)
+        self.assertIn("ck_exam_slots_stream_approved", {
+            constraint.name for constraint in Base.metadata.tables["exam_slots"].constraints
+        })
 
     def test_relationships_and_foreign_keys_are_registered(self) -> None:
         self.assertIn("candidate", inspect(Registration).relationships)
@@ -242,7 +247,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0008_registration_serial_ids"])
+        self.assertEqual(script.get_heads(), ["0010_question_level_timing"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -257,6 +262,19 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(legacy_classification_revision.down_revision, "0006_reg_source")
         registration_serial_revision = script.get_revision("0008_registration_serial_ids")
         self.assertEqual(registration_serial_revision.down_revision, "0007_legacy_classification")
+        slot_stream_revision = script.get_revision("0009_exam_slot_stream")
+        self.assertEqual(slot_stream_revision.down_revision, "0008_registration_serial_ids")
+        question_timing_revision = script.get_revision("0010_question_level_timing")
+        self.assertEqual(question_timing_revision.down_revision, "0009_exam_slot_stream")
+        self.assertIn("stream", Base.metadata.tables["exam_slots"].columns)
+        self.assertIn("section", Base.metadata.tables["questions"].columns)
+        self.assertIn("difficulty", Base.metadata.tables["questions"].columns)
+        self.assertIn("time_limit_seconds", Base.metadata.tables["questions"].columns)
+        self.assertIn("position", Base.metadata.tables["candidate_responses"].columns)
+        self.assertIn("presented_at", Base.metadata.tables["candidate_responses"].columns)
+        self.assertIn("deadline_at", Base.metadata.tables["candidate_responses"].columns)
+        self.assertIn("answered_at", Base.metadata.tables["candidate_responses"].columns)
+        self.assertIn("option_order", Base.metadata.tables["candidate_responses"].columns)
         self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -281,6 +299,8 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertIn("uq_candidates_verified_contact_pair", sql)
         self.assertIn("CREATE UNIQUE INDEX uq_candidates_verified_email", sql)
         self.assertIn("registration_source", sql)
+        self.assertIn("ADD COLUMN stream VARCHAR(32)", sql)
+        self.assertIn("ck_exam_slots_stream_approved", sql)
         self.assertIn("uq_registrations_candidate_event_official", sql)
         self.assertIn(
             "UPDATE registrations SET registration_source = 'legacy_internal_test' WHERE is_internal_test IS TRUE",

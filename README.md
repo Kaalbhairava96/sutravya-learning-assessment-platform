@@ -84,3 +84,46 @@ The Resend adapter calls the Resend Email API. A live sender requires a Resend a
 7. Have an experienced engineer available during the event. No production smoke test, delivery test, load result, backup restore, or production migration is claimed by this implementation.
 
 No paid hosting or provider resources were created by this work.
+
+
+### Candidate exam engine (implementation branch)
+
+The implementation branch now includes authenticated candidate exam availability,
+start/resume, answer persistence, timed submission and post-submission scoring
+endpoints. The question banks must be provisioned separately and must contain
+100 active MCQs per stream, four options per question, one correct answer, and
+an approved `htse_2026` scoring rule. Correct answers are not returned while an
+attempt is in progress.
+
+The organiser question-bank/slot management interface, production database
+upgrade/backup plan, PostgreSQL integration run, and 1,000-session load test are
+still pending. Do not treat this branch as exam-day production-ready.
+
+
+The implementation branch also includes a noindex organiser page at `/admin.html`
+and key-protected organiser APIs for slot creation, same-stream registration
+assignment, question-bank import and an aggregate overview. Configure a separate
+private `ADMIN_API_KEY` (minimum 32 bytes) in the API service environment before
+using the organiser tools. The key is not embedded in the website.
+
+
+A candidate exam portal is available at `/exam.html`; it is linked from the
+candidate sign-in page after an authenticated session is confirmed. It resumes
+active attempts and persisted submitted results, saves answers through the API,
+and presents the answer review only after submission.
+
+
+### HTSE common-foundation paper format
+The candidate assessment is configured for five common-foundation sections of 20
+questions each: Anatomy, Physiology, Biology, Mathematics & Analytical Reasoning,
+and English & Communication. The paper uses +1 for correct, −0.25 for incorrect,
+and 0 for unanswered. Each question has its own server-enforced timer and shuffled
+option order; candidates receive one question at a time and cannot revisit passed
+questions. The overall attempt ceiling is 55 minutes, while question-level timers
+are individually configured (15–60 seconds).
+
+
+The candidate portal also requests full-screen mode, blocks page copy/paste, and
+records authenticated focus/visibility/full-screen integrity events against the
+attempt. These controls are deterrents and audit signals, not a guarantee against
+external devices or off-screen assistance.

@@ -9,8 +9,9 @@ import hashlib
 import hmac
 import csv
 import io
+from decimal import Decimal
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parseaddr
 from typing import Callable, Iterator, Literal
 from uuid import UUID
@@ -20,7 +21,7 @@ from fastapi import FastAPI, Header, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -33,7 +34,22 @@ from app.email_provider import (
     send_registration_confirmation,
 )
 from app.logging_config import configure_logging
-from app.models import Candidate, Registration, VerificationChallenge
+from app.models import (
+    AnswerOption, AuditEvent, Candidate, ExamAttempt, ExamSlot, Question,
+    QuestionBank, Registration, Result, ScoringRule, VerificationChallenge,
+)
+from app.exam_service import (
+    ExamError,
+    exam_availability,
+    get_attempt,
+    get_current_attempt,
+    get_question,
+    record_integrity_event,
+    save_answer,
+    start_exam,
+    skip_question,
+    submit_exam,
+)
 from app.registration import (
     EVENT_KEY,
     LOGIN_OTP_PURPOSE,
@@ -58,7 +74,7 @@ from app.verification import ChallengeVerification
 SESSION_COOKIE = "sutravya_candidate_session"
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
-REGISTRATION_CLOSES_AT = datetime(2026, 11, 16, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+REGISTRATION_CLOSES_AT = datetime(2026, 11, 26, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 
 
 def _registration_now() -> datetime:
@@ -141,6 +157,95 @@ class ConfirmationResendRequest(BaseModel):
     registration_id: str = Field(min_length=1, max_length=32)
 
 
+class ExamAnswerRequest(BaseModel):
+    question_id: UUID
+    option_id: UUID
+
+
+class ExamIntegrityEventRequest(BaseModel):
+    event_type: Literal[
+        "candidate_tab_hidden", "candidate_window_blur", "candidate_fullscreen_exit",
+        "candidate_copy_attempt", "candidate_paste_attempt",
+    ]
+
+
+class AdminSlotRequest(BaseModel):
+    stream: Literal["paramedical", "nursing", "mbbs_1st_year"]
+    starts_at: datetime
+    ends_at: datetime
+    capacity: int = Field(gt=0, le=1500)
+
+
+class AdminOptionRequest(BaseModel):
+    identifier: str = Field(min_length=1, max_length=8)
+    option_text: str = Field(min_length=1, max_length=2000)
+
+
+class AdminQuestionRequest(BaseModel):
+    question_text: str = Field(min_length=1, max_length=10000)
+    section: Literal["anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication"]
+    difficulty: Literal["easy", "moderate"]
+    time_limit_seconds: int = Field(ge=15, le=60)
+    category: str | None = Field(default=None, max_length=120)
+    explanation: str | None = Field(default=None, max_length=10000)
+    source_reference: str | None = Field(default=None, max_length=200)
+    options: list[AdminOptionRequest] = Field(min_length=4, max_length=4)
+    correct_identifier: str = Field(min_length=1, max_length=8)
+
+
+class AdminQuestionBankRequest(BaseModel):
+    stream: Literal["paramedical", "nursing", "mbbs_1st_year"]
+    title: str = Field(min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=2000)
+    correct_points: Decimal = Field(default=Decimal("1"), ge=1, le=1, max_digits=10, decimal_places=3)
+    questions: list[AdminQuestionRequest] = Field(min_length=100, max_length=100)
+
+
+class AdminSlotAssignmentRequest(BaseModel):
+    registration_ids: list[str] = Field(min_length=1, max_length=1500)
+
+
+def _require_admin(settings: Settings, supplied_key: str | None) -> None:
+    configured_key = settings.admin_api_key
+    if not configured_key:
+        raise HTTPException(status_code=503, detail="Assessment administration is not configured.")
+    if (
+        not supplied_key
+        or len(supplied_key) > 512
+        or not hmac.compare_digest(supplied_key.encode("utf-8"), configured_key.encode("utf-8"))
+    ):
+        raise HTTPException(status_code=403, detail="Administrator authorization failed.")
+
+
+def _exam_error(error: ExamError) -> HTTPException:
+    messages = {
+        "authentication_required": "Sign in to access your assessment.",
+        "eligible_registration_required": "An eligible verified registration is required.",
+        "exam_not_configured": "Your assessment is not configured yet. Please contact the organiser.",
+        "exam_slot_not_assigned": "Your exam slot has not been assigned yet.",
+        "exam_slot_stream_mismatch": "Your assigned slot does not match your registered assessment stream. Contact the organiser.",
+        "exam_slot_not_open": "Your assigned exam slot is not currently open.",
+        "exam_slot_capacity_reached": "Your exam slot has reached its configured capacity. Please contact the organiser.",
+        "question_bank_incomplete": "Your assessment paper is being prepared. Please contact the organiser.",
+        "question_bank_invalid": "Your assessment paper is not ready. Please contact the organiser.",
+        "question_time_expired": "This question time has expired. Move to the next question.",
+        "question_not_presented": "Open this question before submitting an answer.",
+        "question_not_found": "This question is not available.",
+        "invalid_integrity_event": "This assessment event is not valid.",
+        "question_already_passed": "You cannot return to a previous question.",
+        "question_sequence_locked": "Answer or skip the current question before continuing.",
+        "question_time_not_complete": "The current question timer is still running. Answer or skip it to continue.",
+        "scoring_rule_not_configured": "Your assessment scoring is not configured yet.",
+        "attempt_already_submitted": "Your assessment attempt has already been submitted.",
+        "attempt_not_found": "Assessment attempt not found.",
+        "attempt_not_in_progress": "This assessment attempt is no longer active.",
+        "exam_time_expired": "The assessment time has expired. Submit your attempt to view the result.",
+        "invalid_question_or_option": "The selected answer is not valid for this question.",
+        "result_not_available": "Your result is not available yet. Please contact the organiser.",
+    }
+    return HTTPException(status_code=error.status_code, detail=messages.get(error.code, "Assessment request could not be completed."))
+
+
 @contextmanager
 def _session(request: Request) -> Iterator[Session]:
     factory: sessionmaker[Session] = request.app.state.session_factory
@@ -164,7 +269,7 @@ def _registration_error(error: RegistrationError) -> HTTPException:
         "challenge_unavailable": "This code request is unavailable. Request a new code.",
         "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
         "registration_not_open": "Registration opens 1 November 2026 at 12:00 AM IST.",
-        "registration_closed": "Registration closed on 15 November 2026 at 11:59:59 PM IST.",
+        "registration_closed": "Registration closed after 25 November 2026 at 11:59:59 PM IST.",
         "internal_test_unauthorized": "Internal testing access could not be authorized.",
         "internal_test_unavailable": "Internal testing access is no longer available.",
     }
@@ -303,8 +408,8 @@ def create_app(
             CORSMiddleware,
             allow_origins=list(active_settings.cors_origins),
             allow_credentials=True,
-            allow_methods=["GET", "POST"],
-            allow_headers=["Content-Type", "X-Internal-Test-Code"],
+            allow_methods=["GET", "POST", "PUT"],
+            allow_headers=["Content-Type", "X-Internal-Test-Code", "X-Admin-Key"],
         )
 
     @application.middleware("http")
@@ -323,6 +428,9 @@ def create_app(
                 return JSONResponse(status_code=403, content={"detail": "Origin is not allowed."})
             response = await call_next(request)
             status_code = response.status_code
+            if request.url.path.startswith("/api/exam/") or request.url.path.startswith("/api/admin/assessment/"):
+                response.headers["Cache-Control"] = "no-store, private"
+                response.headers["Pragma"] = "no-cache"
             return response
         except Exception:
             logger.error("request_failed", extra={"request_id": request_id, "method": request.method, "status_code": status_code})
@@ -522,6 +630,286 @@ def create_app(
                 except Exception as error:
                     _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
             return {"message": "If the registration is eligible, a confirmation email will be sent."}
+
+    @application.get("/api/exam/availability", tags=["candidate assessment"])
+    def candidate_exam_availability(request: Request):
+        try:
+            with _session(request) as session:
+                return exam_availability(session, request.cookies.get(SESSION_COOKIE))
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/start", status_code=201, tags=["candidate assessment"])
+    def candidate_exam_start(request: Request):
+        try:
+            with _session(request) as session:
+                return start_exam(session, request.cookies.get(SESSION_COOKIE))
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.get("/api/exam/attempts/current", tags=["candidate assessment"])
+    def candidate_exam_current_attempt(request: Request):
+        try:
+            with _session(request) as session:
+                return get_current_attempt(session, request.cookies.get(SESSION_COOKIE))
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.get("/api/exam/attempts/{attempt_id}/questions/{position}", tags=["candidate assessment"])
+    def candidate_exam_question(attempt_id: UUID, position: int, request: Request):
+        if position < 0 or position >= 100:
+            raise HTTPException(status_code=404, detail="Question not found.")
+        try:
+            with _session(request) as session:
+                return get_question(
+                    session, request.cookies.get(SESSION_COOKIE),
+                    attempt_id=attempt_id, position=position,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.get("/api/exam/attempts/{attempt_id}", tags=["candidate assessment"])
+    def candidate_exam_attempt(attempt_id: UUID, request: Request):
+        try:
+            with _session(request) as session:
+                return get_attempt(session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id)
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/{attempt_id}/questions/{position}/skip", tags=["candidate assessment"])
+    def candidate_exam_skip_question(attempt_id: UUID, position: int, request: Request):
+        if position < 0 or position >= 100:
+            raise HTTPException(status_code=404, detail="Question not found.")
+        try:
+            with _session(request) as session:
+                return skip_question(
+                    session, request.cookies.get(SESSION_COOKIE),
+                    attempt_id=attempt_id, position=position,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.put("/api/exam/attempts/{attempt_id}/answer", tags=["candidate assessment"])
+    def candidate_exam_save_answer(attempt_id: UUID, payload: ExamAnswerRequest, request: Request):
+        try:
+            with _session(request) as session:
+                return save_answer(
+                    session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id,
+                    question_id=payload.question_id, option_id=payload.option_id,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/{attempt_id}/integrity-events", tags=["candidate assessment"])
+    def candidate_exam_integrity_event(
+        attempt_id: UUID, payload: ExamIntegrityEventRequest, request: Request,
+    ):
+        try:
+            with _session(request) as session:
+                return record_integrity_event(
+                    session, request.cookies.get(SESSION_COOKIE),
+                    attempt_id=attempt_id, event_type=payload.event_type,
+                )
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.post("/api/exam/attempts/{attempt_id}/submit", tags=["candidate assessment"])
+    def candidate_exam_submit(attempt_id: UUID, request: Request):
+        try:
+            with _session(request) as session:
+                return submit_exam(session, request.cookies.get(SESSION_COOKIE), attempt_id=attempt_id)
+        except ExamError as error:
+            raise _exam_error(error)
+
+    @application.get("/api/admin/assessment/overview", tags=["assessment administration"])
+    def assessment_admin_overview(
+        request: Request,
+        x_admin_key: str | None = Header(default=None),
+    ):
+        _require_admin(request.app.state.settings, x_admin_key)
+        with _session(request) as session:
+            streams = ("paramedical", "nursing", "mbbs_1st_year")
+            stream_summary = {}
+            for stream in streams:
+                stream_summary[stream] = {
+                    "registrations": int(session.scalar(
+                        select(func.count(Registration.id)).where(
+                            Registration.event_key == EVENT_KEY,
+                            Registration.stream == stream,
+                            Registration.is_internal_test.is_(False),
+                            Registration.registration_source.in_((PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE)),
+                        )
+                    ) or 0),
+                    "question_count": int(session.scalar(
+                        select(func.count(Question.id))
+                        .join(QuestionBank, QuestionBank.id == Question.question_bank_id)
+                        .where(QuestionBank.bank_code == stream, Question.is_active.is_(True))
+                    ) or 0),
+                }
+            slots = session.scalars(
+                select(ExamSlot).where(ExamSlot.event_key == EVENT_KEY).order_by(ExamSlot.starts_at)
+            ).all()
+            attempts = int(session.scalar(select(func.count(ExamAttempt.id))) or 0)
+            results = int(session.scalar(select(func.count(Result.id))) or 0)
+            return {
+                "streams": stream_summary,
+                "slots": [{
+                    "id": str(slot.id), "stream": slot.stream,
+                    "starts_at": slot.starts_at.isoformat(), "ends_at": slot.ends_at.isoformat(),
+                    "capacity": slot.capacity,
+                } for slot in slots],
+                "attempts": attempts,
+                "results": results,
+            }
+
+    @application.post("/api/admin/assessment/slots", status_code=201, tags=["assessment administration"])
+    def create_assessment_slot(
+        payload: AdminSlotRequest,
+        request: Request,
+        x_admin_key: str | None = Header(default=None),
+    ):
+        _require_admin(request.app.state.settings, x_admin_key)
+        if payload.starts_at.tzinfo is None or payload.ends_at.tzinfo is None:
+            raise HTTPException(status_code=422, detail="Slot timestamps must include a timezone.")
+        starts_at = payload.starts_at.astimezone(timezone.utc)
+        ends_at = payload.ends_at.astimezone(timezone.utc)
+        if starts_at <= datetime.now(timezone.utc) or ends_at - starts_at < timedelta(minutes=30):
+            raise HTTPException(status_code=422, detail="Choose a future slot of at least 30 minutes.")
+        with _session(request) as session:
+            overlap = session.scalar(select(ExamSlot.id).where(
+                ExamSlot.event_key == EVENT_KEY,
+                ExamSlot.stream == payload.stream,
+                ExamSlot.starts_at < ends_at,
+                ExamSlot.ends_at > starts_at,
+            ))
+            if overlap is not None:
+                raise HTTPException(status_code=409, detail="This stream already has an overlapping exam slot.")
+            slot = ExamSlot(
+                event_key=EVENT_KEY, stream=payload.stream,
+                starts_at=starts_at, ends_at=ends_at, capacity=payload.capacity,
+            )
+            session.add(slot)
+            session.flush()
+            session.add(AuditEvent(
+                action="exam_slot_created", target_type="exam_slot", target_id=slot.id,
+            ))
+            session.commit()
+            return {"slot_id": str(slot.id), "stream": slot.stream, "starts_at": slot.starts_at.isoformat(),
+                    "ends_at": slot.ends_at.isoformat(), "capacity": slot.capacity}
+
+    @application.post("/api/admin/assessment/slots/{slot_id}/assign", tags=["assessment administration"])
+    def assign_registrations_to_slot(
+        slot_id: UUID,
+        payload: AdminSlotAssignmentRequest,
+        request: Request,
+        x_admin_key: str | None = Header(default=None),
+    ):
+        _require_admin(request.app.state.settings, x_admin_key)
+        ids = [value.strip() for value in payload.registration_ids]
+        if len(set(ids)) != len(ids) or any(not value or len(value) > 32 for value in ids):
+            raise HTTPException(status_code=422, detail="Registration IDs must be unique and valid.")
+        with _session(request) as session:
+            slot = session.get(ExamSlot, slot_id)
+            if slot is None or slot.event_key != EVENT_KEY or slot.stream not in {"paramedical", "nursing", "mbbs_1st_year"}:
+                raise HTTPException(status_code=404, detail="Assessment slot not found.")
+            registrations = session.scalars(select(Registration).where(
+                Registration.event_key == EVENT_KEY,
+                Registration.registration_id.in_(ids),
+                Registration.stream == slot.stream,
+                Registration.status == "active",
+                Registration.is_internal_test.is_(False),
+                Registration.registration_source.in_((PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE)),
+            ).with_for_update()).all()
+            if len(registrations) != len(ids):
+                raise HTTPException(status_code=422, detail="One or more registrations are invalid or belong to another stream.")
+            registration_pk = [row.id for row in registrations]
+            existing_attempt = session.scalar(select(ExamAttempt.id).where(
+                ExamAttempt.registration_id.in_(registration_pk)
+            ).limit(1))
+            if existing_attempt is not None:
+                raise HTTPException(status_code=409, detail="A registration with an existing exam attempt cannot be reassigned.")
+            for row in registrations:
+                row.exam_slot_id = slot.id
+            session.add(AuditEvent(
+                action="exam_slot_registrations_assigned", target_type="exam_slot", target_id=slot.id,
+            ))
+            session.commit()
+            return {"assigned_count": len(registrations), "slot_id": str(slot.id), "stream": slot.stream}
+
+    @application.post("/api/admin/assessment/question-banks/import", status_code=201, tags=["assessment administration"])
+    def import_assessment_question_bank(
+        payload: AdminQuestionBankRequest,
+        request: Request,
+        x_admin_key: str | None = Header(default=None),
+    ):
+        _require_admin(request.app.state.settings, x_admin_key)
+        expected = {"A", "B", "C", "D"}
+        section_order = ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")
+        section_counts = {section: 0 for section in section_order}
+        for question in payload.questions:
+            section_counts[question.section] += 1
+        if any(section_counts[section] != 20 for section in section_order):
+            raise HTTPException(status_code=422, detail="Question bank must contain exactly 20 questions in each of the five approved sections.")
+        for index, question in enumerate(payload.questions, start=1):
+            identifiers = [option.identifier.strip().upper() for option in question.options]
+            if set(identifiers) != expected or len(set(identifiers)) != 4:
+                raise HTTPException(status_code=422, detail=f"Question {index} must have exactly A, B, C and D options.")
+            if question.correct_identifier.strip().upper() not in expected:
+                raise HTTPException(status_code=422, detail=f"Question {index} has an invalid correct option.")
+        with _session(request) as session:
+            bank = session.scalar(select(QuestionBank).where(QuestionBank.bank_code == payload.stream).with_for_update())
+            if bank is None:
+                bank = QuestionBank(bank_code=payload.stream, title=payload.title, description=payload.description)
+                session.add(bank)
+                session.flush()
+            else:
+                existing_questions = int(session.scalar(
+                    select(func.count(Question.id)).where(Question.question_bank_id == bank.id)
+                ) or 0)
+                existing_attempts = session.scalar(
+                    select(ExamAttempt.id).where(ExamAttempt.question_bank_id == bank.id).limit(1)
+                )
+                if existing_questions or existing_attempts:
+                    raise HTTPException(status_code=409, detail="This question bank already contains questions or exam attempts.")
+                bank.title = payload.title
+                bank.description = payload.description
+            rule = session.scalar(select(ScoringRule).where(
+                ScoringRule.question_bank_id == bank.id, ScoringRule.rule_code == "htse_2026"
+            ).with_for_update())
+            if rule is None:
+                rule = ScoringRule(
+                    question_bank_id=bank.id, rule_code="htse_2026",
+                    correct_points=payload.correct_points, incorrect_points=Decimal("-0.25"),
+                    unanswered_points=Decimal("0"),
+                )
+                session.add(rule)
+            else:
+                rule.correct_points = payload.correct_points
+                rule.incorrect_points = Decimal("-0.25")
+                rule.unanswered_points = Decimal("0")
+            for item in payload.questions:
+                question = Question(
+                    question_bank_id=bank.id, question_text=item.question_text.strip(),
+                    category=item.category, section=item.section,
+                    difficulty=item.difficulty, time_limit_seconds=item.time_limit_seconds,
+                    explanation=item.explanation, source_reference=item.source_reference, is_active=True,
+                )
+                session.add(question)
+                session.flush()
+                for option in item.options:
+                    identifier = option.identifier.strip().upper()
+                    session.add(AnswerOption(
+                        question_id=question.id, identifier=identifier,
+                        option_text=option.option_text.strip(),
+                        is_correct=identifier == item.correct_identifier.strip().upper(),
+                    ))
+            session.add(AuditEvent(
+                action="exam_question_bank_imported", target_type="question_bank", target_id=bank.id,
+            ))
+            session.commit()
+            return {"question_bank_id": str(bank.id), "stream": payload.stream,
+                    "question_count": len(payload.questions), "correct_points": str(payload.correct_points),
+                    "negative_marking": True, "incorrect_points": "-0.25"}
 
     @application.get("/api/admin/registrations/export", tags=["organiser export"])
     def export_registrations(

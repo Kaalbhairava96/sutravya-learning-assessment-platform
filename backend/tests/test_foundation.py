@@ -89,6 +89,21 @@ class BackendFoundationTests(unittest.TestCase):
                 dotenv_path=Path("missing-test.env"),
             )
 
+    def test_admin_api_key_is_private_and_requires_32_utf8_bytes(self) -> None:
+        secret = "synthetic-admin-secret-with-32-bytes"
+        settings = Settings(
+            app_env="test", log_level="CRITICAL",
+            database_url="postgresql+psycopg://test:test@127.0.0.1:55432/sutravya_m3_test",
+            admin_api_key=secret,
+        )
+        self.assertEqual(settings.admin_api_key, secret)
+        with self.assertRaisesRegex(ConfigurationError, "ADMIN_API_KEY must contain at least 32 UTF-8 bytes"):
+            Settings(
+                app_env="test", log_level="CRITICAL",
+                database_url="postgresql+psycopg://test:test@127.0.0.1:55432/sutravya_m3_test",
+                admin_api_key="short",
+            )
+
     def test_registration_export_key_is_private_and_requires_minimum_length(self) -> None:
         base = {
             "APP_ENV": "test",

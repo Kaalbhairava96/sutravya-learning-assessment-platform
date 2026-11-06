@@ -1,0 +1,49 @@
+name: Assessment platform checks
+
+on:
+  push:
+    branches:
+      - registration-launch
+      - qualinova-htse-implementation
+  pull_request:
+    branches:
+      - registration-launch
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run backend unit tests
+        run: for suite in test_assessment_admin_api.py test_auth_api.py test_exam_service.py test_foundation.py test_models.py test_registration.py test_verification.py; do python -m unittest discover -s tests -p "$suite" -v || exit 1; done
+
+  frontend-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript syntax
+        run: |
+          node --check site.js
+          node --check admin.js
+          node --check exam.js
+          node --check mock-test.js
+          node --check sample-papers.js
+      - name: Build allowlisted assessment website
+        run: bash scripts/build_assessment_site.sh

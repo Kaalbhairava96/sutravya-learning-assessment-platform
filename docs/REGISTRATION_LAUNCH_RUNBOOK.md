@@ -5,7 +5,7 @@
 This microsite supports candidate registration only. The exam engine and exam login are not available through this launch. The backend remains responsible for accepting or rejecting registration actions; the browser date check is only a usability aid.
 
 - Registration opens: **1 November 2026, 12:00 AM IST** (inclusive).
-- Registration closes: **15 November 2026, 11:59:59 PM IST** (inclusive; the window closes at midnight starting 16 November).
+- Registration closes: **25 November 2026, 11:59:59 PM IST** (inclusive; the window closes at midnight starting 16 November).
 - Examination date: **4 December 2026**.
 - Streams: Paramedical, Nursing, and MBBS 1st Year.
 - Each stream: separate 100-MCQ paper, 30 minutes, no negative marking. Score display is after exam submission; exam delivery is outside this release.

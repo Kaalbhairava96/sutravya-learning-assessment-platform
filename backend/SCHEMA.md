@@ -8,7 +8,7 @@ The backend implements email-OTP registration and passwordless candidate authent
 
 - Before 1 November 2026, authorised team members use the same registration form, endpoints, email OTP, candidate record, Registration ID, and account access as public candidates. `INTERNAL_TEST_MODE=true` plus the private `INTERNAL_TEST_ACCESS_CODE` only authorises starting or continuing the registration journey before opening. New team registrations are ordinary active registrations with `is_internal_test=false` and `registration_source='team_prelaunch'`; after public opening, the code is no longer required, including for a pending team OTP. At the closing deadline, all registration actions are rejected.
 
-- A candidate submits full name, mobile, email, and one allowlisted stream: `paramedical`, `nursing`, or `mbbs_1st_year`.
+- A candidate submits full name, mobile, email, and one allowlisted stream: `paramedical`, `nursing`, or `mbbs_1st_year`. Historical `other` values, if present, are retained for reporting but are no longer accepted for new registrations.
 - Historical rows with `is_internal_test=true` retain that flag and are classified as `legacy_internal_test`; they are excluded from official login and team/public export filters. A real registration for the same candidate/event may coexist with the retained legacy row.
 - Email is stripped and lowercased before candidate lookup or persistence. Mobile is normalized to `+91` plus ten digits; it is not verified and is not unique by itself.
 - A pending candidate and registration-purpose OTP challenge are persisted before the provider call. The OTP digest is HMAC-SHA-256, bound to the candidate, challenge, channel, and purpose; plaintext exists only in process memory long enough to submit the message.
@@ -41,7 +41,7 @@ There is no existing admin authentication route. `GET /api/admin/registrations/e
 
 ## Registration timing
 
-Registration start, email verification, and OTP resend are enforced by the server through **15 November 2026, 11:59:59 PM Asia/Kolkata**. Slot allocation is not implemented, so the later booking step still needs to be integrated with this deadline.
+Registration start, email verification, and OTP resend are enforced by the server through **25 November 2026, 11:59:59 PM Asia/Kolkata**. Slot allocation is not implemented, so the later booking step still needs to be integrated with this deadline.
 
 ## Schema and migration history
 
@@ -52,3 +52,92 @@ The core tables remain: candidates, registrations, exam slots, question banks, q
 ## Remaining operational limits
 
 No real Resend email has been delivered or verified in production. PostgreSQL registration/login concurrency, cookie behavior across the intended hostnames, database backups/restore, rate-limit retention, monitoring/alerting, and load behavior remain unverified. Do not treat this phase as production-ready. No exam functionality is included.
+
+
+## Candidate assessment API
+
+The candidate exam service uses the existing assessment tables and authenticated
+HttpOnly candidate sessions. It exposes:
+
+- `GET /api/exam/availability` — assigned stream, slot window and question-bank readiness.
+- `POST /api/exam/attempts/start` — create or resume the single in-progress attempt.
+- `GET /api/exam/attempts/current` — retrieve the candidate's active attempt or submitted result after refresh.
+- `GET /api/exam/attempts/{attempt_id}` — resume saved answers and remaining time.
+- `PUT /api/exam/attempts/{attempt_id}/answer` — persist one selected option.
+- `POST /api/exam/attempts/{attempt_id}/submit` — finalize and score an attempt.
+
+A configured paper must contain exactly 100 active questions, four options per
+question and exactly one correct option. Each stream uses a question bank whose
+`bank_code` matches `paramedical`, `nursing` or `mbbs_1st_year`. The scoring
+rule code is `htse_2026`; its positive correct mark must be approved and configured,
+while incorrect and unanswered marks are zero. Missing or incomplete configuration
+fails closed with a service-unavailable response.
+
+Correct options and explanations are omitted from all in-progress candidate
+responses. They are included in the post-submission review. The server enforces
+the earlier of 30 minutes after attempt start or the assigned slot end. Repeated
+start and submit requests are idempotent for an existing attempt. Configured slot
+capacity limits the number of simultaneous in-progress attempts.
+
+These APIs do not create slots, seed question content, or provision organiser
+accounts. Those operations require an authenticated organiser workflow before
+candidate exam day. PostgreSQL integration testing and production load testing
+remain release gates.
+
+
+## Organiser administration API
+
+The implementation branch adds a separate `ADMIN_API_KEY` setting (minimum 32 UTF-8
+bytes). It is never returned by settings or logged. Organiser endpoints fail closed
+with HTTP 503 until the private key is configured; incorrect keys receive HTTP 403.
+The key is sent only in the `X-Admin-Key` header.
+
+- `GET /api/admin/assessment/overview` — stream counts, configured slots, attempts and results.
+- `POST /api/admin/assessment/slots` — create a future stream-specific slot.
+- `POST /api/admin/assessment/slots/{slot_id}/assign` — assign verified official registrations from the same stream.
+- `POST /api/admin/assessment/question-banks/import` — import exactly 100 questions with four A–D options and one correct option per question.
+
+Slot timestamps must include a timezone; the organiser page sends IST values converted
+to UTC. Slot capacity is capped at 1,500 and checked against in-progress attempts.
+Reassignment is rejected once any candidate has an attempt. Question-bank re-import
+is rejected once content or attempts exist. Organiser mutations create audit events.
+
+The private noindex organiser page is `/admin.html`. Its API key remains in page
+memory only and is not stored in localStorage or sessionStorage. Configure
+`ADMIN_API_KEY` only in the private Render API environment; never put it in static
+site HTML, JavaScript, GitHub secrets exposed to browser builds, or a public file.
+
+
+The static candidate portal is `/exam.html`. After passwordless sign-in, the
+candidate account page exposes the assessment link. The portal checks the
+candidate session and assigned slot, resumes an in-progress attempt after refresh,
+saves each selected option through the answer endpoint, submits at the timer
+boundary, and displays the persisted result/review. Candidate exam and organiser
+assessment API responses are marked `Cache-Control: no-store`.
+
+
+### Five-section question bank and individual timers
+Each stream-specific bank must contain exactly 100 active MCQs, with exactly 20
+questions in each section: `anatomy`, `physiology`, `biology`,
+`quantitative_reasoning`, and `english_communication`. Each question stores
+an `easy` or `moderate` difficulty and a 15–60 second `time_limit_seconds`.
+The question import accepts four A–D options and exactly one correct identifier.
+Scoring is fixed at +1 correct, −0.25 incorrect, and 0 unanswered.
+
+At attempt creation, the server snapshots the question order by section and a
+randomized option order per candidate. The candidate receives only one question
+per API request. Its timer begins on first presentation and is stored server-side;
+answer writes after that deadline are rejected. Candidates may continue only after
+answering, skipping, or exhausting the current question timer. Passed questions
+cannot be reopened. The overall attempt deadline is 55 minutes or the assigned
+slot end, whichever occurs first. The browser countdown is only a display; the
+server-side deadlines are authoritative.
+
+
+### Candidate integrity signals
+The candidate portal requests full-screen mode and blocks in-page copy/paste while an
+attempt is active. It reports allowlisted events such as tab hidden, window blur,
+full-screen exit, copy attempt and paste attempt to the authenticated API. The API
+stores these as audit events linked to the attempt UUID, without recording candidate
+contact details or page contents. These signals are review indicators only; they
+cannot prove use of another device or prevent all external assistance.
