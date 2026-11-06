@@ -6,16 +6,16 @@ const eventConfig = Object.freeze({
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
-  registrationClosesLabel: '15 November 2026 at 11:59:59 PM IST',
-  registrationClosesDate: '15 November 2026',
+  registrationClosesLabel: '25 November 2026 at 11:59:59 PM IST',
+  registrationClosesDate: '25 November 2026',
   registrationClosesTime: '11:59:59 PM IST',
   examDate: '4 December 2026',
   registrationOpensAt: Date.parse('2026-10-31T18:30:00.000Z'), // 1 Nov, 00:00 IST
-  registrationClosesAt: Date.parse('2026-11-15T18:29:59.999Z'), // 15 Nov, 23:59:59 IST
+  registrationClosesAt: Date.parse('2026-11-25T18:29:59.999Z'), // 25 Nov, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
   assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
-  registrationCategories: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year', 'Other']),
-  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year', 'Other']),
+  registrationCategories: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
+  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
   prizes: Object.freeze([{place: 1, amount: 50000}, {place: 2, amount: 25000}, {place: 3, amount: 15000}]),
   questionCount: 100,
   durationMinutes: 30,
@@ -252,7 +252,7 @@ function updateCountdown() {
   if (description) description.textContent = state === 'before'
     ? `Public registration opens ${eventConfig.registrationOpensLabel}.`
     : state === 'open' ? `Complete registration by ${eventConfig.registrationClosesLabel}.`
-      : 'The registration period ended on 15 November 2026.';
+      : 'The registration period ended on 25 November 2026.';
   box.classList.toggle('countdown-closed', state === 'closed');
   updateRegistrationSlideStatus();
 }
