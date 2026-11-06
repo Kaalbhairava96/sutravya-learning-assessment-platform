@@ -181,6 +181,7 @@ class ExamSlot(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
     event_key: Mapped[str] = mapped_column(String(100), nullable=False)
+    stream: Mapped[str | None] = mapped_column(String(32))
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     # Capacity stays unset until QualiNova confirms concurrency limits.
