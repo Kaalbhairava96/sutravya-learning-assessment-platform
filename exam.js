@@ -131,6 +131,14 @@
     if (expiredOverall) await finish(true);
     else if (autoAdvance) await moveNext(true);
   };
+  const logIntegrityEvent = async eventType => {
+    if (!attempt || attempt.status !== 'in_progress') return;
+    try {
+      await request('/api/exam/attempts/' + attempt.attempt_id + '/integrity-events','POST',{event_type:eventType});
+    } catch {
+      message('Integrity monitoring could not reach the server. Keep the assessment page connected.',true);
+    }
+  };
   const save = async optionId => {
     if (busy || !currentQuestion || questionRemaining <= 0) return;
     busy = true;
@@ -176,6 +184,10 @@
     if (busy) return;
     busy = true;
     try {
+      if (document.documentElement.requestFullscreen) {
+        try { await document.documentElement.requestFullscreen(); }
+        catch { message('Full-screen mode was not available. Your assessment will still be monitored for focus changes.'); }
+      }
       attempt = await request('/api/exam/attempts/start','POST');
       startOverallTimer(attempt.remaining_seconds);
       await loadQuestion(0);
@@ -226,6 +238,7 @@
       '<p class="exam-muted">Stream: ' + escapeHtml(availability.stream) + ' · ' + escapeHtml(slotStart) + '</p>' +
       '<p>100 questions · 5 sections · approximately 47 minutes · +1 / −0.25 marking.</p>' +
       '<p class="exam-muted">Individual question timers vary from 18 to 45 seconds according to the reading and reasoning required.</p>' +
+      '<p class="exam-muted">The assessment opens in full-screen mode. Returning to another tab, leaving full screen, or attempting copy/paste is recorded as an integrity event. No camera recording is used.</p>' +
       '<button id="start-exam" class="exam-button" ' +
       (availability.assigned && availability.opens_now && availability.question_bank_ready ? '' : 'disabled') +
       '>Start assessment</button>';
@@ -258,6 +271,31 @@
       candidateInfo.textContent = 'No active candidate session';
     }
   };
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') logIntegrityEvent('candidate_tab_hidden');
+    else if (attempt?.status === 'in_progress') message('Focus returned to the assessment. This event has been recorded.');
+  });
+  window.addEventListener('blur', () => logIntegrityEvent('candidate_window_blur'));
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && attempt?.status === 'in_progress') {
+      logIntegrityEvent('candidate_fullscreen_exit');
+      message('Full-screen mode exited. This integrity event has been recorded.',true);
+    }
+  });
+  document.addEventListener('copy', event => {
+    if (attempt?.status === 'in_progress') {
+      event.preventDefault();
+      logIntegrityEvent('candidate_copy_attempt');
+      message('Copying is disabled during the assessment.',true);
+    }
+  });
+  document.addEventListener('paste', event => {
+    if (attempt?.status === 'in_progress') {
+      event.preventDefault();
+      logIntegrityEvent('candidate_paste_attempt');
+      message('Pasting is disabled during the assessment.',true);
+    }
+  });
   window.addEventListener('beforeunload', event => {
     if (attempt?.status === 'in_progress') {
       event.preventDefault();
