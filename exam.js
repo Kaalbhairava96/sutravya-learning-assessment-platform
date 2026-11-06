@@ -114,6 +114,8 @@
     moving = true;
     stopQuestionTimer();
     currentPosition = position;
+    let autoAdvance = false;
+    let expiredOverall = false;
     message('Loading question ' + (position + 1) + '…');
     try {
       currentQuestion = await request('/api/exam/attempts/' + attempt.attempt_id + '/questions/' + position);
@@ -121,22 +123,21 @@
       renderQuestion();
       startQuestionTimer(questionRemaining);
       message('Your answer is saved securely when selected.');
-      if (questionRemaining <= 0) await moveNext(true);
+      autoAdvance = questionRemaining <= 0;
     } catch (error) {
-      if (error.message.toLowerCase().includes('time has expired')) {
-        await finish(true);
-      } else {
-        message(error.message, true);
-      }
+      if (error.message.toLowerCase().includes('exam time has expired')) expiredOverall = true;
+      else message(error.message, true);
     } finally { moving = false; }
+    if (expiredOverall) await finish(true);
+    else if (autoAdvance) await moveNext(true);
   };
   const save = async optionId => {
     if (busy || !currentQuestion || questionRemaining <= 0) return;
     busy = true;
+    let autoAdvance = false;
     try {
       await request('/api/exam/attempts/' + attempt.attempt_id + '/answer','PUT',{
-        question_id: currentQuestion.question_id,
-        option_id: optionId
+        question_id: currentQuestion.question_id, option_id: optionId
       });
       currentQuestion.selected_option_id = optionId;
       currentQuestion.answered = true;
@@ -147,9 +148,10 @@
       message(error.message, true);
       if (error.message.toLowerCase().includes('question time has expired')) {
         stopQuestionTimer();
-        await moveNext(true);
+        autoAdvance = true;
       }
     } finally { busy = false; }
+    if (autoAdvance) await moveNext(true);
   };
   const moveNext = async automatic => {
     if (moving || busy || !attempt) return;
