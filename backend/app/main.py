@@ -209,6 +209,7 @@ def _exam_error(error: ExamError) -> HTTPException:
         "eligible_registration_required": "An eligible verified registration is required.",
         "exam_not_configured": "Your assessment is not configured yet. Please contact the organiser.",
         "exam_slot_not_assigned": "Your exam slot has not been assigned yet.",
+        "exam_slot_stream_mismatch": "Your assigned slot does not match your registered assessment stream. Contact the organiser.",
         "exam_slot_not_open": "Your assigned exam slot is not currently open.",
         "exam_slot_capacity_reached": "Your exam slot has reached its configured capacity. Please contact the organiser.",
         "question_bank_incomplete": "Your assessment paper is being prepared. Please contact the organiser.",
@@ -387,7 +388,7 @@ def create_app(
             allow_origins=list(active_settings.cors_origins),
             allow_credentials=True,
             allow_methods=["GET", "POST", "PUT"],
-            allow_headers=["Content-Type", "X-Internal-Test-Code"],
+            allow_headers=["Content-Type", "X-Internal-Test-Code", "X-Admin-Key"],
         )
 
     @application.middleware("http")
@@ -406,6 +407,9 @@ def create_app(
                 return JSONResponse(status_code=403, content={"detail": "Origin is not allowed."})
             response = await call_next(request)
             status_code = response.status_code
+            if request.url.path.startswith("/api/exam/"):
+                response.headers["Cache-Control"] = "no-store, private"
+                response.headers["Pragma"] = "no-cache"
             return response
         except Exception:
             logger.error("request_failed", extra={"request_id": request_id, "method": request.method, "status_code": status_code})
