@@ -407,7 +407,7 @@ def create_app(
                 return JSONResponse(status_code=403, content={"detail": "Origin is not allowed."})
             response = await call_next(request)
             status_code = response.status_code
-            if request.url.path.startswith("/api/exam/"):
+            if request.url.path.startswith("/api/exam/") or request.url.path.startswith("/api/admin/assessment/"):
                 response.headers["Cache-Control"] = "no-store, private"
                 response.headers["Pragma"] = "no-cache"
             return response
