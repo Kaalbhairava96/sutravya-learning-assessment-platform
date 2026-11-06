@@ -18,6 +18,7 @@ from app.exam_service import (
     get_question,
     save_answer,
     start_exam,
+    skip_question,
     submit_exam,
 )
 from app.models import (
@@ -159,6 +160,27 @@ class CandidateExamServiceTests(unittest.TestCase):
         self.assertEqual(result["total_questions"], 100)
         repeated = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(seconds=7))
         self.assertEqual(repeated["score"], result["score"])
+
+    def test_candidates_cannot_skip_a_live_question_or_return_after_passing(self) -> None:
+        started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        attempt_id = UUID(started["attempt_id"])
+        first = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW)
+        with self.assertRaises(ExamError) as locked:
+            get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=1, now=NOW + timedelta(seconds=1))
+        self.assertEqual(locked.exception.code, "question_time_not_complete")
+        skipped = skip_question(
+            self.session, RAW_TOKEN, attempt_id=attempt_id, position=0,
+            now=NOW + timedelta(seconds=2),
+        )
+        self.assertTrue(skipped["skipped"])
+        second = get_question(
+            self.session, RAW_TOKEN, attempt_id=attempt_id, position=1,
+            now=NOW + timedelta(seconds=3),
+        )
+        self.assertEqual(second["position"], 1)
+        with self.assertRaises(ExamError) as passed:
+            get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW + timedelta(seconds=4))
+        self.assertEqual(passed.exception.code, "question_already_passed")
 
     def test_question_timer_is_server_enforced_and_unanswered_is_zero(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
