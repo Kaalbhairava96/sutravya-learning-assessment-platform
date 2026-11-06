@@ -242,7 +242,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0008_registration_serial_ids"])
+        self.assertEqual(script.get_heads(), ["0009_exam_slot_stream"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -257,6 +257,9 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(legacy_classification_revision.down_revision, "0006_reg_source")
         registration_serial_revision = script.get_revision("0008_registration_serial_ids")
         self.assertEqual(registration_serial_revision.down_revision, "0007_legacy_classification")
+        slot_stream_revision = script.get_revision("0009_exam_slot_stream")
+        self.assertEqual(slot_stream_revision.down_revision, "0008_registration_serial_ids")
+        self.assertIn("stream", Base.metadata.tables["exam_slots"].columns)
         self.assertEqual(len(Base.metadata.tables), 15)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -281,6 +284,8 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertIn("uq_candidates_verified_contact_pair", sql)
         self.assertIn("CREATE UNIQUE INDEX uq_candidates_verified_email", sql)
         self.assertIn("registration_source", sql)
+        self.assertIn("ADD COLUMN stream VARCHAR(32)", sql)
+        self.assertIn("ck_exam_slots_stream_approved", sql)
         self.assertIn("uq_registrations_candidate_event_official", sql)
         self.assertIn(
             "UPDATE registrations SET registration_source = 'legacy_internal_test' WHERE is_internal_test IS TRUE",
