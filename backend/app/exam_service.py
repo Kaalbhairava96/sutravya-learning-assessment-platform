@@ -442,10 +442,12 @@ def submit_exam(session: Session, raw_token: str | None, *, attempt_id: UUID, no
 
 def _result_payload(session: Session, attempt: ExamAttempt, result: Result) -> dict:
     questions = _question_set(session, session.get(QuestionBank, attempt.question_bank_id))
-    response_rows = {
-        row.question_id: row.selected_option_id
-        for row in session.scalars(select(CandidateResponse).where(CandidateResponse.attempt_id == attempt.id))
-    }
+    response_records = session.scalars(select(CandidateResponse).where(
+        CandidateResponse.attempt_id == attempt.id
+    )).all()
+    response_rows = {row.question_id: row.selected_option_id for row in response_records}
+    position_by_question = {row.question_id: row.position for row in response_records}
+    questions.sort(key=lambda question: position_by_question.get(question.id, 10_000))
     review = []
     correct_count = 0
     incorrect_count = 0
