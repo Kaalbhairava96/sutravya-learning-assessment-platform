@@ -74,7 +74,7 @@
 
       <section class="admin-card admin-span">
         <h2>Import official question bank</h2>
-        <p class="admin-muted">Upload a JSON file containing exactly 100 approved MCQs, four options (A–D) per question, one correct identifier and the approved marks per correct answer. The import is rejected if that stream already has questions or attempts.</p>
+        <p class="admin-muted">Upload a JSON file containing exactly 100 approved MCQs: 20 Anatomy, 20 Physiology, 20 Biology, 20 Mathematics & Analytical Reasoning, and 20 English & Communication. Every question needs four options (A–D), one correct answer, an easy/moderate label and a 15–60 second timer. Scoring is fixed at +1 / −0.25 / 0. The import is rejected if that stream already has questions or attempts.</p>
         <div class="admin-field"><label for="question-file">Question-bank JSON</label><input id="question-file" type="file" accept=".json,application/json"></div>
         <button class="admin-button" id="import-bank" type="button">Validate and import question bank</button>
         <div class="admin-status" id="import-status" aria-live="polite"></div>
