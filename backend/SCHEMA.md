@@ -114,3 +114,21 @@ candidate session and assigned slot, resumes an in-progress attempt after refres
 saves each selected option through the answer endpoint, submits at the timer
 boundary, and displays the persisted result/review. Candidate exam and organiser
 assessment API responses are marked `Cache-Control: no-store`.
+
+
+### Five-section question bank and individual timers
+Each stream-specific bank must contain exactly 100 active MCQs, with exactly 20
+questions in each section: `anatomy`, `physiology`, `biology`,
+`quantitative_reasoning`, and `english_communication`. Each question stores
+an `easy` or `moderate` difficulty and a 15–60 second `time_limit_seconds`.
+The question import accepts four A–D options and exactly one correct identifier.
+Scoring is fixed at +1 correct, −0.25 incorrect, and 0 unanswered.
+
+At attempt creation, the server snapshots the question order by section and a
+randomized option order per candidate. The candidate receives only one question
+per API request. Its timer begins on first presentation and is stored server-side;
+answer writes after that deadline are rejected. Candidates may continue only after
+answering, skipping, or exhausting the current question timer. Passed questions
+cannot be reopened. The overall attempt deadline is 55 minutes or the assigned
+slot end, whichever occurs first. The browser countdown is only a display; the
+server-side deadlines are authoritative.
