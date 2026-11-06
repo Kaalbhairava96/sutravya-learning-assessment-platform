@@ -14,6 +14,7 @@ from app.exam_service import (
     ExamError,
     exam_availability,
     get_attempt,
+    get_current_attempt,
     save_answer,
     start_exam,
     submit_exam,
@@ -176,6 +177,23 @@ class CandidateExamServiceTests(unittest.TestCase):
                 now=NOW + timedelta(minutes=6),
             )
         self.assertEqual(locked.exception.code, "attempt_not_in_progress")
+
+    def test_current_attempt_supports_resume_and_persisted_result_review(self) -> None:
+        started = start_exam(self.session, RAW_TOKEN, now=NOW)
+        self.session.rollback()
+        current = get_current_attempt(self.session, RAW_TOKEN, now=NOW + timedelta(minutes=1))
+        self.assertEqual(current["attempt"]["status"], "in_progress")
+        self.assertNotIn("correct_option", current["attempt"]["questions"][0])
+        self.session.rollback()
+        submitted = submit_exam(
+            self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
+            now=NOW + timedelta(minutes=2),
+        )
+        self.assertEqual(submitted["status"], "submitted")
+        self.session.rollback()
+        current_result = get_current_attempt(self.session, RAW_TOKEN, now=NOW + timedelta(minutes=3))
+        self.assertEqual(current_result["attempt"]["status"], "submitted")
+        self.assertEqual(len(current_result["attempt"]["review"]), 100)
 
     def test_answer_cannot_be_saved_after_thirty_minute_deadline(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
