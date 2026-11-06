@@ -384,6 +384,8 @@ def get_attempt(session: Session, raw_token: str | None, *, attempt_id: UUID, no
     if attempt.status != "in_progress":
         raise ExamError("attempt_not_in_progress", 409)
     slot = session.get(ExamSlot, attempt.exam_slot_id)
+    if slot is not None and current >= _deadline(attempt, slot):
+        return submit_exam(session, raw_token, attempt_id=attempt_id, now=current)
     bank = session.get(QuestionBank, attempt.question_bank_id)
     questions = _question_set(session, bank)
     due = _deadline(attempt, slot)
