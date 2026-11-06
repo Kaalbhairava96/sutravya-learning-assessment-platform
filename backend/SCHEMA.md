@@ -82,3 +82,26 @@ These APIs do not create slots, seed question content, or provision organiser
 accounts. Those operations require an authenticated organiser workflow before
 candidate exam day. PostgreSQL integration testing and production load testing
 remain release gates.
+
+
+## Organiser administration API
+
+The implementation branch adds a separate `ADMIN_API_KEY` setting (minimum 32 UTF-8
+bytes). It is never returned by settings or logged. Organiser endpoints fail closed
+with HTTP 503 until the private key is configured; incorrect keys receive HTTP 403.
+The key is sent only in the `X-Admin-Key` header.
+
+- `GET /api/admin/assessment/overview` — stream counts, configured slots, attempts and results.
+- `POST /api/admin/assessment/slots` — create a future stream-specific slot.
+- `POST /api/admin/assessment/slots/{slot_id}/assign` — assign verified official registrations from the same stream.
+- `POST /api/admin/assessment/question-banks/import` — import exactly 100 questions with four A–D options and one correct option per question.
+
+Slot timestamps must include a timezone; the organiser page sends IST values converted
+to UTC. Slot capacity is capped at 1,500 and checked against in-progress attempts.
+Reassignment is rejected once any candidate has an attempt. Question-bank re-import
+is rejected once content or attempts exist. Organiser mutations create audit events.
+
+The private noindex organiser page is `/admin.html`. Its API key remains in page
+memory only and is not stored in localStorage or sessionStorage. Configure
+`ADMIN_API_KEY` only in the private Render API environment; never put it in static
+site HTML, JavaScript, GitHub secrets exposed to browser builds, or a public file.
