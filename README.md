@@ -84,3 +84,17 @@ The Resend adapter calls the Resend Email API. A live sender requires a Resend a
 7. Have an experienced engineer available during the event. No production smoke test, delivery test, load result, backup restore, or production migration is claimed by this implementation.
 
 No paid hosting or provider resources were created by this work.
+
+
+### Candidate exam engine (implementation branch)
+
+The implementation branch now includes authenticated candidate exam availability,
+start/resume, answer persistence, timed submission and post-submission scoring
+endpoints. The question banks must be provisioned separately and must contain
+100 active MCQs per stream, four options per question, one correct answer, and
+an approved `htse_2026` scoring rule. Correct answers are not returned while an
+attempt is in progress.
+
+The organiser question-bank/slot management interface, production database
+upgrade/backup plan, PostgreSQL integration run, and 1,000-session load test are
+still pending. Do not treat this branch as exam-day production-ready.
