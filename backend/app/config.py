@@ -83,6 +83,7 @@ class Settings:
     internal_test_mode: bool = False
     internal_test_access_code: str | None = field(default=None, repr=False)
     registration_export_key: str | None = field(default=None, repr=False)
+    admin_api_key: str | None = field(default=None, repr=False)
 
     def __post_init__(self) -> None:
         if self.app_env not in {"development", "test", "production"}:
@@ -98,6 +99,8 @@ class Settings:
             raise ConfigurationError("INTERNAL_TEST_ACCESS_CODE must contain at least 16 characters when configured.")
         if self.registration_export_key is not None and len(self.registration_export_key) < 32:
             raise ConfigurationError("REGISTRATION_EXPORT_KEY must contain at least 32 characters when configured.")
+        if self.admin_api_key is not None and len(self.admin_api_key.encode("utf-8")) < 32:
+            raise ConfigurationError("ADMIN_API_KEY must contain at least 32 UTF-8 bytes when configured.")
         for name, value in (
             ("OTP_EXPIRY_SECONDS", self.otp_expiry_seconds),
             ("OTP_MAX_ATTEMPTS", self.otp_max_attempts),
@@ -171,4 +174,5 @@ class Settings:
             internal_test_mode=internal_mode_raw == "true",
             internal_test_access_code=values.get("INTERNAL_TEST_ACCESS_CODE") or None,
             registration_export_key=values.get("REGISTRATION_EXPORT_KEY") or None,
+            admin_api_key=values.get("ADMIN_API_KEY") or None,
         )
