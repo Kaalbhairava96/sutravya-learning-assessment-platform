@@ -111,3 +111,13 @@ A candidate exam portal is available at `/exam.html`; it is linked from the
 candidate sign-in page after an authenticated session is confirmed. It resumes
 active attempts and persisted submitted results, saves answers through the API,
 and presents the answer review only after submission.
+
+
+### HTSE common-foundation paper format
+The candidate assessment is configured for five common-foundation sections of 20
+questions each: Anatomy, Physiology, Biology, Mathematics & Analytical Reasoning,
+and English & Communication. The paper uses +1 for correct, −0.25 for incorrect,
+and 0 for unanswered. Each question has its own server-enforced timer and shuffled
+option order; candidates receive one question at a time and cannot revisit passed
+questions. The overall attempt ceiling is 55 minutes, while question-level timers
+are individually configured (15–60 seconds).
