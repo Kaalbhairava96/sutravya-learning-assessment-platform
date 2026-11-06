@@ -41,6 +41,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check site.js
+          node --check admin.js
           node --check mock-test.js
           node --check sample-papers.js
       - name: Build allowlisted assessment website
