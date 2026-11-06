@@ -164,7 +164,7 @@ def _registration_error(error: RegistrationError) -> HTTPException:
         "challenge_unavailable": "This code request is unavailable. Request a new code.",
         "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
         "registration_not_open": "Registration opens 1 November 2026 at 12:00 AM IST.",
-        "registration_closed": "Registration closes on 25 November 2026 at 11:59:59 PM IST.",
+        "registration_closed": "Registration closed after 25 November 2026 at 11:59:59 PM IST.",
         "internal_test_unauthorized": "Internal testing access could not be authorized.",
         "internal_test_unavailable": "Internal testing access is no longer available.",
     }
