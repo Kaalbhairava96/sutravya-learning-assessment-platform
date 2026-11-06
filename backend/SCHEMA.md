@@ -132,3 +132,12 @@ answering, skipping, or exhausting the current question timer. Passed questions
 cannot be reopened. The overall attempt deadline is 55 minutes or the assigned
 slot end, whichever occurs first. The browser countdown is only a display; the
 server-side deadlines are authoritative.
+
+
+### Candidate integrity signals
+The candidate portal requests full-screen mode and blocks in-page copy/paste while an
+attempt is active. It reports allowlisted events such as tab hidden, window blur,
+full-screen exit, copy attempt and paste attempt to the authenticated API. The API
+stores these as audit events linked to the attempt UUID, without recording candidate
+contact details or page contents. These signals are review indicators only; they
+cannot prove use of another device or prevent all external assistance.
