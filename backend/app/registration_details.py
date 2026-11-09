@@ -77,13 +77,15 @@ def build_registration_details(payload, session=None) -> dict:
         academic_stage = "Professional network"
 
     labels = {"nursing": "Nursing", "paramedical": "Paramedical", "mbbs": "MBBS", "jdn": "Junior Doctor Network (JDN)"}
-    return {
+    details = {
         "category": category, "category_label": labels[category],
         "programme": programme, "programme_label": PROGRAMMES[category][programme],
-        "year": year if category in {"nursing", "mbbs"} else None,
         "academic_stage": academic_stage, "stream": CATEGORY_STREAMS[category],
         "registration_fee_paise": CATEGORY_FEES[category], "currency": "INR",
         "payment_status": "pending",
         "house_number": house, "address_line1": address1, "address_line2": address2,
         "district": district, "state": state, "pin_code": pin, **professional,
     }
+    if category in {"nursing", "mbbs"}:
+        details["year"] = year
+    return details
