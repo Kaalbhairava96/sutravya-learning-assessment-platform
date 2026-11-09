@@ -26,7 +26,7 @@ const eventConfig = Object.freeze({
 });
 
 const navigation = [
-  ['index.html', 'Home'], ['awards.html', 'Awards & Prizes'],
+  ['index.html', 'Home'], ['registration.html', 'Register'], ['awards.html', 'Awards & Prizes'],
   ['syllabus.html', 'Syllabus'], ['sample-papers.html', 'Sample Questions'],
   ['mock-test.html', 'Mock Test'], ['faqs.html', 'FAQs'], ['contact.html', 'Contact']
 ];
