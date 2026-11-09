@@ -23,7 +23,7 @@ function updateCategory(){
  form.dataset.selectedFee=c?String(fees[c]):'';
 }
 categoryInputs.forEach(x=>x.addEventListener('change',updateCategory));
-programme.addEventListener('change',()=>{const c=categoryInputs.find(x=>x.checked)?.value;if(c==='nursing'||c==='paramedical')setOptions(year,years[c]||[],'Select year');});
+programme.addEventListener('change',()=>{const c=categoryInputs.find(x=>x.checked)?.value;let options=years[c]||[];if(c==='nursing'&&programme.value==='M.Sc Nursing')options=['1st Year','2nd Year'];setOptions(year,options,'Select year');});
 const message=document.getElementById('form-message');
 form.addEventListener('submit',e=>{
  e.preventDefault();message.className='rf-form-message';message.textContent='';
