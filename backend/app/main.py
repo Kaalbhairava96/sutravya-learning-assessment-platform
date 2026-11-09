@@ -38,6 +38,8 @@ from app.models import (
     AnswerOption, AuditEvent, Candidate, ExamAttempt, ExamSlot, Question,
     QuestionBank, Registration, Result, ScoringRule, VerificationChallenge,
 )
+from app.payments import PaymentNotConfigured, get_payment_gateway
+from app.registration_details import build_registration_details
 from app.exam_service import (
     ExamError,
     exam_availability,
@@ -59,6 +61,9 @@ from app.registration import (
     RegistrationError,
     create_login_challenge,
     create_registration_challenge,
+    create_registration_candidate_session,
+    record_payment_order,
+    finalize_registration_payment,
     enforce_rate_limit,
     get_candidate_session,
     invalidate_challenge,
@@ -132,7 +137,24 @@ class RegistrationRequest(BaseModel):
     full_name: str = Field(min_length=1, max_length=200)
     mobile: str = Field(min_length=10, max_length=20)
     email: str = Field(min_length=3, max_length=320)
-    stream: str = Field(min_length=1, max_length=32)
+    stream: str | None = Field(default=None, min_length=1, max_length=32)
+    category: str | None = Field(default=None, max_length=32)
+    programme: str | None = Field(default=None, max_length=120)
+    year: int | None = Field(default=None, ge=1, le=6)
+    academic_stage: str | None = Field(default=None, max_length=120)
+    professional_qualification: str | None = Field(default=None, max_length=160)
+    designation: str | None = Field(default=None, max_length=120)
+    institution: str | None = Field(default=None, max_length=180)
+    council_name: str | None = Field(default=None, max_length=160)
+    council_registration_number: str | None = Field(default=None, max_length=100)
+    years_of_experience: str | None = Field(default=None, max_length=40)
+    house_number: str | None = Field(default=None, max_length=100)
+    address_line1: str | None = Field(default=None, max_length=240)
+    address_line2: str | None = Field(default=None, max_length=240)
+    district: str | None = Field(default=None, max_length=120)
+    state: str | None = Field(default=None, max_length=120)
+    pin_code: str | None = Field(default=None, min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
+    declaration_accepted: bool = False
 
 
 class EmailOtpRequest(BaseModel):
@@ -466,10 +488,14 @@ def create_app(
                     registration_now = _require_registration_window(registration_now)
                 else:
                     _require_registration_deadline(registration_now)
+                registration_details = build_registration_details(payload) if registration_source == PUBLIC_REGISTRATION_SOURCE else None
+                effective_stream = registration_details["stream"] if registration_details else (payload.stream or "")
+                if registration_source == PUBLIC_REGISTRATION_SOURCE and registration_details is None:
+                    raise HTTPException(status_code=422, detail="Complete all required registration and address details.")
                 pending = create_registration_challenge(
                     session, settings=settings, name=payload.full_name, email=email,
-                    mobile=payload.mobile, stream=payload.stream, now=registration_now,
-                    registration_source=registration_source,
+                    mobile=payload.mobile, stream=effective_stream, now=registration_now,
+                    registration_source=registration_source, details=registration_details,
                 )
             except RegistrationError as error:
                 # Do not reveal whether an email already owns a completed registration.
@@ -529,7 +555,8 @@ def create_app(
             return {"challenge_id": str(pending.challenge_id), "expires_in": settings.otp_expiry_seconds}
 
     @application.post("/api/registrations/verify-email", tags=["registration"])
-    def verify_registration(payload: EmailOtpRequest, request: Request):
+    def verify_registration(payload: EmailOtpRequest, request: Request, response: Response | None = None):
+        response = response or Response()
         with _session(request) as session:
             settings = request.app.state.settings
             try:
@@ -581,22 +608,49 @@ def create_app(
                 status, message = _challenge_message(outcome)
                 raise HTTPException(status_code=status, detail=message)
             try:
-                request.app.state.confirmation_sender(
-                    recipient_email=registration.email,
-                    recipient_name=registration.full_name,
-                    registration_id=registration.registration_id,
-                    stream=registration.stream,
-                    settings=settings,
+                candidate_login = create_registration_candidate_session(
+                    session, email=registration.email, now=_registration_now()
                 )
-                sent = True
-            except Exception as error:
-                _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
-                sent = False
+            except RegistrationError as error:
+                raise _registration_error(error)
+            response.set_cookie(
+                SESSION_COOKIE,
+                candidate_login.raw_session_token,
+                max_age=max(0, int((candidate_login.expires_at - datetime.now(timezone.utc)).total_seconds())),
+                httponly=True,
+                secure=settings.app_env == "production",
+                samesite="none" if settings.app_env == "production" else "lax",
+                path="/api",
+            )
+            sent = False
+            if registration.payment_status != "pending" and registration.registration_id:
+                try:
+                    request.app.state.confirmation_sender(
+                        recipient_email=registration.email,
+                        recipient_name=registration.full_name,
+                        registration_id=registration.registration_id,
+                        stream=registration.stream,
+                        settings=settings,
+                    )
+                    sent = True
+                except Exception as error:
+                    _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
             return {
-                "registration_id": registration.registration_id,
+                "registration_id": registration.registration_id or None,
                 "registration_source": registration.registration_source,
                 "confirmation_email_sent": sent,
-                "message": "Registration complete. Save your Registration ID.",
+                "registration_status": registration.status,
+                "payment_status": registration.payment_status,
+                "candidate_session_established": True,
+                "amount_paise": registration.payment_amount_paise,
+                "currency": "INR",
+                "payment_enabled": getattr(get_payment_gateway(), "provider_name", "disabled") != "disabled",
+                "message": (
+                    "Email verified. Your application is saved and awaiting secure payment. "
+                    "Your final Registration ID will be issued only after payment is verified."
+                    if registration.payment_status == "pending"
+                    else "Registration complete. Save your Registration ID."
+                ),
             }
 
     @application.post("/api/registrations/resend-confirmation", status_code=202, tags=["registration"])
@@ -630,6 +684,145 @@ def create_app(
                 except Exception as error:
                     _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
             return {"message": "If the registration is eligible, a confirmation email will be sent."}
+
+    @application.get("/api/registration/config", tags=["registration"])
+    def registration_config(request: Request):
+        """Public form configuration. Final fees are always computed server-side."""
+        now = _registration_now().astimezone(REGISTRATION_TIMEZONE)
+        registration_enabled = REGISTRATION_OPENS_AT <= now < REGISTRATION_CLOSES_AT
+        gateway = get_payment_gateway()
+        provider = getattr(gateway, "provider_name", "disabled")
+        return {
+            "registration_enabled": registration_enabled,
+            "registration_opens_at": REGISTRATION_OPENS_AT.isoformat(),
+            "registration_closes_at": REGISTRATION_CLOSES_AT.isoformat(),
+            "categories": [
+                {"id": "nursing", "label": "Nursing", "fee_paise": 25000,
+                 "programmes": [
+                     {"id": "bsc_nursing", "label": "B.Sc Nursing", "years": [1, 2, 3, 4]},
+                     {"id": "msc_nursing", "label": "M.Sc Nursing", "years": [1, 2]},
+                 ]},
+                {"id": "paramedical", "label": "Paramedical", "fee_paise": 25000,
+                 "programmes": [
+                     {"id": "bmlt", "label": "BMLT"}, {"id": "bott", "label": "BOTT"},
+                     {"id": "bhm", "label": "BHM"}, {"id": "bopt", "label": "B.Opt"},
+                     {"id": "brit", "label": "BRIT"},
+                 ],
+                 "academic_stage_help": "Enter the current year, semester or internship stage exactly as shown by your institution."},
+                {"id": "mbbs", "label": "MBBS", "fee_paise": 50000,
+                 "programmes": [{"id": "mbbs", "label": "MBBS", "years": [1, 2, 3, 4, 5]}]},
+                {"id": "jdn", "label": "Junior Doctor Network (JDN)", "fee_paise": 100000,
+                 "programmes": [{"id": "junior_doctor_network", "label": "Junior Doctor Network"}]},
+            ],
+            "payment": {"provider": provider, "enabled": provider != "disabled", "currency": "INR"},
+        }
+
+    @application.get("/api/payments/status", tags=["payments"])
+    def candidate_payment_status(request: Request):
+        with _session(request) as session:
+            summary = get_candidate_session(session, request.cookies.get(SESSION_COOKIE))
+            if summary is None:
+                raise HTTPException(status_code=401, detail="Sign in to view your application status.")
+            candidate = session.scalar(select(Candidate).where(func.lower(Candidate.email) == summary.email))
+            registration = session.scalar(select(Registration).where(
+                Registration.candidate_id == candidate.id, Registration.event_key == EVENT_KEY,
+            )) if candidate else None
+            if registration is None:
+                raise HTTPException(status_code=404, detail="Application not found.")
+            gateway = get_payment_gateway()
+            provider = getattr(gateway, "provider_name", "disabled")
+            return {
+                "registration_status": registration.status,
+                "payment_status": registration.payment_status,
+                "amount_paise": registration.payment_amount_paise,
+                "currency": registration.payment_currency,
+                "registration_id": registration.registration_id,
+                "payment_provider": registration.payment_provider or provider,
+                "checkout_enabled": provider != "disabled",
+                "details": registration.details or {},
+            }
+
+    @application.post("/api/payments/create-order", tags=["payments"])
+    def create_payment_order(request: Request):
+        with _session(request) as session:
+            summary = get_candidate_session(session, request.cookies.get(SESSION_COOKIE))
+            if summary is None:
+                raise HTTPException(status_code=401, detail="Sign in to continue to payment.")
+            candidate = session.scalar(select(Candidate).where(func.lower(Candidate.email) == summary.email))
+            registration = session.scalar(select(Registration).where(
+                Registration.candidate_id == candidate.id, Registration.event_key == EVENT_KEY,
+            )) if candidate else None
+            if registration is None:
+                raise HTTPException(status_code=404, detail="Application not found.")
+            if registration.payment_status == "paid":
+                return {"payment_status": "paid", "registration_id": registration.registration_id}
+            if registration.payment_status not in {"pending", "created"} or registration.status != "payment_pending":
+                raise HTTPException(status_code=409, detail="This application is not awaiting payment.")
+            gateway = get_payment_gateway()
+            try:
+                order = gateway.create_order(
+                    amount_paise=registration.payment_amount_paise or 0,
+                    currency=registration.payment_currency or "INR",
+                    receipt=str(registration.id),
+                    customer_email=summary.email, customer_name=summary.full_name,
+                )
+            except PaymentNotConfigured:
+                raise HTTPException(status_code=503, detail=(
+                    "Secure payment is not enabled yet. Your application remains saved as Payment Pending. No money has been collected."
+                )) from None
+            session.commit()
+            try:
+                saved = record_payment_order(
+                    session, registration_record_id=registration.id, provider=order.provider,
+                    order_id=order.order_id, amount_paise=order.amount_paise, currency=order.currency,
+                )
+            except RegistrationError as error:
+                raise HTTPException(status_code=error.status_code, detail="Payment order could not be attached safely.") from None
+            return {"payment_status": saved.payment_status, "provider": order.provider,
+                    "order_id": order.order_id, "amount_paise": order.amount_paise,
+                    "currency": order.currency, "checkout_url": order.checkout_url,
+                    "checkout_payload": order.checkout_payload}
+
+    @application.post("/api/payments/webhook", tags=["payments"])
+    async def payment_webhook(request: Request):
+        raw_body = await request.body()
+        gateway = get_payment_gateway()
+        try:
+            verified = gateway.verify_webhook(raw_body=raw_body, headers=dict(request.headers))
+        except PaymentNotConfigured:
+            raise HTTPException(status_code=503, detail="Payment webhook verification is not configured.") from None
+        if not verified.paid:
+            return {"status": "received", "payment_status": "pending"}
+        with _session(request) as session:
+            registration = session.scalar(select(Registration).where(
+                Registration.payment_order_id == verified.order_id,
+                Registration.payment_provider == verified.provider.strip().lower(),
+                Registration.event_key == EVENT_KEY,
+            ))
+            if registration is None:
+                raise HTTPException(status_code=404, detail="Payment order is not associated with an application.")
+            registration_record_id = registration.id
+            candidate_id = registration.candidate_id
+            session.commit()
+            try:
+                paid = finalize_registration_payment(
+                    session, registration_record_id=registration_record_id, provider=verified.provider,
+                    order_id=verified.order_id, payment_reference=verified.payment_reference,
+                    amount_paise=verified.amount_paise, currency=verified.currency,
+                )
+            except RegistrationError as error:
+                raise HTTPException(status_code=error.status_code, detail="Verified payment could not be reconciled.") from None
+            candidate = session.get(Candidate, candidate_id)
+            if candidate and candidate.email:
+                try:
+                    request.app.state.confirmation_sender(
+                        recipient_email=candidate.email, recipient_name=candidate.full_name or "Candidate",
+                        registration_id=paid.registration_id, stream=paid.stream, settings=request.app.state.settings,
+                    )
+                except Exception as error:
+                    _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
+            return {"status": "processed", "payment_status": paid.payment_status,
+                    "registration_id": paid.registration_id}
 
     @application.get("/api/exam/availability", tags=["candidate assessment"])
     def candidate_exam_availability(request: Request):
@@ -943,8 +1136,13 @@ def create_app(
         output = io.StringIO(newline="")
         writer = csv.writer(output, lineterminator="\r\n")
         writer.writerow((
-            "registration_id", "full_name", "email", "mobile", "stream", "registration_date_ist",
-            "email_verified", "mobile_verified", "registration_source",
+            "registration_id", "full_name", "email", "mobile", "registration_source",
+            "registration_status", "payment_status", "registration_fee_inr",
+            "category", "programme", "academic_year", "academic_stage",
+            "professional_qualification", "designation", "institution",
+            "council_name", "council_registration_number", "years_of_experience",
+            "house_number", "address_line1", "address_line2", "district", "state", "pin_code",
+            "stream", "registration_date_ist", "email_verified", "mobile_verified",
         ))
         with _session(request) as session:
             for registration, candidate in session.execute(statement):
@@ -952,21 +1150,37 @@ def create_app(
                 if created_at.tzinfo is None:
                     created_at = created_at.replace(tzinfo=timezone.utc)
                 date_value = created_at.astimezone(REGISTRATION_TIMEZONE).isoformat(timespec="seconds")
+                details = registration.details or {}
+                fee_paise = registration.payment_amount_paise or details.get("registration_fee_paise")
                 writer.writerow(tuple(_csv_safe_cell(value) for value in (
                     registration.registration_id,
                     candidate.full_name,
                     candidate.email,
                     candidate.phone,
+                    ("legacy_internal_test" if registration.is_internal_test or registration.registration_source == "legacy_internal_test" else registration.registration_source),
+                    registration.status,
+                    registration.payment_status,
+                    f"{fee_paise / 100:.2f}" if isinstance(fee_paise, int) else "",
+                    details.get("category_label") or details.get("category"),
+                    details.get("programme_label") or details.get("programme"),
+                    details.get("year"),
+                    details.get("academic_stage"),
+                    details.get("professional_qualification"),
+                    details.get("designation"),
+                    details.get("institution"),
+                    details.get("council_name"),
+                    details.get("council_registration_number"),
+                    details.get("years_of_experience"),
+                    details.get("house_number"),
+                    details.get("address_line1"),
+                    details.get("address_line2"),
+                    details.get("district"),
+                    details.get("state"),
+                    details.get("pin_code"),
                     registration.stream,
                     date_value,
                     "yes" if candidate.email_verified_at is not None else "no",
                     "yes" if candidate.phone_verified_at is not None else "no",
-                    (
-                        "legacy_internal_test"
-                        if registration.is_internal_test
-                        or registration.registration_source == "legacy_internal_test"
-                        else registration.registration_source
-                    ),
                 )))
         csv_bytes = ("\ufeff" + output.getvalue()).encode("utf-8")
         return Response(
@@ -1029,10 +1243,13 @@ def create_app(
             if summary is None:
                 raise HTTPException(status_code=401, detail="Authentication required.")
             return {
-                "registration_id": summary.registration_id,
+                "registration_id": summary.registration_id or None,
                 "stream": summary.stream,
                 "full_name": summary.full_name,
                 "email": summary.email,
+                "registration_status": summary.status,
+                "payment_status": summary.payment_status,
+                "amount_paise": summary.payment_amount_paise,
             }
 
     @application.post("/api/auth/logout", status_code=204, tags=["candidate account"])

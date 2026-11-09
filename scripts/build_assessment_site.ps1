@@ -12,7 +12,7 @@ if (Test-Path -LiteralPath $PublishDir) {
 
 $SourceFiles = @(
     'index.html', 'awards.html', 'syllabus.html', 'sample-papers.html', 'mock-test.html',
-    'faqs.html', 'contact.html', 'login.html', 'team-prelaunch.html', 'styles.css', 'site.js',
+    'faqs.html', 'contact.html', 'login.html', 'register.html', 'registration.js', 'team-prelaunch.html', 'styles.css', 'site.js',
     'sample-papers.js', 'mock-test.js', 'question-bank.js'
 )
 $AssetFiles = @(

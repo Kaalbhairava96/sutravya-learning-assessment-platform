@@ -65,6 +65,7 @@ def _candidate_registration(session: Session, raw_token: str | None, *, lock: bo
             Registration.is_internal_test.is_(False),
             Registration.registration_source.in_((PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE)),
             Registration.status == "active",
+            Registration.stream.in_(("nursing", "paramedical", "mbbs_1st_year")),
         )
     )
     if lock:
