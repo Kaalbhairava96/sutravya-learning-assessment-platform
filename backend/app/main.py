@@ -609,7 +609,7 @@ def create_app(
                 raise HTTPException(status_code=status, detail=message)
             try:
                 candidate_login = create_registration_candidate_session(
-                    session, email=registration.email, now=_registration_now()
+                    session, email=registration.email, now=datetime.now(timezone.utc)
                 )
             except RegistrationError as error:
                 raise _registration_error(error)
