@@ -1785,3 +1785,159 @@ a, button, summary { touch-action: manipulation; }
   .review-actions { flex-direction:column; }
   .review-actions > button { width:100%; }
 }
+
+
+/* QualiNova glossy 3D premium identity — shared public-site design layer */
+:root{
+  color-scheme:dark;
+  --premium-ink:#f1f5ff;
+  --premium-muted:#c2cbe3;
+  --premium-line:rgba(164,177,255,.24);
+  --premium-glass:linear-gradient(145deg,rgba(39,49,105,.78),rgba(15,25,66,.84));
+}
+html{background:#080d23;color-scheme:dark}
+body{
+  background:
+    radial-gradient(ellipse at 12% 5%,rgba(100,48,190,.21),transparent 28%),
+    radial-gradient(ellipse at 92% 24%,rgba(20,132,202,.16),transparent 25%),
+    linear-gradient(180deg,#0a102b 0%,#101638 54%,#090f28 100%);
+  color:var(--premium-ink);
+}
+.site-topline{height:4px;background:linear-gradient(90deg,#7b39d6,#31d7ed,#9a5cff,#ffc95a)}
+.site-header{background:rgba(8,13,35,.9);border-bottom:1px solid rgba(166,173,255,.22);box-shadow:0 12px 35px rgba(0,0,0,.2);backdrop-filter:blur(22px)}
+.primary-nav{color:#dce5ff}
+.primary-nav>a:not(.nav-register):hover,.primary-nav>a[aria-current=page]{color:#fff}
+.primary-nav>a:not(.nav-register)::after{background:linear-gradient(90deg,#9a55ff,#56dfff)}
+.primary-nav .nav-register,.nav-register{background:linear-gradient(110deg,#6338d7,#a23cff 65%,#5b80ff);border:1px solid rgba(255,255,255,.28);box-shadow:0 9px 28px rgba(120,57,255,.34),inset 0 1px rgba(255,255,255,.28)}
+.nav-toggle{background:rgba(255,255,255,.08);border-color:rgba(180,190,255,.28);color:#fff}
+.section{background:transparent}
+.section-intro,.highlights-section,.faq-section,.contact-section,.section:not(.registration-section){background:transparent}
+.section-heading h2,.process-copy h2,.awards-info-grid h2,.faq-intro h2,.login-context h2,
+.v4-section-heading h2,.v4-pane-heading h3,.section-heading h2,.stream-card h3,.feature h3,
+.faq summary,.contact-card h3,.v4-test-top h2,.v4-results-head h2{color:#f4f5ff}
+.section-heading-split>p,.section-lede,.section-heading>p,.process-copy>p{color:#c5cfe7}
+.eyebrow,.v4-eyebrow,.card-kicker{color:#7deaff}
+.button-primary{background:linear-gradient(112deg,#285cdf,#0e9fd3 48%,#8055ff);box-shadow:0 10px 28px rgba(39,116,255,.27),inset 0 1px rgba(255,255,255,.26)}
+.button-gold{background:linear-gradient(115deg,#fff0a1,#ffc43e 55%,#e88b18);box-shadow:0 10px 26px rgba(237,164,30,.23),inset 0 1px rgba(255,255,255,.72)}
+.button-outline,.button-light{background:rgba(255,255,255,.08);border-color:rgba(190,202,255,.28);color:#eef1ff}
+.text-link{color:#7deaff}
+.page-hero,.v4-page-hero,.home-hero,.campaign-section,.partnership-section,.registration-section,.process-section{
+  background:
+    radial-gradient(ellipse at 72% 30%,rgba(125,65,225,.28),transparent 32%),
+    radial-gradient(ellipse at 18% 80%,rgba(0,193,223,.16),transparent 31%),
+    linear-gradient(125deg,#0a1539,#1b1a55 55%,#102c5c);
+}
+.page-hero h1,.v4-page-hero h1,.hero-copy h1{color:#fff;text-shadow:0 4px 32px rgba(104,101,255,.22)}
+.page-hero h1 em,.v4-page-hero h1 em,.hero-copy h1 span{color:#a5e5ff}
+.v4-page-hero:after,.page-hero:before{border-color:rgba(166,161,255,.2)}
+.breadcrumbs{color:#bbc8ed}
+.breadcrumbs a{color:#fff}
+.v4-page-hero p,.page-hero-grid>div:first-child>p{color:#d4def9}
+.v4-hero-chips span{background:rgba(255,255,255,.09);border-color:rgba(172,184,255,.3);color:#eaf4ff;backdrop-filter:blur(12px)}
+.v4-page-hero-visual img,.v4-awards-hero-art img,.page-hero-art img{border-color:rgba(173,182,255,.35);box-shadow:0 24px 65px rgba(0,0,0,.32),0 0 32px rgba(115,79,255,.18)}
+.countdown-section{background:transparent}
+.countdown-panel,.countdown>div{background:var(--premium-glass);border:1px solid var(--premium-line);border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.09)}
+.countdown-intro h2,.countdown b{color:#fff}
+.countdown-intro p,.countdown span{color:#c7d3ee}
+.countdown>div{width:76px;height:78px}
+.stream-card,.highlight-card,.award-preview,.syllabus-stream,.question-card,.contact-card,.faq,.feature,.surface,.topic,
+.v4-topic,.v4-sample-question,.v4-mock-stream,.v4-sample-note,.v4-practice-disclaimer,
+.v4-mapping-note,.v4-intro-callout,.v4-pane-heading,.v4-mock-rules>div,
+.v4-test-top,.v4-question-workspace,.v4-question-sidebar,.v4-results-summary,
+.login-form,.register-panel,.register-help-card,.register-step,.candidate-application-card{
+  color:#edf3ff;background:var(--premium-glass);border:1px solid var(--premium-line);
+  box-shadow:0 18px 48px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.09);
+  backdrop-filter:blur(16px);
+}
+.stream-card p,.highlight-card p,.award-preview p,.syllabus-stream p,.question-card p,
+.faq-answer p,.contact-card p,.v4-practice-disclaimer,.v4-sample-note,
+.v4-pane-heading p,.v4-intro-callout p,.v4-topic ul,.v4-mapping-note{color:#c4cde6}
+.stream-number,.stream-card-foot,.highlight-card span,.faq-number{color:#99a9d8}
+.stream-icon,.highlight-icon,.faq-plus,.contact-card-mark{background:linear-gradient(145deg,rgba(119,80,255,.4),rgba(30,161,206,.28));color:#d5e8ff;border:1px solid rgba(181,190,255,.24)}
+.stream-card:hover,.highlight-card:hover,.award-preview:hover,.contact-card:hover,.faq:hover,.feature:hover{transform:translateY(-5px);border-color:rgba(109,223,255,.6);box-shadow:0 25px 58px rgba(0,0,0,.3),0 0 25px rgba(125,80,255,.13)}
+.format-ribbon,.registration-info-card,.home-registration-panel,.registration-side,.partnership-card,.final-cta-inner{
+  background:linear-gradient(130deg,rgba(33,45,100,.94),rgba(13,34,76,.94));border:1px solid rgba(154,182,255,.28);border-radius:22px;color:#f4f6ff;box-shadow:0 22px 55px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.1)
+}
+.format-ribbon p,.registration-side p,.registration-info-card span,.final-cta-inner p,.partnership-copy p{color:#c7d2ed}
+.registration-info-card b,.home-fee-list b{color:#fff}
+.home-fee-list>div{border-color:rgba(200,210,255,.16);color:#d5def8}
+.steps li,.process-note,.register-security-note{background:rgba(255,255,255,.08);border-color:rgba(190,200,255,.2);color:#edf3ff}
+.steps li p,.process-note small{color:#c1cce7}
+.faq summary{color:#f0f3ff}
+.faq-answer{border-top-color:rgba(185,197,255,.18)}
+.faq-answer p{color:#c4cfe8}
+.faq-support-card,.login-context-card{background:rgba(255,255,255,.08);border:1px solid var(--premium-line);color:#edf2ff}
+.faq-support-card p,.login-context-card span{color:#b9c7e8}
+.contact-link{background:rgba(255,255,255,.07);border-color:rgba(181,192,255,.18);color:#fff}
+.contact-link b,.contact-card h3{color:#fff}
+.contact-link small,.contact-tagline,.contact-disclaimer{color:#c1cbe5}
+.v4-section-heading h2,.v4-split-panel h2{color:#f6f4ff}
+.v4-section-heading h2 em,.v4-split-panel h2 em{color:#9c82ff}
+.v4-section-heading p{color:#c6d0eb}
+.v4-section-heading{max-width:850px}
+.v4-section-heading h2,.section-heading h2{font-size:clamp(34px,4.3vw,54px);letter-spacing:-.045em}
+.v4-section-heading p,.section-heading-split>p{font-size:clamp(16px,1.35vw,19px);line-height:1.7}
+.v4-pane-heading,.v4-intro-callout{background:var(--premium-glass)}
+.v4-pane-heading h3,.v4-pane-heading p,.v4-intro-callout strong,.v4-intro-callout p{color:#ecf3ff}
+.v4-syllabus-tabs button,.v4-sample-tabs button{background:rgba(255,255,255,.08);color:#e7edff;border-color:rgba(177,190,255,.25);font-size:14px;min-height:48px}
+.v4-syllabus-tabs button.is-active,.v4-sample-tabs button.is-active{background:linear-gradient(110deg,#6643db,#168fc8);border-color:#a7a0ff;box-shadow:0 10px 25px rgba(102,67,219,.3)}
+.v4-topic summary{color:#eff3ff}
+.v4-topic summary span,.v4-topic summary i{color:#9be6ff}
+.v4-topic ul li{color:#c6d1ea}
+.v4-topic[open] summary{border-bottom-color:rgba(180,190,255,.18)}
+.v4-sample-option,.v4-answer-option,.v4-qnav{background:rgba(255,255,255,.06);border-color:rgba(186,199,255,.25);color:#f2f5ff}
+.v4-sample-option:hover,.v4-answer-option:hover{background:rgba(120,92,255,.22);border-color:#9c92ff}
+.v4-sample-option span{background:rgba(112,127,255,.3);color:#fff}
+.v4-sample-feedback{background:rgba(18,148,110,.13);color:#c2f5db}
+.v4-test-top h2,.v4-question-workspace h3,.v4-sidebar-heading b,.v4-results-head h2{color:#fff}
+.v4-test-top p,.v4-question-topline,.v4-sidebar-heading span,.v4-question-legend,.v4-sidebar-hint{color:#c1cbea}
+.v4-timer,.v4-score-ring{background:linear-gradient(145deg,#382975,#111c4c);border-color:#9387ff;color:white}
+.v4-results-head p,.v4-score-stats span{color:#c4cde5}
+.v4-practice-disclaimer{background:rgba(255,190,55,.09);border-color:rgba(255,202,88,.25)}
+.v4-practice-disclaimer strong{color:#ffe09a}
+.v4-sample-note{background:rgba(255,255,255,.06)}
+.v4-postcard-section{background:transparent}
+.v4-campaign-postcard{background:linear-gradient(120deg,#15184b,#392273 62%,#074e77);border:1px solid rgba(174,175,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.12)}
+.v4-postcard-art{background:linear-gradient(145deg,#101943,#3b236f)}
+.v4-postcard-copy p{color:#d4def8}
+.register-workspace{background:transparent}
+.register-aside h2,.register-panel-head h2,.register-panel h2,.register-panel label,.form-section-title b,.register-step b{color:#f4f6ff}
+.register-aside>p,.register-panel-head p,.form-section-title small,.register-step small,.field-help,.form-footnote{color:#c1cce7}
+.register-step.is-current{background:rgba(59,117,202,.24);border-color:#69cbe7}
+.register-step>span{background:rgba(125,100,255,.32);color:#fff}
+.register-panel input,.register-panel select,.register-panel textarea,.login-form input{
+  background:rgba(6,13,40,.82);border-color:rgba(180,194,255,.3);color:#fff;
+}
+.register-panel input::placeholder,.login-form input::placeholder{color:#9ba9cb}
+.register-panel .fee-review-card,.register-panel .review-declaration,.register-panel .registration-review-panel,
+.register-panel .registration-otp-panel,.register-panel .registration-payment-panel{
+  background:rgba(255,255,255,.07);border-color:rgba(178,194,255,.2);color:#edf3ff
+}
+.registration-review-list dt,.registration-review-list dd{color:#e6edff;border-color:rgba(189,198,255,.16)}
+.fee-review-amount,.payment-total{color:#ffdb7e!important}
+.fee-review-chip{background:rgba(255,255,255,.08);border-color:rgba(188,198,255,.23)}
+.fee-review-chip span,.fee-review-chip b{color:#dce5ff}
+.registration-consent,.registration-review-list dt,.form-footnote{color:#c3cde7}
+.register-form-alert{color:#bdf3d0;background:rgba(21,143,93,.18);border-color:rgba(95,220,160,.28)}
+.register-form-alert.is-error{color:#ffd2d2;background:rgba(189,60,77,.17);border-color:rgba(255,136,150,.25)}
+.payment-pending-banner{background:rgba(232,166,36,.12);border-color:rgba(255,209,103,.25);color:#ffe5a3}
+.payment-pending-banner small{color:#dfc98e}
+.site-footer{background:#070d24;border-top:1px solid rgba(166,177,255,.18)}
+.footer-top{background:linear-gradient(140deg,#0d173a,#141b46 60%,#092d4f)}
+.footer-column h2,.footer-subheading{color:#fff}
+.footer-column a,.footer-column span,.footer-brand p,.footer-bottom-inner{color:#bbc8e6}
+.footer-column a:hover{color:#79e7ff}
+.exam-shell,.admin-shell{color:#edf2ff}
+.exam-top,.admin-hero{background:linear-gradient(120deg,#182052,#3a267a 60%,#075a83)!important;border:1px solid rgba(173,185,255,.28);box-shadow:0 24px 55px rgba(0,0,0,.28)}
+.exam-card,.exam-question,.admin-card,.admin-stream,.admin-metric{background:var(--premium-glass)!important;border:1px solid var(--premium-line)!important;color:#edf3ff!important}
+.exam-card h2,.admin-card h2,.admin-field label{color:#fff!important}
+.exam-card p,.admin-card p,.admin-stream span{color:#c4cdea!important}
+.admin-field input,.admin-field select,.admin-field textarea{background:#101a42!important;border-color:rgba(180,194,255,.28)!important;color:#fff!important}
+@media(max-width:700px){
+  .header-inner{min-height:70px}
+  .primary-nav{background:rgba(8,13,35,.98);border:1px solid rgba(166,173,255,.22);box-shadow:0 22px 40px rgba(0,0,0,.38)}
+  .v4-section-heading{margin-bottom:28px}
+}
+@media(prefers-reduced-motion:no-preference){
+  .stream-card,.highlight-card,.award-preview,.contact-card,.faq,.v4-topic,.v4-mock-stream,.awards-track-card,.startup-support-grid article{transition:transform .32s ease,box-shadow .32s ease,border-color .32s ease}
+}
