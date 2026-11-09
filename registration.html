@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#082f49">
+<meta name="description" content="Register for the Healthcare Talent Search Exam 2026 organised by QualiNova with SUTRAVYA.">
+<title>Candidate Registration | HTSE 2026</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="registration-form.css">
+</head>
+<body>
+<div data-header></div>
+<main class="rf-page">
+<section class="rf-hero">
+  <div class="rf-hero-inner">
+    <div class="rf-eyebrow"><span></span> QUALINOVA · HEALTHCARE TALENT SEARCH EXAM 2026</div>
+    <h1>Your next step in<br><em>healthcare excellence.</em></h1>
+    <p>Complete your candidate profile to register for HTSE 2026. Please keep your academic and contact details ready.</p>
+    <div class="rf-hero-meta"><span><b>04 DEC</b> Exam date</span><i></i><span><b>ONLINE</b> Assessment mode</span><i></i><span><b>25 NOV</b> Registration closes</span></div>
+  </div>
+  <div class="rf-hero-orbit" aria-hidden="true"><div class="rf-orbit-core">HTSE<br><b>2026</b></div><span>KNOWLEDGE</span><span>CARE</span><span>FUTURE</span></div>
+</section>
+
+<section class="rf-shell">
+  <aside class="rf-aside">
+    <div class="rf-aside-sticky">
+      <span class="rf-kicker">REGISTRATION JOURNEY</span>
+      <h2>One profile.<br><em>New possibilities.</em></h2>
+      <p>Choose the category that matches your current programme. The form will display only the relevant academic fields.</p>
+      <div class="rf-step-list">
+        <div class="rf-step active"><span>01</span><div><b>Candidate profile</b><small>Personal and academic details</small></div></div>
+        <div class="rf-step"><span>02</span><div><b>Review details</b><small>Check your information and fee</small></div></div>
+        <div class="rf-step"><span>03</span><div><b>Verification</b><small>Email verification and confirmation</small></div></div>
+      </div>
+      <div class="rf-help-card"><span>NEED HELP?</span><b>QualiNova Support</b><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="tel:+919955521842">+91 99555 21842</a></div>
+      <p class="rf-partner-note">Assessment &amp; technology partner<br><strong>SUTRAVYA</strong> · The Digital Thread of Healthcare</p>
+    </div>
+  </aside>
+
+  <form class="rf-form" id="htse-registration-form" novalidate>
+    <div class="rf-form-head"><div><span class="rf-kicker">CANDIDATE PORTAL · 2026</span><h2>Candidate registration</h2><p>Fields marked with <b>*</b> are mandatory.</p></div><div class="rf-secure-mark"><span>✓</span><small>SECURE<br>FORM</small></div></div>
+
+    <section class="rf-section">
+      <div class="rf-section-title"><span>01</span><div><h3>Registration category</h3><p>Select your category to reveal the applicable programme and fee.</p></div></div>
+      <div class="rf-category-grid" role="radiogroup" aria-label="Registration category">
+        <label class="rf-category"><input type="radio" name="category" value="nursing" required><span class="rf-category-icon">✚</span><b>Nursing</b><small>B.Sc / M.Sc Nursing</small><strong>₹250</strong></label>
+        <label class="rf-category"><input type="radio" name="category" value="paramedical"><span class="rf-category-icon">⌬</span><b>Paramedical</b><small>All listed programmes</small><strong>₹250</strong></label>
+        <label class="rf-category"><input type="radio" name="category" value="mbbs"><span class="rf-category-icon">⚕</span><b>MBBS</b><small>1st to 5th year</small><strong>₹500</strong></label>
+        <label class="rf-category"><input type="radio" name="category" value="jdn"><span class="rf-category-icon">✧</span><b>Junior Doctor Network</b><small>JDN registration</small><strong>₹1,000</strong></label>
+      </div>
+      <div class="rf-grid rf-grid-2 rf-dependent" id="programme-fields" hidden>
+        <div class="rf-field"><label for="programme">Programme / course <b>*</b></label><select id="programme" name="programme" required disabled><option value="">Select programme</option></select></div>
+        <div class="rf-field" id="year-wrap"><label for="academic-year">Current year <b>*</b></label><select id="academic-year" name="academic_year" required disabled><option value="">Select year</option></select></div>
+      </div>
+      <div class="rf-field rf-dependent" id="jdn-fields" hidden><label for="jdn-status">Professional status <b>*</b></label><select id="jdn-status" name="jdn_status" disabled><option value="">Select status</option><option>Intern</option><option>Medical Officer</option><option>Resident Doctor</option><option>Practising Doctor</option><option>Other</option></select><small>JDN-specific professional details can be expanded when the organiser confirms eligibility fields.</small></div>
+    </section>
+
+    <section class="rf-section">
+      <div class="rf-section-title"><span>02</span><div><h3>Personal information</h3><p>Enter your name and active contact details.</p></div></div>
+      <div class="rf-grid rf-grid-2">
+        <div class="rf-field"><label for="full-name">Full name <b>*</b></label><input id="full-name" name="full_name" autocomplete="name" placeholder="As per your academic / identity record" required maxlength="120"></div>
+        <div class="rf-field"><label for="dob">Date of birth</label><input id="dob" name="date_of_birth" type="date" autocomplete="bday"></div>
+        <div class="rf-field"><label for="email">Email address <b>*</b></label><input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required maxlength="254"></div>
+        <div class="rf-field"><label for="mobile">Mobile number <b>*</b></label><div class="rf-phone"><span>+91</span><input id="mobile" name="mobile" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10-digit mobile number" pattern="[6-9][0-9]{9}" maxlength="10" required></div></div>
+        <div class="rf-field"><label for="gender">Gender</label><select id="gender" name="gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select></div>
+        <div class="rf-field"><label for="nationality">Nationality</label><input id="nationality" name="nationality" value="Indian" maxlength="60"></div>
+      </div>
+    </section>
+
+    <section class="rf-section">
+      <div class="rf-section-title"><span>03</span><div><h3>Institution &amp; academic details</h3><p>Tell us where you are currently studying or associated.</p></div></div>
+      <div class="rf-grid rf-grid-2">
+        <div class="rf-field rf-span-2"><label for="institution">College / institution name <b>*</b></label><input id="institution" name="institution_name" placeholder="Enter the full name of your college / institution" required maxlength="180"></div>
+        <div class="rf-field"><label for="university">University / affiliating body</label><input id="university" name="university" placeholder="University name" maxlength="180"></div>
+        <div class="rf-field"><label for="student-id">Student / enrolment ID</label><input id="student-id" name="student_id" placeholder="If available" maxlength="80"></div>
+        <div class="rf-field"><label for="institution-state">Institution state</label><select id="institution-state" name="institution_state"><option value="">Select state / UT</option></select></div>
+        <div class="rf-field"><label for="institution-city">Institution city / district</label><input id="institution-city" name="institution_city" placeholder="City or district" maxlength="100"></div>
+      </div>
+    </section>
+
+    <section class="rf-section">
+      <div class="rf-section-title"><span>04</span><div><h3>Residential address</h3><p>Provide a current address for official communication.</p></div></div>
+      <div class="rf-grid rf-grid-2">
+        <div class="rf-field rf-span-2"><label for="address1">Address line 1 <b>*</b></label><input id="address1" name="address_line1" autocomplete="address-line1" placeholder="House / flat, street, locality" required maxlength="180"></div>
+        <div class="rf-field rf-span-2"><label for="address2">Address line 2</label><input id="address2" name="address_line2" autocomplete="address-line2" placeholder="Landmark, area (optional)" maxlength="180"></div>
+        <div class="rf-field"><label for="district">District <b>*</b></label><input id="district" name="district" autocomplete="address-level2" required maxlength="100"></div>
+        <div class="rf-field"><label for="state">State / UT <b>*</b></label><select id="state" name="state" autocomplete="address-level1" required><option value="">Select state / UT</option></select></div>
+        <div class="rf-field"><label for="pincode">PIN code <b>*</b></label><input id="pincode" name="pincode" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit PIN code" required></div>
+        <div class="rf-field"><label for="country">Country</label><input id="country" name="country" value="India" readonly></div>
+      </div>
+    </section>
+
+    <section class="rf-section rf-fee-section">
+      <div class="rf-section-title"><span>05</span><div><h3>Registration fee summary</h3><p>Your applicable fee is calculated from the selected category.</p></div></div>
+      <div class="rf-fee-card"><div><span>SELECTED CATEGORY</span><b id="fee-category">Not selected</b></div><div class="rf-fee-amount"><span>REGISTRATION FEE</span><strong id="fee-amount">₹0</strong></div><p id="fee-note">Choose a registration category above to view the applicable fee.</p></div>
+      <div class="rf-payment-note"><span>i</span><p><b>Payment gateway integration will be enabled in the final phase.</b><br>This form currently displays the applicable fee only. No payment will be collected at this stage.</p></div>
+    </section>
+
+    <section class="rf-section rf-declaration">
+      <div class="rf-section-title"><span>06</span><div><h3>Declaration &amp; consent</h3><p>Please review before continuing.</p></div></div>
+      <label class="rf-check"><input type="checkbox" name="information_declaration" required><span>I confirm that the information provided above is accurate and complete to the best of my knowledge. <b>*</b></span></label>
+      <label class="rf-check"><input type="checkbox" name="privacy_consent" required><span>I consent to QualiNova and SUTRAVYA using these details for registration, candidate communication and examination administration. <b>*</b></span></label>
+      <label class="rf-check"><input type="checkbox" name="updates_consent"><span>I would like to receive relevant event updates and announcements.</span></label>
+    </section>
+
+    <div class="rf-submit-row"><div><b>Review before submission</b><small>Your details will be checked in the next step.</small></div><button type="submit" class="rf-submit">Review registration <span>→</span></button></div>
+    <div class="rf-form-message" id="form-message" role="status" aria-live="polite"></div>
+    <p class="rf-legal">By continuing, you acknowledge that registration is subject to the official HTSE 2026 rules and organiser verification.</p>
+  </form>
+</section>
+</main>
+<div data-footer></div>
+<script src="site.js"></script>
+<script src="registration-form.js"></script>
+</body>
+</html>
