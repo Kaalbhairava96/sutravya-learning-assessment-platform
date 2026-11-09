@@ -555,7 +555,7 @@ def create_app(
             return {"challenge_id": str(pending.challenge_id), "expires_in": settings.otp_expiry_seconds}
 
     @application.post("/api/registrations/verify-email", tags=["registration"])
-    def verify_registration(payload: EmailOtpRequest, request: Request, response: Response | None = None):
+    def verify_registration(payload: EmailOtpRequest, request: Request, response: Response = None):
         response = response or Response()
         with _session(request) as session:
             settings = request.app.state.settings
