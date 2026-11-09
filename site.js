@@ -16,7 +16,6 @@ const eventConfig = Object.freeze({
   assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
   registrationCategories: Object.freeze(['Nursing', 'Paramedical', 'MBBS', 'Junior Doctor Network (JDN)']),
   streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
-  prizes: Object.freeze([{place: 1, amount: 50000}, {place: 2, amount: 25000}, {place: 3, amount: 15000}]),
   questionCount: 100,
   durationMinutes: 30,
   negativeMarking: false,
