@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 520" role="img" aria-labelledby="title desc">
+<title id="title">QualiNova startup enablement rocket</title><desc id="desc">A glossy three-dimensional rocket launching from a glowing platform, symbolising a healthcare idea becoming a startup.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0a1234"/><stop offset=".55" stop-color="#22205c"/><stop offset="1" stop-color="#0d2a57"/></linearGradient>
+ <linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".28" stop-color="#dce7ff"/><stop offset=".55" stop-color="#9daeff"/><stop offset=".78" stop-color="#f3f6ff"/><stop offset="1" stop-color="#7a86dc"/></linearGradient>
+ <linearGradient id="nose" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb4eb"/><stop offset=".5" stop-color="#a65cff"/><stop offset="1" stop-color="#5738a9"/></linearGradient>
+ <linearGradient id="fin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#65eaff"/><stop offset="1" stop-color="#4d60db"/></linearGradient>
+ <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".22" stop-color="#ffe17c"/><stop offset=".57" stop-color="#ff9e40"/><stop offset="1" stop-color="#e847e7" stop-opacity="0"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#866aff" stop-opacity=".62"/><stop offset="1" stop-color="#866aff" stop-opacity="0"/></radialGradient>
+ <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect x="8" y="8" width="684" height="504" rx="38" fill="url(#bg)" stroke="#7f8cff" stroke-opacity=".4" stroke-width="2"/>
+<ellipse cx="350" cy="266" rx="280" ry="220" fill="url(#halo)"/>
+<circle cx="350" cy="260" r="183" fill="none" stroke="#8bdfff" stroke-opacity=".25" stroke-width="2"/>
+<circle cx="350" cy="260" r="218" fill="none" stroke="#b48dff" stroke-opacity=".25" stroke-width="2" stroke-dasharray="7 16"/>
+<g transform="translate(350 240) rotate(17)">
+ <path d="M-21 95c-33 77-50 129-38 173 33-28 50-52 59-85 9 33 26 57 59 85 12-44-5-96-38-173z" fill="url(#flame)" opacity=".9"/>
+ <path d="M-80 31c-54 22-72 63-79 130 47-3 79-23 105-62z" fill="url(#fin)" stroke="#b8f5ff" stroke-width="4"/>
+ <path d="M80 31c54 22 72 63 79 130-47-3-79-23-105-62z" fill="url(#fin)" stroke="#b8f5ff" stroke-width="4"/>
+ <path d="M0-177c-79 73-96 172-89 251 3 44 30 82 89 120 59-38 86-76 89-120 7-79-10-178-89-251z" fill="url(#body)" stroke="#fff" stroke-width="5"/>
+ <path d="M0-177c-37 34-61 72-74 119 34 13 58 18 74 18s40-5 74-18c-13-47-37-85-74-119z" fill="url(#nose)" stroke="#ffd8ff" stroke-width="4"/>
+ <circle cy="-5" r="45" fill="#24285c" stroke="#d4f7ff" stroke-width="9"/>
+ <circle cy="-5" r="31" fill="#60c9ff" stroke="#967dff" stroke-width="4"/>
+ <circle cx="-11" cy="-16" r="9" fill="#fff" opacity=".8"/>
+ <path d="M-30 85h60" stroke="#8192e8" stroke-width="6" stroke-linecap="round"/>
+</g>
+<g fill="#fff"><path d="m153 125 8 18 18 8-18 8-8 18-8-18-18-8 18-8z" opacity=".8"/><path d="m557 97 6 14 14 6-14 6-6 14-6-14-14-6 14-6z" opacity=".7"/><circle cx="224" cy="82" r="5"/><circle cx="500" cy="165" r="4"/><circle cx="140" cy="311" r="4"/></g>
+<path d="M160 450h380l-34 34H194z" fill="#303a8b" stroke="#8cbdff" stroke-width="3"/>
+<path d="M196 449h308" stroke="#7deaff" stroke-width="5" stroke-linecap="round"/>
+<path d="M230 484h240" stroke="#ad8cff" stroke-width="4" stroke-linecap="round"/>
+<path d="M275 408c15 22 35 30 75 30s60-8 75-30" fill="none" stroke="#ffc957" stroke-opacity=".9" stroke-width="6" stroke-linecap="round"/>
+</svg>

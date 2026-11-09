@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 500" role="img" aria-labelledby="title desc">
+<title id="title">Hackathon top three podium</title><desc id="desc">Three luminous podium blocks with a gold trophy and healthcare innovation symbol.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111741"/><stop offset=".5" stop-color="#28155d"/><stop offset="1" stop-color="#151e50"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3a6"/><stop offset=".25" stop-color="#ffce47"/><stop offset=".55" stop-color="#f69a17"/><stop offset=".8" stop-color="#ffe071"/><stop offset="1" stop-color="#9c5205"/></linearGradient>
+ <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5f9ff"/><stop offset=".45" stop-color="#9eb7e8"/><stop offset="1" stop-color="#536b9c"/></linearGradient>
+ <linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffc89a"/><stop offset=".5" stop-color="#c66d3b"/><stop offset="1" stop-color="#733c33"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#ba6cff" stop-opacity=".65"/><stop offset="1" stop-color="#6e38ff" stop-opacity="0"/></radialGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect x="8" y="8" width="704" height="484" rx="35" fill="url(#bg)" stroke="#a38aff" stroke-opacity=".5" stroke-width="2"/>
+<ellipse cx="360" cy="282" rx="280" ry="195" fill="url(#glow)"/>
+<ellipse cx="360" cy="426" rx="275" ry="32" fill="#000" opacity=".3" filter="url(#blur)"/>
+<g transform="translate(0 18)">
+ <path d="M105 336h174v106H105z" fill="url(#silver)" stroke="#d8e5ff" stroke-width="3"/>
+ <path d="M105 336l27-25h174l-27 25z" fill="#d3e4ff" stroke="#fff" stroke-width="2"/>
+ <path d="M441 336h174v106H441z" fill="url(#bronze)" stroke="#ffd1ab" stroke-width="3"/>
+ <path d="M441 336l27-25h174l-27 25z" fill="#f8b17d" stroke="#ffe1c6" stroke-width="2"/>
+ <path d="M272 267h176v175H272z" fill="url(#gold)" stroke="#fff0a3" stroke-width="4"/>
+ <path d="M272 267l28-30h176l-28 30z" fill="#ffdb68" stroke="#fff6c4" stroke-width="3"/>
+ <text x="192" y="402" text-anchor="middle" font-family="Arial,sans-serif" font-size="71" font-weight="800" fill="#f4f7ff" stroke="#536b9c" stroke-width="2">2</text>
+ <text x="360" y="366" text-anchor="middle" font-family="Arial,sans-serif" font-size="90" font-weight="900" fill="#fff9c4" stroke="#b66b11" stroke-width="2">1</text>
+ <text x="528" y="402" text-anchor="middle" font-family="Arial,sans-serif" font-size="71" font-weight="800" fill="#fff0d9" stroke="#8e4c3e" stroke-width="2">3</text>
+ <g transform="translate(360 98)">
+  <path d="M-73-34h146l-14 100c-7 43-34 72-59 72s-52-29-59-72z" fill="url(#gold)" stroke="#fff0a5" stroke-width="4"/>
+  <path d="M-72-7c-45-28-63 6-39 40 14 20 31 25 50 19M72-7c45-28 63 6 39 40-14 20-31 25-50 19" fill="none" stroke="url(#gold)" stroke-width="15" stroke-linecap="round"/>
+  <path d="m0-19 13 26 29 4-21 20 5 28-26-14-26 14 5-28-21-20 29-4z" fill="#fff9d2" stroke="#db971c" stroke-width="4"/>
+  <path d="M-26 136h52l16 36h-84z" fill="#f6ac20"/>
+  <rect x="-71" y="168" width="142" height="24" rx="6" fill="url(#gold)" stroke="#fff1a7" stroke-width="3"/>
+ </g>
+</g>
+<g fill="#fff"><path d="m146 81 8 18 18 8-18 8-8 18-8-18-18-8 18-8z" opacity=".85"/><path d="m579 95 6 14 14 6-14 6-6 14-6-14-14-6 14-6z" opacity=".75"/><circle cx="222" cy="144" r="5"/><circle cx="500" cy="88" r="4"/><circle cx="617" cy="220" r="4"/></g>
+</svg>
