@@ -2,7 +2,7 @@
 const eventConfig = Object.freeze({
   title: 'Healthcare Talent Search Exam 2026',
   shortTitle: 'Healthcare Talent Search Exam',
-  examFee: 'Free of Cost',
+  examFee: '₹250–₹1,000 by category',
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
@@ -14,7 +14,7 @@ const eventConfig = Object.freeze({
   registrationClosesAt: Date.parse('2026-11-25T18:29:59.999Z'), // 25 Nov, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
   assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
-  registrationCategories: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
+  registrationCategories: Object.freeze(['Nursing', 'Paramedical', 'MBBS', 'Junior Doctor Network (JDN)']),
   streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS 1st Year']),
   prizes: Object.freeze([{place: 1, amount: 50000}, {place: 2, amount: 25000}, {place: 3, amount: 15000}]),
   questionCount: 100,
@@ -28,7 +28,7 @@ const eventConfig = Object.freeze({
 const navigation = [
   ['index.html', 'Home'], ['awards.html', 'Awards & Prizes'],
   ['syllabus.html', 'Syllabus'], ['sample-papers.html', 'Sample Questions'],
-  ['mock-test.html', 'Mock Test'], ['faqs.html', 'FAQs'], ['contact.html', 'Contact']
+  ['mock-test.html', 'Mock Test'], ['faqs.html', 'FAQs'], ['register.html', 'Register'], ['contact.html', 'Contact']
 ];
 const currentPage = location.pathname.split('/').pop() || 'index.html';
 const configuredApiBase = document.querySelector('meta[name="sutravya-api-base"]')?.content.trim();
@@ -63,7 +63,7 @@ function icon(name) {
 const header = document.querySelector('[data-header]');
 if (header) {
   const links = navigation.map(([url, label]) => `<a href="${url}"${url === currentPage ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  header.innerHTML = `<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner"><div class="header-brand-lockup"><a class="brand" href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a><span class="header-brand-divider" aria-hidden="true"></span><a class="partner-brand" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova, event organiser"><small>EVENT ORGANISER</small><img src="assets/qualinova-logo.png" alt="QualiNova"></a></div><button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">${icon('menu')}</span><span>Menu</span></button><nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">${links}<a class="nav-register" href="index.html#register">Register now ${icon('arrow')}</a></nav></div></header>`;
+  header.innerHTML = `<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner"><div class="header-brand-lockup"><a class="brand" href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a><span class="header-brand-divider" aria-hidden="true"></span><a class="partner-brand" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova, event organiser"><small>EVENT ORGANISER</small><img src="assets/qualinova-logo.png" alt="QualiNova"></a></div><button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">${icon('menu')}</span><span>Menu</span></button><nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">${links}<a class="nav-register" href="register.html">Register now ${icon('arrow')}</a></nav></div></header>`;
   const toggle = header.querySelector('.nav-toggle');
   const nav = header.querySelector('.primary-nav');
   const closeMenu = () => { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation'); toggle.querySelector('.nav-toggle-icon').innerHTML = icon('menu'); };
@@ -86,7 +86,7 @@ function renderContextualPostcard() {
     'syllabus.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'PREPARE WITH PURPOSE', title:'A stronger foundation starts with a clear plan.', copy:'Explore stream-wise practice topics, then put your learning into action with a timed mock test.', cta:'Try the mock test', href:'mock-test.html'},
     'sample-papers.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'PRACTICE MAKES PROGRESS', title:'Get comfortable with the question style.', copy:'Start with short sample questions, understand the reasoning and build confidence before a full practice paper.', cta:'Start a full mock test', href:'mock-test.html'},
     'mock-test.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'YOUR PRACTICE ARENA', title:'One focused session. A clearer view of what to revise.', copy:'Complete 100 questions in 30 minutes, then review your topic-wise practice score and explanations.', cta:'Review the syllabus', href:'syllabus.html'},
-    'faqs.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'YOUR NEXT STEP IN HEALTHCARE', title:'Know the format. Prepare with confidence.', copy:'The exam is free of cost, online and has no negative marking. Explore the streams and key dates.', cta:'View awards & prizes', href:'awards.html'},
+    'faqs.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'YOUR NEXT STEP IN HEALTHCARE', title:'Know the format. Prepare with confidence.', copy:'Category-wise registration fees apply. Explore the streams and key dates.', cta:'View awards & prizes', href:'awards.html'},
     'contact.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'RECOGNISING HEALTHCARE KNOWLEDGE', title:'Questions about the exam or prize information?', copy:'Connect with QualiNova, the event organiser, or SUTRAVYA, the assessment and technology partner.', cta:'Explore awards & prizes', href:'awards.html'}
   };
   const promo = promos[currentPage];
@@ -100,7 +100,7 @@ renderContextualPostcard();
 
 const footer = document.querySelector('[data-footer]');
 if (footer) {
-  footer.innerHTML = `<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid"><div class="footer-brand"><a href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA"></a><p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p><a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in ${icon('arrow')}</a></div><div class="footer-column"><h2>Explore</h2>${navigation.slice(0, 6).map(([url, label]) => `<a href="${url}">${label}</a>`).join('')}</div><div class="footer-column"><h2>Exam details</h2><span>4 December 2026</span><span>Online · ${eventConfig.assessmentStreams.length} assessment streams · ${eventConfig.registrationCategories.length} registration categories</span><span>100 MCQs · 30 minutes</span><span>No negative marking</span><span class="footer-free">Free of cost</span><a href="index.html#register">Registration details ${icon('arrow')}</a></div><div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com ${icon('arrow')}</a><h2 class="footer-subheading">Assessment &amp; technology partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>`;
+  footer.innerHTML = `<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid"><div class="footer-brand"><a href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA"></a><p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p><a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in ${icon('arrow')}</a></div><div class="footer-column"><h2>Explore</h2>${navigation.slice(0, 6).map(([url, label]) => `<a href="${url}">${label}</a>`).join('')}</div><div class="footer-column"><h2>Exam details</h2><span>4 December 2026</span><span>Online · ${eventConfig.assessmentStreams.length} assessment streams · ${eventConfig.registrationCategories.length} registration categories</span><span>100 MCQs · 30 minutes</span><span>No negative marking</span><span class="footer-free">Category-wise fees</span><a href="register.html">Registration details ${icon('arrow')}</a></div><div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com ${icon('arrow')}</a><h2 class="footer-subheading">Assessment &amp; technology partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>`;
 }
 
 function registrationState(now = Date.now()) {
@@ -412,8 +412,59 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
   const examAccess = form.querySelector('[data-exam-access]');
   const revealExamAccess = async () => {
     try {
-      await apiRequest('/api/auth/session', undefined, 'GET');
-      if (examAccess) examAccess.hidden = false;
+      const account = await apiRequest('/api/auth/session', undefined, 'GET');
+      const eligibleStream = ['nursing', 'paramedical', 'mbbs_1st_year'].includes(account.stream);
+      const examEligible = eligibleStream && account.registration_status === 'active' && account.payment_status !== 'pending';
+      if (examAccess) examAccess.hidden = !examEligible;
+      const card = form.parentElement.querySelector('[data-candidate-application]');
+      if (card) {
+        card.hidden = false;
+        card.querySelector('[data-application-name]').textContent = account.full_name || 'Candidate';
+        card.querySelector('[data-application-status]').textContent = (account.registration_status || 'active').replaceAll('_', ' ');
+        card.querySelector('[data-application-payment]').textContent = (account.payment_status || 'not_required').replaceAll('_', ' ');
+        card.querySelector('[data-application-amount]').textContent = Number.isInteger(account.amount_paise)
+          ? new Intl.NumberFormat('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0}).format(account.amount_paise / 100) : '—';
+        const idRow = card.querySelector('[data-application-id-row]');
+        if (idRow) idRow.hidden = !account.registration_id;
+        const id = card.querySelector('[data-application-id]');
+        if (id) id.textContent = account.registration_id || 'Not issued yet';
+        const message = card.querySelector('[data-application-message]');
+        if (message) message.textContent = account.payment_status === 'pending'
+          ? 'Your email is verified. Your application is saved as Payment Pending. No payment has been collected yet.'
+          : 'Your candidate account is active.';
+        const payButton = card.querySelector('[data-resume-payment]');
+        if (payButton) {
+          payButton.hidden = account.payment_status !== 'pending';
+          payButton.disabled = true;
+          payButton.textContent = 'Secure payment setup pending';
+          if (account.payment_status === 'pending') {
+            try {
+              const payment = await apiRequest('/api/payments/status', undefined, 'GET');
+              payButton.disabled = !payment.checkout_enabled;
+              payButton.textContent = payment.checkout_enabled ? 'Continue to secure payment' : 'Secure payment setup pending';
+              if (payment.checkout_enabled) {
+                payButton.addEventListener('click', async () => {
+                  payButton.disabled = true;
+                  try {
+                    const order = await apiRequest('/api/payments/create-order', {});
+                    if (order.checkout_url) location.assign(order.checkout_url);
+                    else if (message) message.textContent = 'Payment order created. Follow the secure checkout instructions.';
+                  } catch (error) { if (message) message.textContent = error.message; }
+                  finally { payButton.disabled = false; }
+                }, {once:true});
+              }
+            } catch (error) {
+              payButton.disabled = true;
+              payButton.textContent = 'Secure payment setup pending';
+              if (message && error.message) message.textContent = error.message;
+            }
+          }
+        }
+        card.querySelector('[data-candidate-logout]')?.addEventListener('click', async () => {
+          try { await apiRequest('/api/auth/logout', {}, 'POST'); }
+          finally { location.reload(); }
+        });
+      }
     } catch { if (examAccess) examAccess.hidden = true; }
   };
   revealExamAccess();

@@ -164,22 +164,27 @@ class PasswordlessApiTests(unittest.TestCase):
     def test_registration_then_email_otp_login_and_cookie_session(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
         result = start(
-            RegistrationRequest(
-                full_name="Synthetic API Candidate", mobile="9876543210",
-                email="api@example.invalid", stream="nursing",
-            ),
+            self._valid_payload(email="api@example.invalid"),
             request_for(self.application, "/api/registrations/start"),
         )
         self.assertEqual(self.sent_codes[-1]["purpose"], REGISTRATION_OTP_PURPOSE)
 
         verify_registration = route_endpoint(self.application, "/api/registrations/verify-email")
+        registration_response = __import__("starlette.responses", fromlist=["Response"]).Response()
         registered = verify_registration(
             EmailOtpRequest(challenge_id=result["challenge_id"], otp=self.sent_codes[-1]["otp"]),
             request_for(self.application, "/api/registrations/verify-email"),
+            registration_response,
         )
-        self.assertEqual(registered["registration_id"], "SUT-2026/11/02-00000000001")
-        self.assertTrue(registered["confirmation_email_sent"])
-        self.assertEqual(self.confirmations[-1]["registration_id"], registered["registration_id"])
+        self.assertIsNone(registered["registration_id"])
+        self.assertEqual(registered["registration_status"], "payment_pending")
+        self.assertEqual(registered["payment_status"], "pending")
+        self.assertFalse(registered["confirmation_email_sent"])
+        self.assertTrue(registered["candidate_session_established"])
+        self.assertEqual(self.confirmations, [])
+        registration_cookie = SimpleCookie()
+        registration_cookie.load(registration_response.headers["set-cookie"])
+        self.assertTrue(registration_cookie[SESSION_COOKIE]["httponly"])
 
         export_settings = Settings(
             app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
@@ -191,7 +196,7 @@ class PasswordlessApiTests(unittest.TestCase):
             x_registration_export_key=EXPORT_CODE,
         )
         exported = list(csv.DictReader(io.StringIO(csv_response.body.decode("utf-8-sig"))))
-        self.assertEqual(exported[0]["registration_id"], registered["registration_id"])
+        self.assertEqual(exported[0]["registration_id"], "")
 
         request_login = route_endpoint(self.application, "/api/auth/request-otp")
         known_message = request_login(
@@ -221,8 +226,11 @@ class PasswordlessApiTests(unittest.TestCase):
         summary = current(request_for(
             self.application, "/api/auth/session", method="GET", cookie=f"{SESSION_COOKIE}={session_token}"
         ))
-        self.assertEqual(summary["registration_id"], registered["registration_id"])
+        self.assertIsNone(summary["registration_id"])
         self.assertEqual(summary["email"], "api@example.invalid")
+        self.assertEqual(summary["registration_status"], "payment_pending")
+        self.assertEqual(summary["payment_status"], "pending")
+        self.assertEqual(summary["amount_paise"], 25000)
         self.assertNotIn("candidate_id", summary)
 
         logout = route_endpoint(self.application, "/api/auth/logout")
@@ -234,9 +242,9 @@ class PasswordlessApiTests(unittest.TestCase):
 
     def test_registration_opening_boundary_is_inclusive_and_earlier_time_is_blocked(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
-        payload = RegistrationRequest(
-            full_name="Opening Boundary", mobile="9876543210",
-            email="opening-boundary@example.invalid", stream="paramedical",
+        payload = self._valid_payload(
+            email="opening-boundary@example.invalid", category="paramedical", programme="bmlt",
+            academic_stage="Year 1",
         )
         before_open = REGISTRATION_OPENS_AT - timedelta(seconds=1)
         with patch("app.main._registration_now", return_value=before_open):
@@ -255,10 +263,7 @@ class PasswordlessApiTests(unittest.TestCase):
         start = route_endpoint(self.application, "/api/registrations/start")
         with patch("app.main._registration_now", return_value=datetime(2026, 11, 25, 23, 55, tzinfo=ZoneInfo("Asia/Kolkata"))):
             started = start(
-                RegistrationRequest(
-                    full_name="Closing Boundary", mobile="9876543210",
-                    email="closing-boundary@example.invalid", stream="nursing",
-                ),
+                self._valid_payload(email="closing-boundary@example.invalid"),
                 request_for(self.application, "/api/registrations/start"),
             )
         closing_instant = REGISTRATION_CLOSES_AT - timedelta(microseconds=1)
@@ -267,26 +272,22 @@ class PasswordlessApiTests(unittest.TestCase):
                 EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
                 request_for(self.application, "/api/registrations/verify-email"),
             )
-        self.assertRegex(verified["registration_id"], r"^SUT-[0-9]{4}/[0-9]{2}/[0-9]{2}-[0-9]{11}$")
+        self.assertIsNone(verified["registration_id"])
+        self.assertEqual(verified["registration_status"], "payment_pending")
+        self.assertEqual(verified["payment_status"], "pending")
 
     def test_expired_registration_window_blocks_start_verify_and_otp_resend(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
         with patch("app.main._registration_now", return_value=REGISTRATION_OPENS_AT):
             started = start(
-                RegistrationRequest(
-                    full_name="After Deadline", mobile="9876543210",
-                    email="after-deadline@example.invalid", stream="mbbs_1st_year",
-                ),
+                self._valid_payload(email="after-deadline@example.invalid", category="mbbs"),
                 request_for(self.application, "/api/registrations/start"),
             )
         emails_before_expiry = len(self.sent_codes)
         with patch("app.main._registration_now", return_value=REGISTRATION_CLOSES_AT):
             for path, invoke in (
                 ("/api/registrations/start", lambda: start(
-                    RegistrationRequest(
-                        full_name="Late Candidate", mobile="9876543211",
-                        email="late-candidate@example.invalid", stream="nursing",
-                    ), request_for(self.application, "/api/registrations/start"),
+                    self._valid_payload(email="late-candidate@example.invalid"), request_for(self.application, "/api/registrations/start"),
                 )),
                 ("/api/registrations/verify-email", lambda: route_endpoint(self.application, path)(
                     EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
@@ -304,18 +305,27 @@ class PasswordlessApiTests(unittest.TestCase):
         with self.factory() as session:
             self.assertEqual(session.query(Registration).count(), 0)
 
-    def test_only_three_approved_streams_are_accepted_during_registration_window(self) -> None:
+    def test_four_categories_are_accepted_with_their_server_mapped_exam_stream(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
-        for index, stream in enumerate(("paramedical", "nursing", "mbbs_1st_year")):
-            with self.subTest(stream=stream):
-                result = start(
-                    RegistrationRequest(
-                        full_name="Stream Candidate", mobile=f"987654321{index}",
-                        email=f"stream-{stream}@example.invalid", stream=stream,
-                    ),
-                    request_for(self.application, "/api/registrations/start"),
+        categories = (
+            ("nursing", "nursing", "bsc_nursing", None, 1),
+            ("paramedical", "paramedical", "bmlt", "Year 1", None),
+            ("mbbs", "mbbs_1st_year", "mbbs", None, 5),
+            ("jdn", "jdn", "junior_doctor_network", None, None),
+        )
+        for index, (category, expected_stream, programme, stage, year) in enumerate(categories):
+            with self.subTest(category=category):
+                payload = self._valid_payload(
+                    email=f"category-{category}@example.invalid", category=category,
+                    programme=programme, academic_stage=stage, year=year,
                 )
+                result = start(payload, request_for(self.application, "/api/registrations/start"))
                 self.assertIn("challenge_id", result)
+                with self.factory() as session:
+                    candidate = session.query(Candidate).filter_by(email=f"category-{category}@example.invalid").one()
+                    self.assertEqual(candidate.pending_stream, expected_stream)
+                    self.assertEqual(candidate.pending_registration_details["registration_fee_paise"],
+                                     {"nursing":25000,"paramedical":25000,"mbbs":50000,"jdn":100000}[category])
 
     def _internal_app(self):
         settings = Settings(
@@ -328,8 +338,24 @@ class PasswordlessApiTests(unittest.TestCase):
             confirmation_sender=lambda **_kwargs: None,
         )
 
+    def _valid_payload(self, email="candidate@example.invalid", category="nursing", programme=None,
+                       academic_stage="Year 1", year=1, full_name="Synthetic API Candidate",
+                       mobile="9876543210"):
+        programmes = {"nursing":"bsc_nursing","paramedical":"bmlt","mbbs":"mbbs","jdn":"junior_doctor_network"}
+        return RegistrationRequest(
+            full_name=full_name, mobile=mobile, email=email,
+            category=category, programme=programme or programmes[category],
+            stream={"nursing":"nursing","paramedical":"paramedical","mbbs":"mbbs_1st_year","jdn":"jdn"}[category],
+            year=year, academic_stage=academic_stage,
+            professional_qualification="MBBS" if category=="jdn" else None,
+            designation="Resident Doctor" if category=="jdn" else None,
+            institution="Sample District Hospital" if category=="jdn" else None,
+            house_number="12", address_line1="Main Road", address_line2="Near Market",
+            district="Patna", state="Bihar", pin_code="800001", declaration_accepted=True,
+        )
+
     def _start_payload(self, email="internal@example.invalid"):
-        return RegistrationRequest(full_name="Internal Rehearsal", mobile="9876543210", email=email, stream="nursing")
+        return self._valid_payload(email=email)
 
     def _at(self, value):
         return patch("app.main._registration_now", return_value=value)
@@ -565,8 +591,13 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertEqual(len(legacy_rows), 1)
         self.assertEqual(legacy_rows[0]["registration_source"], "legacy_internal_test")
         self.assertEqual(set(rows[0]), {
-            "registration_id", "full_name", "email", "mobile", "stream", "registration_date_ist",
-            "email_verified", "mobile_verified", "registration_source",
+            "registration_id", "full_name", "email", "mobile", "registration_source",
+            "registration_status", "payment_status", "registration_fee_inr", "category",
+            "programme", "academic_year", "academic_stage", "professional_qualification",
+            "designation", "institution", "council_name", "council_registration_number",
+            "years_of_experience", "house_number", "address_line1", "address_line2",
+            "district", "state", "pin_code", "stream", "registration_date_ist",
+            "email_verified", "mobile_verified",
         })
         team = export(request, source="team_prelaunch", x_registration_export_key=EXPORT_CODE)
         team_rows = list(csv.DictReader(io.StringIO(team.body.decode("utf-8-sig"))))
@@ -617,10 +648,7 @@ class PasswordlessApiTests(unittest.TestCase):
         start = route_endpoint(failing_app, "/api/registrations/start")
         with self.assertRaises(HTTPException) as failed:
             start(
-                RegistrationRequest(
-                    full_name="Synthetic Candidate", mobile="9876543210",
-                    email="failure@example.invalid", stream="paramedical",
-                ),
+                self._valid_payload(email="failure@example.invalid", category="paramedical"),
                 request_for(failing_app, "/api/registrations/start"),
             )
         self.assertEqual(failed.exception.status_code, 503)
@@ -631,38 +659,71 @@ class PasswordlessApiTests(unittest.TestCase):
             self.assertIsNone(candidate.email_verified_at)
             self.assertEqual(session.query(Registration).count(), 0)
 
-    def test_confirmation_failure_keeps_committed_registration_and_resend_does_not_duplicate(self) -> None:
+    def test_payment_pending_application_does_not_send_confirmation_email(self) -> None:
         codes: list[dict] = []
-        failing_app = create_app(
+        confirmations: list[dict] = []
+        application = create_app(
             self.settings,
             session_factory=self.factory,
             email_sender=lambda **kwargs: codes.append(kwargs),
-            confirmation_sender=lambda **_kwargs: (_ for _ in ()).throw(EmailDeliveryError("private provider detail")),
+            confirmation_sender=lambda **kwargs: confirmations.append(kwargs),
         )
-        start = route_endpoint(failing_app, "/api/registrations/start")
+        start = route_endpoint(application, "/api/registrations/start")
         started = start(
-            RegistrationRequest(
-                full_name="Synthetic Retry Candidate", mobile="9876543211",
-                email="confirm-retry@example.invalid", stream="mbbs_1st_year",
-            ),
-            request_for(failing_app, "/api/registrations/start"),
+            self._valid_payload(email="payment-pending@example.invalid", category="mbbs"),
+            request_for(application, "/api/registrations/start"),
         )
-        verified = route_endpoint(failing_app, "/api/registrations/verify-email")(
+        response = __import__("starlette.responses", fromlist=["Response"]).Response()
+        verified = route_endpoint(application, "/api/registrations/verify-email")(
             EmailOtpRequest(challenge_id=started["challenge_id"], otp=codes[-1]["otp"]),
-            request_for(failing_app, "/api/registrations/verify-email"),
+            request_for(application, "/api/registrations/verify-email"),
+            response,
         )
+        self.assertIsNone(verified["registration_id"])
+        self.assertEqual(verified["registration_status"], "payment_pending")
+        self.assertEqual(verified["payment_status"], "pending")
         self.assertFalse(verified["confirmation_email_sent"])
+        self.assertEqual(confirmations, [])
         with self.factory() as session:
-            self.assertEqual(session.query(Registration).count(), 1)
+            registration = session.query(Registration).one()
+            self.assertIsNone(registration.registration_id)
+            self.assertEqual(registration.payment_amount_paise, 50000)
+            self.assertEqual(registration.details["category"], "mbbs")
+            self.assertEqual(registration.details["programme_label"], "MBBS")
 
-        failing_app.state.confirmation_sender = lambda **_kwargs: None
-        resent = route_endpoint(failing_app, "/api/registrations/resend-confirmation")(
-            ConfirmationResendRequest(registration_id=verified["registration_id"]),
-            request_for(failing_app, "/api/registrations/resend-confirmation"),
-        )
-        self.assertEqual(resent["message"], "If the registration is eligible, a confirmation email will be sent.")
+        cookie = SimpleCookie()
+        cookie.load(response.headers["set-cookie"])
+        payment_status = route_endpoint(application, "/api/payments/status")
+        payment = payment_status(request_for(
+            application, "/api/payments/status", method="GET",
+            cookie=f"{SESSION_COOKIE}={cookie[SESSION_COOKIE].value}",
+        ))
+        self.assertEqual(payment["payment_status"], "pending")
+        self.assertFalse(payment["checkout_enabled"])
+        create_order = route_endpoint(application, "/api/payments/create-order")
+        with self.assertRaises(HTTPException) as disabled:
+            create_order(request_for(
+                application, "/api/payments/create-order",
+                cookie=f"{SESSION_COOKIE}={cookie[SESSION_COOKIE].value}",
+            ))
+        self.assertEqual(disabled.exception.status_code, 503)
+
+    def test_legacy_public_fee_less_registration_is_rejected_before_sending_otp(self) -> None:
+        start = route_endpoint(self.application, "/api/registrations/start")
+        with self.assertRaises(HTTPException) as rejected:
+            start(
+                RegistrationRequest(
+                    full_name="Legacy Free Candidate", mobile="9876543210",
+                    email="legacy-free@example.invalid", stream="nursing",
+                ),
+                request_for(self.application, "/api/registrations/start"),
+            )
+        self.assertEqual(rejected.exception.status_code, 422)
+        self.assertEqual(self.sent_codes, [])
         with self.factory() as session:
-            self.assertEqual(session.query(Registration).count(), 1)
+            self.assertEqual(session.query(Registration).count(), 0)
+            candidate = session.query(Candidate).filter_by(email="legacy-free@example.invalid").one_or_none()
+            self.assertIsNone(candidate)
 
     def test_structured_security_events_never_include_private_values(self) -> None:
         import logging
