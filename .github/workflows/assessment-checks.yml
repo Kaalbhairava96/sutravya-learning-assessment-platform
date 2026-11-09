@@ -45,5 +45,6 @@ jobs:
           node --check exam.js
           node --check mock-test.js
           node --check sample-papers.js
+          node --check registration-form.js
       - name: Build allowlisted assessment website
         run: bash scripts/build_assessment_site.sh
