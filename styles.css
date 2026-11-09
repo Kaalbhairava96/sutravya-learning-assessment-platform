@@ -2082,3 +2082,57 @@ body{
  .awards-art-float b{font-size:11px}
  .awards-art-float small{font-size:9px}
 }
+
+
+/* Readability refinements across all public pages */
+body{font-size:17px;line-height:1.62}
+.primary-nav{font-size:14px}
+.button{font-size:15px}
+.eyebrow,.v4-eyebrow,.card-kicker{font-size:12px}
+.footer-column a,.footer-column span{font-size:13px}
+.footer-column h2{font-size:16px}
+.footer-bottom-inner{font-size:12px}
+.v4-page-hero p,.page-hero-grid>div:first-child>p{font-size:clamp(17px,1.5vw,20px)}
+.section-heading-split>p,.v4-section-heading p{font-size:clamp(16px,1.4vw,19px)}
+.faq summary{font-size:16px;line-height:1.45}
+.faq-answer p{font-size:15px;line-height:1.72}
+.contact-card h3{font-size:24px}
+.contact-card p{font-size:15px;line-height:1.65}
+.contact-link b{font-size:14px}
+.contact-link small{font-size:11px}
+.register-panel-head h2,.register-panel h2{font-size:clamp(23px,2.6vw,29px)}
+.register-panel-head p,.register-aside>p,.register-help-card p{font-size:14px;line-height:1.65}
+.register-panel label,.form-section-title b{font-size:14px}
+.register-panel input,.register-panel select,.register-panel textarea,.login-form input{font-size:16px;min-height:48px}
+.register-step b{font-size:13px}
+.register-step small,.register-security-note small,.register-help-card a{font-size:12px}
+.registration-gate b,.register-security-note b,.register-help-card b{font-size:14px}
+.registration-gate p,.registration-review-list dt,.registration-review-list dd,.payment-disclaimer{font-size:13px}
+.form-footnote,.registration-consent{font-size:12px;line-height:1.65}
+.stream-card p,.highlight-card p,.award-preview p{font-size:15px;line-height:1.7}
+.stream-card h3,.award-preview h3{font-size:23px}
+.stream-card-foot{font-size:12px}
+.v4-pane-heading p,.v4-intro-callout p,.v4-mapping-note,.v4-topic ul{font-size:14px;line-height:1.7}
+.v4-topic summary{font-size:15px;min-height:58px}
+.v4-sample-question h3{font-size:18px;line-height:1.5}
+.v4-sample-option,.v4-answer-option{font-size:15px;line-height:1.5}
+.v4-sample-feedback,.v4-sample-note,.v4-practice-disclaimer{font-size:14px;line-height:1.7}
+.v4-mock-stream b{font-size:17px}
+.v4-mock-stream small,.v4-mock-stream i{font-size:13px}
+.v4-results-head p,.v4-score-stats span,.v4-question-topline{font-size:14px}
+.campaign-lede{font-size:clamp(17px,1.7vw,21px)}
+.campaign-date-card b{font-size:17px}
+.campaign-date-card small{font-size:12px}
+.exam-fact b{font-size:15px}
+.exam-fact small{font-size:11px}
+.awards-track-lede{font-size:17px}
+.awards-benefit-list b{font-size:17px}
+.awards-benefit-list small{font-size:14px}
+.startup-support-grid p,.startup-journey-grid p{font-size:14px;line-height:1.75}
+@media(max-width:700px){
+ body{font-size:16px}
+ .primary-nav{font-size:15px}
+ .register-panel-head p,.register-aside>p{font-size:14px}
+ .faq summary{font-size:15px}
+ .v4-section-heading h2,.section-heading h2{font-size:clamp(31px,8vw,42px)}
+}
