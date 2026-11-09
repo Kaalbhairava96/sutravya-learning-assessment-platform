@@ -272,7 +272,9 @@ class PasswordlessApiTests(unittest.TestCase):
                 EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
                 request_for(self.application, "/api/registrations/verify-email"),
             )
-        self.assertRegex(verified["registration_id"], r"^SUT-[0-9]{4}/[0-9]{2}/[0-9]{2}-[0-9]{11}$")
+        self.assertIsNone(verified["registration_id"])
+        self.assertEqual(verified["registration_status"], "payment_pending")
+        self.assertEqual(verified["payment_status"], "pending")
 
     def test_expired_registration_window_blocks_start_verify_and_otp_resend(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
@@ -589,8 +591,13 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertEqual(len(legacy_rows), 1)
         self.assertEqual(legacy_rows[0]["registration_source"], "legacy_internal_test")
         self.assertEqual(set(rows[0]), {
-            "registration_id", "full_name", "email", "mobile", "stream", "registration_date_ist",
-            "email_verified", "mobile_verified", "registration_source",
+            "registration_id", "full_name", "email", "mobile", "registration_source",
+            "registration_status", "payment_status", "registration_fee_inr", "category",
+            "programme", "academic_year", "academic_stage", "professional_qualification",
+            "designation", "institution", "council_name", "council_registration_number",
+            "years_of_experience", "house_number", "address_line1", "address_line2",
+            "district", "state", "pin_code", "stream", "registration_date_ist",
+            "email_verified", "mobile_verified",
         })
         team = export(request, source="team_prelaunch", x_registration_export_key=EXPORT_CODE)
         team_rows = list(csv.DictReader(io.StringIO(team.body.decode("utf-8-sig"))))
