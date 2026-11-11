@@ -11,7 +11,7 @@ if (Test-Path -LiteralPath $PublishDir) {
 }
 
 $SourceFiles = @(
-    'index.html', 'awards.html', 'syllabus.html', 'sample-papers.html', 'mock-test.html',
+    'index.html', 'awards.html', 'syllabus.html', 'hackathon.html', 'sample-papers.html', 'mock-test.html',
     'faqs.html', 'contact.html', 'login.html', 'register.html', 'registration.js', 'team-prelaunch.html', 'styles.css', 'site.js',
     'sample-papers.js', 'mock-test.js', 'question-bank.js'
 )
@@ -26,6 +26,7 @@ $AssetFiles = @(
     'sample-hero.svg'
     'sutravya-logo.png'
     'syllabus-hero.svg'
+    'qv2-healthcare-orbit.svg'
     'hero-registration.webp'
     'hero-free.webp'
     'hero-talent.webp'
