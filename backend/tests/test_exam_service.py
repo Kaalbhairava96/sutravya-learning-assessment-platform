@@ -135,7 +135,7 @@ class CandidateExamServiceTests(unittest.TestCase):
         self.assertEqual(started["total_questions"], 100)
         self.assertNotIn("questions", started)
         first = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
-        self.assertEqual(first["section"], "anatomy")
+        self.assertEqual(first["section"], "anatomy_physiology")
         self.assertGreaterEqual(first["time_limit_seconds"], 20)
         self.assertEqual(len(first["options"]), 4)
         self.assertNotIn("correct_option", first)
