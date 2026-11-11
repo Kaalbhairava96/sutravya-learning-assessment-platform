@@ -100,9 +100,10 @@
     const correct = state.questions.reduce((sum, q, index) => sum + (state.answers.get(index) === q.answer ? 1 : 0), 0);
     const wrong = [...state.answers.entries()].filter(([index, answer]) => answer !== state.questions[index].answer).length;
     const unanswered = 100 - state.answers.size;
-    const score = correct - (wrong * 0.25);\n    const percent = Math.max(0, Math.min(100, score));
+    const score = correct - (wrong * 0.25);
+    const percent = Math.max(0, Math.min(100, score));
     $('[data-results-stream]').textContent = `${bank[state.streamKey].label} · ${auto ? 'Time expired — test auto-submitted' : 'Submitted successfully'} · Practice mode`;
-    $('[data-score]').textContent = String(correct);
+    $('[data-score]').textContent = score.toFixed(2).replace(/\.00$/, '');
     $('[data-correct]').textContent = String(correct);
     $('[data-wrong]').textContent = String(wrong);
     $('[data-unanswered]').textContent = String(unanswered);
@@ -120,11 +121,14 @@
   function buildTopicBreakdown() {
     const groups = new Map();
     state.questions.forEach((q, index) => {
-      if (!groups.has(q.topic)) groups.set(q.topic, { total: 0, correct: 0 });
-      const group = groups.get(q.topic); group.total++;
+      const subject = q.subjectLabel || q.topic;
+      if (!groups.has(subject)) groups.set(subject, { total: 0, correct: 0, wrong: 0, unanswered: 0 });
+      const group = groups.get(subject); group.total++;
       if (state.answers.get(index) === q.answer) group.correct++;
+      else if (state.answers.has(index)) group.wrong++;
+      else group.unanswered++;
     });
-    $('[data-topic-breakdown]').innerHTML = `<div class="v4-topic-breakdown-head"><h3>Topic-wise practice review</h3><p>Use this to identify areas for revision, not as an official competency score.</p></div><div class="v4-topic-breakdown-grid">${[...groups.entries()].map(([topic, data]) => `<div class="v4-topic-score"><div><b>${escapeHTML(topic)}</b><span>${data.correct}/${data.total}</span></div><i><span style="width:${data.total ? data.correct/data.total*100 : 0}%"></span></i></div>`).join('')}</div>`;
+    $('[data-topic-breakdown]').innerHTML = `<div class="v4-topic-breakdown-head"><h3>Subject-wise practice review</h3><p>Review subject performance and focus your next revision session. This is practice feedback, not an official competency score.</p></div><div class="v4-topic-breakdown-grid">${[...groups.entries()].map(([subject, data]) => `<div class="v4-topic-score"><div><b>${escapeHTML(subject)}</b><span>${data.correct}/${data.total} correct · ${data.wrong} incorrect</span></div><i><span style="width:${data.total ? data.correct/data.total*100 : 0}%"></span></i></div>`).join('')}</div>`;
   }
 
   function buildAnswerReview() {
@@ -132,7 +136,7 @@
       const userAnswer = state.answers.has(index) ? state.answers.get(index) : null;
       const isCorrect = userAnswer === q.answer;
       const label = userAnswer === null ? 'Not answered' : (isCorrect ? 'Correct' : 'Incorrect');
-      return `<article class="v4-review-item ${isCorrect ? 'is-correct' : (userAnswer === null ? 'is-unanswered' : 'is-wrong')}"><div class="v4-review-meta"><span>QUESTION ${index + 1} · ${escapeHTML(q.topic)}</span><b>${label}</b></div><h4>${escapeHTML(q.question)}</h4><p><strong>Your answer:</strong> ${userAnswer === null ? 'Not answered' : escapeHTML(q.options[userAnswer])}</p><p><strong>Correct answer:</strong> ${escapeHTML(q.options[q.answer])}</p><p class="v4-review-explanation">${escapeHTML(q.explanation)}</p></article>`;
+      return `<article class="v4-review-item ${isCorrect ? 'is-correct' : (userAnswer === null ? 'is-unanswered' : 'is-wrong')}"><div class="v4-review-meta"><span>QUESTION ${index + 1} · ${escapeHTML(q.subjectLabel || q.topic)}</span><b>${label}</b></div><h4>${escapeHTML(q.question)}</h4><p><strong>Your answer:</strong> ${userAnswer === null ? 'Not answered' : escapeHTML(q.options[userAnswer])}</p><p><strong>Correct answer:</strong> ${escapeHTML(q.options[q.answer])}</p><p class="v4-review-explanation">${escapeHTML(q.explanation)}</p></article>`;
     }).join('')}`;
   }
 

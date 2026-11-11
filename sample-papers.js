@@ -11,7 +11,7 @@
     const stream = bank[key];
     if (!stream) return;
     const questions = stream.questions.slice(0, 5);
-    panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 syllabus-mapped preview questions · answers reveal after selection</small></div>` + questions.map((q, index) => `
+    panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 syllabus-mapped preview questions · syllabus-linked answers and explanations</small></div>` + questions.map((q, index) => `
       <article class="v4-sample-question" data-sample-question="${index}">
         <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.topic)} · ${escapeHTML(q.difficulty || 'Practice')}</span></div>
         <h3>${escapeHTML(q.question)}</h3>
