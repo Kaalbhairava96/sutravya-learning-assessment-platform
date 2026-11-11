@@ -2892,3 +2892,83 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .exam-top-art{display:none}
  .qv3-flow-strip:before{display:none}
 }
+
+/* V3 secure-page rules: page-scoped specificity wins over legacy inline page styles */
+:root{
+ --brand-navy:#063b67;
+ --brand-teal:#0aa6b7;
+ --brand-yellow:#ffd54f;
+ --metallic-gold:#c49a4b;
+ --metallic-silver:#c7cac6;
+ --metallic-pearl:#f5f2eb;
+}
+body.admin-body .admin-hero,
+body.exam-body .exam-top{
+ background:radial-gradient(circle at 82% 25%,rgba(231,210,164,.2),transparent 38%),linear-gradient(120deg,#3b352a,#514a3c);
+ border:1px solid #8c7549;
+ box-shadow:0 20px 50px rgba(51,42,25,.16);
+ color:#fff2d1;
+}
+body.admin-body .admin-hero h1,body.exam-body .exam-top h1{color:#fff2d1}
+body.admin-body .admin-card,body.exam-body .exam-card{
+ background:linear-gradient(140deg,#fffefa,#eeede7);
+ border:1px solid #d8d2c3;
+ box-shadow:0 15px 42px rgba(52,45,33,.07);
+}
+body.admin-body .admin-card h2{color:#78602f}
+body.admin-body .admin-field label{color:#5b5140}
+body.admin-body .admin-field input,
+body.admin-body .admin-field select,
+body.admin-body .admin-field textarea{
+ border:1px solid #c9c6bb;border-radius:12px;background:#fffefa;color:#322d23;
+}
+body.admin-body .admin-button,body.exam-body .exam-button{
+ background:linear-gradient(115deg,#f3e3b9,#bb9042 58%,#ead5a6);
+ color:#342817;border:1px solid #aa8136;box-shadow:0 8px 19px rgba(135,97,35,.14);
+}
+body.admin-body .admin-button:hover:not(:disabled),body.exam-body .exam-button:hover:not(:disabled){
+ background:linear-gradient(115deg,#fff2d0,#d4b36e 58%,#f6e8c5);
+}
+body.admin-body .admin-muted,body.exam-body .exam-muted{color:#756c5a}
+body.admin-body .admin-metric{
+ background:linear-gradient(120deg,#514a3c,#383328);border-color:#9d8653;color:#f7e7bf;
+}
+body.admin-body .admin-stream{
+ background:linear-gradient(130deg,#f8f0dc,#e7e7df);color:#4a412f;border:1px solid #ddd0ad;
+}
+body.exam-body .exam-top{
+ display:grid;
+ grid-template-columns:minmax(0,1.2fr) auto minmax(135px,.6fr);
+ align-items:center;
+}
+body.exam-body .exam-top-art{
+ width:155px;height:115px;display:grid;place-items:center;overflow:hidden;
+ border:1px solid rgba(230,210,166,.45);border-radius:16px;background:rgba(255,255,255,.08);
+}
+body.exam-body .exam-top-art img{width:100%;height:100%;object-fit:cover}
+body.exam-body .exam-progress-track{background:#e0ded5}
+body.exam-body .exam-progress-track i{background:linear-gradient(90deg,#a67a31,#dec280)}
+body.exam-body .exam-section-strip span{background:#ecebe5;color:#766c58}
+body.exam-body .exam-section-strip span.active{background:#f3e4bd;color:#685126}
+body.exam-body .exam-kicker{color:#92703a}
+body.exam-body .exam-question{color:#342f26}
+body.exam-body .exam-option{background:#fffefa;border-color:#d6d2c8;color:#3d382f}
+body.exam-body .exam-option:has(input:checked){border-color:#b18a41;background:#f5eddb}
+body.exam-body .exam-option input{accent-color:#b58a3d}
+body.exam-body .exam-review-item{background:#fffefa;border-color:#dbd6ca}
+body.exam-body .exam-result-head{background:linear-gradient(120deg,#fff4d9,#e7e8e2)}
+body.exam-body .exam-score{color:#795b29}
+body.exam-body .exam-question-clock{background:linear-gradient(120deg,#fff4da,#e5e4dc);border-color:#d9c38f}
+body.exam-body .exam-question-clock small,body.exam-body .exam-question-clock strong{color:#715427}
+body.admin-body .qv3-admin-overview{background:linear-gradient(130deg,#fffefa,#e7e8e2 55%,#f6ead0)}
+.v4-progress>span{background:linear-gradient(90deg,#a77b30,#dec17c,#aeb2ae)}
+.v4-stream-symbol{background:linear-gradient(135deg,#fff3d0,#c4a052);color:#654a1c}
+.v4-stream-symbol.v4-nursing,.v4-stream-symbol.v4-mbbs{background:linear-gradient(135deg,#fffefa,#d8d9d3);color:#63573f}
+.qv2-faq-section{background:linear-gradient(135deg,#f9f7f0,#eaeae4 50%,#f6ecd9)}
+.qv2-home-bottomline i{background:#b9944e}
+.qv2-home-bottomline span{color:#74694f}
+:where(.qv3-copy,.qv2-section-copy,.qv2-hero-copy,.page-hero-grid>div:first-child) p{max-width:58ch}
+@media(max-width:760px){
+ body.exam-body .exam-top{grid-template-columns:1fr}
+ body.exam-body .exam-top-art{display:none}
+}
