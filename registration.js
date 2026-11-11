@@ -133,7 +133,7 @@
     list.replaceChildren();
     addReviewRow(list,'Registration category',data.category_label);
     addReviewRow(list,'Programme / course',data.programme_label);
-    addReviewRow(list,'Academic year / stage',data.year ? 'Year '+data.year : data.academic_stage || 'Professional network');
+    addReviewRow(list,'Academic year / stage',data.year ? 'Year '+data.year : data.academic_stage || '—');
     addReviewRow(list,'Full name',data.full_name);
     addReviewRow(list,'Email',data.email);
     addReviewRow(list,'Mobile',data.mobile);
