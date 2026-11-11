@@ -101,6 +101,7 @@
   panels.forEach(panel=>{const on=panel.dataset.qv2Panel===key;panel.hidden=!on;panel.classList.toggle('is-active',on);});
  };
  tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>activate(tab.dataset.qv2Tab));tab.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;activate(tabs[next].dataset.qv2Tab,true);});});
+ activate('paramedical');
  document.querySelectorAll('[data-qv2-mock-link]').forEach(a=>a.addEventListener('click',()=>{sessionStorage.setItem('qv2-mock-path',a.dataset.qv2MockLink);}));
 })();
 </script>

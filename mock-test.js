@@ -54,7 +54,7 @@
     const q = activeQuestion();
     if (!q) return;
     $('[data-question-index]').textContent = `QUESTION ${state.current + 1} OF 100`;
-    $('[data-question-topic]').textContent = `${q.topic} · ${q.difficulty || 'Practice'}`;
+    $('[data-question-topic]').textContent = `${q.subjectLabel || q.topic} · ${q.topic} · ${q.difficulty || 'Practice'}`;
     $('[data-question-text]').textContent = q.question;
     const chosen = state.answers.get(state.current);
     $('[data-answer-options]').innerHTML = q.options.map((option, index) => {
@@ -141,6 +141,11 @@
   }
 
   streamButtons.forEach(button => button.addEventListener('click', () => start(button.dataset.mockStream)));
+  const requestedPath = new URLSearchParams(location.search).get('stream') || sessionStorage.getItem('qv2-mock-path');
+  if (requestedPath && bank[requestedPath]) {
+    sessionStorage.removeItem('qv2-mock-path');
+    start(requestedPath);
+  }
   $('[data-prev-question]').addEventListener('click', () => { if (state.current > 0) { state.current--; renderQuestion(); renderNavigator(); } });
   $('[data-next-question]').addEventListener('click', () => { if (state.current < 99) { state.current++; renderQuestion(); renderNavigator(); } else { const unanswered = 100 - answeredCount(); const message = unanswered ? `You have ${unanswered} unanswered question(s). Submit your practice test now?` : 'You have reached the end of the paper. Submit your practice test now?'; if (window.confirm(message)) submit(false, true); } });
   $('[data-mark-review]').addEventListener('click', () => { state.review.has(state.current) ? state.review.delete(state.current) : state.review.add(state.current); renderQuestion(); renderNavigator(); });

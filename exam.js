@@ -194,7 +194,7 @@
         catch { message('Full-screen mode was not available. Your assessment will still be monitored for focus changes.'); }
       }
       attempt = await request('/api/exam/attempts/start','POST');
-      if(Array.isArray(attempt.sections)) sections=attempt.sections.map((item,index)=>({key:item.section,label:item.label || item.section,start:index*20,end:(index+1)*20}));
+      if(Array.isArray(attempt.sections)) sections=attempt.sections.map((item,index)=>({key:item.key || item.section,label:item.label || item.key || item.section,start:index*20,end:(index+1)*20}));
       startOverallTimer(attempt.remaining_seconds);
       await loadQuestion(0);
     } catch (error) { message(error.message,true); }

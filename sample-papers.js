@@ -39,10 +39,19 @@
     panel.dataset.rendered = 'true';
   };
   const activate = key => {
-    tabs.forEach(tab => { const active = tab.dataset.sampleTab === key; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', String(active)); });
+    tabs.forEach(tab => { const active = tab.dataset.sampleTab === key; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', String(active)); tab.tabIndex=active?0:-1; });
     panels.forEach(panel => { const active = panel.dataset.samplePanel === key; panel.hidden = !active; panel.classList.toggle('is-active', active); });
     if (key !== 'other') renderStream(key);
   };
-  tabs.forEach(tab => tab.addEventListener('click', () => activate(tab.dataset.sampleTab)));
+  tabs.forEach((tab,index) => {
+    tab.addEventListener('click', () => activate(tab.dataset.sampleTab));
+    tab.addEventListener('keydown', event => {
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+      event.preventDefault();
+      const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      activate(tabs[next].dataset.sampleTab);
+      tabs[next].focus();
+    });
+  });
   renderStream('paramedical');
 })();

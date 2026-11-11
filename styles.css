@@ -2427,3 +2427,50 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  html{scroll-behavior:auto}
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* V2 FAQ and Hackathon modules */
+.qv2-faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.qv2-faq-group{display:grid;gap:10px;padding:19px;border:1px solid #e6e6f1;border-radius:20px;background:#fff;box-shadow:0 8px 27px rgba(32,29,80,.04)}
+.qv2-faq-group h3{margin:0 0 5px;padding:0 0 11px;border-bottom:1px solid #eeeef5;font:800 17px var(--qv-display);letter-spacing:-.03em}
+.qv2-faq{overflow:hidden;border:1px solid #e7e8f1;border-radius:13px;background:#fbfbff}
+.qv2-faq[open]{border-color:#d2c9f4;background:#fff}
+.qv2-faq summary{position:relative;padding:14px 42px 14px 14px;color:#252b4d;font:750 12px/1.5 var(--qv-display);cursor:pointer;list-style:none}
+.qv2-faq summary::-webkit-details-marker{display:none}
+.qv2-faq summary:after{position:absolute;top:50%;right:14px;color:#7059cf;font-size:19px;content:"+";transform:translateY(-50%)}
+.qv2-faq[open] summary:after{content:"−"}
+.qv2-faq p{margin:0;padding:0 14px 15px;color:#6d7590;font-size:12px;line-height:1.75}
+.qv2-faq-contact{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-top:20px;padding:20px 22px;border:1px solid #e3def8;border-radius:17px;background:linear-gradient(100deg,#f1efff,#f4fbff)}
+.qv2-faq-contact>div{display:grid;gap:4px}.qv2-faq-contact b{font:800 15px var(--qv-display)}.qv2-faq-contact span{color:#747c96;font-size:12px}
+.qv2-hack-principles{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.qv2-hack-principles article{padding:23px;border:1px solid #e6e6f1;border-radius:19px;background:#fff;box-shadow:0 10px 30px rgba(32,29,80,.045)}
+.qv2-hack-principles article>span{display:grid;width:39px;height:39px;place-items:center;border-radius:12px;background:#efedff;color:#6853c7;font:800 12px var(--qv-display)}
+.qv2-hack-principles h3{margin:17px 0 7px;font:800 19px var(--qv-display)}
+.qv2-hack-principles p{margin:0;color:#717993;font-size:13px;line-height:1.75}
+.qv2-hack-timeline{background:#f8f8fd}
+.qv2-hack-dates{grid-template-columns:repeat(3,1fr)}
+.qv2-hack-awards{display:grid;grid-template-columns:1fr .9fr;align-items:center;gap:45px}
+.qv2-hack-awards h2{margin:12px 0;font:800 clamp(32px,4vw,46px)/1.1 var(--qv-display);letter-spacing:-.06em}
+.qv2-hack-awards h2 em{color:#6d55cf;font-style:normal}
+.qv2-hack-awards p{color:#6d7590;line-height:1.8;font-size:14px}
+.qv2-hack-benefits{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.qv2-hack-benefits span{padding:8px 11px;border:1px solid #e8e2c9;border-radius:9px;background:#fff9e8;color:#70551d;font-size:11px;font-weight:750}
+.qv2-hack-podium{display:grid;min-height:280px;place-items:center;border:1px solid #e6e5f1;border-radius:23px;background:radial-gradient(circle at 50% 35%,#eeebff,#f8f8fd 68%)}
+.qv2-hack-podium img{width:90%;max-height:280px;object-fit:contain}
+.qv2-launchpad-list{display:grid;gap:12px;padding:22px;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(255,255,255,.055)}
+.qv2-launchpad-list>div{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.qv2-launchpad-list>div:last-child{border:0}
+.qv2-launchpad-list>div>b{display:grid;width:31px;height:31px;flex:none;place-items:center;border-radius:10px;background:rgba(72,213,239,.13);color:#90edfa;font:800 10px var(--qv-display)}
+.qv2-launchpad-list span{display:grid;gap:4px}
+.qv2-launchpad-list strong{color:#fff;font:750 13px var(--qv-display)}
+.qv2-launchpad-list small{color:#bbc5e2;font-size:11px;line-height:1.6}
+.qv2-hack-submit{background:#f7f7fc}
+.qv2-hack-submit>div>div{max-width:740px}
+.qv2-hack-submit h2{margin:13px 0;font:800 clamp(30px,4vw,44px)/1.1 var(--qv-display);letter-spacing:-.05em}
+.qv2-hack-submit h2 em{color:#6d55cf;font-style:normal}
+.qv2-hack-submit p{max-width:700px;color:#707994;line-height:1.8}
+@media(max-width:760px){
+ .qv2-faq-grid,.qv2-hack-principles,.qv2-hack-awards,.qv2-hack-dates{grid-template-columns:1fr}
+ .qv2-faq-contact{align-items:flex-start;flex-direction:column}
+ .qv2-faq-contact .qv2-button{width:100%}
+ .qv2-hack-podium{min-height:220px}
+}
