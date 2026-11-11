@@ -34,7 +34,8 @@ TEAM_PRELAUNCH_SOURCE = "team_prelaunch"
 PUBLIC_REGISTRATION_SOURCE = "public_registration"
 LEGACY_INTERNAL_TEST_SOURCE = "legacy_internal_test"
 REGISTRATION_SOURCES = frozenset({TEAM_PRELAUNCH_SOURCE, PUBLIC_REGISTRATION_SOURCE})
-ALLOWED_STREAMS = frozenset({"paramedical", "nursing", "mbbs_1st_year", "mbbs", "jdn"})
+# Keep legacy MBBS stream identifiers for historical records; JDN is retired.
+ALLOWED_STREAMS = frozenset({"paramedical", "nursing", "mbbs_ug", "mbbs_pg", "mbbs_1st_year", "mbbs"})
 SESSION_SECONDS = 24 * 60 * 60
 REGISTRATION_ID_SEQUENCE = "registration_id_serial_seq"
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
@@ -424,7 +425,7 @@ def verify_registration_email(
             details = candidate.pending_registration_details
             paid_application = details is not None
             amount_paise = int(details.get("registration_fee_paise", 0)) if paid_application else None
-            expected_fee = {"nursing": 25000, "paramedical": 25000, "mbbs": 50000, "jdn": 100000}.get(details.get("category")) if paid_application else None
+            expected_fee = {"nursing": 25000, "paramedical": 25000, "mbbs": 50000}.get(details.get("category")) if paid_application else None
             if paid_application and (expected_fee is None or amount_paise != expected_fee):
                 raise RegistrationError("registration_fee_invalid", 422)
             registration = Registration(

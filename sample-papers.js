@@ -10,14 +10,14 @@
     if (!panel || panel.dataset.rendered === 'true') return;
     const stream = bank[key];
     if (!stream) return;
-    const questions = stream.questions.slice(0, 5);
-    panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 illustrative questions · answers reveal after selection</small></div>` + questions.map((q, index) => `
+    const questions = (stream.subjects || []).map(subject => stream.questions.find(question => question.subjectKey === subject.key)).filter(Boolean).slice(0, 5);
+    panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 syllabus-mapped preview questions · syllabus-linked answers and explanations</small></div>` + questions.map((q, index) => `
       <article class="v4-sample-question" data-sample-question="${index}">
-        <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.topic)} · ${escapeHTML(q.difficulty || 'Practice')}</span></div>
+        <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.subjectLabel || q.topic)} · ${escapeHTML(q.topic)}</span></div>
         <h3>${escapeHTML(q.question)}</h3>
         <div class="v4-sample-options">${q.options.map((option, optionIndex) => `<button class="v4-sample-option" type="button" data-sample-option="${optionIndex}"><span>${String.fromCharCode(65 + optionIndex)}</span>${escapeHTML(option)}</button>`).join('')}</div>
         <div class="v4-sample-feedback" data-sample-feedback hidden></div>
-      </article>`).join('') + `<div class="v4-sample-bottom-cta"><span>Want a complete timed paper?</span><a class="button button-primary" href="mock-test.html">Take the 30-minute mock test →</a></div>`;
+      </article>`).join('') + `<div class="v4-sample-bottom-cta"><span>Want a complete timed paper?</span><a class="button button-primary" href="mock-test.html">Take the 47-minute mock test →</a></div>`;
     questions.forEach((question, index) => {
       const card = panel.querySelector(`[data-sample-question="${index}"]`);
       const feedback = card.querySelector('[data-sample-feedback]');
@@ -39,10 +39,19 @@
     panel.dataset.rendered = 'true';
   };
   const activate = key => {
-    tabs.forEach(tab => { const active = tab.dataset.sampleTab === key; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', String(active)); });
+    tabs.forEach(tab => { const active = tab.dataset.sampleTab === key; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', String(active)); tab.tabIndex=active?0:-1; });
     panels.forEach(panel => { const active = panel.dataset.samplePanel === key; panel.hidden = !active; panel.classList.toggle('is-active', active); });
     if (key !== 'other') renderStream(key);
   };
-  tabs.forEach(tab => tab.addEventListener('click', () => activate(tab.dataset.sampleTab)));
+  tabs.forEach((tab,index) => {
+    tab.addEventListener('click', () => activate(tab.dataset.sampleTab));
+    tab.addEventListener('keydown', event => {
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+      event.preventDefault();
+      const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+      activate(tabs[next].dataset.sampleTab);
+      tabs[next].focus();
+    });
+  });
   renderStream('paramedical');
 })();

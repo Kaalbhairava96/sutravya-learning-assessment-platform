@@ -53,7 +53,7 @@
       <section class="admin-card">
         <h2>Create an exam slot</h2>
         <form id="slot-form">
-          <div class="admin-field"><label for="slot-stream">Assessment stream</label><select id="slot-stream" required><option value="paramedical">Paramedical</option><option value="nursing">Nursing</option><option value="mbbs_1st_year">MBBS 1st Year</option></select></div>
+          <div class="admin-field"><label for="slot-stream">Assessment stream</label><select id="slot-stream" required><option value="paramedical">Paramedical</option><option value="nursing">Nursing</option><option value="mbbs_ug">MBBS Undergraduate (UG)</option><option value="mbbs_pg">MBBS Postgraduate (PG)</option></select></div>
           <div class="admin-field"><label for="slot-start">Starts at (IST)</label><input id="slot-start" type="datetime-local" required></div>
           <div class="admin-field"><label for="slot-end">Ends at (IST)</label><input id="slot-end" type="datetime-local" required></div>
           <div class="admin-field"><label for="slot-capacity">Maximum simultaneous attempts</label><input id="slot-capacity" type="number" min="1" max="1500" value="1000" required></div>
@@ -74,7 +74,7 @@
 
       <section class="admin-card admin-span">
         <h2>Import official question bank</h2>
-        <p class="admin-muted">Upload a JSON file containing exactly 100 approved MCQs: 20 Anatomy, 20 Physiology, 20 Biology, 20 Mathematics & Analytical Reasoning, and 20 English & Communication. Every question needs four options (A–D), one correct answer, an easy/moderate label and a 15–60 second timer. Scoring is fixed at +1 / −0.25 / 0. The import is rejected if that stream already has questions or attempts.</p>
+        <p class="admin-muted">Upload exactly 100 faculty-approved MCQs for the selected pathway, with 20 questions in each of that pathway's five approved subject blocks. Every question needs four options (A–D), one correct answer, an easy/moderate label and a 15–60 second server timer. Scoring is fixed at +1 / −0.25 / 0. A bank cannot be overwritten after questions or attempts exist.</p>
         <div class="admin-field"><label for="question-file">Question-bank JSON</label><input id="question-file" type="file" accept=".json,application/json"></div>
         <button class="admin-button" id="import-bank" type="button">Validate and import question bank</button>
         <div class="admin-status" id="import-status" aria-live="polite"></div>

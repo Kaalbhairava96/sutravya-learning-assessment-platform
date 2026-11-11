@@ -11,6 +11,8 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 
 from app.exam_service import (
+    EXAM_SECTION_BLUEPRINTS,
+    EXAM_MAX_DURATION_SECONDS,
     ExamError,
     exam_availability,
     get_attempt,
@@ -93,7 +95,7 @@ class CandidateExamServiceTests(unittest.TestCase):
                 question_bank_id=bank.id,
                 question_text=f"Synthetic question {index + 1}",
                 category="General",
-                section=("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")[index // 20],
+                section=EXAM_SECTION_BLUEPRINTS["paramedical"][index // 20]["key"],
                 difficulty="easy" if index % 2 == 0 else "moderate",
                 time_limit_seconds=20 + (index % 5),
                 is_active=True,
@@ -133,7 +135,7 @@ class CandidateExamServiceTests(unittest.TestCase):
         self.assertEqual(started["total_questions"], 100)
         self.assertNotIn("questions", started)
         first = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
-        self.assertEqual(first["section"], "anatomy")
+        self.assertEqual(first["section"], "anatomy_physiology")
         self.assertGreaterEqual(first["time_limit_seconds"], 20)
         self.assertEqual(len(first["options"]), 4)
         self.assertNotIn("correct_option", first)

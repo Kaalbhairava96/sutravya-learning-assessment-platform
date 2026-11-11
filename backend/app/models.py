@@ -179,7 +179,7 @@ class ExamSlot(Base):
         CheckConstraint("ends_at > starts_at", name="ck_exam_slots_end_after_start"),
         CheckConstraint("capacity IS NULL OR capacity > 0", name="ck_exam_slots_positive_capacity"),
         CheckConstraint(
-            "stream IS NULL OR stream IN ('paramedical', 'nursing', 'mbbs_1st_year')",
+            "stream IS NULL OR stream IN ('paramedical', 'nursing', 'mbbs_ug', 'mbbs_pg', 'mbbs_1st_year')",
             name="ck_exam_slots_stream_approved",
         ),
         Index("ix_exam_slots_event_start", "event_key", "starts_at"),
@@ -306,7 +306,7 @@ class Question(TimestampMixin, Base):
         UniqueConstraint("question_bank_id", "id", name="uq_questions_bank_id_id"),
         Index("ix_questions_question_bank_id", "question_bank_id"),
         CheckConstraint(
-            "section IN ('anatomy', 'physiology', 'biology', 'quantitative_reasoning', 'english_communication')",
+            "length(trim(section)) > 0",
             name="ck_questions_approved_section",
         ),
         CheckConstraint("difficulty IN ('easy', 'moderate')", name="ck_questions_difficulty"),

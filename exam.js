@@ -16,13 +16,18 @@
   let moving = false;
   let answeredCount = 0;
 
-  const sections = [
-    {key:'anatomy', label:'Anatomy', start:0, end:20},
-    {key:'physiology', label:'Physiology', start:20, end:40},
-    {key:'biology', label:'Biology', start:40, end:60},
-    {key:'quantitative_reasoning', label:'Mathematics & Analytics', start:60, end:80},
-    {key:'english_communication', label:'English & Communication', start:80, end:100}
-  ];
+  const sectionBlueprints = {
+    paramedical:[['anatomy_physiology','Anatomy & Physiology'],['laboratory_sciences','Clinical Laboratory Sciences'],['microbiology_infection_control','Microbiology & Infection Control'],['diagnostic_technology','Diagnostic Technology & Equipment'],['patient_safety_communication','Patient Safety & Communication']],
+    nursing:[['nursing_foundations','Nursing Foundations'],['applied_anatomy_physiology','Applied Anatomy & Physiology'],['nutrition_biochemistry','Nutrition & Applied Biochemistry'],['psychology_community','Psychology, Sociology & Community Health'],['infection_safety_ethics','Infection Control, Patient Safety & Ethics']],
+    mbbs_ug:[['anatomy','Human Anatomy'],['physiology','Human Physiology'],['biochemistry','Biochemistry'],['foundation_aetcom','Foundation Course, ECE & AETCOM'],['community_research','Community Medicine & Research']],
+    mbbs_pg:[['medicine','General Medicine & Clinical Reasoning'],['surgery','General Surgery & Perioperative Care'],['obgyn_paediatrics','Obstetrics, Gynaecology & Paediatrics'],['pathology_pharmacology','Pathology & Pharmacology'],['microbiology_forensic_allied','Microbiology, Forensic & Allied Clinical Subjects']],
+    mbbs_1st_year:[['anatomy','Anatomy'],['physiology','Physiology'],['biology','Biology'],['quantitative_reasoning','Mathematics & Analytical Reasoning'],['english_communication','English & Communication']]
+  };
+  let sections = [];
+  const setSections = stream => {
+    const source = sectionBlueprints[stream] || sectionBlueprints.paramedical;
+    sections = source.map(([key,label],index)=>({key,label,start:index*20,end:(index+1)*20}));
+  };
   const message = (text, error = false) => {
     status.textContent = text;
     status.style.color = error ? '#a22d2d' : '#456176';
@@ -189,6 +194,7 @@
         catch { message('Full-screen mode was not available. Your assessment will still be monitored for focus changes.'); }
       }
       attempt = await request('/api/exam/attempts/start','POST');
+      if(Array.isArray(attempt.sections)) sections=attempt.sections.map((item,index)=>({key:item.key || item.section,label:item.label || item.key || item.section,start:index*20,end:(index+1)*20}));
       startOverallTimer(attempt.remaining_seconds);
       await loadQuestion(0);
     } catch (error) { message(error.message,true); }
@@ -236,7 +242,7 @@
       ? new Date(availability.slot_starts_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) : 'Not assigned';
     content.innerHTML = '<h2>' + (availability.assigned ? 'Your assessment slot' : 'Slot assignment pending') + '</h2>' +
       '<p class="exam-muted">Stream: ' + escapeHtml(availability.stream) + ' · ' + escapeHtml(slotStart) + '</p>' +
-      '<p>100 questions · 5 sections · approximately 47 minutes · +1 / −0.25 marking.</p>' +
+      '<p>100 questions · 5 subject blocks · approximately 47 minutes · +1 / −0.25 / 0 marking.</p>' +
       '<p class="exam-muted">Individual question timers vary from 18 to 45 seconds according to the reading and reasoning required.</p>' +
       '<p class="exam-muted">The assessment opens in full-screen mode. Returning to another tab, leaving full screen, or attempting copy/paste is recorded as an integrity event. No camera recording is used.</p>' +
       '<button id="start-exam" class="exam-button" ' +
@@ -248,6 +254,7 @@
     try {
       const session = await request('/api/auth/session');
       candidateInfo.textContent = session.full_name + ' · ' + session.registration_id + ' · ' + session.stream;
+      setSections(session.stream);
       const availability = await request('/api/exam/availability');
       const current = await request('/api/exam/attempts/current');
       if (current.attempt?.status === 'submitted') {

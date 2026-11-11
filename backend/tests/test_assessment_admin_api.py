@@ -118,6 +118,21 @@ class AssessmentAdminApiTests(unittest.TestCase):
             row = session.query(Registration).one()
             self.assertEqual(str(row.exam_slot_id), created["slot_id"])
 
+    def test_exam_slot_must_cover_the_full_47_minute_assessment(self) -> None:
+        create_slot = endpoint(self.application, "/api/admin/assessment/slots")
+        starts = datetime(2026, 12, 4, 10, 0, tzinfo=timezone.utc)
+        with self.assertRaises(HTTPException) as rejected:
+            create_slot(
+                AdminSlotRequest(
+                    stream="paramedical", starts_at=starts,
+                    ends_at=starts + timedelta(minutes=46), capacity=1000,
+                ),
+                request_for(self.application, "/api/admin/assessment/slots"),
+                x_admin_key=ADMIN_KEY,
+            )
+        self.assertEqual(rejected.exception.status_code, 422)
+        self.assertIn("47 minutes", rejected.exception.detail)
+
     def test_import_exactly_one_hundred_mcqs_and_overview_counts(self) -> None:
         options = [
             AdminOptionRequest(identifier=identifier, option_text=f"Option {identifier}")
@@ -126,7 +141,7 @@ class AssessmentAdminApiTests(unittest.TestCase):
         questions = [
             AdminQuestionRequest(
                 question_text=f"Approved synthetic question {number}",
-                section=("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")[(number - 1) // 20],
+                section=("anatomy_physiology", "laboratory_sciences", "microbiology_infection_control", "diagnostic_technology", "patient_safety_communication")[(number - 1) // 20],
                 difficulty="easy" if number % 2 == 0 else "moderate",
                 time_limit_seconds=20 + (number % 5),
                 category="General",
@@ -161,11 +176,13 @@ class AssessmentAdminApiTests(unittest.TestCase):
             rule = session.query(ScoringRule).filter_by(question_bank_id=bank.id).one()
             self.assertEqual(str(rule.correct_points), "1.000")
             self.assertEqual(str(rule.incorrect_points), "-0.250")
-            self.assertEqual(session.query(Question).filter_by(section="anatomy").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="physiology").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="biology").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="quantitative_reasoning").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="english_communication").count(), 20)
+            expected_sections = (
+                "anatomy_physiology", "laboratory_sciences",
+                "microbiology_infection_control", "diagnostic_technology",
+                "patient_safety_communication",
+            )
+            for section in expected_sections:
+                self.assertEqual(session.query(Question).filter_by(section=section).count(), 20)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 570" role="img" aria-labelledby="title desc">
+<title id="title">QualiNova healthcare learning and innovation</title><desc id="desc">A stylised three-dimensional medical cross with a glowing digital assessment ring and floating learning panels.</desc>
+<defs>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b8f6ff"/><stop offset=".48" stop-color="#7fa7ff"/><stop offset="1" stop-color="#6650c8"/></linearGradient>
+ <linearGradient id="cross" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".45" stop-color="#91e5f4"/><stop offset="1" stop-color="#7868e5"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff2bd"/><stop offset="1" stop-color="#e9ad43"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#735ee1" stop-opacity=".75"/><stop offset="1" stop-color="#735ee1" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-40%" y="-40%" width="180%" height="190%"><feGaussianBlur in="SourceAlpha" stdDeviation="12"/><feOffset dy="20"/><feComponentTransfer><feFuncA type="linear" slope=".3"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="blur"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<ellipse cx="331" cy="455" rx="245" ry="53" fill="#40cce9" opacity=".08" filter="url(#blur)"/>
+<ellipse cx="330" cy="285" rx="236" ry="210" fill="none" stroke="#8e86fb" stroke-opacity=".22" stroke-width="1.5" transform="rotate(-18 330 285)"/>
+<ellipse cx="330" cy="285" rx="182" ry="245" fill="none" stroke="#51d7f0" stroke-opacity=".2" stroke-width="1.4" transform="rotate(28 330 285)"/>
+<ellipse cx="328" cy="285" rx="219" ry="123" fill="none" stroke="#8e86fb" stroke-opacity=".36" stroke-width="2" transform="rotate(29 328 285)"/>
+<ellipse cx="330" cy="280" rx="175" ry="155" fill="url(#glow)" opacity=".75"/>
+<g filter="url(#shadow)" transform="translate(0 -6)">
+ <path d="M274 147h90v87h87v91h-87v87h-90v-87h-87v-91h87z" fill="#4a3a9e" opacity=".95" transform="translate(15 15)"/>
+ <path d="M274 147h90v87h87v91h-87v87h-90v-87h-87v-91h87z" fill="url(#cross)" stroke="#d9faff" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M284 159h70v88h87v67h-87v88h-70v-88h-87v-67h87z" fill="#fff" opacity=".14"/>
+ <path d="M319 171v220M217 267h204" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".58"/>
+ <circle cx="319" cy="279" r="58" fill="#fff" fill-opacity=".12" stroke="#fff" stroke-opacity=".55" stroke-width="2"/>
+ <path d="M293 280h18l9-20 15 42 12-23h19" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g filter="url(#shadow)">
+ <g transform="translate(36 165) rotate(-12)"><rect x="0" y="0" width="132" height="93" rx="15" fill="#fff" fill-opacity=".94" stroke="#d6e9ff"/><circle cx="25" cy="27" r="10" fill="#dff9ff"/><path d="M25 19v16M17 27h16" stroke="#1886aa" stroke-width="3" stroke-linecap="round"/><rect x="45" y="20" width="70" height="6" rx="3" fill="#51409b" opacity=".8"/><rect x="45" y="32" width="50" height="4" rx="2" fill="#9ca4c4"/><rect x="16" y="56" width="100" height="6" rx="3" fill="#e9e8f4"/><rect x="16" y="69" width="75" height="6" rx="3" fill="#e9e8f4"/></g>
+ <g transform="translate(458 156) rotate(10)"><rect width="129" height="101" rx="16" fill="#fff" fill-opacity=".95" stroke="#d6e9ff"/><rect x="17" y="18" width="95" height="45" rx="9" fill="#ecebff"/><path d="M28 49l16-12 13 8 17-18 18 13" fill="none" stroke="#6e55d7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="74" width="60" height="6" rx="3" fill="#a0a8c5"/><rect x="85" y="74" width="27" height="6" rx="3" fill="#c6cbe0"/></g>
+ <g transform="translate(465 357) rotate(-8)"><rect width="132" height="92" rx="16" fill="#fff" fill-opacity=".96" stroke="#d6e9ff"/><circle cx="29" cy="32" r="14" fill="#fff0c6"/><path d="M29 22v20M19 32h20" stroke="#b8872e" stroke-width="3.5" stroke-linecap="round"/><rect x="53" y="24" width="60" height="6" rx="3" fill="#51409b"/><rect x="53" y="38" width="48" height="5" rx="2.5" fill="#a6aecb"/><rect x="17" y="65" width="96" height="6" rx="3" fill="#e8eaf5"/></g>
+</g>
+<g fill="url(#gold)"><circle cx="172" cy="107" r="6"/><circle cx="487" cy="94" r="5"/><circle cx="106" cy="372" r="4"/><path d="M542 280l8 18 18 8-18 8-8 18-8-18-18-8 18-8z" opacity=".8"/></g>
+<g fill="#87e9f5"><circle cx="121" cy="283" r="4"/><circle cx="426" cy="80" r="3"/><circle cx="542" cy="475" r="4"/><circle cx="223" cy="478" r="3"/></g>
+</svg>

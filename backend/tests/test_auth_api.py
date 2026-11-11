@@ -308,24 +308,26 @@ class PasswordlessApiTests(unittest.TestCase):
     def test_four_categories_are_accepted_with_their_server_mapped_exam_stream(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
         categories = (
-            ("nursing", "nursing", "bsc_nursing", None, 1),
-            ("paramedical", "paramedical", "bmlt", "Year 1", None),
-            ("mbbs", "mbbs_1st_year", "mbbs", None, 5),
-            ("jdn", "jdn", "junior_doctor_network", None, None),
+            ("nursing", "nursing", "bsc_nursing", None, 1, 25000),
+            ("paramedical", "paramedical", "bmlt", "Year 1", None, 25000),
+            ("mbbs", "mbbs_ug", "mbbs_ug", None, 5, 50000),
+            ("mbbs", "mbbs_pg", "mbbs_pg", None, 2, 50000),
         )
-        for index, (category, expected_stream, programme, stage, year) in enumerate(categories):
+        for index, (category, expected_stream, programme, stage, year, expected_fee) in enumerate(categories):
             with self.subTest(category=category):
                 payload = self._valid_payload(
-                    email=f"category-{category}@example.invalid", category=category,
+                    email=f"pathway-{expected_stream}@example.invalid", category=category,
                     programme=programme, academic_stage=stage, year=year,
                 )
                 result = start(payload, request_for(self.application, "/api/registrations/start"))
                 self.assertIn("challenge_id", result)
                 with self.factory() as session:
-                    candidate = session.query(Candidate).filter_by(email=f"category-{category}@example.invalid").one()
+                    candidate = session.query(Candidate).filter_by(email=f"pathway-{expected_stream}@example.invalid").one()
                     self.assertEqual(candidate.pending_stream, expected_stream)
-                    self.assertEqual(candidate.pending_registration_details["registration_fee_paise"],
-                                     {"nursing":25000,"paramedical":25000,"mbbs":50000,"jdn":100000}[category])
+                    self.assertEqual(candidate.pending_registration_details["registration_fee_paise"], expected_fee)
+                    if category == "mbbs":
+                        expected_subcategory = "UG" if expected_stream == "mbbs_ug" else "PG"
+                        self.assertEqual(candidate.pending_registration_details["subcategory"], expected_subcategory)
 
     def _internal_app(self):
         settings = Settings(
@@ -341,15 +343,12 @@ class PasswordlessApiTests(unittest.TestCase):
     def _valid_payload(self, email="candidate@example.invalid", category="nursing", programme=None,
                        academic_stage="Year 1", year=1, full_name="Synthetic API Candidate",
                        mobile="9876543210"):
-        programmes = {"nursing":"bsc_nursing","paramedical":"bmlt","mbbs":"mbbs","jdn":"junior_doctor_network"}
+        programmes = {"nursing":"bsc_nursing","paramedical":"bmlt","mbbs":"mbbs_ug"}
         return RegistrationRequest(
             full_name=full_name, mobile=mobile, email=email,
             category=category, programme=programme or programmes[category],
-            stream={"nursing":"nursing","paramedical":"paramedical","mbbs":"mbbs_1st_year","jdn":"jdn"}[category],
+            stream={"nursing":"nursing","paramedical":"paramedical","mbbs":"mbbs_ug"}[category],
             year=year, academic_stage=academic_stage,
-            professional_qualification="MBBS" if category=="jdn" else None,
-            designation="Resident Doctor" if category=="jdn" else None,
-            institution="Sample District Hospital" if category=="jdn" else None,
             house_number="12", address_line1="Main Road", address_line2="Near Market",
             district="Patna", state="Bihar", pin_code="800001", declaration_accepted=True,
         )
@@ -689,7 +688,7 @@ class PasswordlessApiTests(unittest.TestCase):
             self.assertIsNone(registration.registration_id)
             self.assertEqual(registration.payment_amount_paise, 50000)
             self.assertEqual(registration.details["category"], "mbbs")
-            self.assertEqual(registration.details["programme_label"], "MBBS")
+            self.assertEqual(registration.details["programme_label"], "MBBS Undergraduate (UG)")
 
         cookie = SimpleCookie()
         cookie.load(response.headers["set-cookie"])

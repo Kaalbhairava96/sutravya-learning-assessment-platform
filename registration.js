@@ -1,4 +1,4 @@
-/* QualiNova four-category application flow. Fees, status and payments are server-authoritative. */
+/* QualiNova three-category application flow. Fees, status and payments remain server-authoritative. */
 (() => {
   const form = document.querySelector('#candidate-registration-form');
   if (!form) return;
@@ -10,7 +10,7 @@
   const year = $('#reg-year');
   const yearField = $('[data-year-field]');
   const academicStageField = $('[data-academic-stage-field]');
-  const jdnFields = [...document.querySelectorAll('[data-jdn-field]')];
+
   const reviewPanel = $('[data-review-panel]');
   const otpPanel = $('[data-otp-panel]');
   const paymentPanel = $('[data-payment-panel]');
@@ -37,9 +37,9 @@
       {id:'bmlt',label:'BMLT'},{id:'bott',label:'BOTT'},{id:'bhm',label:'BHM'},
       {id:'bopt',label:'B.Opt'},{id:'brit',label:'BRIT'}
     ]},
-    mbbs: {label:'MBBS', fee:50000, programmes:[{id:'mbbs',label:'MBBS',years:[1,2,3,4,5]}]},
-    jdn: {label:'Junior Doctor Network (JDN)', fee:100000, programmes:[
-      {id:'junior_doctor_network',label:'Junior Doctor Network'}
+    mbbs: {label:'MBBS', fee:50000, programmes:[
+      {id:'mbbs_ug',label:'MBBS Undergraduate (UG)',years:[1,2,3,4,5]},
+      {id:'mbbs_pg',label:'MBBS Postgraduate (PG)',years:[1,2,3]}
     ]}
   };
   let registrationEnabled = false;
@@ -76,26 +76,18 @@
     });
   }
   function addOption(select,label,value) { select.add(new Option(label,value)); }
-  function setJdnFields(visible) {
-    jdnFields.forEach(node=>{
-      node.hidden=!visible;
-      const control=node.querySelector('input');
-      if(control){control.disabled=!visible;control.required=visible && !['reg-council','reg-council-number','reg-experience'].includes(control.id);}
-    });
-  }
   function refreshAcademicFields() {
     const item=catalogue[category.value];
     const selected=item?.programmes.find(p=>p.id===programme.value);
     const isParamedical=category.value==='paramedical';
-    const isJdn=category.value==='jdn';
     const stage=$('#reg-academic-stage');
-    yearField.hidden=!selected?.years?.length;
-    year.required=Boolean(selected?.years?.length);
-    year.disabled=!selected?.years?.length;
+    const hasYear=Boolean(selected?.years?.length);
+    yearField.hidden=!hasYear;
+    year.required=hasYear;
+    year.disabled=!hasYear;
     academicStageField.hidden=!isParamedical;
     stage.required=isParamedical;
     stage.disabled=!isParamedical;
-    setJdnFields(isJdn);
     year.replaceChildren(new Option('Select year',''));
     (selected?.years || []).forEach(n=>addOption(year,'Year '+n,String(n)));
     feeAmount.textContent=item ? money(item.fee) : 'Choose a category';
@@ -115,7 +107,7 @@
     const item=catalogue[category.value];
     const selected=item.programmes.find(p=>p.id===programme.value);
     const yearValue=year.value ? Number(year.value) : null;
-    const stream={nursing:'nursing',paramedical:'paramedical',mbbs:'mbbs_1st_year',jdn:'jdn'}[category.value];
+    const stream=category.value==='mbbs' ? programme.value : category.value;
     return {
       full_name:form.elements.full_name.value.trim(),
       email:form.elements.email.value.trim(),
@@ -123,12 +115,6 @@
       category:category.value, programme:programme.value, stream, year:yearValue,
       declaration_accepted:form.elements.consent.checked,
       academic_stage:category.value==='paramedical' ? form.elements.academic_stage.value.trim() : null,
-      professional_qualification:category.value==='jdn' ? form.elements.professional_qualification.value.trim() : null,
-      designation:category.value==='jdn' ? form.elements.designation.value.trim() : null,
-      institution:category.value==='jdn' ? form.elements.institution.value.trim() : null,
-      council_name:category.value==='jdn' ? form.elements.council_name.value.trim() : null,
-      council_registration_number:category.value==='jdn' ? form.elements.council_registration_number.value.trim() : null,
-      years_of_experience:category.value==='jdn' ? form.elements.years_of_experience.value.trim() : null,
       house_number:form.elements.house_number.value.trim(),
       address_line1:form.elements.address_line1.value.trim(),
       address_line2:form.elements.address_line2.value.trim(),
@@ -147,15 +133,7 @@
     list.replaceChildren();
     addReviewRow(list,'Registration category',data.category_label);
     addReviewRow(list,'Programme / course',data.programme_label);
-    addReviewRow(list,'Academic year / stage',data.year ? 'Year '+data.year : data.academic_stage || 'Professional network');
-    if(data.category==='jdn') {
-      addReviewRow(list,'Professional qualification',data.professional_qualification);
-      addReviewRow(list,'Role / designation',data.designation);
-      addReviewRow(list,'Hospital / institution',data.institution);
-      addReviewRow(list,'Medical council',data.council_name || 'Not provided');
-      addReviewRow(list,'Council registration number',data.council_registration_number || 'Not provided');
-      addReviewRow(list,'Experience',data.years_of_experience || 'Not provided');
-    }
+    addReviewRow(list,'Academic year / stage',data.year ? 'Year '+data.year : data.academic_stage || '—');
     addReviewRow(list,'Full name',data.full_name);
     addReviewRow(list,'Email',data.email);
     addReviewRow(list,'Mobile',data.mobile);

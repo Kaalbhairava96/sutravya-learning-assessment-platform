@@ -46,5 +46,7 @@ jobs:
           node --check mock-test.js
           node --check sample-papers.js
           node --check registration.js
+          node --check question-bank.js
+          node scripts/validate_question_banks.cjs
       - name: Build allowlisted assessment website
         run: bash scripts/build_assessment_site.sh
