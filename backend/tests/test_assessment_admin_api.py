@@ -126,7 +126,7 @@ class AssessmentAdminApiTests(unittest.TestCase):
         questions = [
             AdminQuestionRequest(
                 question_text=f"Approved synthetic question {number}",
-                section=("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")[(number - 1) // 20],
+                section=("anatomy_physiology", "laboratory_sciences", "microbiology_infection_control", "diagnostic_technology", "patient_safety_communication")[(number - 1) // 20],
                 difficulty="easy" if number % 2 == 0 else "moderate",
                 time_limit_seconds=20 + (number % 5),
                 category="General",

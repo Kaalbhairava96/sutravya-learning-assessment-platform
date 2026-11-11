@@ -1,58 +1,82 @@
-# HTSE 2026 — Common Healthcare Foundations Question Blueprint
+# QualiNova HTSE 2026 — Academic Syllabus & Question Blueprint
 
-## Assessment design
+## Approval status
+This is a structured practice and assessment blueprint. It is not a claim that one common syllabus replaces each university or professional curriculum. QualiNova's academic committee and qualified faculty must approve the final blueprint and every live question bank before it is loaded for the official examination.
 
-This is a common-foundation screening paper for MBBS First Year, B.Sc. Nursing and Paramedical candidates. It is intentionally not a substitute for any university's professional examination or a discipline-specific NCAHP qualification examination.
+## Confirmed examination format
+- 100 MCQs in each assessment pathway.
+- Approximately 47 minutes.
+- Correct: +1; incorrect: −0.25; unanswered: 0.
+- Each pathway has five subject blocks with 20 questions each.
+- Server-authoritative overall deadline and sequential question delivery; the browser clock is display-only.
 
-| Section | Questions | Timer band | Expected section time |
-|---|---:|---:|---:|
-| Anatomy | 20 | 20–26 seconds | 7–8 minutes |
-| Physiology | 20 | 22–28 seconds | 8–9 minutes |
-| Biology | 20 | 18–24 seconds | 7 minutes |
-| Mathematics & Analytical Reasoning | 20 | 30–45 seconds | 12 minutes |
-| English & Communication | 20 | 30–40 seconds | 12 minutes |
-| **Total** | **100** | **Question-specific** | **About 46–48 minutes** |
+## Registration and assessment pathways
+Three registration categories: Nursing, Paramedical and MBBS. MBBS has two sub-categories: Undergraduate (UG) and Postgraduate (PG). The four separate practice/assessment pathways are Nursing, Paramedical, MBBS UG and MBBS PG. New JDN registration has been removed. Historical JDN rows are not deleted by this release and must not be assigned a new examination slot.
 
-The platform allows an overall ceiling of 55 minutes or the assigned slot end, whichever comes first. Each question timer starts on its first server-confirmed presentation. Unanswered questions receive zero. A candidate can answer, explicitly skip, or allow the question timer to expire before proceeding.
+## 1. Paramedical — common allied-health foundation
+A broad introductory foundation, not a substitute for the separate curriculum of BMLT, imaging, OT technology, dialysis technology, physiotherapy or any other allied-health programme.
 
-## Marking
+| Subject block | 20-question coverage |
+|---|---|
+| Anatomy & Physiology | Cells, tissues, body organisation, major body systems, blood and vital signs |
+| Clinical Laboratory Sciences | Specimen collection/handling, microscopy, laboratory practice, quality control and phlebotomy |
+| Microbiology & Infection Control | Microorganisms, infection chain, hand hygiene, PPE, sterilisation and biomedical waste |
+| Diagnostic Technology & Equipment | ECG, X-ray, ultrasound, MRI, imaging safety, monitoring and equipment awareness |
+| Patient Safety & Healthcare Communication | Patient identification, dignity, consent, communication, documentation, safe handling and escalation |
 
-- Correct answer: +1
-- Incorrect answer: −0.25
-- Unanswered: 0
-- Maximum score: 100
-- Minimum theoretical score: −25
+## 2. Nursing — undergraduate foundations
 
-The question bank import fixes these values; the organiser cannot accidentally configure a different penalty.
+| Subject block | 20-question coverage |
+|---|---|
+| Nursing Foundations | Nursing process, basic care, vital signs, assessment, positioning, nutrition and wound/skin care |
+| Applied Anatomy & Physiology | Cells, tissues, body systems, blood, cardiovascular, respiratory, renal, nervous, endocrine and fluid balance |
+| Nutrition & Applied Biochemistry | Nutrients, balanced diet, hydration, enzymes, vitamins, minerals and basic metabolism |
+| Psychology, Sociology & Community Health | Human behaviour, social determinants, community health, health education and cultural competence |
+| Infection Control, Patient Safety & Professional Ethics | Standard precautions, PPE, biomedical waste, medication safety, documentation, patient rights, consent and professional values |
 
-## Curriculum research and rationale
+This practice map draws chiefly on foundational themes in the Indian Nursing Council's Revised Regulations and Curriculum for B.Sc. Nursing Programme (2020). It remains a practice guide, not an approved institutional course plan.
 
-1. **National Medical Commission — Modified CBME Guidelines and Curriculum 2024.** The Phase 1 curriculum includes Anatomy, Physiology and other foundational biomedical subjects. The question set focuses on introductory normal structure and function rather than specialist clinical management.
-   - https://www.nmc.org.in/wp-content/uploads/2026/02/12bCompetencyBasedMedicalEducationCBMECurriculum12092024.pdf
-   - https://www.nmc.org.in/MCIRest/open/getDocument?path=%2FDocuments%2FPublic%2FPortal%2FE_Compendium_of_NMC_2024%2F10.+Curriculum.pdf
+## 3. MBBS Undergraduate (UG) — foundation practice
+The current existing question bank is strongest in Phase-I foundational material. This pathway must not be described as complete coverage of the entire five-year MBBS curriculum.
 
-2. **Indian Nursing Council — Revised Regulations and Curriculum for B.Sc. Nursing Programme, 2020.** The first-year framework includes Communicative English, Applied Anatomy and Applied Physiology; Applied Biochemistry appears in the following semester. The paper uses foundational body structure, function and communication topics suitable for a common introductory assessment.
-   - https://www.indiannursingcouncil.org/gazette-notification
+| Subject block | 20-question coverage |
+|---|---|
+| Human Anatomy | General anatomy, histology, osteology, joints, neuroanatomy, embryology and organ-system structure |
+| Human Physiology | Cell physiology, blood, cardiovascular, respiratory, renal, endocrine, neurophysiology, homeostasis and acid-base concepts |
+| Biochemistry | Biomolecules, enzymes, vitamins, bioenergetics, metabolism, haem and molecular biology |
+| Foundation Course, ECE & AETCOM | Medical education, early clinical exposure, communication, empathy, consent, confidentiality and patient safety |
+| Community Medicine & Research Foundations | Community health, health promotion, epidemiology, biostatistics and research literacy |
 
-3. **NCERT — Biology, Class XI.** Used for cell structure, biomolecules, cell division, biological classification and introductory human physiology concepts.
-   - https://www.ncert.nic.in/textbook/pdf/kebo1ps.pdf
+The NMC's Modified Competency Based Medical Education Curriculum 2024 identifies Phase I subjects as Anatomy, Physiology and Biochemistry and integrates Foundation Course, Early Clinical Exposure and AETCOM. This mock is an introductory foundation sampler.
 
-4. **National Commission for Allied and Healthcare Professions (NCAHP).** Allied and healthcare programmes are discipline-specific. The common paper therefore tests broadly shared foundations and avoids claiming that every item is part of every paramedical programme's detailed syllabus.
-   - https://www.pib.gov.in/PressReleasePage.aspx?PRID=2285818&lang=2&reg=48
+## 4. MBBS Postgraduate (PG) — broad clinical-foundations practice
+The current registration does not capture PG specialty. Therefore the initial PG mock is a broad cross-disciplinary clinical-foundations sampler, not a specialty-specific MD/MS/DNB syllabus, not a NEET-PG/INI-CET paper and not a substitute for specialty training.
 
-5. **NMC Attitude, Ethics and Communication (AETCOM) / Nursing communication competencies.** Used as a design rationale for respectful language, patient-friendly explanations, active listening and teach-back style questions. The English section also tests reading comprehension, grammar, vocabulary and professional written communication.
-   - https://www.nmc.org.in/information-desk/for-colleges/ug-curriculum/1000/
+| Subject block | 20-question coverage |
+|---|---|
+| General Medicine & Clinical Reasoning | Clinical assessment, common systemic presentations, basic investigations and safe first principles |
+| General Surgery & Perioperative Care | Surgical principles, wound care, perioperative safety, shock, trauma and post-operative monitoring |
+| Obstetrics, Gynaecology & Paediatrics | Maternal care, obstetric red flags, neonatal and child-health foundations |
+| Pathology & Pharmacology | Disease mechanisms, laboratory interpretation, antimicrobial principles, drug safety and adverse effects |
+| Microbiology, Forensic & Allied Clinical Subjects | Infection diagnosis, public health, forensic basics, anaesthesia/critical-care awareness, radiology and ENT/ophthalmic/orthopaedic foundations |
 
-## Question quality and controls
+NMC postgraduate education is competency-based and specialty-specific. QualiNova should capture a candidate's PG specialty and approve a separate specialty blueprint before advertising a specialty-specific examination.
 
-- All five sections contain exactly 20 MCQs.
-- The bank is easy-to-moderate and uses basic concepts, short calculations, comprehension and practical reasoning.
-- Each item has four options, one answer key, a short explanation, a source/rationale note, a difficulty label and an individual timer.
-- Questions are presented one at a time. Question order is shuffled within sections and option order is shuffled per attempt.
-- The server controls question deadlines, enforces sequential progression, records skips, prevents revisiting passed questions and calculates the result.
-- The answer key is withheld from the candidate until submission.
-- Focus changes, full-screen exits and copy/paste attempts are recorded as integrity events. These are deterrents and review signals, not proof of misconduct. No browser-only control can guarantee that a candidate is not using a separate device or receiving outside help.
+## Question-bank quality controls
+- Exactly 100 questions per pathway; four options; one correct answer.
+- 20 questions in each pathway-specific subject block.
+- Every item must carry a subject key, topic, difficulty, correct answer, short explanation and source/rationale note.
+- Mock tests are separate for Paramedical, Nursing, MBBS UG and MBBS PG; their subject breakdown follows this syllabus.
+- Practice scores are learning feedback. Official examination scores are calculated by the server.
+- Qualified subject faculty must review all medical questions for scientific accuracy, clarity, option ambiguity and curriculum alignment before live use.
 
-## Review before live use
+## Curriculum reference sources
+- NMC, Modified Competency Based Medical Education Curriculum 2024: https://www.nmc.org.in/wp-content/uploads/2026/02/12bCompetencyBasedMedicalEducationCBMECurriculum12092024.pdf
+- NMC, Post-Graduate Medical Education Regulations 2023: https://nmc.org.in/whats-new/download/1856
+- Indian Nursing Council, Gazette notifications: https://indiannursingcouncil.org/gazette-notification
+- NCERT Biology: https://www.ncert.nic.in/textbook/pdf/kebo1ps.pdf
+- National Commission for Allied and Healthcare Professions: https://ncahp.abdm.gov.in/
 
-This is an original draft bank prepared against the above public curriculum references. A qualified subject faculty member should conduct a final scientific and language review before the live examination, particularly for local institutional alignment and any preferred terminology. The public curriculum sources are references for topic selection; the question wording itself is original.
+**Academic approval:** Pending QualiNova academic committee / qualified faculty sign-off.  
+**Platform implementation:** SUTRAVYA.  
+**Last updated:** 11 November 2026.

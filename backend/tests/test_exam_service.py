@@ -11,6 +11,8 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 
 from app.exam_service import (
+    EXAM_SECTION_BLUEPRINTS,
+    EXAM_MAX_DURATION_SECONDS,
     ExamError,
     exam_availability,
     get_attempt,
@@ -93,7 +95,7 @@ class CandidateExamServiceTests(unittest.TestCase):
                 question_bank_id=bank.id,
                 question_text=f"Synthetic question {index + 1}",
                 category="General",
-                section=("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")[index // 20],
+                section=EXAM_SECTION_BLUEPRINTS["paramedical"][index // 20]["key"],
                 difficulty="easy" if index % 2 == 0 else "moderate",
                 time_limit_seconds=20 + (index % 5),
                 is_active=True,

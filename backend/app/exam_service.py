@@ -31,10 +31,48 @@ from app.models import (
 )
 from app.registration import EVENT_KEY, PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE
 
-EXAM_MAX_DURATION_SECONDS = 55 * 60
+EXAM_MAX_DURATION_SECONDS = 47 * 60
 QUESTION_COUNT = 100
 OPTIONS_PER_QUESTION = 4
 SCORING_RULE_CODE = "htse_2026"
+
+EXAM_SECTION_BLUEPRINTS = {
+    "paramedical": (
+        {"key": "anatomy_physiology", "label": "Anatomy & Physiology", "question_count": 20},
+        {"key": "laboratory_sciences", "label": "Clinical Laboratory Sciences", "question_count": 20},
+        {"key": "microbiology_infection_control", "label": "Microbiology & Infection Control", "question_count": 20},
+        {"key": "diagnostic_technology", "label": "Diagnostic Technology & Equipment", "question_count": 20},
+        {"key": "patient_safety_communication", "label": "Patient Safety & Healthcare Communication", "question_count": 20},
+    ),
+    "nursing": (
+        {"key": "nursing_foundations", "label": "Nursing Foundations", "question_count": 20},
+        {"key": "applied_anatomy_physiology", "label": "Applied Anatomy & Physiology", "question_count": 20},
+        {"key": "nutrition_biochemistry", "label": "Nutrition & Applied Biochemistry", "question_count": 20},
+        {"key": "psychology_community", "label": "Psychology, Sociology & Community Health", "question_count": 20},
+        {"key": "infection_safety_ethics", "label": "Infection Control, Patient Safety & Professional Ethics", "question_count": 20},
+    ),
+    "mbbs_ug": (
+        {"key": "anatomy", "label": "Human Anatomy", "question_count": 20},
+        {"key": "physiology", "label": "Human Physiology", "question_count": 20},
+        {"key": "biochemistry", "label": "Biochemistry", "question_count": 20},
+        {"key": "foundation_aetcom", "label": "Foundation Course, ECE & AETCOM", "question_count": 20},
+        {"key": "community_research", "label": "Community Medicine & Research Foundations", "question_count": 20},
+    ),
+    "mbbs_pg": (
+        {"key": "medicine", "label": "General Medicine & Clinical Reasoning", "question_count": 20},
+        {"key": "surgery", "label": "General Surgery & Perioperative Care", "question_count": 20},
+        {"key": "obgyn_paediatrics", "label": "Obstetrics, Gynaecology & Paediatrics", "question_count": 20},
+        {"key": "pathology_pharmacology", "label": "Pathology & Pharmacology", "question_count": 20},
+        {"key": "microbiology_forensic_allied", "label": "Microbiology, Forensic & Allied Clinical Subjects", "question_count": 20},
+    ),
+    "mbbs_1st_year": (
+        {"key": "anatomy", "label": "Anatomy", "question_count": 20},
+        {"key": "physiology", "label": "Physiology", "question_count": 20},
+        {"key": "biology", "label": "Biology", "question_count": 20},
+        {"key": "quantitative_reasoning", "label": "Mathematics & Analytical Reasoning", "question_count": 20},
+        {"key": "english_communication", "label": "English & Communication", "question_count": 20},
+    ),
+}
 
 
 class ExamError(ValueError):
@@ -65,7 +103,7 @@ def _candidate_registration(session: Session, raw_token: str | None, *, lock: bo
             Registration.is_internal_test.is_(False),
             Registration.registration_source.in_((PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE)),
             Registration.status == "active",
-            Registration.stream.in_(("nursing", "paramedical", "mbbs_1st_year")),
+            Registration.stream.in_(("nursing", "paramedical", "mbbs_ug", "mbbs_pg", "mbbs_1st_year")),
         )
     )
     if lock:
@@ -163,7 +201,7 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
             )
         ) or 0)
         try:
-            _ordered_questions(session, bank)
+            _ordered_questions(session, bank, registration.stream or "")
             _scoring_rule(session, bank)
             ready = True
         except ExamError:
@@ -180,9 +218,12 @@ def exam_availability(session: Session, raw_token: str | None, *, now: datetime 
     }
 
 
-def _ordered_questions(session: Session, bank: QuestionBank) -> list[Question]:
+def _ordered_questions(session: Session, bank: QuestionBank, stream: str | None = None) -> list[Question]:
     questions = _question_set(session, bank)
-    section_order = ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")
+    section_specs = EXAM_SECTION_BLUEPRINTS.get(stream or bank.bank_code)
+    if section_specs is None:
+        raise ExamError("question_bank_invalid", 503)
+    section_order = [item["key"] for item in section_specs]
     grouped = {section: [] for section in section_order}
     for question in questions:
         if question.section not in grouped:
@@ -208,7 +249,7 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
         if not (_aware(slot.starts_at) <= current < _aware(slot.ends_at)):
             raise ExamError("exam_slot_not_open", 409)
         bank = _bank_for_stream(session, registration.stream or "")
-        questions = _ordered_questions(session, bank)
+        questions = _ordered_questions(session, bank, registration.stream or "")
         _scoring_rule(session, bank)
         if slot.capacity is not None:
             active_attempts = int(session.scalar(select(func.count(ExamAttempt.id)).where(
@@ -252,8 +293,7 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
             "total_questions": len(questions), "total_question_time_seconds": total_seconds,
             "overall_deadline": due.isoformat(),
             "remaining_seconds": max(0, int((due - current).total_seconds())),
-            "sections": [{"section": section, "question_count": 20} for section in
-                ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")],
+            "sections": [dict(item) for item in EXAM_SECTION_BLUEPRINTS[registration.stream or ""]],
         }
 
 
