@@ -142,12 +142,6 @@ class RegistrationRequest(BaseModel):
     programme: str | None = Field(default=None, max_length=120)
     year: int | None = Field(default=None, ge=1, le=6)
     academic_stage: str | None = Field(default=None, max_length=120)
-    professional_qualification: str | None = Field(default=None, max_length=160)
-    designation: str | None = Field(default=None, max_length=120)
-    institution: str | None = Field(default=None, max_length=180)
-    council_name: str | None = Field(default=None, max_length=160)
-    council_registration_number: str | None = Field(default=None, max_length=100)
-    years_of_experience: str | None = Field(default=None, max_length=40)
     house_number: str | None = Field(default=None, max_length=100)
     address_line1: str | None = Field(default=None, max_length=240)
     address_line2: str | None = Field(default=None, max_length=240)
@@ -192,7 +186,7 @@ class ExamIntegrityEventRequest(BaseModel):
 
 
 class AdminSlotRequest(BaseModel):
-    stream: Literal["paramedical", "nursing", "mbbs_1st_year"]
+    stream: Literal["paramedical", "nursing", "mbbs_ug", "mbbs_pg"]
     starts_at: datetime
     ends_at: datetime
     capacity: int = Field(gt=0, le=1500)
@@ -205,7 +199,7 @@ class AdminOptionRequest(BaseModel):
 
 class AdminQuestionRequest(BaseModel):
     question_text: str = Field(min_length=1, max_length=10000)
-    section: Literal["anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication"]
+    section: str = Field(min_length=1, max_length=40)
     difficulty: Literal["easy", "moderate"]
     time_limit_seconds: int = Field(ge=15, le=60)
     category: str | None = Field(default=None, max_length=120)
@@ -710,9 +704,10 @@ def create_app(
                  ],
                  "academic_stage_help": "Enter the current year, semester or internship stage exactly as shown by your institution."},
                 {"id": "mbbs", "label": "MBBS", "fee_paise": 50000,
-                 "programmes": [{"id": "mbbs", "label": "MBBS", "years": [1, 2, 3, 4, 5]}]},
-                {"id": "jdn", "label": "Junior Doctor Network (JDN)", "fee_paise": 100000,
-                 "programmes": [{"id": "junior_doctor_network", "label": "Junior Doctor Network"}]},
+                 "programmes": [
+                     {"id": "mbbs_ug", "label": "MBBS Undergraduate (UG)", "years": [1, 2, 3, 4, 5]},
+                     {"id": "mbbs_pg", "label": "MBBS Postgraduate (PG)", "years": [1, 2, 3]},
+                 ]},
             ],
             "payment": {"provider": provider, "enabled": provider != "disabled", "currency": "INR"},
         }
@@ -921,7 +916,7 @@ def create_app(
     ):
         _require_admin(request.app.state.settings, x_admin_key)
         with _session(request) as session:
-            streams = ("paramedical", "nursing", "mbbs_1st_year")
+            streams = ("paramedical", "nursing", "mbbs_ug", "mbbs_pg")
             stream_summary = {}
             for stream in streams:
                 stream_summary[stream] = {
@@ -1003,7 +998,7 @@ def create_app(
             raise HTTPException(status_code=422, detail="Registration IDs must be unique and valid.")
         with _session(request) as session:
             slot = session.get(ExamSlot, slot_id)
-            if slot is None or slot.event_key != EVENT_KEY or slot.stream not in {"paramedical", "nursing", "mbbs_1st_year"}:
+            if slot is None or slot.event_key != EVENT_KEY or slot.stream not in {"paramedical", "nursing", "mbbs_ug", "mbbs_pg", "mbbs_1st_year"}:
                 raise HTTPException(status_code=404, detail="Assessment slot not found.")
             registrations = session.scalars(select(Registration).where(
                 Registration.event_key == EVENT_KEY,
@@ -1037,12 +1032,18 @@ def create_app(
     ):
         _require_admin(request.app.state.settings, x_admin_key)
         expected = {"A", "B", "C", "D"}
-        section_order = ("anatomy", "physiology", "biology", "quantitative_reasoning", "english_communication")
+        # The stream-specific blueprint is validated by the assessment service.
+        from app.exam_service import EXAM_SECTION_BLUEPRINTS
+        section_specs = EXAM_SECTION_BLUEPRINTS[payload.stream]
+        section_order = tuple(item["key"] for item in section_specs)
         section_counts = {section: 0 for section in section_order}
         for question in payload.questions:
+            if question.section not in section_counts:
+                raise HTTPException(status_code=422, detail=f"Question section is not approved for {payload.stream}.")
             section_counts[question.section] += 1
         if any(section_counts[section] != 20 for section in section_order):
-            raise HTTPException(status_code=422, detail="Question bank must contain exactly 20 questions in each of the five approved sections.")
+            labels = ", ".join(item["label"] for item in section_specs)
+            raise HTTPException(status_code=422, detail=f"Question bank must contain exactly 20 questions in each subject block: {labels}.")
         for index, question in enumerate(payload.questions, start=1):
             identifiers = [option.identifier.strip().upper() for option in question.options]
             if set(identifiers) != expected or len(set(identifiers)) != 4:

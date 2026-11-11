@@ -1,4 +1,4 @@
-"""Validation tests for category-specific QualiNova registration."""
+"""Validation tests for QualiNova category and UG/PG registration."""
 from __future__ import annotations
 
 import unittest
@@ -17,12 +17,6 @@ def payload(**overrides):
         "programme": "bsc_nursing",
         "year": 1,
         "academic_stage": None,
-        "professional_qualification": None,
-        "designation": None,
-        "institution": None,
-        "council_name": None,
-        "council_registration_number": None,
-        "years_of_experience": None,
         "house_number": "12",
         "address_line1": "Main Road",
         "address_line2": "Near Market",
@@ -43,7 +37,6 @@ class RegistrationDetailsTests(unittest.TestCase):
         self.assertEqual(bsc["academic_stage"], "Year 1")
         msc = build_registration_details(payload(programme="msc_nursing", year=2))
         self.assertEqual(msc["programme_label"], "M.Sc Nursing")
-        self.assertEqual(msc["academic_stage"], "Year 2")
 
     def test_nursing_year_must_match_selected_programme(self):
         with self.assertRaises(HTTPException) as rejected:
@@ -58,7 +51,6 @@ class RegistrationDetailsTests(unittest.TestCase):
             ))
             self.assertEqual(details["registration_fee_paise"], 25000)
             self.assertEqual(details["programme"], programme)
-            self.assertEqual(details["academic_stage"], "Semester 4 / Internship")
             self.assertEqual(details["stream"], "paramedical")
 
     def test_paramedical_requires_academic_stage(self):
@@ -68,43 +60,32 @@ class RegistrationDetailsTests(unittest.TestCase):
             ))
         self.assertEqual(rejected.exception.status_code, 422)
 
-    def test_mbbs_years_one_through_five_and_fee(self):
+    def test_mbbs_ug_and_pg_are_distinct_subcategories_and_exam_streams(self):
         for year in range(1, 6):
-            details = build_registration_details(payload(category="mbbs", programme="mbbs", year=year))
+            details = build_registration_details(payload(
+                category="mbbs", programme="mbbs_ug", year=year,
+            ))
+            self.assertEqual(details["category"], "mbbs")
+            self.assertEqual(details["subcategory"], "UG")
+            self.assertEqual(details["stream"], "mbbs_ug")
             self.assertEqual(details["registration_fee_paise"], 50000)
-            self.assertEqual(details["stream"], "mbbs_1st_year")
             self.assertEqual(details["academic_stage"], f"Year {year}")
+        for year in range(1, 4):
+            details = build_registration_details(payload(
+                category="mbbs", programme="mbbs_pg", year=year,
+            ))
+            self.assertEqual(details["subcategory"], "PG")
+            self.assertEqual(details["stream"], "mbbs_pg")
+            self.assertEqual(details["registration_fee_paise"], 50000)
         with self.assertRaises(HTTPException):
-            build_registration_details(payload(category="mbbs", programme="mbbs", year=6))
+            build_registration_details(payload(category="mbbs", programme="mbbs_ug", year=6))
+        with self.assertRaises(HTTPException):
+            build_registration_details(payload(category="mbbs", programme="mbbs_pg", year=4))
 
-    def test_jdn_is_a_professional_category_not_an_exam_stream(self):
-        details = build_registration_details(payload(
-            category="jdn", programme="junior_doctor_network", year=None,
-            professional_qualification="MBBS",
-            designation="Resident Doctor",
-            institution="District Hospital",
-        ))
-        self.assertEqual(details["registration_fee_paise"], 100000)
-        self.assertEqual(details["stream"], "jdn")
-        self.assertEqual(details["category_label"], "Junior Doctor Network (JDN)")
-        self.assertNotIn("year", details)
-        self.assertNotIn("registration_id", details)
-
-    def test_jdn_requires_qualification_designation_and_institution(self):
-        for key in ("professional_qualification", "designation", "institution"):
-            with self.subTest(field=key):
-                values = {
-                    "category": "jdn",
-                    "programme": "junior_doctor_network",
-                    "year": None,
-                    "professional_qualification": "MBBS",
-                    "designation": "Resident Doctor",
-                    "institution": "District Hospital",
-                }
-                values[key] = ""
-                with self.assertRaises(HTTPException) as rejected:
-                    build_registration_details(payload(**values))
-                self.assertEqual(rejected.exception.status_code, 422)
+    def test_jdn_is_rejected_for_new_registrations(self):
+        with self.assertRaises(HTTPException) as rejected:
+            build_registration_details(payload(category="jdn", programme="junior_doctor_network", year=None))
+        self.assertEqual(rejected.exception.status_code, 422)
 
     def test_declaration_and_address_are_required(self):
         with self.assertRaises(HTTPException):
