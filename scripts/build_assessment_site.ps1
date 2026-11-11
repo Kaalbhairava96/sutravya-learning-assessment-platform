@@ -36,6 +36,15 @@ $AssetFiles = @(
     'healthcare-talent-search-og.jpg'
     'awards-podium.webp'
     'htse-campaign-postcard.webp'
+    'metallic-home.svg'
+    'metallic-pathways.svg'
+    'metallic-registration.svg'
+    'metallic-learning.svg'
+    'metallic-hackathon.svg'
+    'metallic-help.svg'
+    'metallic-operations.svg'
+    'metallic-contact.svg'
+    'metallic-sample.svg'
 )
 $AllowedPublicFiles = @($SourceFiles) + @($AssetFiles | ForEach-Object { "assets/$_" })
 
