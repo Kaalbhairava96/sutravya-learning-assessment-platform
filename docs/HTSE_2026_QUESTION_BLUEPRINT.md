@@ -62,6 +62,19 @@ The current registration does not capture PG specialty. Therefore the initial PG
 
 NMC postgraduate education is competency-based and specialty-specific. QualiNova should capture a candidate's PG specialty and approve a separate specialty blueprint before advertising a specialty-specific examination.
 
+## Practice-mock question distribution (separate from the official import blueprint)
+
+The public practice mocks are selected from the existing stream-specific source banks. Their actual subject distributions are not artificially equalised. The published syllabus page shows these counts:
+
+| Practice pathway | Subject-wise question counts |
+|---|---|
+| Paramedical | Anatomy & Physiology 25; Clinical Laboratory Sciences 17; Microbiology & Infection Control 23; Diagnostic Technology & Equipment 16; Patient Safety & Healthcare Communication 19 |
+| Nursing | Nursing Foundations 16; Applied Anatomy & Physiology 34; Nutrition & Applied Biochemistry 9; Psychology, Sociology & Community Health 4; Infection Control, Patient Safety & Professional Ethics 37 |
+| MBBS UG | Human Anatomy 24; Human Physiology 32; Biochemistry 24; Foundation Course, ECE & AETCOM 7; Community Medicine & Research Foundations 13 |
+| MBBS PG | General Medicine & Clinical Reasoning 20; General Surgery & Perioperative Care 20; Obstetrics, Gynaecology & Paediatrics 20; Pathology & Pharmacology 20; Microbiology, Forensic & Allied Clinical Subjects 20 |
+
+The secure official question-bank importer is a separate workflow. It validates 100 faculty-approved official questions with 20 questions in each of its five approved subject blocks. Public practice banks are not automatically loaded into the official exam database.
+
 ## Question-bank quality controls
 - Exactly 100 questions per pathway; four options; one correct answer.
 - 20 questions in each pathway-specific subject block.
