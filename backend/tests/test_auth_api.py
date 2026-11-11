@@ -316,13 +316,13 @@ class PasswordlessApiTests(unittest.TestCase):
         for index, (category, expected_stream, programme, stage, year, expected_fee) in enumerate(categories):
             with self.subTest(category=category):
                 payload = self._valid_payload(
-                    email=f"category-{category}@example.invalid", category=category,
+                    email=f"pathway-{expected_stream}@example.invalid", category=category,
                     programme=programme, academic_stage=stage, year=year,
                 )
                 result = start(payload, request_for(self.application, "/api/registrations/start"))
                 self.assertIn("challenge_id", result)
                 with self.factory() as session:
-                    candidate = session.query(Candidate).filter_by(email=f"category-{category}@example.invalid").one()
+                    candidate = session.query(Candidate).filter_by(email=f"pathway-{expected_stream}@example.invalid").one()
                     self.assertEqual(candidate.pending_stream, expected_stream)
                     self.assertEqual(candidate.pending_registration_details["registration_fee_paise"], expected_fee)
                     if category == "mbbs":
@@ -688,7 +688,7 @@ class PasswordlessApiTests(unittest.TestCase):
             self.assertIsNone(registration.registration_id)
             self.assertEqual(registration.payment_amount_paise, 50000)
             self.assertEqual(registration.details["category"], "mbbs")
-            self.assertEqual(registration.details["programme_label"], "MBBS")
+            self.assertEqual(registration.details["programme_label"], "MBBS Undergraduate (UG)")
 
         cookie = SimpleCookie()
         cookie.load(response.headers["set-cookie"])
