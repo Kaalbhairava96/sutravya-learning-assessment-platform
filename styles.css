@@ -2824,3 +2824,71 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* V3 page composition refinements */
+.qv2-hero-grid{grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);gap:clamp(28px,5vw,76px)}
+.qv2-study-cta-inner{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.18fr) minmax(180px,.55fr);align-items:center;gap:20px}
+.qv2-study-cta-copy{max-width:460px}
+.qv2-study-cta-art{min-width:0;display:grid;place-items:center}
+.qv2-study-cta-art img{width:100%;max-height:290px;object-fit:contain;filter:drop-shadow(0 15px 22px rgba(69,55,29,.13))}
+.qv3-pathway-diagram{max-width:1000px;margin:0 auto 25px}
+.qv3-pathway-diagram img{min-height:260px;max-height:390px}
+.qv3-sample-learning{margin:20px 0 28px}
+.qv3-sample-learning .qv3-diagram img{max-height:310px}
+.qv3-registration-diagram{margin-top:22px;min-height:190px}
+.qv3-registration-diagram img{min-height:190px;max-height:235px}
+.register-workspace-grid{grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr);gap:clamp(22px,4vw,56px)}
+.register-aside{align-self:start}
+.register-panel{min-width:0}
+.qv3-admin-overview{display:grid;grid-template-columns:minmax(0,.68fr) minmax(0,1.32fr);align-items:center;gap:22px;margin:22px 0 24px;padding:19px;border:1px solid #d7d0be;border-radius:24px;background:linear-gradient(130deg,#fffefa,#e7e8e2 55%,#f6ead0)}
+.qv3-admin-overview .qv3-copy{padding:10px}
+.qv3-admin-overview .qv3-copy h2{font:800 clamp(23px,3vw,34px)/1.1 var(--qv-display);color:#342f25;letter-spacing:-.04em}
+.qv3-admin-overview .qv3-copy p{font-size:13px;line-height:1.65;color:#716858}
+.qv3-admin-overview .qv3-diagram img{min-height:190px;max-height:275px}
+.exam-top{display:grid;grid-template-columns:minmax(0,1.2fr) auto minmax(135px,.6fr);align-items:center}
+.exam-top-art{width:155px;height:115px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(230,210,166,.45);border-radius:16px;background:rgba(255,255,255,.08)}
+.exam-top-art img{width:100%;height:100%;object-fit:cover}
+.exam-shell{max-width:1300px}
+.exam-card{padding:clamp(22px,3vw,36px)}
+.admin-shell{max-width:1320px}
+.admin-grid{gap:22px}
+.admin-card{padding:clamp(20px,2.3vw,30px);border-radius:22px}
+.qv2-hero-art img,.qv2-hero-art{min-height:420px}
+.qv2-hero-art img{max-height:500px}
+.qv2-innovation-visual{min-height:400px}
+.qv2-innovation-visual img{width:82%;height:340px}
+.qv2-recognition-visual img{max-height:390px}
+.qv3-flow-strip{position:relative}
+.qv3-flow-strip:before{content:"";position:absolute;left:4%;right:4%;top:37px;height:2px;background:linear-gradient(90deg,#d1b16e,#c6c9c5,#d1b16e);opacity:.5}
+.qv3-flow-step{z-index:1;min-height:126px;box-shadow:0 10px 25px rgba(56,48,34,.04)}
+.qv3-flow-step span{box-shadow:0 0 0 5px #f5f0e4}
+.v4-sample-bottom-cta{background:linear-gradient(115deg,#fff5dc,#e8e8e2);border:1px solid #dac99f;border-radius:16px;padding:16px}
+.v4-mock-stream{background:linear-gradient(120deg,#fffefa,#edede7);border:1px solid #d9d5ca}
+.v4-mock-stream:hover{border-color:#b9944e;background:linear-gradient(120deg,#fff9e7,#e8e8e1)}
+.login-context-card{background:linear-gradient(135deg,#fffefa,#e8e8e2);border:1px solid #dcd6c8}
+.register-security-note{background:linear-gradient(120deg,#fff5dd,#e9e8e2);border:1px solid #ddd2b7}
+.contact-disclaimer{color:#766b59}
+@media(max-width:1000px){
+ .register-workspace-grid{grid-template-columns:minmax(220px,.76fr) minmax(0,1.24fr)}
+ .qv2-study-cta-inner{grid-template-columns:.85fr 1.15fr}
+ .qv2-study-cta-art{grid-column:2;grid-row:1 / span 2}
+ .qv2-study-cta-actions{grid-column:1}
+ .exam-top{grid-template-columns:1fr auto}
+ .exam-top-art{display:none}
+}
+@media(max-width:760px){
+ .qv2-hero-grid,.register-workspace-grid,.qv3-admin-overview{grid-template-columns:1fr}
+ .qv2-hero-art{min-height:250px}
+ .qv2-hero-art img{height:260px;min-height:0}
+ .qv2-study-cta-inner{grid-template-columns:1fr}
+ .qv2-study-cta-art{grid-column:auto;grid-row:auto;min-height:190px}
+ .qv2-study-cta-art img{max-height:220px}
+ .register-workspace-grid{gap:18px}
+ .register-aside{order:0}
+ .qv3-registration-diagram{max-width:420px;margin-inline:auto}
+ .qv3-admin-overview .qv3-diagram img{min-height:190px;max-height:220px}
+ .exam-top{grid-template-columns:1fr}
+ .exam-top .exam-timer{justify-self:start}
+ .exam-top-art{display:none}
+ .qv3-flow-strip:before{display:none}
+}
