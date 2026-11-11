@@ -13,7 +13,7 @@
     const questions = stream.questions.slice(0, 5);
     panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 syllabus-mapped preview questions · syllabus-linked answers and explanations</small></div>` + questions.map((q, index) => `
       <article class="v4-sample-question" data-sample-question="${index}">
-        <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.topic)} · ${escapeHTML(q.difficulty || 'Practice')}</span></div>
+        <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.subjectLabel || q.topic)} · ${escapeHTML(q.topic)}</span></div>
         <h3>${escapeHTML(q.question)}</h3>
         <div class="v4-sample-options">${q.options.map((option, optionIndex) => `<button class="v4-sample-option" type="button" data-sample-option="${optionIndex}"><span>${String.fromCharCode(65 + optionIndex)}</span>${escapeHTML(option)}</button>`).join('')}</div>
         <div class="v4-sample-feedback" data-sample-feedback hidden></div>

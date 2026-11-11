@@ -242,7 +242,7 @@
       ? new Date(availability.slot_starts_at).toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}) : 'Not assigned';
     content.innerHTML = '<h2>' + (availability.assigned ? 'Your assessment slot' : 'Slot assignment pending') + '</h2>' +
       '<p class="exam-muted">Stream: ' + escapeHtml(availability.stream) + ' · ' + escapeHtml(slotStart) + '</p>' +
-      '<p>100 questions · 5 sections · approximately 47 minutes · +1 / −0.25 marking.</p>' +
+      '<p>100 questions · 5 subject blocks · approximately 47 minutes · +1 / −0.25 / 0 marking.</p>' +
       '<p class="exam-muted">Individual question timers vary from 18 to 45 seconds according to the reading and reasoning required.</p>' +
       '<p class="exam-muted">The assessment opens in full-screen mode. Returning to another tab, leaving full screen, or attempting copy/paste is recorded as an integrity event. No camera recording is used.</p>' +
       '<button id="start-exam" class="exam-button" ' +

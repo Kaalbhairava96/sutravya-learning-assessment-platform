@@ -2,7 +2,7 @@
 const eventConfig = Object.freeze({
   title: 'Healthcare Talent Search Exam 2026',
   shortTitle: 'Healthcare Talent Search Exam',
-  examFee: '₹250–₹1,000 by category',
+  examFee: '₹250–₹500 by category',
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
