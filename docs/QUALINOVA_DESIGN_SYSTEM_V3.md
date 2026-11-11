@@ -1,6 +1,6 @@
 # QUALINOVA × SUTRAVYA — Frontend Design System V3
 
-**Status:** implemented on branch `qualinova-metallic-gold-silver-v3`; do not merge without the CI gate.
+**Status:** implemented and published from branch `registration-launch` on 11 November 2026; rendered-browser verification remains open.
 **Purpose:** use this standard for all future QualiNova HTSE pages and candidate/admin interfaces.
 
 ## Brand and surface language
@@ -43,3 +43,12 @@
 - Payment provider integration is out of scope and must remain separately planned.
 - Do not make unapproved claims about awards, accreditation, credit points, event venues, or financing.
 - Do not use the provisional MBBS PG practice sampler as an official specialty-specific paper.
+
+
+## CSS architecture and maintenance
+
+- `styles.css` owns one canonical `:root` token block for the shared palette and typography.
+- Existing page-layout and component selectors are isolated inside `@layer legacy` as a compatibility layer while the 13 published pages receive rendered-browser verification.
+- Do not add new `:root` blocks or append another global colour override. Update the canonical token values instead.
+- Retire legacy selector groups only after desktop, tablet and mobile screenshots confirm that the affected page still renders correctly.
+- The static-site audit rejects duplicate HTML attributes, duplicate token blocks and a dark native-control scheme on the pearl/gold/silver site.

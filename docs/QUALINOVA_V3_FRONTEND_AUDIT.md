@@ -1,7 +1,7 @@
 # QualiNova V3 — Detailed Frontend Audit
 
 **Reviewed:** 11 November 2026  
-**Branch:** `qualinova-metallic-gold-silver-v3`  
+**Branch:** `registration-launch`  
 **Basis:** HTML/CSS/JS source inspection, asset-reference checks, CI static-site build and automated page audit.  
 **Important limitation:** These are source/design-architecture ratings. No real-browser screenshot, responsive-device session, Lighthouse, Core Web Vitals or cross-browser rendering test was completed in this review. They are not measured visual performance scores.
 
@@ -177,3 +177,10 @@ The score is provisional because the final visual rendering still needs direct b
 - **Source/design architecture:** 9.2/10 provisional.
 - **Rendered visual quality:** pending direct browser inspection.
 - **Production readiness:** visual source and CI gates pass; end-to-end candidate flow and actual browser rendering still require verification.
+
+
+## Follow-up implementation — 11 November 2026
+
+The V3 follow-up consolidates the nine prior global token blocks into one canonical `:root` block, sets the browser-native control scheme to light, and places retained page selectors and responsive rules inside a named `@layer legacy` compatibility layer. This is a safe migration step, not a claim that all historical selectors have already been deleted: selector retirement depends on rendered desktop/tablet/mobile verification, which is still pending.
+
+The FAQ section's duplicate `class` attribute was corrected. The CI page audit now checks duplicate HTML attributes, exactly one token block, the named compatibility layer and the light control scheme in addition to the existing title, heading, image-alt, local-asset and theme metadata checks.

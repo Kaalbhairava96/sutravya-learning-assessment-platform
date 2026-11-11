@@ -1,27 +1,81 @@
 @charset "UTF-8";
+
+/* QUALINOVA V3 — canonical brand tokens.
+   Update this single block; historical component rules live in the legacy layer below. */
 :root {
   color-scheme: light;
-  --navy: #063b67;
-  --navy-deep: #042b4c;
-  --blue: #07558a;
-  --blue-mid: #087db0;
-  --cyan: #00a9d6;
-  --teal: #12b8b0;
-  --gold: #ffd54f;
-  --ink: #102a43;
-  --muted: #61778c;
-  --muted-light: #8496a8;
-  --paper: #f2f8fc;
-  --paper-blue: #e8f4fa;
-  --white: #fff;
-  --line: #dce8ef;
-  --shadow: 0 18px 50px rgb(15 54 84 / 9%);
-  --shadow-strong: 0 26px 74px rgb(1 31 56 / 23%);
-  --radius: 22px;
-  --font: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --display: "Aptos Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --navy: #343027;
+  --navy-deep: #211e18;
+  --blue: #8b6b32;
+  --blue-mid: #ac8845;
+  --cyan: #b99a58;
+  --teal: #7d826e;
+  --gold: #c49a4b;
+  --ink: #2c2922;
+  --muted: #716b5f;
+  --muted-light: #969184;
+  --paper: #f5f2eb;
+  --paper-blue: #eeece6;
+  --white: #fffefa;
+  --line: #d9d7d0;
+  --shadow: 0 20px 54px rgb(57 49 35 / 10%);
+  --shadow-strong: 0 30px 80px rgb(42 35 22 / 19%);
+  --radius: 24px;
+  --font: "DM Sans", "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --display: "Manrope", "Aptos Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --htse-navy: #343027;
+  --htse-blue: #8b6b32;
+  --htse-cyan: #b99a58;
+  --htse-teal: #7d826e;
+  --htse-gold: #c49a4b;
+  --v4-navy: #343027;
+  --v4-blue: #8b6b32;
+  --v4-cyan: #b99a58;
+  --v4-teal: #7d826e;
+  --v4-ink: #2c2922;
+  --v4-muted: #736d62;
+  --v4-line: #d8d7d1;
+  --v4-soft: #f5f2eb;
+  --v4-gold: #c49a4b;
+  --premium-ink: #f8f4e9;
+  --premium-muted: #d4cbb8;
+  --premium-line: rgba(196,154,75,.24);
+  --premium-glass: linear-gradient(145deg,rgba(72,62,44,.78),rgba(31,28,22,.86));
+  --qv-ink: #2c2922;
+  --qv-midnight: #f5f2eb;
+  --qv-night: #e8e6e0;
+  --qv-violet: #ad8742;
+  --qv-violet-deep: #765827;
+  --qv-cyan: #b99958;
+  --qv-gold: #d2ae69;
+  --qv-paper: #f5f2eb;
+  --qv-white: #fff;
+  --qv-muted: #736d62;
+  --qv-line: #d8d7d1;
+  --qv-shadow: 0 20px 58px rgb(52 46 35 / 9%);
+  --qv-radius: 26px;
+  --qv-display: "Manrope","Aptos Display","Segoe UI",sans-serif;
+  --qv-body: "DM Sans","Aptos","Segoe UI",sans-serif;
+  --metal-gold-1: #fff8e3;
+  --metal-gold-2: #ecd7a5;
+  --metal-gold-3: #bd9245;
+  --metal-gold-4: #8d682b;
+  --metal-silver-1: #fff;
+  --metal-silver-2: #deded9;
+  --metal-silver-3: #aeb1af;
+  --metal-silver-4: #f3f3ef;
+  --metal-pearl: #f7f4ec;
+  --metal-graphite: #302c24;
+  --brand-navy: #063b67;
+  --brand-teal: #0aa6b7;
+  --brand-yellow: #ffd54f;
+  --metallic-gold: #c49a4b;
+  --metallic-silver: #c7cac6;
+  --metallic-pearl: #f5f2eb;
 }
 
+/* Compatibility layer: retained layouts are retired only after rendered-page verification. */
+@layer legacy {
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 105px; }
 body { margin: 0; background: var(--white); color: var(--ink); font: 16px/1.55 var(--font); text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
@@ -760,24 +814,7 @@ h1, h2, h3 { font-family: var(--display); }
    A restrained, high-trust visual layer: deeper navy, cleaner hierarchy,
    more tactile cards, stronger focus states and readable mobile typography.
    ======================================================================== */
-:root {
-  --navy: #052f52;
-  --navy-deep: #031f38;
-  --blue: #07598f;
-  --blue-mid: #087fae;
-  --cyan: #0aa8c7;
-  --teal: #0e9f98;
-  --gold: #ffd45a;
-  --ink: #112d45;
-  --muted: #5d7488;
-  --paper: #f4f8fb;
-  --line: #d9e6ed;
-  --shadow: 0 18px 48px rgb(7 43 69 / 9%);
-  --shadow-strong: 0 28px 76px rgb(2 28 51 / 24%);
-  --radius: 24px;
-  --font: "Segoe UI Variable", "Aptos", "Inter", "Segoe UI", Arial, sans-serif;
-  --display: "Segoe UI Variable Display", "Aptos Display", "Inter", "Segoe UI", Arial, sans-serif;
-}
+
 
 html { scroll-padding-top: 92px; }
 body { background: #fff; color: var(--ink); letter-spacing: -.006em; }
@@ -1144,13 +1181,7 @@ a, button, summary { touch-action: manipulation; }
 /* ================================================================
    Healthcare Talent Search Exam 2026 — campaign hero and polish
    ================================================================ */
-:root {
-  --htse-navy: #052d50;
-  --htse-blue: #07558a;
-  --htse-cyan: #20c3df;
-  --htse-teal: #12b8a6;
-  --htse-gold: #ffd24c;
-}
+
 
 /* Partner lockup: clear organiser/technology-partner distinction. */
 .header-brand-lockup { display: flex; flex: 0 0 auto; align-items: center; gap: 15px; min-width: 0; }
@@ -1327,7 +1358,7 @@ a, button, summary { touch-action: manipulation; }
 }
 
 /* Final mobile readability and contrast pass for secondary pages. */
-:root { --muted-light: #708497; }
+
 @media (max-width: 600px) {
   .stream-card p, .steps p, .process-copy > p, .registration-side > p,
   .page-hero-grid > div:first-child > p, .sample-review-note p,
@@ -1367,17 +1398,7 @@ a, button, summary { touch-action: manipulation; }
    HTSE 2026 secondary-page refinement: awards, academic maps and mock
    practice. Shared campaign-card language is intentionally consistent.
    ------------------------------------------------------------------ */
-:root {
-  --v4-navy: #062d50;
-  --v4-blue: #07558a;
-  --v4-cyan: #19a9d2;
-  --v4-teal: #11a99d;
-  --v4-ink: #102a43;
-  --v4-muted: #566f84;
-  --v4-line: #dce8f1;
-  --v4-soft: #f2f8fc;
-  --v4-gold: #e9b84a;
-}
+
 .v4-page-hero { position:relative; overflow:hidden; padding: clamp(36px,5vw,70px) 0; color:#fff; background: radial-gradient(circle at 76% 20%,rgba(37,160,208,.28),transparent 34%),linear-gradient(118deg,#052b4c 0%,#064879 55%,#08749a 100%); }
 .v4-page-hero:after { content:""; position:absolute; width:460px;height:460px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-150px;bottom:-260px;box-shadow:0 0 0 42px rgba(255,255,255,.025),0 0 0 90px rgba(255,255,255,.02);pointer-events:none; }
 .v4-page-hero-grid { position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.92fr);align-items:center;gap:clamp(26px,5vw,66px); }
@@ -1788,14 +1809,8 @@ a, button, summary { touch-action: manipulation; }
 
 
 /* QualiNova glossy 3D premium identity — shared public-site design layer */
-:root{
-  color-scheme:dark;
-  --premium-ink:#f1f5ff;
-  --premium-muted:#c2cbe3;
-  --premium-line:rgba(164,177,255,.24);
-  --premium-glass:linear-gradient(145deg,rgba(39,49,105,.78),rgba(15,25,66,.84));
-}
-html{background:#080d23;color-scheme:dark}
+
+html{background:#f5f2eb;color-scheme:light}
 body{
   background:
     radial-gradient(ellipse at 12% 5%,rgba(100,48,190,.21),transparent 28%),
@@ -2141,12 +2156,7 @@ body{font-size:17px;line-height:1.62}
    QUALINOVA EXPERIENCE V2 — shared visual system
    Midnight ink · royal violet · digital cyan · achievement gold
    ========================================================================== */
-:root{
- --qv-ink:#10152f;--qv-midnight:#0a0e28;--qv-night:#111638;--qv-violet:#6e55d7;
- --qv-violet-deep:#302064;--qv-cyan:#48d5ef;--qv-gold:#f5c75a;--qv-paper:#f5f6fc;
- --qv-white:#fff;--qv-muted:#67718d;--qv-line:#e2e5f1;--qv-shadow:0 18px 55px rgba(25,23,67,.09);
- --qv-radius:24px;--qv-display:"Manrope","Aptos Display","Segoe UI",sans-serif;--qv-body:"DM Sans","Aptos","Segoe UI",sans-serif;
-}
+
 html{scroll-padding-top:100px}
 body{font-family:var(--qv-body);color:var(--qv-ink);background:#fff}
 h1,h2,h3,h4,.qv2-display{font-family:var(--qv-display)}
@@ -2480,20 +2490,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
    SUTRAVYA × QUALINOVA — V3 METALLIC BRAND SYSTEM
    Champagne gold · brushed silver · pearl ivory · graphite
    ========================================================================== */
-:root{
- --navy:#343027;--navy-deep:#211e18;--blue:#8b6b32;--blue-mid:#ac8845;--cyan:#b99a58;--teal:#7d826e;
- --gold:#c49a4b;--ink:#2c2922;--muted:#716b5f;--muted-light:#969184;
- --paper:#f5f2eb;--paper-blue:#eeece6;--white:#fffefa;--line:#d9d7d0;
- --shadow:0 20px 54px rgb(57 49 35 / 10%);--shadow-strong:0 30px 80px rgb(42 35 22 / 19%);
- --qv-ink:#2c2922;--qv-midnight:#f5f2eb;--qv-night:#e8e6e0;
- --qv-violet:#ad8742;--qv-violet-deep:#765827;--qv-cyan:#b99958;--qv-gold:#d2ae69;--qv-paper:#f5f2eb;
- --qv-muted:#736d62;--qv-line:#d8d7d1;--qv-shadow:0 20px 58px rgb(52 46 35 / 9%);
- --qv-radius:26px;--qv-display:"Manrope","Aptos Display","Segoe UI",sans-serif;
- --qv-body:"DM Sans","Aptos","Segoe UI",sans-serif;
- --metal-gold-1:#fff8e3;--metal-gold-2:#ecd7a5;--metal-gold-3:#bd9245;--metal-gold-4:#8d682b;
- --metal-silver-1:#fff;--metal-silver-2:#deded9;--metal-silver-3:#aeb1af;--metal-silver-4:#f3f3ef;
- --metal-pearl:#f7f4ec;--metal-graphite:#302c24;
-}
+
 html{background:var(--metal-pearl);scroll-padding-top:110px}
 body{background:linear-gradient(135deg,#faf8f2 0%,#f1eee6 46%,#faf7ef 100%);color:var(--metal-graphite)}
 body,button,input,select,textarea{font-family:var(--qv-body)}
@@ -2894,14 +2891,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 
 /* V3 secure-page rules: page-scoped specificity wins over legacy inline page styles */
-:root{
- --brand-navy:#063b67;
- --brand-teal:#0aa6b7;
- --brand-yellow:#ffd54f;
- --metallic-gold:#c49a4b;
- --metallic-silver:#c7cac6;
- --metallic-pearl:#f5f2eb;
-}
+
 body.admin-body .admin-hero,
 body.exam-body .exam-top{
  background:radial-gradient(circle at 82% 25%,rgba(231,210,164,.2),transparent 38%),linear-gradient(120deg,#3b352a,#514a3c);
@@ -2971,4 +2961,5 @@ body.admin-body .qv3-admin-overview{background:linear-gradient(130deg,#fffefa,#e
 @media(max-width:760px){
  body.exam-body .exam-top{grid-template-columns:1fr}
  body.exam-body .exam-top-art{display:none}
+}
 }
