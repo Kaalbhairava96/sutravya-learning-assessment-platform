@@ -50,3 +50,5 @@ jobs:
           node scripts/validate_question_banks.cjs
       - name: Build allowlisted assessment website
         run: bash scripts/build_assessment_site.sh
+      - name: Audit public page structure and assets
+        run: node scripts/audit_public_site.cjs assessment-public
