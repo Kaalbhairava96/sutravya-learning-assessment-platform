@@ -54,15 +54,39 @@ jobs:
       - name: Audit public page structure, assets, design tokens and semantics
         run: node scripts/audit_public_site.cjs assessment-public
       - name: Install browser test runner
-        run: npm install --no-save --no-package-lock @playwright/test
+        run: npm install --no-save --no-package-lock @playwright/test lighthouse
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Run responsive browser QA
         run: npx playwright test --config=playwright.config.cjs
-      - name: Upload responsive screenshots
+      - name: Run Lighthouse performance and accessibility reports
+        run: |
+          mkdir -p test-results/lighthouse
+          node scripts/serve_assessment_site.cjs assessment-public > /tmp/assessment-site.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          for item in "home:/" "registration:/register.html" "syllabus:/syllabus.html" "mock-tests:/mock-test.html" "help-centre:/faqs.html"; do
+            name="${item%%:*}"
+            route="${item#*:}"
+            npx lighthouse "http://127.0.0.1:4173${route}" --chrome-path="$CHROME_PATH" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path="test-results/lighthouse/${name}.json" --quiet
+          done
+          node - <<'NODE'
+          const fs=require('node:fs');
+          for(const name of ['home','registration','syllabus','mock-tests','help-centre']){
+            const report=JSON.parse(fs.readFileSync('test-results/lighthouse/'+name+'.json','utf8'));
+            const score=key=>Math.round((report.categories[key]?.score??0)*100);
+            process.stdout.write(name+': performance '+score('performance')+', accessibility '+score('accessibility')+', best practices '+score('best-practices')+', SEO '+score('seo')+'\n');
+          }
+          NODE
+      - name: Upload responsive screenshots and Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: sutravya-website-responsive-screenshots
-          path: test-results/screenshots/
+          name: sutravya-website-visual-and-lighthouse-qa
+          path: test-results/
           if-no-files-found: ignore
