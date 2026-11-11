@@ -26,7 +26,7 @@ for (const page of pages) {
   if(!ref.startsWith('assets/'))continue;
   if(!fs.existsSync(path.join(root,ref)))errors.push(page+': missing local asset '+ref);
  }
- if(!/<meta\s+name=["']theme-color["']/i.test(html))errors.push(page+': missing theme-color metadata');
+ if(!/<meta\b(?=[^>]*\bname=["']theme-color["'])(?=[^>]*\bcontent=["'][^"']+["'])[^>]*>/i.test(html))errors.push(page+': missing theme-color metadata');
  report.push({page,title:titles[0]?.[1]||'',h1Count:h1.length,imageCount:images.length,assetReferenceCount:refs.filter(x=>x.startsWith('assets/')).length});
 }
 const cssPath=path.join(root,'styles.css');
