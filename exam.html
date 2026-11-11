@@ -3,60 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#F2EAD8">
+  <meta name="theme-color" content="#F7F9F7">
   <meta name="description" content="Secure candidate assessment portal for Healthcare Talent Search Exam 2026.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com">
   <title>My Assessment | Healthcare Talent Search Exam 2026</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .exam-shell{max-width:1080px;margin:38px auto;padding:0 20px 60px}
-    .exam-top{background:#063b67;color:#fff;border-radius:20px;padding:24px;display:flex;justify-content:space-between;gap:20px;align-items:center}
-    .exam-top h1{font-size:clamp(24px,4vw,36px);margin:5px 0}
-    .exam-timer{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;background:#ffffff1c;border:1px solid #ffffff38;border-radius:12px;padding:10px 16px;min-width:112px;text-align:center}
-    .exam-timer small{display:block;font-size:10px;letter-spacing:.12em;font-weight:700}
-    .exam-progress{margin-bottom:22px}.exam-progress-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:#526d80;margin-bottom:8px}
-    .exam-progress-track{height:7px;border-radius:99px;background:#e7eef3;overflow:hidden}.exam-progress-track i{display:block;height:100%;background:#0874a8;border-radius:99px}
-    .exam-section-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:12px}
-    .exam-section-strip span{font-size:10px;color:#6b8191;text-align:center;padding:7px 3px;border-radius:7px;background:#f0f4f7}
-    .exam-section-strip span.active{background:#e2f0f7;color:#07557f;font-weight:800}
-    .exam-question-panel{max-width:850px;margin:0 auto}
-    .exam-question-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
-    .exam-kicker{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:#0b668e}
-    .exam-question-clock{background:#fff7e7;border:1px solid #f0dba9;border-radius:12px;padding:8px 15px;text-align:center;min-width:90px}
-    .exam-question-clock small{display:block;font-size:9px;letter-spacing:.12em;color:#85621a;font-weight:800}
-    .exam-question-clock strong{display:block;font-size:23px;color:#7b5410;font-variant-numeric:tabular-nums}
-    .exam-question-number{font-size:11px;letter-spacing:.13em;color:#8496a4;font-weight:800;margin-bottom:10px}
-    .exam-question{font-size:clamp(19px,2.4vw,24px);line-height:1.55;color:#12354c;margin:0 0 24px}
-    .exam-options{display:grid;gap:11px}
-    .exam-option{display:flex;align-items:flex-start;gap:12px;border:1px solid #cfdae3;border-radius:12px;padding:15px;cursor:pointer;transition:background .15s,border-color .15s}
-    .exam-option:has(input:checked){border-color:#0c5b8a;background:#eef6fb}
-    .exam-option input{margin-top:4px;accent-color:#063b67;flex:0 0 auto}
-    .exam-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:24px}
-    .exam-button{border:0;border-radius:10px;padding:13px 19px;background:#063b67;color:white;font-weight:700;cursor:pointer}
-    .exam-button:disabled{opacity:.5;cursor:not-allowed}
-    .exam-saved{font-size:12px;color:#527466}
-    .exam-status{min-height:26px;color:#456176;font-size:14px;margin-top:14px;white-space:pre-wrap}
-    .exam-review{display:grid;gap:12px;margin-top:20px}
-    .exam-review-item{border:1px solid #d8e2e9;border-radius:12px;padding:14px}
-    .exam-review-item.correct{border-left:5px solid #34845c}
-    .exam-review-item.incorrect{border-left:5px solid #b94c4c}
-    .exam-muted{color:#62798b;font-size:13px}
-    .exam-score{font-size:38px;font-weight:800;color:#063b67}
-    .exam-score small{font-size:17px;color:#728797}
-    .exam-result-head{background:#f2f7fa;border-radius:15px;padding:22px;margin-bottom:24px}
-    @media(max-width:680px){.exam-shell{margin:18px auto}.exam-top{align-items:flex-start;flex-direction:column}.exam-timer{font-size:22px}.exam-section-strip span{font-size:8px}.exam-actions{align-items:stretch}.exam-actions .exam-button{width:100%}}
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="layout.css">
+  
 </head>
 <body class="exam-body">
   <main class="exam-shell">
     <a class="text-link" href="index.html">← Healthcare Talent Search Exam 2026</a>
     <section class="exam-top">
-      <div><span class="exam-muted" style="color:#d4e4ef">CANDIDATE ASSESSMENT PORTAL</span><h1>My examination</h1><div id="candidate-info">Checking your secure session…</div></div>
-      <div class="exam-timer"><small>OVERALL TIME LEFT</small><strong id="timer" aria-live="off">47:00</strong></div><div class="exam-top-art"><img src="assets/metallic-operations.svg" alt="Secure assessment and server-side scoring illustration"></div>
+      <div><span class="exam-muted">CANDIDATE ASSESSMENT PORTAL</span><h1>My examination</h1><div id="candidate-info">Checking your secure session…</div></div>
+      <div class="exam-timer"><small>OVERALL TIME LEFT</small><strong id="timer" aria-live="off">47:00</strong></div><div class="exam-top-art"><img src="assets/brand-exam.svg" alt="Focused assessment workspace showing exam timer, progress and candidate answer options"></div>
     </section>
-    <section id="exam-content" class="exam-card" style="margin-top:18px" aria-live="polite">
+    <section id="exam-content" class="exam-card" aria-live="polite">
       <h2>Preparing your assessment</h2><p class="exam-muted">Five subject blocks · 100 MCQs · approximately 47 minutes · +1 / −0.25 / 0 marking.</p>
     </section>
     <div id="exam-status" class="exam-status" role="status" aria-live="polite"></div>

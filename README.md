@@ -127,3 +127,13 @@ The candidate portal also requests full-screen mode, blocks page copy/paste, and
 records authenticated focus/visibility/full-screen integrity events against the
 attempt. These controls are deterrents and audit signals, not a guarantee against
 external devices or off-screen assistance.
+
+
+## Website visual system
+
+- `styles.css` is the shared SUTRAVYA/QualiNova visual system and owns the single brand-token block, component styling, page treatments and responsive rules.
+- `layout.css` is a layout-only compatibility module extracted from the prior stylesheet. It contains no colour declarations or brand tokens.
+- The public-site build copies only explicitly allowlisted pages, scripts, original partner logos, favicon and page-specific brand illustrations into `assessment-public/`.
+- Every public page loads both shared stylesheets and the DM Sans / Manrope typography.
+- SUTRAVYA is the primary technology partner identity; QualiNova is clearly identified as event organiser.
+- Avoid adding one-off global colour overrides or additional token blocks. Update the canonical tokens in `styles.css`.

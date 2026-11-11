@@ -8,7 +8,8 @@
   const status = (id, message, isError = false) => {
     const node = document.getElementById(id);
     node.textContent = message;
-    node.style.color = isError ? '#a22d2d' : '#246044';
+    node.classList.toggle('is-error', isError);
+    node.classList.toggle('is-success', !isError);
   };
   const request = async (path, {method = 'GET', body} = {}) => {
     if (!apiBase) throw new Error('API base URL is not configured.');
@@ -50,7 +51,7 @@
       data.results + '</strong><span>Results</span></div><div class="admin-metric"><strong>' +
       (data.slots || []).length + '</strong><span>Exam slots</span></div></div>' +
       '<div class="admin-streams">' + streamCards + '</div>' +
-      (slotCards ? '<h3 style="margin:18px 0 8px">Configured slots</h3><div class="admin-streams">' + slotCards + '</div>' : '');
+      (slotCards ? '<h3 class="admin-section-subheading">Configured slots</h3><div class="admin-streams">' + slotCards + '</div>' : '');
   };
   document.getElementById('connect').addEventListener('click', async () => {
     adminKey = keyInput.value.trim();

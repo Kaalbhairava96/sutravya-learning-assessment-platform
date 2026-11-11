@@ -61,47 +61,81 @@ function icon(name) {
 
 const header = document.querySelector('[data-header]');
 if (header) {
-  const links = navigation.map(([url, label]) => `<a href="${url}"${url === currentPage ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  header.innerHTML = `<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner"><div class="header-brand-lockup"><a class="brand" href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a><span class="header-brand-divider" aria-hidden="true"></span><a class="partner-brand" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova, event organiser"><small>EVENT ORGANISER</small><img src="assets/qualinova-logo.png" alt="QualiNova"></a></div><button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">${icon('menu')}</span><span>Menu</span></button><nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">${links}<a class="nav-register" href="register.html">Register now ${icon('arrow')}</a></nav></div></header>`;
-  const toggle = header.querySelector('.nav-toggle');
-  const nav = header.querySelector('.primary-nav');
-  const closeMenu = () => { nav.classList.remove('is-open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation'); toggle.querySelector('.nav-toggle-icon').innerHTML = icon('menu'); };
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-    toggle.querySelector('.nav-toggle-icon').innerHTML = icon(open ? 'close' : 'menu');
-  });
-  nav.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
-  document.addEventListener('click', event => { if (!header.contains(event.target)) closeMenu(); });
-}
-
-
-function renderContextualPostcard() {
-  const main = document.querySelector('main');
-  if (!main || currentPage === 'index.html' || currentPage === 'awards.html' || currentPage === 'team-prelaunch.html' || currentPage === 'login.html') return;
-  const promos = {
-    'syllabus.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'PREPARE WITH PURPOSE', title:'A stronger foundation starts with a clear plan.', copy:'Explore stream-wise practice topics, then put your learning into action with a timed mock test.', cta:'Try the mock test', href:'mock-test.html'},
-    'sample-papers.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'PRACTICE MAKES PROGRESS', title:'Get comfortable with the question style.', copy:'Start with short sample questions, understand the reasoning and build confidence before a full practice paper.', cta:'Start a full mock test', href:'mock-test.html'},
-    'mock-test.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'YOUR PRACTICE ARENA', title:'Four subject-led pathways. One focused practice experience.', copy:'Complete a dedicated 100-question mock in approximately 47 minutes and review your subject-wise score.', cta:'Review the syllabus', href:'syllabus.html'},
-    'faqs.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'YOUR NEXT STEP IN HEALTHCARE', title:'Know the format. Prepare with confidence.', copy:'Category-wise registration fees apply. Explore the streams, recognition pathways and key dates.', cta:'View Awards & Recognition', href:'awards.html'},
-    'contact.html': {image:'assets/htse-campaign-postcard.webp', alt:'Healthcare Talent Search Exam emblem with medical cross, ECG, laurel and healthcare learners', eyebrow:'RECOGNISING HEALTHCARE KNOWLEDGE', title:'Questions about recognition or startup support?', copy:'Connect with QualiNova, the event organiser, or SUTRAVYA, the assessment and technology partner.', cta:'Explore Awards & Recognition', href:'awards.html'}
+  const navLink = ([url,label]) => '<a class="nav-link" href="'+url+'"'+(url===currentPage ? ' aria-current="page"' : '')+'>'+label+'</a>';
+  const preparation = ['syllabus.html','sample-papers.html','mock-test.html'];
+  const innovation = ['hackathon.html','awards.html'];
+  const inPreparation = preparation.includes(currentPage);
+  const inInnovation = innovation.includes(currentPage);
+  header.innerHTML = '<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner">' +
+    '<div class="header-brand-lockup"><a class="brand" href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a>' +
+    '<span class="header-brand-divider" aria-hidden="true"></span><a class="partner-brand" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova, event organiser"><small>EVENT ORGANISER</small><img src="assets/qualinova-logo.png" alt="QualiNova Solutions"></a></div>' +
+    '<button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">'+icon('menu')+'</span><span>Menu</span></button>' +
+    '<nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">' + navLink(['index.html','Home']) +
+    '<details class="nav-dropdown" '+(inPreparation?'open':'')+'><summary '+(inPreparation?'aria-current="page"':'')+'>Preparation</summary><div class="nav-dropdown-menu">' +
+    navLink(['syllabus.html','Syllabus'])+navLink(['sample-papers.html','Sample MCQs'])+navLink(['mock-test.html','Mock Tests'])+'</div></details>' +
+    '<details class="nav-dropdown" '+(inInnovation?'open':'')+'><summary '+(inInnovation?'aria-current="page"':'')+'>Innovation</summary><div class="nav-dropdown-menu">' +
+    navLink(['hackathon.html','Hackathon'])+navLink(['awards.html','Awards &amp; Recognition'])+'</div></details>' +
+    navLink(['faqs.html','Help Centre'])+navLink(['contact.html','Contact']) +
+    '<a class="nav-register" href="register.html"'+(currentPage==='register.html'?' aria-current="page"':'')+'>Register now '+icon('arrow')+'</a></nav></div></header>';
+  const toggle=header.querySelector('.nav-toggle');
+  const nav=header.querySelector('.primary-nav');
+  const closeMenu=({restoreFocus=false}={})=>{
+    nav.classList.remove('is-open');
+    nav.querySelectorAll('.nav-dropdown[open]').forEach(item=>item.removeAttribute('open'));
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Open navigation');
+    toggle.querySelector('.nav-toggle-icon').innerHTML=icon('menu');
+    if(restoreFocus)toggle.focus();
   };
-  const promo = promos[currentPage];
-  if (!promo) return;
-  const section = document.createElement('section');
-  section.className = 'section v4-postcard-section';
-  section.innerHTML = `<div class="wrap"><article class="v4-campaign-postcard"><div class="v4-postcard-art"><img src="${promo.image}" alt="${promo.alt}" loading="lazy"></div><div class="v4-postcard-copy"><span class="v4-eyebrow">${promo.eyebrow}</span><h2>${promo.title}</h2><p>${promo.copy}</p><a class="button button-gold" href="${promo.href}">${promo.cta} <span aria-hidden="true">→</span></a><div class="v4-postcard-prize-line"><span>Merit-led recognition</span><span>Hackathon startup support</span></div></div></article></div>`;
-  main.append(section);
-}
-renderContextualPostcard();
-
-const footer = document.querySelector('[data-footer]');
-if (footer) {
-  footer.innerHTML = `<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid"><div class="footer-brand"><a href="index.html" aria-label="SUTRAVYA home"><img src="assets/sutravya-logo.png" alt="SUTRAVYA"></a><p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p><a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in ${icon('arrow')}</a></div><div class="footer-column"><h2>Explore</h2>${navigation.slice(0, 6).map(([url, label]) => `<a href="${url}">${label}</a>`).join('')}</div><div class="footer-column"><h2>Exam details</h2><span>4 December 2026</span><span>Online · ${eventConfig.assessmentStreams.length} assessment pathways · ${eventConfig.registrationCategories.length} registration categories</span><span>100 MCQs · approximately 47 minutes</span><span>+1 correct · −0.25 incorrect · 0 unanswered</span><span>Category-wise registration fees</span><a href="register.html">Registration details ${icon('arrow')}</a></div><div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com ${icon('arrow')}</a><h2 class="footer-subheading">Assessment &amp; technology partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>`;
+  toggle.addEventListener('click',()=>{
+    const open=nav.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded',String(open));
+    toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');
+    toggle.querySelector('.nav-toggle-icon').innerHTML=icon(open?'close':'menu');
+  });
+  nav.addEventListener('click',event=>{if(event.target.closest('a'))closeMenu();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('is-open'))closeMenu({restoreFocus:true});});
+  document.addEventListener('click',event=>{if(!header.contains(event.target)){nav.querySelectorAll('.nav-dropdown[open]').forEach(item=>item.removeAttribute('open'));closeMenu();}});
 }
 
+const footer=document.querySelector('[data-footer]');
+if(footer){
+  footer.innerHTML='<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid">' +
+    '<div class="footer-brand"><div class="footer-brand-pair" aria-label="SUTRAVYA and QualiNova event partnership">' +
+    '<a class="footer-sutravya-logo" href="https://sutravya.in" target="_blank" rel="noopener" aria-label="SUTRAVYA website"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a>' +
+    '<a class="footer-qualinova-logo" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova website"><img src="assets/qualinova-logo.png" alt="QualiNova Solutions — event organiser"></a></div>' +
+    '<p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p>' +
+    '<a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in '+icon('arrow')+'</a></div>' +
+    '<div class="footer-column"><h2>Explore</h2>'+navigation.slice(0,6).map(([url,label])=>'<a href="'+url+'">'+label+'</a>').join('')+'</div>' +
+    '<div class="footer-column"><h2>Exam details</h2><span>4 December 2026</span><span>Online · '+eventConfig.assessmentStreams.length+' assessment pathways · '+eventConfig.registrationCategories.length+' registration categories</span><span>100 MCQs · approximately 47 minutes</span><span>+1 correct · −0.25 incorrect · 0 unanswered</span><span>Category-wise registration fees</span><a href="register.html">Registration details '+icon('arrow')+'</a></div>' +
+    '<div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com '+icon('arrow')+'</a><h2 class="footer-subheading">Assessment &amp; technology partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div>' +
+    '</div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>';
+}
+
+function initFaqSearch(){
+  const input=document.getElementById('faq-search-input');
+  const groups=[...document.querySelectorAll('.qv2-faq-group')];
+  if(!input||!groups.length)return;
+  const count=document.querySelector('[data-faq-count]');
+  const empty=document.querySelector('[data-faq-empty]');
+  const entries=groups.map(group=>({group,heading:group.querySelector('h3'),details:[...group.querySelectorAll('details')]}));
+  const filter=()=>{
+    const query=input.value.trim().toLocaleLowerCase();
+    let visibleCount=0;
+    entries.forEach(({group,heading,details})=>{
+      let groupCount=0;
+      details.forEach(detail=>{const visible=!query||detail.textContent.toLocaleLowerCase().includes(query);detail.hidden=!visible;if(visible)groupCount++;});
+      group.hidden=groupCount===0;
+      if(heading)heading.hidden=groupCount===0;
+      visibleCount+=groupCount;
+    });
+    if(count)count.textContent=query?visibleCount+' matching '+(visibleCount===1?'question':'questions'):visibleCount+' questions';
+    if(empty)empty.hidden=visibleCount!==0;
+  };
+  input.addEventListener('input',filter);
+  filter();
+}
+initFaqSearch();
 function registrationState(now = Date.now()) {
   if (now < eventConfig.registrationOpensAt) return 'before';
   if (now > eventConfig.registrationClosesAt) return 'closed';

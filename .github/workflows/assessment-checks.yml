@@ -47,8 +47,9 @@ jobs:
           node --check sample-papers.js
           node --check registration.js
           node --check question-bank.js
+          node --check site.js
           node scripts/validate_question_banks.cjs
       - name: Build allowlisted assessment website
         run: bash scripts/build_assessment_site.sh
-      - name: Audit public page structure and assets
+      - name: Audit public page structure, assets, design tokens and semantics
         run: node scripts/audit_public_site.cjs assessment-public

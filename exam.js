@@ -30,7 +30,8 @@
   };
   const message = (text, error = false) => {
     status.textContent = text;
-    status.style.color = error ? '#a22d2d' : '#456176';
+    status.classList.toggle('is-error', error);
+    status.classList.toggle('is-success', !error);
   };
   const request = async (path, method = 'GET', body) => {
     if (!apiBase) throw new Error('Assessment API is not configured.');
