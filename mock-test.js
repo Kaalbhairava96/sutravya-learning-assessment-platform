@@ -6,7 +6,7 @@
   const resultsPanel = document.querySelector('#mock-results');
   if (!streamButtons.length || !testPanel || !resultsPanel) return;
 
-  const totalSeconds = 30 * 60;
+  const totalSeconds = 47 * 60;
   const state = { streamKey: null, questions: [], current: 0, answers: new Map(), review: new Set(), deadline: 0, interval: null, submitted: false };
   const $ = selector => document.querySelector(selector);
   const escapeHTML = (value = '') => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -33,7 +33,7 @@
     resultsPanel.hidden = true;
     testPanel.hidden = false;
     $('[data-test-title]').textContent = `${stream.label} Practice Mock Test`;
-    $('[data-test-subtitle]').textContent = '100 questions · 30 minutes · 1 mark per correct answer · no negative marking';
+    $('[data-test-subtitle]').textContent = '100 questions · approximately 47 minutes · +1 correct · −0.25 incorrect · 0 unanswered';
     renderNavigator();
     renderQuestion();
     updateTimer();
@@ -100,7 +100,7 @@
     const correct = state.questions.reduce((sum, q, index) => sum + (state.answers.get(index) === q.answer ? 1 : 0), 0);
     const wrong = [...state.answers.entries()].filter(([index, answer]) => answer !== state.questions[index].answer).length;
     const unanswered = 100 - state.answers.size;
-    const percent = correct;
+    const score = correct - (wrong * 0.25);\n    const percent = Math.max(0, Math.min(100, score));
     $('[data-results-stream]').textContent = `${bank[state.streamKey].label} · ${auto ? 'Time expired — test auto-submitted' : 'Submitted successfully'} · Practice mode`;
     $('[data-score]').textContent = String(correct);
     $('[data-correct]').textContent = String(correct);

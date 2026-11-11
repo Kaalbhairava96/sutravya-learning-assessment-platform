@@ -11,13 +11,13 @@
     const stream = bank[key];
     if (!stream) return;
     const questions = stream.questions.slice(0, 5);
-    panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 illustrative questions · answers reveal after selection</small></div>` + questions.map((q, index) => `
+    panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 syllabus-mapped preview questions · answers reveal after selection</small></div>` + questions.map((q, index) => `
       <article class="v4-sample-question" data-sample-question="${index}">
         <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.topic)} · ${escapeHTML(q.difficulty || 'Practice')}</span></div>
         <h3>${escapeHTML(q.question)}</h3>
         <div class="v4-sample-options">${q.options.map((option, optionIndex) => `<button class="v4-sample-option" type="button" data-sample-option="${optionIndex}"><span>${String.fromCharCode(65 + optionIndex)}</span>${escapeHTML(option)}</button>`).join('')}</div>
         <div class="v4-sample-feedback" data-sample-feedback hidden></div>
-      </article>`).join('') + `<div class="v4-sample-bottom-cta"><span>Want a complete timed paper?</span><a class="button button-primary" href="mock-test.html">Take the 30-minute mock test →</a></div>`;
+      </article>`).join('') + `<div class="v4-sample-bottom-cta"><span>Want a complete timed paper?</span><a class="button button-primary" href="mock-test.html">Take the 47-minute mock test →</a></div>`;
     questions.forEach((question, index) => {
       const card = panel.querySelector(`[data-sample-question="${index}"]`);
       const feedback = card.querySelector('[data-sample-feedback]');
