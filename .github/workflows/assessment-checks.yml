@@ -69,11 +69,11 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
             sleep 1
           done
-          CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
+          export CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
           for item in "home:/" "registration:/register.html" "syllabus:/syllabus.html" "mock-tests:/mock-test.html" "help-centre:/faqs.html"; do
             name="${item%%:*}"
             route="${item#*:}"
-            npx lighthouse "http://127.0.0.1:4173${route}" --chrome-path="$CHROME_PATH" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path="test-results/lighthouse/${name}.json" --quiet
+            npx lighthouse "http://127.0.0.1:4173${route}" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path="test-results/lighthouse/${name}.json" --quiet
           done
           node - <<'NODE'
           const fs=require('node:fs');
