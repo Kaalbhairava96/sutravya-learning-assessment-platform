@@ -961,8 +961,8 @@ def create_app(
             raise HTTPException(status_code=422, detail="Slot timestamps must include a timezone.")
         starts_at = payload.starts_at.astimezone(timezone.utc)
         ends_at = payload.ends_at.astimezone(timezone.utc)
-        if starts_at <= datetime.now(timezone.utc) or ends_at - starts_at < timedelta(minutes=30):
-            raise HTTPException(status_code=422, detail="Choose a future slot of at least 30 minutes.")
+        if starts_at <= datetime.now(timezone.utc) or ends_at - starts_at < timedelta(minutes=47):
+            raise HTTPException(status_code=422, detail="Choose a future slot of at least 47 minutes.")
         with _session(request) as session:
             overlap = session.scalar(select(ExamSlot.id).where(
                 ExamSlot.event_key == EVENT_KEY,
