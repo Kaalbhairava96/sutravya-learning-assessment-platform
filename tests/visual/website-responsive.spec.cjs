@@ -1,8 +1,12 @@
 const {test,expect}=require('@playwright/test');
+const fs=require('node:fs');
+const path=require('node:path');
+const screenshotRoot=path.join(process.cwd(),'test-results','screenshots');
+fs.mkdirSync(screenshotRoot,{recursive:true});
 const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin.html','exam.html'];
 const widths=[1440,1024,768,390];
 for(const pagePath of pages){
- test(pagePath+' renders without overflow and with working local imagery at all target widths',async({browser},testInfo)=>{
+ test(pagePath+' renders without overflow and with working local imagery at all target widths',async({browser})=>{
   const page=await browser.newPage({viewport:{width:1440,height:900}});
   await page.route('https://sutravya-assessment-api-demo.onrender.com/**',route=>route.abort());
   for(const width of widths){
@@ -18,7 +22,7 @@ for(const pagePath of pages){
    });
    expect(result.documentWidth,{message:pagePath+' should not create horizontal overflow at '+width+'px'}).toBeLessThanOrEqual(width+2);
    expect(result.brokenImages,{message:pagePath+' has broken images at '+width+'px'}).toEqual([]);
-   await page.screenshot({path:testInfo.outputPath('../screenshots/'+pagePath.replace('.html','')+'-'+width+'.png'),fullPage:true,animations:'disabled'});
+   await page.screenshot({path:path.join(screenshotRoot,pagePath.replace('.html','')+'-'+width+'.png'),fullPage:true,animations:'disabled'});
   }
   await page.close();
  });
