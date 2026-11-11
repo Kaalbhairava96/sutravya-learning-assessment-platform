@@ -161,11 +161,13 @@ class AssessmentAdminApiTests(unittest.TestCase):
             rule = session.query(ScoringRule).filter_by(question_bank_id=bank.id).one()
             self.assertEqual(str(rule.correct_points), "1.000")
             self.assertEqual(str(rule.incorrect_points), "-0.250")
-            self.assertEqual(session.query(Question).filter_by(section="anatomy").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="physiology").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="biology").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="quantitative_reasoning").count(), 20)
-            self.assertEqual(session.query(Question).filter_by(section="english_communication").count(), 20)
+            expected_sections = (
+                "anatomy_physiology", "laboratory_sciences",
+                "microbiology_infection_control", "diagnostic_technology",
+                "patient_safety_communication",
+            )
+            for section in expected_sections:
+                self.assertEqual(session.query(Question).filter_by(section=section).count(), 20)
 
 
 if __name__ == "__main__":
