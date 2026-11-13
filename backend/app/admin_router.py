@@ -112,6 +112,11 @@ def now_utc() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def as_utc(value: datetime) -> datetime:
+    """Normalise SQL datetime values from PostgreSQL and SQLite to aware UTC."""
+    return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+
+
 def normalise_email(value: str) -> str:
     email = value.strip().lower()
     if not re.fullmatch(r"[^@\s]{1,64}@[^@\s.]+(?:\.[^@\s.]+)+", email):
@@ -183,14 +188,17 @@ def current_admin(session: Session, request: Request) -> AdminUser:
     saved = session.scalar(
         select(AdminSession).where(AdminSession.token_digest == digest_token(token)).with_for_update()
     )
-    if saved is None or saved.revoked_at is not None or saved.expires_at <= current:
+    if saved is None or saved.revoked_at is not None:
+        raise HTTPException(status_code=401, detail="Administrator session has expired. Sign in again.")
+    if as_utc(saved.expires_at) <= current:
         raise HTTPException(status_code=401, detail="Administrator session has expired. Sign in again.")
     user = session.get(AdminUser, saved.admin_user_id)
     if user is None or not user.is_active:
         saved.revoked_at = current
         session.commit()
         raise HTTPException(status_code=401, detail="This administrator account is inactive.")
-    if saved.last_seen_at is None or current - saved.last_seen_at >= SESSION_TOUCH:
+    last_seen = as_utc(saved.last_seen_at) if saved.last_seen_at is not None else None
+    if last_seen is None or current - last_seen >= SESSION_TOUCH:
         saved.last_seen_at = current
         session.commit()
     return user
@@ -220,7 +228,7 @@ def login_limited(session: Session, request: Request, email: str) -> bool:
         RateLimitBucket.subject_digest == rate_limit_subject(request, email),
     ))
     return bool(
-        bucket and now_utc() - bucket.window_started_at < timedelta(hours=1)
+        bucket and now_utc() - as_utc(bucket.window_started_at) < timedelta(hours=1)
         and bucket.request_count >= 8
     )
 
@@ -237,7 +245,7 @@ def record_failed_login(session: Session, request: Request, email: str) -> None:
             scope="admin_login", subject_digest=subject,
             window_started_at=current, request_count=1,
         ))
-    elif current - bucket.window_started_at >= timedelta(hours=1):
+    elif current - as_utc(bucket.window_started_at) >= timedelta(hours=1):
         bucket.window_started_at = current
         bucket.request_count = 1
     else:
@@ -451,7 +459,7 @@ def me(request: Request):
 
 
 @router.post("/auth/logout", status_code=204)
-def logout(request: Request, response: Response):
+def logout(request: Request):
     require_csrf(request)
     authorization = request.headers.get("authorization", "")
     scheme, _, token = authorization.partition(" ")
