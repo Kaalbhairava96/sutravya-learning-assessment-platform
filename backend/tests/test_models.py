@@ -86,7 +86,7 @@ class ModelSchemaTests(unittest.TestCase):
             "candidates", "registrations", "exam_slots", "questions", "answer_options",
             "exam_attempts", "candidate_responses", "scoring_rules", "results",
             "admin_users", "audit_events", "question_banks", "verification_challenges",
-            "candidate_sessions", "rate_limit_buckets",
+            "candidate_sessions", "rate_limit_buckets", "admin_sessions",
         }
         self.assertEqual(set(Base.metadata.tables), expected)
         slot_columns = Base.metadata.tables["exam_slots"].columns
@@ -247,7 +247,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0012_mbbs_ug_pg_subject_blocks"])
+        self.assertEqual(script.get_heads(), ["0013_admin_browser_sessions"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -275,7 +275,9 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertIn("deadline_at", Base.metadata.tables["candidate_responses"].columns)
         self.assertIn("answered_at", Base.metadata.tables["candidate_responses"].columns)
         self.assertIn("option_order", Base.metadata.tables["candidate_responses"].columns)
-        self.assertEqual(len(Base.metadata.tables), 15)
+        admin_session_revision = script.get_revision("0013_admin_browser_sessions")
+        self.assertEqual(admin_session_revision.down_revision, "0012_mbbs_ug_pg_subject_blocks")
+        self.assertEqual(len(Base.metadata.tables), 16)
 
     def test_migration_renders_offline_without_database(self) -> None:
         test_env = {
