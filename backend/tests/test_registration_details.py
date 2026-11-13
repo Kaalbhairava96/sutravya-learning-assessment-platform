@@ -82,6 +82,21 @@ class RegistrationDetailsTests(unittest.TestCase):
         with self.assertRaises(HTTPException):
             build_registration_details(payload(category="mbbs", programme="mbbs_pg", year=4))
 
+    def test_legacy_mbbs_api_values_are_normalised_to_medical_labels(self):
+        ug = build_registration_details(payload(category="mbbs", programme="mbbs_ug", year=5))
+        self.assertEqual(ug["category"], "medical")
+        self.assertEqual(ug["category_label"], "Medical")
+        self.assertEqual(ug["programme"], "medical_ug")
+        self.assertEqual(ug["programme_label"], "Medical UG")
+        self.assertEqual(ug["stream"], "mbbs_ug")
+
+        pg = build_registration_details(payload(category="mbbs", programme="mbbs_pg", year=2))
+        self.assertEqual(pg["category"], "medical")
+        self.assertEqual(pg["category_label"], "Medical")
+        self.assertEqual(pg["programme"], "medical_pg")
+        self.assertEqual(pg["programme_label"], "Medical PG")
+        self.assertEqual(pg["stream"], "mbbs_pg")
+
     def test_jdn_is_rejected_for_new_registrations(self):
         with self.assertRaises(HTTPException) as rejected:
             build_registration_details(payload(category="jdn", programme="junior_doctor_network", year=None))

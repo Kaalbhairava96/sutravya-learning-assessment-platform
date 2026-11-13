@@ -28,12 +28,17 @@ def _required(value: str | None, label: str, maximum: int = 240) -> str:
 
 def build_registration_details(payload, session=None) -> dict:
     """Validate category and pathway; always calculate fee on the server."""
-    category = (payload.category or "").strip().lower()
+    raw_category = (payload.category or "").strip().lower()
+    # Backward compatibility for older API clients sending the retired MBBS labels.
+    # Persisted details and all new public-facing records use canonical Medical labels.
+    category = "medical" if raw_category == "mbbs" else raw_category
     if category not in CATEGORY_FEES:
         raise HTTPException(status_code=422, detail="Choose Nursing, Paramedical or Medical.")
-    programme = (payload.programme or "").strip().lower()
+    raw_programme = (payload.programme or "").strip().lower()
+    legacy_programmes = {"mbbs_ug": "medical_ug", "mbbs_pg": "medical_pg"}
+    programme = legacy_programmes.get(raw_programme, raw_programme) if category == "medical" else raw_programme
     if programme not in PROGRAMMES[category]:
-        raise HTTPException(status_code=422, detail="Choose a valid programme or MBBS sub-category.")
+        raise HTTPException(status_code=422, detail="Choose a valid programme or Medical sub-category.")
     _required(payload.full_name, "full name", 200)
     _required(payload.email, "email address", 320)
     if payload.declaration_accepted is not True:
