@@ -687,8 +687,8 @@ class PasswordlessApiTests(unittest.TestCase):
             registration = session.query(Registration).one()
             self.assertIsNone(registration.registration_id)
             self.assertEqual(registration.payment_amount_paise, 50000)
-            self.assertEqual(registration.details["category"], "mbbs")
-            self.assertEqual(registration.details["programme_label"], "MBBS Undergraduate (UG)")
+            self.assertEqual(registration.details["category"], "medical")
+            self.assertEqual(registration.details["programme_label"], "Medical UG")
 
         cookie = SimpleCookie()
         cookie.load(response.headers["set-cookie"])
