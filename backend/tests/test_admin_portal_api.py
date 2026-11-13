@@ -17,7 +17,7 @@ from app.models import AuditEvent, Base, Candidate
 TEST_DATABASE_URL = "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test"
 with patch.dict(os.environ, {"APP_ENV": "test", "LOG_LEVEL": "CRITICAL", "DATABASE_URL": TEST_DATABASE_URL}), patch("app.config._read_dotenv", return_value={}):
     from app.main import create_app
-    from app.admin_router import AdminCredentials, RecordPatch
+    from app.admin_router import AdminCredentials, RecordPatch, router as secure_admin_router
 
 BOOTSTRAP = "one-time-bootstrap-token-for-tests-only-32-bytes"
 SESSION_SECRET = "admin-session-signing-and-rate-limit-test-secret-32-bytes"
@@ -25,7 +25,14 @@ ADMIN_ORIGIN = "https://admin.example.invalid"
 
 
 def endpoint(app, path):
-    return next(route.endpoint for route in app.routes if getattr(route, "path", None) == path)
+    for route in app.routes:
+        if getattr(route, "path", None) == path:
+            return route.endpoint
+    # FastAPI keeps included APIRouter routes nested in current releases.
+    for route in secure_admin_router.routes:
+        if getattr(route, "path", None) == path or getattr(route, "path", None) == path.removeprefix("/api/admin"):
+            return route.endpoint
+    raise AssertionError("Admin route is not registered: " + path)
 
 
 def request_for(app, path, method="GET", token=None, *, csrf=False, origin=None):
