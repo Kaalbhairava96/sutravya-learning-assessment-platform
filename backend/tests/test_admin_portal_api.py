@@ -152,9 +152,9 @@ class AdminPortalTests(unittest.TestCase):
     def test_password_hash_and_answer_key_flags_are_never_exposed(self):
         token = self.setup_owner()
         browse = endpoint(self.app, "/api/admin/database/tables/{table_name}")
-        users = browse("admin_users", request_for(self.app, "/api/admin/database/tables/admin_users", token=token))
+        users = browse("admin_users", request_for(self.app, "/api/admin/database/tables/admin_users", token=token), search="", limit=25, offset=0)
         self.assertNotIn("password_hash", [column["name"] for column in users["columns"]])
-        options = browse("answer_options", request_for(self.app, "/api/admin/database/tables/answer_options", token=token))
+        options = browse("answer_options", request_for(self.app, "/api/admin/database/tables/answer_options", token=token), search="", limit=25, offset=0)
         self.assertNotIn("is_correct", [column["name"] for column in options["columns"]])
 
     def test_foreign_origin_is_rejected_for_mutations(self):
