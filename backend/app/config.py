@@ -84,6 +84,10 @@ class Settings:
     internal_test_access_code: str | None = field(default=None, repr=False)
     registration_export_key: str | None = field(default=None, repr=False)
     admin_api_key: str | None = field(default=None, repr=False)
+    admin_bootstrap_token: str | None = field(default=None, repr=False)
+    admin_session_secret: str | None = field(default=None, repr=False)
+    admin_session_ttl_seconds: int = 28800
+    admin_frontend_origin: str | None = None
 
     def __post_init__(self) -> None:
         if self.app_env not in {"development", "test", "production"}:
@@ -110,6 +114,16 @@ class Settings:
                 raise ConfigurationError(f"{name} must be a positive integer.")
         if self.otp_hmac_pepper is not None and len(self.otp_hmac_pepper.encode("utf-8")) < 32:
             raise ConfigurationError("OTP_HMAC_PEPPER must contain at least 32 UTF-8 bytes when configured.")
+        if self.admin_bootstrap_token is not None and len(self.admin_bootstrap_token.encode("utf-8")) < 32:
+            raise ConfigurationError("ADMIN_BOOTSTRAP_TOKEN must contain at least 32 UTF-8 bytes when configured.")
+        if self.admin_session_secret is not None and len(self.admin_session_secret.encode("utf-8")) < 32:
+            raise ConfigurationError("ADMIN_SESSION_SECRET must contain at least 32 UTF-8 bytes when configured.")
+        if self.admin_bootstrap_token is not None and self.admin_session_secret is None:
+            raise ConfigurationError("ADMIN_SESSION_SECRET is required when ADMIN_BOOTSTRAP_TOKEN is configured.")
+        if self.admin_frontend_origin:
+            parsed_admin_origin = urlsplit(self.admin_frontend_origin)
+            if parsed_admin_origin.scheme not in {"http", "https"} or not parsed_admin_origin.netloc or parsed_admin_origin.path:
+                raise ConfigurationError("ADMIN_FRONTEND_ORIGIN must be an exact origin without a path.")
         for origin in self.cors_origins:
             parsed_origin = urlsplit(origin)
             if parsed_origin.scheme not in {"http", "https"} or not parsed_origin.netloc or parsed_origin.path:
@@ -175,4 +189,8 @@ class Settings:
             internal_test_access_code=values.get("INTERNAL_TEST_ACCESS_CODE") or None,
             registration_export_key=values.get("REGISTRATION_EXPORT_KEY") or None,
             admin_api_key=values.get("ADMIN_API_KEY") or None,
+            admin_bootstrap_token=values.get("ADMIN_BOOTSTRAP_TOKEN") or None,
+            admin_session_secret=values.get("ADMIN_SESSION_SECRET") or None,
+            admin_session_ttl_seconds=cls._positive_int(values, "ADMIN_SESSION_TTL_SECONDS", 28800),
+            admin_frontend_origin=values.get("ADMIN_FRONTEND_ORIGIN") or None,
         )

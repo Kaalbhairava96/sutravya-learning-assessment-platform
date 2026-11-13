@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const screenshotRoot=path.join(process.cwd(),'test-results','screenshots');
 fs.mkdirSync(screenshotRoot,{recursive:true});
-const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin.html','exam.html'];
+const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin-login.html','exam.html'];
 const widths=[1440,1024,768,390];
 for(const pagePath of pages){
  test(pagePath+' renders without overflow and with working local imagery at all target widths',async({browser})=>{

@@ -2,7 +2,7 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(process.argv[2]||'assessment-public');
-const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin.html','exam.html'];
+const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin-login.html','admin.html','exam.html'];
 const errors=[];const report=[];
 function rgb(hex){const raw=hex.replace('#','');return [0,2,4].map(i=>parseInt(raw.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));}
 function luminance(hex){const c=rgb(hex);return .2126*c[0]+.7152*c[1]+.0722*c[2];}
@@ -23,7 +23,7 @@ for(const page of pages){
  const refs=[...html.matchAll(/\b(?:src|href)=["']([^"']+)["']/gi)].map(m=>m[1]);
  for(const ref of refs){if(ref.startsWith('assets/')&&!fs.existsSync(path.join(root,ref)))errors.push(page+': missing local asset '+ref);}
  for(const required of ['styles.css','layout.css']){if(!refs.includes(required))errors.push(page+': missing '+required);else if(!fs.existsSync(path.join(root,required)))errors.push(page+': missing stylesheet file '+required);}
- if(!/<meta\b(?=[^>]*\bname=["']theme-color["'])(?=[^>]*\bcontent=["']#F7F9F7["'])[^>]*>/i.test(html))errors.push(page+': missing pearl theme metadata');
+ if(!['admin.html','admin-login.html'].includes(page)&&!/<meta\b(?=[^>]*\bname=["']theme-color["'])(?=[^>]*\bcontent=["']#F7F9F7["'])[^>]*>/i.test(html))errors.push(page+': missing pearl theme metadata');
  if(!/fonts\.googleapis\.com\/css2\?family=DM\+Sans/.test(html)||!html.includes('family=Manrope'))errors.push(page+': missing shared DM Sans / Manrope typography');
  report.push({page,title:titles[0]?.[1]||'',h1Count:headings.length,imageCount:images.length,assetReferences:refs.filter(x=>x.startsWith('assets/')).length});
 }

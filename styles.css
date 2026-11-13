@@ -14,7 +14,7 @@
   --brand-pearl:#F7F9F7;
   --brand-mist:#E9EFED;
   --brand-graphite:#253441;
-  --brand-muted:#5E707A;
+  --brand-muted:#52636D;
   --brand-line:#D8E3E1;
   --brand-white:#FFFFFF;
   --brand-success:#138168;
@@ -138,7 +138,7 @@
   .nav-dropdown-menu a:hover,.nav-dropdown-menu a[aria-current=page]{background:var(--brand-mist);color:var(--brand-teal-700)}
   .nav-register{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:0 17px;border:1px solid var(--brand-teal);border-radius:11px;background:linear-gradient(115deg,var(--brand-teal-700),var(--brand-emerald));color:white!important;font-weight:800;white-space:nowrap;box-shadow:0 7px 18px rgba(7,143,136,.18);transition:transform .18s ease,box-shadow .18s ease}
   .nav-register:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(7,143,136,.24)}
-  .nav-register svg,.footer-site-link svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none}
+  .nav-register svg,.footer-site-link svg,.footer-column a svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;flex:0 0 auto}
   .nav-toggle{display:none;align-items:center;gap:8px;min-height:42px;padding:8px 12px;border:1px solid var(--brand-line);border-radius:10px;background:var(--brand-white);color:var(--brand-navy);font-size:13px;font-weight:800}
   .nav-toggle svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.9;fill:none}
   .site-footer{background:var(--brand-navy-900);color:#EDF5FA}
@@ -161,6 +161,7 @@
   .footer-bottom a{color:#8FE1D5;font-weight:800}
   .eyebrow,.qv2-eyebrow,.v4-eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--brand-teal-700);font-size:10px;font-weight:850;letter-spacing:.14em;line-height:1.3;text-transform:uppercase}
   .eyebrow-light,.qv2-eyebrow-light{color:#AEE9DF}
+  .qv2-section:not(.qv2-innovation-section):not(.qv2-final-cta):not(.qv2-study-cta) .qv2-eyebrow-light{color:var(--brand-teal-700)}
   .button,.qv2-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 18px;border:1px solid transparent;border-radius:11px;font-size:13px;font-weight:800;line-height:1.15;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
   .button:hover:not(:disabled),.qv2-button:hover:not(:disabled){transform:translateY(-2px)}
   .button:disabled,.qv2-button:disabled{cursor:not-allowed;opacity:.55;transform:none}

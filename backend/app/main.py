@@ -26,6 +26,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import Settings
+from app.admin_router import router as secure_admin_router
 from app.database import create_database_engine
 from app.email_provider import (
     EmailDeliveryError,
@@ -400,6 +401,7 @@ def create_app(
     application.state.settings = active_settings
     application.state.email_sender = email_sender
     application.state.confirmation_sender = confirmation_sender
+    application.include_router(secure_admin_router)
 
     def log_email_runtime_config_check() -> None:
         api_key = active_settings.resend_api_key
@@ -419,13 +421,16 @@ def create_app(
 
     application.router.on_startup.append(log_email_runtime_config_check)
 
-    if active_settings.cors_origins:
+    cors_origins = list(active_settings.cors_origins)
+    if active_settings.admin_frontend_origin and active_settings.admin_frontend_origin not in cors_origins:
+        cors_origins.append(active_settings.admin_frontend_origin)
+    if cors_origins:
         application.add_middleware(
             CORSMiddleware,
-            allow_origins=list(active_settings.cors_origins),
-            allow_credentials=True,
-            allow_methods=["GET", "POST", "PUT"],
-            allow_headers=["Content-Type", "X-Internal-Test-Code", "X-Admin-Key"],
+            allow_origins=cors_origins,
+            allow_credentials=False,
+            allow_methods=["GET", "POST", "PUT", "PATCH", "OPTIONS"],
+            allow_headers=["Content-Type", "X-Internal-Test-Code", "X-Admin-Key", "X-Admin-Request", "X-Admin-Bootstrap-Token", "Authorization"],
         )
 
     @application.middleware("http")
@@ -438,13 +443,13 @@ def create_app(
             if (
                 origin
                 and request.url.path.startswith("/api/")
-                and origin.rstrip("/") not in active_settings.cors_origins
+                and origin.rstrip("/") not in cors_origins
             ):
                 status_code = 403
                 return JSONResponse(status_code=403, content={"detail": "Origin is not allowed."})
             response = await call_next(request)
             status_code = response.status_code
-            if request.url.path.startswith("/api/exam/") or request.url.path.startswith("/api/admin/assessment/"):
+            if request.url.path.startswith("/api/exam/") or request.url.path.startswith("/api/admin/"):
                 response.headers["Cache-Control"] = "no-store, private"
                 response.headers["Pragma"] = "no-cache"
             return response
@@ -703,10 +708,10 @@ def create_app(
                      {"id": "brit", "label": "BRIT"},
                  ],
                  "academic_stage_help": "Enter the current year, semester or internship stage exactly as shown by your institution."},
-                {"id": "mbbs", "label": "MBBS", "fee_paise": 50000,
+                {"id": "medical", "label": "Medical", "fee_paise": 50000,
                  "programmes": [
-                     {"id": "mbbs_ug", "label": "MBBS Undergraduate (UG)", "years": [1, 2, 3, 4, 5]},
-                     {"id": "mbbs_pg", "label": "MBBS Postgraduate (PG)", "years": [1, 2, 3]},
+                     {"id": "medical_ug", "label": "Medical UG", "years": [1, 2, 3, 4, 5]},
+                     {"id": "medical_pg", "label": "Medical PG", "years": [1, 2, 3]},
                  ]},
             ],
             "payment": {"provider": provider, "enabled": provider != "disabled", "currency": "INR"},

@@ -13,9 +13,9 @@ const eventConfig = Object.freeze({
   registrationOpensAt: Date.parse('2026-10-31T18:30:00.000Z'), // 1 Nov, 00:00 IST
   registrationClosesAt: Date.parse('2026-11-25T18:29:59.999Z'), // 25 Nov, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
-  assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'MBBS Undergraduate (UG)', 'MBBS Postgraduate (PG)']),
-  registrationCategories: Object.freeze(['Nursing', 'Paramedical', 'MBBS']),
-  streams: Object.freeze(['Paramedical', 'Nursing', 'MBBS UG', 'MBBS PG']),
+  assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'Medical UG', 'Medical PG']),
+  registrationCategories: Object.freeze(['Nursing', 'Paramedical', 'Medical']),
+  streams: Object.freeze(['Paramedical', 'Nursing', 'Medical UG', 'Medical PG']),
   questionCount: 100,
   durationMinutes: 47,
   negativeMarking: true,
@@ -71,9 +71,9 @@ if (header) {
     '<span class="header-brand-divider" aria-hidden="true"></span><a class="partner-brand" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova, event organiser"><small>EVENT ORGANISER</small><img src="assets/qualinova-logo.png" alt="QualiNova Solutions"></a></div>' +
     '<button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-navigation"><span class="nav-toggle-icon">'+icon('menu')+'</span><span>Menu</span></button>' +
     '<nav class="primary-nav" id="primary-navigation" aria-label="Main navigation">' + navLink(['index.html','Home']) +
-    '<details class="nav-dropdown" '+(inPreparation?'open':'')+'><summary '+(inPreparation?'aria-current="page"':'')+'>Preparation</summary><div class="nav-dropdown-menu">' +
+    '<details class="nav-dropdown"><summary '+(inPreparation?'aria-current="page"':'')+'>Preparation</summary><div class="nav-dropdown-menu">' +
     navLink(['syllabus.html','Syllabus'])+navLink(['sample-papers.html','Sample MCQs'])+navLink(['mock-test.html','Mock Tests'])+'</div></details>' +
-    '<details class="nav-dropdown" '+(inInnovation?'open':'')+'><summary '+(inInnovation?'aria-current="page"':'')+'>Innovation</summary><div class="nav-dropdown-menu">' +
+    '<details class="nav-dropdown"><summary '+(inInnovation?'aria-current="page"':'')+'>Innovation</summary><div class="nav-dropdown-menu">' +
     navLink(['hackathon.html','Hackathon'])+navLink(['awards.html','Awards &amp; Recognition'])+'</div></details>' +
     navLink(['faqs.html','Help Centre'])+navLink(['contact.html','Contact']) +
     '<a class="nav-register" href="register.html"'+(currentPage==='register.html'?' aria-current="page"':'')+'>Register now '+icon('arrow')+'</a></nav></div></header>';

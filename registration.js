@@ -37,9 +37,9 @@
       {id:'bmlt',label:'BMLT'},{id:'bott',label:'BOTT'},{id:'bhm',label:'BHM'},
       {id:'bopt',label:'B.Opt'},{id:'brit',label:'BRIT'}
     ]},
-    mbbs: {label:'MBBS', fee:50000, programmes:[
-      {id:'mbbs_ug',label:'MBBS Undergraduate (UG)',years:[1,2,3,4,5]},
-      {id:'mbbs_pg',label:'MBBS Postgraduate (PG)',years:[1,2,3]}
+    medical: {label:'Medical', fee:50000, programmes:[
+      {id:'medical_ug',label:'Medical UG',years:[1,2,3,4,5]},
+      {id:'medical_pg',label:'Medical PG',years:[1,2,3]}
     ]}
   };
   let registrationEnabled = false;
@@ -107,7 +107,7 @@
     const item=catalogue[category.value];
     const selected=item.programmes.find(p=>p.id===programme.value);
     const yearValue=year.value ? Number(year.value) : null;
-    const stream=category.value==='mbbs' ? programme.value : category.value;
+    const stream=category.value==='medical' ? (programme.value==='medical_ug' ? 'mbbs_ug' : 'mbbs_pg') : category.value;
     return {
       full_name:form.elements.full_name.value.trim(),
       email:form.elements.email.value.trim(),

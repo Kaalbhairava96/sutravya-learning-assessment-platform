@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#061D42">
+<meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com">
+<title>Administrator Sign In | SUTRAVYA</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="layout.css"><link rel="stylesheet" href="admin-portal.css"></head>
+<body class="admin-portal-body admin-login-body"><main class="admin-login-shell">
+<section class="admin-login-brand"><a class="admin-login-logo" href="index.html"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a>
+<span class="admin-login-kicker">PRIVATE OPERATIONS CONSOLE</span><h1>Control your assessment operations with clarity.</h1>
+<p>Registrations, examination schedules, question banks, results and audit history — in one protected workspace.</p>
+<div class="admin-login-feature-list"><span><i>✓</i> Session-protected access</span><span><i>✓</i> Audited record changes</span><span><i>✓</i> Sensitive data safeguards</span></div>
+<div class="admin-login-orbit" aria-hidden="true"><span></span><span></span><b>S</b><i>SECURE</i></div><small class="admin-login-brand-foot">SUTRAVYA · The Digital Thread of Healthcare</small></section>
+<section class="admin-login-panel" aria-labelledby="admin-login-title"><div class="admin-login-panel-top"><span class="admin-secure-mark">S</span><span class="admin-secure-label">ENCRYPTED ADMIN SESSION</span></div>
+<div id="admin-auth-loading" class="admin-login-loading" role="status">Checking administrator access…</div>
+<div id="admin-login-content" hidden><span class="admin-login-eyebrow" id="admin-login-eyebrow">WELCOME BACK</span><h2 id="admin-login-title">Administrator sign in</h2>
+<p class="admin-login-intro" id="admin-login-intro">Sign in with your administrator account to open the private console.</p>
+<form id="admin-login-form" class="admin-login-form" hidden>
+<label for="admin-email">Administrator email</label><input id="admin-email" type="email" autocomplete="username" maxlength="320" placeholder="name@organisation.com" required>
+<label for="admin-password">Password</label><input id="admin-password" type="password" autocomplete="current-password" minlength="14" maxlength="256" placeholder="Enter your password" required>
+<button class="admin-login-submit" type="submit"><span>Sign in securely</span><span>→</span></button></form>
+<form id="admin-setup-form" class="admin-login-form" hidden>
+<label for="admin-bootstrap-token">One-time setup token</label><input id="admin-bootstrap-token" type="password" autocomplete="off" minlength="32" maxlength="512" placeholder="Paste the server-provided setup token" required>
+<label for="admin-setup-email">Owner email</label><input id="admin-setup-email" type="email" autocomplete="username" maxlength="320" placeholder="owner@organisation.com" required>
+<label for="admin-setup-password">Create a strong password</label><input id="admin-setup-password" type="password" autocomplete="new-password" minlength="14" maxlength="256" placeholder="At least 14 characters" required>
+<label for="admin-setup-confirm">Confirm password</label><input id="admin-setup-confirm" type="password" autocomplete="new-password" minlength="14" maxlength="256" placeholder="Re-enter your password" required>
+<button class="admin-login-submit" type="submit"><span>Create owner account</span><span>→</span></button>
+<p class="admin-login-hint">This one-time setup creates the first owner account. The setup token is not stored in browser storage.</p></form>
+<div id="admin-login-status" class="admin-login-status" role="status" aria-live="polite"></div></div>
+<div class="admin-login-panel-foot"><span>Protected by server-side authentication</span><a href="contact.html">Need assistance?</a></div></section></main>
+<script src="admin-login.js" defer></script></body></html>

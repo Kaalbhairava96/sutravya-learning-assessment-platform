@@ -68,22 +68,22 @@
             <span class="register-panel-icon" aria-hidden="true">01</span>
           </div>
 
-          <div class="form-section-title"><span>01</span><div><b>Registration category</b><small>Choose Nursing, Paramedical or MBBS. MBBS candidates then select UG or PG.</small></div></div>
+          <div class="form-section-title"><span>01</span><div><b>Registration category</b><small>Choose your registration category first. Medical candidates then select Medical UG or Medical PG.</small></div></div>
           <div class="registration-field-grid">
             <div class="field"><label for="reg-category">REGISTRATION CATEGORY *</label>
               <select id="reg-category" name="category" required>
                 <option value="">Choose category</option>
                 <option value="nursing">Nursing — ₹250</option>
                 <option value="paramedical">Paramedical — ₹250</option>
-                <option value="mbbs">MBBS — ₹500</option>
+                <option value="medical">Medical — ₹500</option>
               </select>
             </div>
-            <div class="field"><label for="reg-programme">PROGRAMME / MBBS LEVEL *</label>
+            <div class="field"><label for="reg-programme">PROGRAMME / SUB-CATEGORY *</label>
               <select id="reg-programme" name="programme" required disabled><option value="">Select category first</option></select>
             </div>
           </div>
 
-          <div class="form-section-title"><span>02</span><div><b>Academic details</b><small>Fields change according to your selected category and MBBS level.</small></div></div>
+          <div class="form-section-title"><span>02</span><div><b>Academic details</b><small>Fields change according to your selected category and programme.</small></div></div>
           <div class="registration-field-grid">
             <div class="field" data-year-field hidden><label for="reg-year">CURRENT YEAR *</label><select id="reg-year" name="year"><option value="">Select year</option></select></div>
             <div class="field field-span-2" data-academic-stage-field hidden><label for="reg-academic-stage">CURRENT YEAR / SEMESTER / INTERNSHIP STAGE *</label><input id="reg-academic-stage" name="academic_stage" maxlength="120" placeholder="Example: Year 2, Semester 4, Internship"><small class="field-help">Enter the academic stage as shown by your institution. Course duration may vary by institution.</small></div>

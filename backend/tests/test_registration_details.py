@@ -60,19 +60,19 @@ class RegistrationDetailsTests(unittest.TestCase):
             ))
         self.assertEqual(rejected.exception.status_code, 422)
 
-    def test_mbbs_ug_and_pg_are_distinct_subcategories_and_exam_streams(self):
+    def test_medical_ug_and_pg_are_distinct_programmes_and_exam_streams(self):
         for year in range(1, 6):
             details = build_registration_details(payload(
-                category="mbbs", programme="mbbs_ug", year=year,
+                category="medical", programme="medical_ug", year=year,
             ))
-            self.assertEqual(details["category"], "mbbs")
+            self.assertEqual(details["category"], "medical")
             self.assertEqual(details["subcategory"], "UG")
             self.assertEqual(details["stream"], "mbbs_ug")
             self.assertEqual(details["registration_fee_paise"], 50000)
             self.assertEqual(details["academic_stage"], f"Year {year}")
         for year in range(1, 4):
             details = build_registration_details(payload(
-                category="mbbs", programme="mbbs_pg", year=year,
+                category="medical", programme="medical_pg", year=year,
             ))
             self.assertEqual(details["subcategory"], "PG")
             self.assertEqual(details["stream"], "mbbs_pg")

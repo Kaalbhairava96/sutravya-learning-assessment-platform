@@ -1,64 +1,42 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#F7F9F7">
-  <meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com">
-  <title>Assessment Administration | SUTRAVYA</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="layout.css">
-  
-</head>
-<body class="admin-body">
-  <main class="admin-shell">
-    <section class="admin-hero">
-      <span class="admin-muted">SUTRAVYA · QUALINOVA HTSE 2026</span>
-      <h1>Assessment administration</h1>
-      <p>Private organiser workspace for stream-wise slots, verified registrations and question-bank provisioning.</p>
-      <div class="admin-field">
-        <label for="admin-key">Administrator API key</label>
-        <input id="admin-key" type="password" autocomplete="off" placeholder="Enter the private ADMIN_API_KEY">
-      </div>
-      <button class="admin-button" id="connect" type="button">Connect securely</button>
-      <p class="admin-muted">The key stays in this page's memory only. It is not saved in browser storage.</p>
-      <div id="overview" aria-live="polite"></div>
-    </section>
-
-    <div class="qv3-admin-overview"><div class="qv3-copy"><span class="qv3-kicker">ASSESSMENT OPERATIONS</span><h2>Configure with clarity.<br>Validate before launch.</h2><p>Manage pathway-specific slots, candidate assignment and the faculty-approved official question bank.</p></div><div class="qv3-diagram"><img src="assets/brand-admin.svg" alt="Assessment administration dashboard for exam slots, candidate assignments and question-bank readiness"></div></div>
-    <div class="admin-grid">
-      <section class="admin-card">
-        <h2>Create an exam slot</h2>
-        <form id="slot-form">
-          <div class="admin-field"><label for="slot-stream">Assessment stream</label><select id="slot-stream" required><option value="paramedical">Paramedical</option><option value="nursing">Nursing</option><option value="mbbs_ug">MBBS Undergraduate (UG)</option><option value="mbbs_pg">MBBS Postgraduate (PG)</option></select></div>
-          <div class="admin-field"><label for="slot-start">Starts at (IST)</label><input id="slot-start" type="datetime-local" required></div>
-          <div class="admin-field"><label for="slot-end">Ends at (IST)</label><input id="slot-end" type="datetime-local" required></div>
-          <div class="admin-field"><label for="slot-capacity">Maximum simultaneous attempts</label><input id="slot-capacity" type="number" min="1" max="1500" value="1000" required></div>
-          <button class="admin-button" type="submit">Create slot</button>
-        </form>
-        <div class="admin-status" id="slot-status" aria-live="polite"></div>
-      </section>
-
-      <section class="admin-card">
-        <h2>Assign registrations</h2>
-        <form id="assign-form">
-          <div class="admin-field"><label for="assign-slot">Slot ID</label><input id="assign-slot" required placeholder="UUID of the stream slot"></div>
-          <div class="admin-field"><label for="registration-ids">Registration IDs</label><textarea id="registration-ids" required placeholder="Paste registration IDs separated by commas or new lines"></textarea></div>
-          <button class="admin-button" type="submit">Assign candidates</button>
-        </form>
-        <div class="admin-status" id="assign-status" aria-live="polite"></div>
-      </section>
-
-      <section class="admin-card admin-span">
-        <h2>Import official question bank</h2>
-        <p class="admin-muted">Upload exactly 100 faculty-approved MCQs for the selected pathway, with 20 questions in each of that pathway's five approved subject blocks. Every question needs four options (A–D), one correct answer, an easy/moderate label and a 15–60 second server timer. Scoring is fixed at +1 / −0.25 / 0. A bank cannot be overwritten after questions or attempts exist.</p>
-        <div class="admin-field"><label for="question-file">Question-bank JSON</label><input id="question-file" type="file" accept=".json,application/json"></div>
-        <button class="admin-button" id="import-bank" type="button">Validate and import question bank</button>
-        <div class="admin-status" id="import-status" aria-live="polite"></div>
-      </section>
-    </div>
-  </main>
-  <script src="admin.js"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#061D42">
+<meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com"><title>Admin Console | SUTRAVYA</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="layout.css"><link rel="stylesheet" href="admin-portal.css"></head>
+<body class="admin-portal-body"><div class="admin-portal-shell" id="admin-portal" hidden>
+<aside class="admin-sidebar"><a class="admin-sidebar-brand" href="index.html"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a>
+<div class="admin-sidebar-caption">PRIVATE WORKSPACE</div><nav class="admin-side-nav" aria-label="Administrator navigation">
+<button class="is-active" data-admin-view="overview"><span>◫</span> Overview</button><button data-admin-view="registrations"><span>▤</span> Registrations</button>
+<button data-admin-view="database"><span>▦</span> Database explorer</button><button data-admin-view="slots"><span>◷</span> Exam scheduling</button>
+<button data-admin-view="results"><span>◉</span> Results &amp; release</button><button data-admin-view="audit"><span>⌁</span> Audit history</button></nav>
+<div class="admin-sidebar-bottom"><div class="admin-sidebar-security"><span class="admin-status-dot"></span><div><b>Protected session</b><small>Access is logged and monitored</small></div></div><a href="index.html">← Back to public website</a></div></aside>
+<main class="admin-main"><header class="admin-topbar"><div><span class="admin-topbar-kicker">SUTRAVYA · QUALINOVA HTSE 2026</span><h1 id="admin-page-title">Operations overview</h1></div>
+<div class="admin-topbar-actions"><span class="admin-user-chip"><i id="admin-user-avatar">A</i><span><b id="admin-user-email">Administrator</b><small id="admin-user-role">Owner</small></span></span><button class="admin-logout-button" id="admin-logout" type="button">Sign out</button></div></header>
+<div id="admin-global-status" class="admin-global-status" role="status" aria-live="polite"></div>
+<section class="admin-view is-active" id="view-overview" data-view-panel="overview"><div class="admin-welcome-band"><div><span class="admin-light-kicker">COMMAND CENTRE</span><h2>Your assessment operations, at a glance.</h2><p>Monitor candidate records, assessment readiness and administrator activity.</p></div><div class="admin-welcome-mark" aria-hidden="true"><span>Q</span><b>×</b><span>S</span></div></div>
+<div class="admin-metric-grid" id="admin-metrics"></div><div class="admin-overview-grid">
+<section class="admin-panel"><div class="admin-panel-heading"><div><span class="admin-section-kicker">DATABASE HEALTH</span><h3>Connected data store</h3></div><span class="admin-live-pill"><i></i> Connected</span></div><div id="admin-database-summary" class="admin-database-summary"></div></section>
+<section class="admin-panel"><div class="admin-panel-heading"><div><span class="admin-section-kicker">QUICK ACCESS</span><h3>Go to a workspace</h3></div></div>
+<div class="admin-quick-links"><button data-admin-view="registrations"><b>Registrations</b><small>Review candidate records</small><span>→</span></button><button data-admin-view="database"><b>Database explorer</b><small>Browse and edit permitted fields</small><span>→</span></button><button data-admin-view="slots"><b>Exam scheduling</b><small>Create slots and assign candidates</small><span>→</span></button><button data-admin-view="audit"><b>Audit history</b><small>Review administrator actions</small><span>→</span></button></div></section></div>
+<section class="admin-panel"><div class="admin-panel-heading"><div><span class="admin-section-kicker">ASSESSMENT PATHWAYS</span><h3>Stream-wise readiness</h3></div></div><div class="admin-readiness-grid" id="admin-readiness"></div></section></section>
+<section class="admin-view" id="view-registrations" data-view-panel="registrations"><div class="admin-section-intro"><div><span class="admin-section-kicker">CANDIDATE MANAGEMENT</span><h2>Registrations</h2><p>Search, review and safely update eligible registration records.</p></div><button class="admin-secondary-button" data-open-table="registrations">Open in database explorer ↗</button></div>
+<div class="admin-panel"><div class="admin-panel-heading"><div><h3>Candidate applications</h3><small>Use the database explorer for search, pagination and permission-aware editing.</small></div></div><div id="admin-registration-preview"></div></div></section>
+<section class="admin-view" id="view-database" data-view-panel="database"><div class="admin-section-intro"><div><span class="admin-section-kicker">DATA MANAGEMENT</span><h2>Database explorer</h2><p>Browse all application tables. Authentication and OTP records are protected.</p></div><div class="admin-database-badges" id="admin-database-badges"></div></div>
+<div class="admin-database-layout"><aside class="admin-table-list-panel"><div class="admin-panel-heading"><div><h3>Tables</h3><small id="admin-table-count">Loading schema…</small></div></div><label class="admin-table-search-label" for="admin-table-filter">Find a table</label><input id="admin-table-filter" type="search" placeholder="Search tables…"><div id="admin-table-list" class="admin-table-list"></div></aside>
+<section class="admin-panel admin-table-workspace"><div class="admin-panel-heading admin-table-heading"><div><span class="admin-section-kicker" id="admin-table-kicker">SELECT A TABLE</span><h3 id="admin-selected-table">Database records</h3><small id="admin-selected-description">Choose a table from the left to browse records.</small></div><button class="admin-secondary-button" id="admin-refresh-table" type="button" disabled>↻ Refresh</button></div>
+<div id="admin-table-content" class="admin-table-content"><div class="admin-empty-state"><b>Select a database table</b><span>Records appear with search, pagination and permission-aware editing.</span></div></div></section></div>
+<div class="admin-edit-modal" id="admin-edit-modal" hidden><div class="admin-modal-backdrop" data-close-edit></div><section class="admin-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-edit-title"><div class="admin-panel-heading"><div><span class="admin-section-kicker">CONTROLLED RECORD UPDATE</span><h3 id="admin-edit-title">Edit record</h3><small id="admin-edit-subtitle"></small></div><button class="admin-modal-close" type="button" data-close-edit aria-label="Close edit dialog">×</button></div>
+<form id="admin-edit-form"><div id="admin-edit-fields" class="admin-edit-fields"></div><div class="admin-edit-warning">Changes are recorded in the audit history. Fields affecting existing exam attempts are locked.</div><div class="admin-modal-actions"><button type="button" class="admin-secondary-button" data-close-edit>Cancel</button><button type="submit" class="admin-primary-button">Save audited changes</button></div><div id="admin-edit-status" class="admin-login-status" role="status" aria-live="polite"></div></form></section></div></section>
+<section class="admin-view" id="view-slots" data-view-panel="slots"><div class="admin-section-intro"><div><span class="admin-section-kicker">EXAM OPERATIONS</span><h2>Exam scheduling</h2><p>Create pathway-specific exam slots and assign eligible candidate registrations.</p></div></div>
+<div class="admin-slot-grid"><section class="admin-panel"><div class="admin-panel-heading"><div><h3>Create an exam slot</h3><small>Future slot · minimum 47 minutes · capacity up to 1,500</small></div></div>
+<form class="admin-operation-form" id="admin-slot-form"><label>Assessment stream<select id="admin-slot-stream" required><option value="paramedical">Paramedical</option><option value="nursing">Nursing</option><option value="mbbs_ug">Medical UG</option><option value="mbbs_pg">Medical PG</option></select></label>
+<label>Starts at (IST)<input id="admin-slot-start" type="datetime-local" required></label><label>Ends at (IST)<input id="admin-slot-end" type="datetime-local" required></label><label>Maximum simultaneous attempts<input id="admin-slot-capacity" type="number" min="1" max="1500" value="1000" required></label><button class="admin-primary-button" type="submit">Create examination slot →</button><div id="admin-slot-status" class="admin-login-status" role="status" aria-live="polite"></div></form></section>
+<section class="admin-panel"><div class="admin-panel-heading"><div><h3>Assign registrations</h3><small>Only active matching-stream registrations without an existing attempt can be assigned.</small></div></div>
+<form class="admin-operation-form" id="admin-assign-form"><label>Exam slot<select id="admin-assign-slot" required><option value="">Load available slots</option></select></label><label>Registration IDs<textarea id="admin-assign-ids" rows="5" placeholder="Paste registration IDs separated by commas or new lines" required></textarea></label><button class="admin-primary-button" type="submit">Assign candidates →</button><div id="admin-assign-status" class="admin-login-status" role="status" aria-live="polite"></div></form></section></div>
+<section class="admin-panel"><div class="admin-panel-heading"><div><h3>Configured examination slots</h3><small>Schedule changes are locked once attempts have started.</small></div></div><div id="admin-slot-table"></div></section></section>
+<section class="admin-view" id="view-results" data-view-panel="results"><div class="admin-section-intro"><div><span class="admin-section-kicker">RESULTS GOVERNANCE</span><h2>Results &amp; release</h2><p>Review calculated scores, approve them and release only after approval.</p></div><button class="admin-secondary-button" data-open-table="results">Open results table ↗</button></div><section class="admin-panel"><div class="admin-panel-heading"><div><h3>Result approval queue</h3><small>Approval and release actions are separately recorded in the audit trail.</small></div></div><div id="admin-results-table"></div></section></section>
+<section class="admin-view" id="view-audit" data-view-panel="audit"><div class="admin-section-intro"><div><span class="admin-section-kicker">ACCOUNTABILITY</span><h2>Audit history</h2><p>Review administrator sign-ins, record updates, scheduling and result actions.</p></div><button class="admin-secondary-button" id="admin-refresh-audit">↻ Refresh history</button></div><section class="admin-panel"><div id="admin-audit-table"></div></section></section>
+<footer class="admin-main-footer"><span>SUTRAVYA · Private administrator workspace</span><span>Permitted changes are recorded. Secrets and answer-key material remain protected.</span></footer></main></div>
+<div class="admin-auth-redirect" id="admin-auth-redirect" role="status">Verifying administrator session…</div><script src="admin-portal.js" defer></script></body></html>

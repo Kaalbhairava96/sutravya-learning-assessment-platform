@@ -425,7 +425,7 @@ def verify_registration_email(
             details = candidate.pending_registration_details
             paid_application = details is not None
             amount_paise = int(details.get("registration_fee_paise", 0)) if paid_application else None
-            expected_fee = {"nursing": 25000, "paramedical": 25000, "mbbs": 50000}.get(details.get("category")) if paid_application else None
+            expected_fee = {"nursing": 25000, "paramedical": 25000, "medical": 50000, "mbbs": 50000}.get(details.get("category")) if paid_application else None
             if paid_application and (expected_fee is None or amount_paise != expected_fee):
                 raise RegistrationError("registration_fee_invalid", 422)
             registration = Registration(

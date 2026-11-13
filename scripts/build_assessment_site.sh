@@ -5,7 +5,7 @@ publish_dir="$repo_root/assessment-public"
 if [[ -L "$publish_dir" ]]; then echo "Refusing to stage the public site through a symlink." >&2; exit 1; fi
 rm -rf "$publish_dir"
 mkdir -p "$publish_dir/assets"
-source_files=(index.html awards.html syllabus.html hackathon.html sample-papers.html mock-test.html faqs.html contact.html login.html register.html registration.js team-prelaunch.html admin.html admin.js exam.html exam.js styles.css layout.css site.js sample-papers.js mock-test.js question-bank.js)
+source_files=(index.html awards.html syllabus.html hackathon.html sample-papers.html mock-test.html faqs.html contact.html login.html register.html registration.js team-prelaunch.html admin-login.html admin-login.js admin-portal.js admin-portal.css admin.html admin.js exam.html exam.js styles.css layout.css site.js sample-papers.js mock-test.js question-bank.js)
 asset_files=(brand-home.svg brand-home-pathways.svg brand-home-learning.svg brand-home-hackathon.svg brand-home-recognition.svg brand-registration.svg brand-syllabus.svg brand-syllabus-map.svg brand-samples.svg brand-sample-explanation.svg brand-mock.svg brand-awards.svg brand-launchpad.svg brand-hackathon.svg brand-faq.svg brand-contact.svg brand-login.svg brand-team.svg brand-admin.svg brand-exam.svg brand-award-podium.svg brand-hackathon-award.svg favicon.svg sutravya-logo.png qualinova-logo.png healthcare-talent-search-og.jpg)
 allowed=""
 for file in "${source_files[@]}"; do

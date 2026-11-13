@@ -477,6 +477,30 @@ class AdminUser(TimestampMixin, Base):
     audit_events: Mapped[list["AuditEvent"]] = relationship(back_populates="actor")
 
 
+class AdminSession(Base):
+    """Opaque, revocable admin browser session. Only a SHA-256 token digest is persisted."""
+
+    __tablename__ = "admin_sessions"
+    __table_args__ = (
+        UniqueConstraint("token_digest", name="uq_admin_sessions_token_digest"),
+        Index("ix_admin_sessions_admin_expiry", "admin_user_id", "expires_at"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    admin_user_id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("admin_users.id", ondelete="CASCADE", name="fk_admin_sessions_admin_user_id_admin_users"),
+        nullable=False,
+    )
+    token_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class Result(TimestampMixin, Base):
     __tablename__ = "results"
     __table_args__ = (UniqueConstraint("attempt_id", name="uq_results_attempt_id"),)

@@ -4,16 +4,16 @@ from __future__ import annotations
 import re
 from fastapi import HTTPException
 
-CATEGORY_FEES = {"nursing": 25000, "paramedical": 25000, "mbbs": 50000}
+CATEGORY_FEES = {"nursing": 25000, "paramedical": 25000, "medical": 50000}
 PROGRAMMES = {
     "nursing": {"bsc_nursing": "B.Sc Nursing", "msc_nursing": "M.Sc Nursing"},
     "paramedical": {
         "bmlt": "BMLT", "bott": "BOTT", "bhm": "BHM",
         "bopt": "B.Opt", "brit": "BRIT",
     },
-    "mbbs": {
-        "mbbs_ug": "MBBS Undergraduate (UG)",
-        "mbbs_pg": "MBBS Postgraduate (PG)",
+    "medical": {
+        "medical_ug": "Medical UG",
+        "medical_pg": "Medical PG",
     },
 }
 _MOBILE = re.compile(r"^[6-9][0-9]{9}$")
@@ -30,7 +30,7 @@ def build_registration_details(payload, session=None) -> dict:
     """Validate category and pathway; always calculate fee on the server."""
     category = (payload.category or "").strip().lower()
     if category not in CATEGORY_FEES:
-        raise HTTPException(status_code=422, detail="Choose Nursing, Paramedical or MBBS.")
+        raise HTTPException(status_code=422, detail="Choose Nursing, Paramedical or Medical.")
     programme = (payload.programme or "").strip().lower()
     if programme not in PROGRAMMES[category]:
         raise HTTPException(status_code=422, detail="Choose a valid programme or MBBS sub-category.")
@@ -61,19 +61,19 @@ def build_registration_details(payload, session=None) -> dict:
             raise HTTPException(status_code=422, detail="Select the current year for the selected Nursing programme.")
         academic_stage = f"Year {year}"
         stream = "nursing"
-    elif category == "mbbs":
-        subcategory = "UG" if programme == "mbbs_ug" else "PG"
+    elif category == "medical":
+        subcategory = "UG" if programme == "medical_ug" else "PG"
         allowed = set(range(1, 6)) if subcategory == "UG" else {1, 2, 3}
         if year not in allowed:
             stage = "1st to 5th" if subcategory == "UG" else "1st to 3rd"
-            raise HTTPException(status_code=422, detail=f"Select your current MBBS {subcategory} year ({stage}).")
+            raise HTTPException(status_code=422, detail=f"Select your current Medical {subcategory} year ({stage}).")
         academic_stage = f"Year {year}"
-        stream = programme
+        stream = "mbbs_ug" if programme == "medical_ug" else "mbbs_pg"
     else:
         academic_stage = _required(academic_stage, "current year / semester / internship details", 120)
         stream = "paramedical"
 
-    labels = {"nursing": "Nursing", "paramedical": "Paramedical", "mbbs": "MBBS"}
+    labels = {"nursing": "Nursing", "paramedical": "Paramedical", "medical": "Medical"}
     details = {
         "category": category,
         "category_label": labels[category],
@@ -91,9 +91,9 @@ def build_registration_details(payload, session=None) -> dict:
         "state": state,
         "pin_code": pin,
     }
-    if category in {"nursing", "mbbs"}:
+    if category in {"nursing", "medical"}:
         details["year"] = year
-    if category == "mbbs":
+    if category == "medical":
         details["subcategory"] = subcategory
-        details["subcategory_label"] = f"MBBS {subcategory}"
+        details["subcategory_label"] = f"Medical {subcategory}"
     return details
