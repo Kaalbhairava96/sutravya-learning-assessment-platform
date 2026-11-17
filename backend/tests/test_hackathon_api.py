@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import os
 import unittest
 from http.cookies import SimpleCookie
+from unittest.mock import patch
 
 from sqlalchemy import create_engine, event, select
 from fastapi import HTTPException
@@ -13,15 +15,22 @@ from starlette.responses import Response
 
 from app.config import Settings
 from app.models import Base, HackathonRegistration, Registration
-from app.main import (
-    HACKATHON_SESSION_COOKIE,
-    EmailOtpRequest,
-    HackathonLoginRequest,
-    HackathonRegistrationRequest,
-    create_app,
-)
 
 TEST_DATABASE_URL = "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/hackathon_test"
+_TEST_ENVIRONMENT = {
+    "APP_ENV": "test",
+    "LOG_LEVEL": "CRITICAL",
+    "DATABASE_URL": TEST_DATABASE_URL,
+}
+with patch.dict(os.environ, _TEST_ENVIRONMENT), patch("app.config._read_dotenv", return_value={}):
+    from app.main import (
+        HACKATHON_SESSION_COOKIE,
+        EmailOtpRequest,
+        HackathonLoginRequest,
+        HackathonRegistrationRequest,
+        create_app,
+    )
+
 OTP_PEPPER = "hackathon-test-pepper-value-with-at-least-32-bytes"
 
 
