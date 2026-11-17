@@ -16,7 +16,7 @@ from starlette.responses import Response
 from app.config import Settings
 from app.models import Base, HackathonRegistration, Registration
 
-TEST_DATABASE_URL = "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/hackathon_test"
+TEST_DATABASE_URL = "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test"
 _TEST_ENVIRONMENT = {
     "APP_ENV": "test",
     "LOG_LEVEL": "CRITICAL",
