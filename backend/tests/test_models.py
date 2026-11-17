@@ -278,7 +278,9 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertIn("option_order", Base.metadata.tables["candidate_responses"].columns)
         admin_session_revision = script.get_revision("0013_admin_browser_sessions")
         self.assertEqual(admin_session_revision.down_revision, "0012_mbbs_ug_pg_subject_blocks")
-        self.assertEqual(len(Base.metadata.tables), 16)
+        hackathon_revision = script.get_revision("0014_hackathon_registrations")
+        self.assertEqual(hackathon_revision.down_revision, "0013_admin_browser_sessions")
+        self.assertEqual(len(Base.metadata.tables), 18)
 
     def test_migration_renders_offline_without_database(self) -> None:
         test_env = {
