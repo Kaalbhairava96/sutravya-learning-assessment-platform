@@ -162,6 +162,12 @@ def send_otp_email(
     elif purpose == "login":
         subject = "Your SUTRAVYA sign-in code"
         lead = "Use this one-time code to sign in to your candidate account."
+    elif purpose == "hackathon_registration_verification":
+        subject = "Verify your Healthcare Innovation Hackathon registration"
+        lead = "Use this one-time code to verify your email and complete your free Hackathon registration."
+    elif purpose == "hackathon_login":
+        subject = "Your Healthcare Innovation Hackathon sign-in code"
+        lead = "Use this one-time code to sign in with your Hackathon Registration ID."
     else:
         raise ValueError("Unsupported email OTP purpose.")
     safe_name = escape(recipient_name)
@@ -190,6 +196,51 @@ def send_registration_confirmation(
                 f"<p>Hello {safe_name},</p><p>Your email is verified and your registration is complete.</p>"
                 f"<p>Registration ID: <strong>{safe_id}</strong></p><p>Exam stream: {safe_stream}</p>"
                 "<p>Keep your Registration ID. You will use email OTP to sign in.</p>"
+            ),
+        },
+        settings=settings,
+    )
+
+
+def send_hackathon_registration_confirmation(
+    *, recipient_email: str, recipient_name: str, registration_id: str, settings: Settings,
+) -> None:
+    safe_name, safe_id = escape(recipient_name), escape(registration_id)
+    _send(
+        {
+            "from": settings.resend_from_email,
+            "to": [recipient_email],
+            "subject": "Hackathon registration confirmed | HTSE 2026",
+            "html": (
+                f"<p>Hello {safe_name},</p>"
+                "<p>Your email has been verified and your free Healthcare Innovation Hackathon registration is confirmed.</p>"
+                f"<p>Your unique Hackathon Registration ID is <strong>{safe_id}</strong>.</p>"
+                "<p>Keep this ID. To sign in later, enter this Registration ID and request an email one-time code.</p>"
+                "<p>Project synopsis deadline: 27 November 2026, 11:59 PM IST. Submission instructions are being sent in a separate email.</p>"
+                "<p>Open your participant portal at <a href='https://assessment.sutravya.in/hackathon-portal.html'>Hackathon participant sign-in</a>.</p>"
+            ),
+        },
+        settings=settings,
+    )
+
+
+def send_hackathon_submission_instructions(
+    *, recipient_email: str, recipient_name: str, registration_id: str, settings: Settings,
+) -> None:
+    safe_name, safe_id = escape(recipient_name), escape(registration_id)
+    _send(
+        {
+            "from": settings.resend_from_email,
+            "to": [recipient_email],
+            "subject": "Action required: email your Hackathon synopsis by 27 November 2026",
+            "html": (
+                f"<p>Hello {safe_name},</p>"
+                f"<p>Your Hackathon Registration ID is <strong>{safe_id}</strong>.</p>"
+                "<p>Please submit your project synopsis by email only to "
+                "<a href='mailto:sutravya.connect@gmail.com'>sutravya.connect@gmail.com</a>.</p>"
+                "<p><strong>Deadline: 27 November 2026, 11:59 PM IST.</strong></p>"
+                "<p>There is no website upload or alternate submission form. Do not submit the synopsis through any other website or form.</p>"
+                "<p>Selected teams will be notified by email. Shortlisted teams are scheduled to present their prototype on 4 December 2026.</p>"
             ),
         },
         settings=settings,

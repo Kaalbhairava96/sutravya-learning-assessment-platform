@@ -26,7 +26,7 @@ const eventConfig = Object.freeze({
 
 const navigation = [
   ['index.html', 'Home'], ['syllabus.html', 'Syllabus'], ['sample-papers.html', 'Sample MCQs'],
-  ['mock-test.html', 'Mock Tests'], ['hackathon.html', 'Hackathon'], ['awards.html', 'Awards'],
+  ['mock-test.html', 'Mock Tests'], ['hackathon.html', 'Hackathon'], ['hackathon-portal.html', 'Participant Portal'], ['awards.html', 'Awards'],
   ['faqs.html', 'FAQs'], ['register.html', 'Register'], ['contact.html', 'Contact']
 ];
 const currentPage = location.pathname.split('/').pop() || 'index.html';
@@ -54,7 +54,8 @@ function icon(name) {
     globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>',
     shield: '<path d="M12 3 20 6v5c0 5-3 8-8 10-5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
-    close: '<path d="m6 6 12 12M18 6 6 18"/>'
+    close: '<path d="m6 6 12 12M18 6 6 18"/>',
+    whatsapp: '<path d="M20.5 3.5a10.1 10.1 0 0 0-15.8 12.8l-1.2 4.2 4.3-1.1a10.1 10.1 0 1 0 12.7-15.9Z"/><path d="M8.5 7.7c.2-.4.4-.4.6-.4h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4-.1.6a7.4 7.4 0 0 0 3.1 3.1c.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.4.5 0 .3-.2 1-.6 1.3-.4.4-1.1.6-1.7.5a10.2 10.2 0 0 1-4.5-2.2 10 10 0 0 1-3.1-3.8c-.4-.8-.6-1.6-.3-2.2.3-.5.8-.9 1.1-1.1Z"/>'
   };
   return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths[name] || paths.arrow}</svg>`;
 }
@@ -63,7 +64,7 @@ const header = document.querySelector('[data-header]');
 if (header) {
   const navLink = ([url,label]) => '<a class="nav-link" href="'+url+'"'+(url===currentPage ? ' aria-current="page"' : '')+'>'+label+'</a>';
   const preparation = ['syllabus.html','sample-papers.html','mock-test.html'];
-  const innovation = ['hackathon.html','awards.html'];
+  const innovation = ['hackathon.html','hackathon-portal.html','awards.html'];
   const inPreparation = preparation.includes(currentPage);
   const inInnovation = innovation.includes(currentPage);
   header.innerHTML = '<div class="site-topline"></div><header class="site-header"><div class="wrap header-inner">' +
@@ -74,7 +75,7 @@ if (header) {
     '<details class="nav-dropdown"><summary '+(inPreparation?'aria-current="page"':'')+'>Preparation</summary><div class="nav-dropdown-menu">' +
     navLink(['syllabus.html','Syllabus'])+navLink(['sample-papers.html','Sample MCQs'])+navLink(['mock-test.html','Mock Tests'])+'</div></details>' +
     '<details class="nav-dropdown"><summary '+(inInnovation?'aria-current="page"':'')+'>Innovation</summary><div class="nav-dropdown-menu">' +
-    navLink(['hackathon.html','Hackathon'])+navLink(['awards.html','Awards &amp; Recognition'])+'</div></details>' +
+    navLink(['hackathon.html','Hackathon'])+navLink(['hackathon-portal.html','Participant Portal'])+navLink(['awards.html','Awards &amp; Recognition'])+'</div></details>' +
     navLink(['faqs.html','Help Centre'])+navLink(['contact.html','Contact']) +
     '<a class="nav-register" href="register.html"'+(currentPage==='register.html'?' aria-current="page"':'')+'>Register now '+icon('arrow')+'</a></nav></div></header>';
   const toggle=header.querySelector('.nav-toggle');
@@ -100,16 +101,23 @@ if (header) {
 
 const footer=document.querySelector('[data-footer]');
 if(footer){
+  const contactLink=(url,kind,value,label)=>'<a class="footer-contact-link" href="'+url+'"'+(kind==='whatsapp'?' target="_blank" rel="noopener"':'')+'><span class="footer-contact-icon footer-icon-'+kind+'">'+icon(kind)+'</span><span><small>'+label+'</small><b>'+value+'</b></span><span class="footer-contact-arrow" aria-hidden="true">↗</span></a>';
   footer.innerHTML='<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid">' +
     '<div class="footer-brand"><div class="footer-brand-pair" aria-label="SUTRAVYA and QualiNova event partnership">' +
     '<a class="footer-sutravya-logo" href="https://sutravya.in" target="_blank" rel="noopener" aria-label="SUTRAVYA website"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a>' +
     '<a class="footer-qualinova-logo" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova website"><img src="assets/qualinova-logo.png" alt="QualiNova Solutions — event organiser"></a></div>' +
     '<p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p>' +
     '<a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in '+icon('arrow')+'</a></div>' +
-    '<div class="footer-column"><h2>Explore</h2>'+navigation.slice(0,6).map(([url,label])=>'<a href="'+url+'">'+label+'</a>').join('')+'</div>' +
-    '<div class="footer-column"><h2>Exam details</h2><span>4 December 2026</span><span>Online · '+eventConfig.assessmentStreams.length+' assessment pathways · '+eventConfig.registrationCategories.length+' registration categories</span><span>100 MCQs · approximately 47 minutes</span><span>+1 correct · −0.25 incorrect · 0 unanswered</span><span>Category-wise registration fees</span><a href="register.html">Registration details '+icon('arrow')+'</a></div>' +
-    '<div class="footer-column footer-partners"><h2>Event organiser · QualiNova</h2><a href="tel:+919955521842">+91 99555 21842</a><a href="mailto:info@qualinovahub.com">info@qualinovahub.com</a><a href="https://qualinovahub.com" target="_blank" rel="noopener">qualinovahub.com '+icon('arrow')+'</a><h2 class="footer-subheading">Assessment &amp; technology partner · SUTRAVYA</h2><a href="tel:+916239646429">+91 62396 46429</a><a href="mailto:sutravya.connect@gmail.com">sutravya.connect@gmail.com</a></div>' +
-    '</div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact</a></div></div></footer>';
+    '<div class="footer-column"><h2>Explore</h2>'+navigation.slice(0,7).map(([url,label])=>'<a href="'+url+'">'+label+'</a>').join('')+'</div>' +
+    '<div class="footer-column"><h2>Candidate access</h2><a href="register.html">Healthcare exam registration '+icon('arrow')+'</a><a href="login.html">Candidate sign-in '+icon('arrow')+'</a><a href="hackathon.html#hackathon-register">Free Hackathon registration '+icon('arrow')+'</a><a href="hackathon-portal.html">Hackathon participant portal '+icon('arrow')+'</a><div class="footer-exam-note"><b>4 December 2026</b><span>Healthcare Talent Search Exam</span><span>100 MCQs · approximately 47 minutes</span></div></div>' +
+    '<div class="footer-column footer-partners"><h2>Connect with SUTRAVYA</h2>'+
+    contactLink('tel:+916239646429','phone','+91 62396 46429','CALL SUTRAVYA')+
+    contactLink('mailto:sutravya.connect@gmail.com','mail','sutravya.connect@gmail.com','EMAIL SUTRAVYA')+
+    contactLink('https://wa.me/916239646429','whatsapp','WhatsApp support','WHATSAPP SUTRAVYA')+
+    '<h2 class="footer-subheading">Event organiser · QualiNova</h2>'+
+    contactLink('tel:+919955521842','phone','+91 99555 21842','CALL QUALINOVA')+
+    contactLink('mailto:info@qualinovahub.com','mail','info@qualinovahub.com','EMAIL QUALINOVA')+
+    '</div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact '+icon('arrow')+'</a></div></div></footer>';
 }
 
 function initFaqSearch(){

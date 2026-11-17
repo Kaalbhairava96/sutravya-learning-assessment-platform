@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 import uuid
+import secrets
 import logging
 import hashlib
 import hmac
@@ -33,11 +34,14 @@ from app.email_provider import (
     EmailProviderConfigurationError,
     send_otp_email,
     send_registration_confirmation,
+    send_hackathon_registration_confirmation,
+    send_hackathon_submission_instructions,
 )
 from app.logging_config import configure_logging
 from app.models import (
     AnswerOption, AuditEvent, Candidate, ExamAttempt, ExamSlot, Question,
     QuestionBank, Registration, Result, ScoringRule, VerificationChallenge,
+    HackathonRegistration, HackathonSession,
 )
 from app.payments import PaymentNotConfigured, get_payment_gateway
 from app.registration_details import build_registration_details
@@ -60,6 +64,8 @@ from app.registration import (
     PUBLIC_REGISTRATION_SOURCE,
     TEAM_PRELAUNCH_SOURCE,
     RegistrationError,
+    PendingEmailChallenge,
+    normalize_mobile,
     create_login_challenge,
     create_registration_challenge,
     create_registration_candidate_session,
@@ -74,10 +80,17 @@ from app.registration import (
     verify_login_email,
     verify_registration_email,
 )
-from app.verification import ChallengeVerification
+from app.verification import (
+    ChallengeVerification, generate_otp, digest_destination, digest_otp,
+    verify_and_consume_challenge,
+)
 
 
 SESSION_COOKIE = "sutravya_candidate_session"
+HACKATHON_SESSION_COOKIE = "sutravya_hackathon_session"
+HACKATHON_REGISTRATION_PURPOSE = "hackathon_registration_verification"
+HACKATHON_LOGIN_PURPOSE = "hackathon_login"
+HACKATHON_SYNOPSIS_DEADLINE = datetime(2026, 11, 27, 23, 59, 0, tzinfo=ZoneInfo("Asia/Kolkata"))
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 REGISTRATION_CLOSES_AT = datetime(2026, 11, 26, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
@@ -150,6 +163,21 @@ class RegistrationRequest(BaseModel):
     state: str | None = Field(default=None, max_length=120)
     pin_code: str | None = Field(default=None, min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
     declaration_accepted: bool = False
+
+
+class HackathonRegistrationRequest(BaseModel):
+    full_name: str = Field(min_length=2, max_length=200)
+    email: str = Field(min_length=3, max_length=320)
+    mobile: str = Field(min_length=10, max_length=20)
+    college_name: str = Field(min_length=2, max_length=240)
+    year_of_study: int = Field(ge=1, le=4)
+    address: str = Field(min_length=8, max_length=600)
+    pin_code: str = Field(min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
+
+
+class HackathonLoginRequest(BaseModel):
+    registration_id: str = Field(min_length=6, max_length=32)
+    email: str = Field(min_length=3, max_length=320)
 
 
 class EmailOtpRequest(BaseModel):
@@ -382,6 +410,8 @@ def create_app(
     session_factory: sessionmaker[Session] | None = None,
     email_sender: Callable[..., None] = send_otp_email,
     confirmation_sender: Callable[..., None] = send_registration_confirmation,
+    hackathon_confirmation_sender: Callable[..., None] = send_hackathon_registration_confirmation,
+    hackathon_instructions_sender: Callable[..., None] = send_hackathon_submission_instructions,
 ) -> FastAPI:
     """Build the API after configuration validation; engine creation is lazy."""
     active_settings = settings or Settings.from_env()
@@ -401,6 +431,8 @@ def create_app(
     application.state.settings = active_settings
     application.state.email_sender = email_sender
     application.state.confirmation_sender = confirmation_sender
+    application.state.hackathon_confirmation_sender = hackathon_confirmation_sender
+    application.state.hackathon_instructions_sender = hackathon_instructions_sender
     application.include_router(secure_admin_router)
 
     def log_email_runtime_config_check() -> None:
@@ -421,14 +453,16 @@ def create_app(
 
     application.router.on_startup.append(log_email_runtime_config_check)
 
-    cors_origins = list(active_settings.cors_origins)
-    if active_settings.admin_frontend_origin and active_settings.admin_frontend_origin not in cors_origins:
-        cors_origins.append(active_settings.admin_frontend_origin)
+    cors_origins = list(dict.fromkeys([
+        *active_settings.cors_origins,
+        "https://assessment.sutravya.in",
+        *([active_settings.admin_frontend_origin] if active_settings.admin_frontend_origin else []),
+    ]))
     if cors_origins:
         application.add_middleware(
             CORSMiddleware,
             allow_origins=cors_origins,
-            allow_credentials=False,
+            allow_credentials=True,
             allow_methods=["GET", "POST", "PUT", "PATCH", "OPTIONS"],
             allow_headers=["Content-Type", "X-Internal-Test-Code", "X-Admin-Key", "X-Admin-Request", "X-Admin-Bootstrap-Token", "Authorization"],
         )
@@ -716,6 +750,301 @@ def create_app(
             ],
             "payment": {"provider": provider, "enabled": provider != "disabled", "currency": "INR"},
         }
+
+
+    @application.post("/api/hackathon/registrations/start", status_code=202, tags=["Hackathon registration"])
+    def start_hackathon_registration(payload: HackathonRegistrationRequest, request: Request):
+        settings = request.app.state.settings
+        try:
+            email = normalize_email(payload.email)
+            mobile = normalize_mobile(payload.mobile)
+            values = {
+                "full_name": " ".join(payload.full_name.split()),
+                "email": email,
+                "mobile": mobile,
+                "college_name": " ".join(payload.college_name.split()),
+                "year_of_study": payload.year_of_study,
+                "address": " ".join(payload.address.split()),
+                "pin_code": payload.pin_code,
+            }
+            if len(values["full_name"]) < 2 or len(values["college_name"]) < 2 or len(values["address"]) < 8:
+                raise HTTPException(status_code=422, detail="Complete all required Hackathon details.")
+            with _session(request) as session:
+                _limit(session, settings, scope="hackathon_registration_ip", subject=_client_ip(request), maximum=20)
+                _limit(session, settings, scope="hackathon_registration_email", subject=email, maximum=4)
+                _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+                now = _registration_now()
+                with session.begin():
+                    candidate = session.scalar(
+                        select(Candidate).where(func.lower(Candidate.email) == email).with_for_update()
+                    )
+                    if candidate is None:
+                        candidate = Candidate(full_name=values["full_name"], email=email)
+                        session.add(candidate)
+                        session.flush()
+                    registration = session.scalar(
+                        select(HackathonRegistration).where(
+                            (HackathonRegistration.candidate_id == candidate.id)
+                            | (func.lower(HackathonRegistration.email) == email)
+                        ).with_for_update()
+                    )
+                    if registration is not None and registration.status == "registered":
+                        raise HTTPException(status_code=409, detail="A Hackathon registration already exists for this email. Sign in using your Registration ID.")
+                    if registration is None:
+                        registration = HackathonRegistration(candidate_id=candidate.id, **values, status="pending")
+                        session.add(registration)
+                    else:
+                        for key, value in values.items():
+                            setattr(registration, key, value)
+                    session.query(VerificationChallenge).filter(
+                        VerificationChallenge.candidate_id == candidate.id,
+                        VerificationChallenge.channel == "email",
+                        VerificationChallenge.purpose == HACKATHON_REGISTRATION_PURPOSE,
+                        VerificationChallenge.consumed_at.is_(None),
+                        VerificationChallenge.invalidated_at.is_(None),
+                    ).update({VerificationChallenge.invalidated_at: now}, synchronize_session=False)
+                    otp = generate_otp()
+                    challenge = VerificationChallenge(
+                        candidate_id=candidate.id,
+                        channel="email",
+                        purpose=HACKATHON_REGISTRATION_PURPOSE,
+                        destination_digest=digest_destination(
+                            email, settings=settings, candidate_id=candidate.id,
+                            channel="email", purpose=HACKATHON_REGISTRATION_PURPOSE,
+                        ),
+                        otp_digest="0" * 64,
+                        created_at=now,
+                        expires_at=now + timedelta(seconds=settings.otp_expiry_seconds),
+                        is_internal_test=False,
+                        registration_source=PUBLIC_REGISTRATION_SOURCE,
+                    )
+                    session.add(challenge)
+                    session.flush()
+                    challenge.otp_digest = digest_otp(
+                        otp, settings=settings, challenge_id=challenge.id, candidate_id=candidate.id,
+                        channel="email", purpose=HACKATHON_REGISTRATION_PURPOSE,
+                    )
+                    pending = PendingEmailChallenge(
+                        challenge.id, candidate.id, email, otp, HACKATHON_REGISTRATION_PURPOSE
+                    )
+            _send_otp(request, pending)
+            return {"challenge_id": str(pending.challenge_id), "expires_in": settings.otp_expiry_seconds}
+        except RegistrationError as error:
+            raise _registration_error(error)
+        except (EmailProviderConfigurationError, EmailDeliveryError):
+            with _session(request) as session:
+                invalidate_challenge(session, pending.challenge_id)
+            raise _delivery_error()
+
+    @application.post("/api/hackathon/registrations/verify-email", tags=["Hackathon registration"])
+    def verify_hackathon_registration(payload: EmailOtpRequest, request: Request):
+        settings = request.app.state.settings
+        outcome = ChallengeVerification.NOT_FOUND
+        delivery_data = None
+        with _session(request) as session:
+            _limit(session, settings, scope="hackathon_verify_ip", subject=_client_ip(request), maximum=50)
+            with session.begin():
+                challenge = session.get(VerificationChallenge, payload.challenge_id)
+                if challenge is not None and challenge.purpose == HACKATHON_REGISTRATION_PURPOSE and challenge.channel == "email" and not challenge.is_internal_test:
+                    outcome = verify_and_consume_challenge(
+                        session, settings=settings, candidate_id=challenge.candidate_id,
+                        challenge_id=challenge.id, channel="email", otp=payload.otp,
+                        purpose=HACKATHON_REGISTRATION_PURPOSE, now=_registration_now(),
+                    )
+                    if outcome == ChallengeVerification.VERIFIED:
+                        registration = session.scalar(
+                            select(HackathonRegistration).where(
+                                HackathonRegistration.candidate_id == challenge.candidate_id
+                            ).with_for_update()
+                        )
+                        if registration is None or registration.status != "pending":
+                            raise HTTPException(status_code=409, detail="The pending Hackathon registration could not be found.")
+                        registration.registration_id = "HTSE26-HK-" + uuid.uuid4().hex[:10].upper()
+                        registration.status = "registered"
+                        delivery_data = {
+                            "recipient_email": registration.email,
+                            "recipient_name": registration.full_name,
+                            "registration_id": registration.registration_id,
+                        }
+        if outcome != ChallengeVerification.VERIFIED or delivery_data is None:
+            status, message = _challenge_message(outcome)
+            raise HTTPException(status_code=status, detail=message)
+        settings = request.app.state.settings
+        try:
+            request.app.state.hackathon_confirmation_sender(**delivery_data, settings=settings)
+            confirmation_sent = True
+        except Exception as error:
+            _log_email_delivery_failure(logging.getLogger("sutravya.api"), purpose="hackathon_registration_confirmation", error=error)
+            confirmation_sent = False
+        try:
+            request.app.state.hackathon_instructions_sender(**delivery_data, settings=settings)
+            instructions_sent = True
+        except Exception as error:
+            _log_email_delivery_failure(logging.getLogger("sutravya.api"), purpose="hackathon_submission_instructions", error=error)
+            instructions_sent = False
+        return {
+            "registration_id": delivery_data["registration_id"],
+            "confirmation_email_sent": confirmation_sent,
+            "submission_instructions_email_sent": instructions_sent,
+            "message": "Your free Hackathon registration is complete. Save your unique Registration ID. Email your synopsis only to sutravya.connect@gmail.com by 27 November 2026, 11:59 PM IST.",
+        }
+
+    @application.post("/api/hackathon/auth/request-otp", status_code=202, tags=["Hackathon participant account"])
+    def request_hackathon_login_otp(payload: HackathonLoginRequest, request: Request):
+        settings = request.app.state.settings
+        try:
+            email = normalize_email(payload.email)
+            registration_id = payload.registration_id.strip().upper()
+            with _session(request) as session:
+                _limit(session, settings, scope="hackathon_login_ip", subject=_client_ip(request), maximum=30)
+                _limit(session, settings, scope="hackathon_login_email", subject=email, maximum=8)
+                _limit(session, settings, scope="email_global", subject="all", maximum=1000)
+                with session.begin():
+                    registration = session.scalar(
+                        select(HackathonRegistration).where(
+                            HackathonRegistration.registration_id == registration_id,
+                            func.lower(HackathonRegistration.email) == email,
+                            HackathonRegistration.status == "registered",
+                        )
+                    )
+                    pending = None
+                    if registration is not None:
+                        now = _registration_now()
+                        session.query(VerificationChallenge).filter(
+                            VerificationChallenge.candidate_id == registration.candidate_id,
+                            VerificationChallenge.channel == "email",
+                            VerificationChallenge.purpose == HACKATHON_LOGIN_PURPOSE,
+                            VerificationChallenge.consumed_at.is_(None),
+                            VerificationChallenge.invalidated_at.is_(None),
+                        ).update({VerificationChallenge.invalidated_at: now}, synchronize_session=False)
+                        otp = generate_otp()
+                        challenge = VerificationChallenge(
+                            candidate_id=registration.candidate_id, channel="email",
+                            purpose=HACKATHON_LOGIN_PURPOSE,
+                            destination_digest=digest_destination(
+                                email, settings=settings, candidate_id=registration.candidate_id,
+                                channel="email", purpose=HACKATHON_LOGIN_PURPOSE,
+                            ),
+                            otp_digest="0" * 64, created_at=now,
+                            expires_at=now + timedelta(seconds=settings.otp_expiry_seconds),
+                            is_internal_test=False, registration_source=PUBLIC_REGISTRATION_SOURCE,
+                        )
+                        session.add(challenge)
+                        session.flush()
+                        challenge.otp_digest = digest_otp(
+                            otp, settings=settings, challenge_id=challenge.id,
+                            candidate_id=registration.candidate_id, channel="email",
+                            purpose=HACKATHON_LOGIN_PURPOSE,
+                        )
+                        pending = PendingEmailChallenge(
+                            challenge.id, registration.candidate_id, email, otp, HACKATHON_LOGIN_PURPOSE
+                        )
+            if pending is not None:
+                _send_otp(request, pending)
+            return {
+                "message": "If the Registration ID and email match an eligible Hackathon account, a code will be sent.",
+                "challenge_id": str(pending.challenge_id) if pending else None,
+                "expires_in": settings.otp_expiry_seconds,
+            }
+        except RegistrationError as error:
+            raise _registration_error(error)
+        except (EmailProviderConfigurationError, EmailDeliveryError):
+            with _session(request) as session:
+                invalidate_challenge(session, pending.challenge_id)
+            raise _delivery_error()
+
+    @application.post("/api/hackathon/auth/verify-otp", tags=["Hackathon participant account"])
+    def verify_hackathon_login(payload: EmailOtpRequest, request: Request, response: Response):
+        settings = request.app.state.settings
+        outcome = ChallengeVerification.NOT_FOUND
+        result = None
+        with _session(request) as session:
+            _limit(session, settings, scope="hackathon_login_verify_ip", subject=_client_ip(request), maximum=60)
+            with session.begin():
+                challenge = session.get(VerificationChallenge, payload.challenge_id)
+                if challenge is not None and challenge.purpose == HACKATHON_LOGIN_PURPOSE and challenge.channel == "email":
+                    outcome = verify_and_consume_challenge(
+                        session, settings=settings, candidate_id=challenge.candidate_id,
+                        challenge_id=challenge.id, channel="email", otp=payload.otp,
+                        purpose=HACKATHON_LOGIN_PURPOSE, now=_registration_now(),
+                    )
+                    if outcome == ChallengeVerification.VERIFIED:
+                        registration = session.scalar(
+                            select(HackathonRegistration).where(
+                                HackathonRegistration.candidate_id == challenge.candidate_id,
+                                HackathonRegistration.status == "registered",
+                            )
+                        )
+                        if registration is not None:
+                            raw_token = secrets.token_urlsafe(32)
+                            expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
+                            session.add(HackathonSession(
+                                candidate_id=challenge.candidate_id,
+                                token_digest=hashlib.sha256(raw_token.encode("ascii")).hexdigest(),
+                                created_at=datetime.now(timezone.utc),
+                                expires_at=expires_at,
+                            ))
+                            result = {"raw_token": raw_token, "expires_at": expires_at, "registration_id": registration.registration_id}
+        if result is None:
+            status, message = _challenge_message(outcome)
+            raise HTTPException(status_code=status, detail=message)
+        response.set_cookie(
+            HACKATHON_SESSION_COOKIE, result["raw_token"],
+            max_age=max(0, int((result["expires_at"] - datetime.now(timezone.utc)).total_seconds())),
+            httponly=True, secure=settings.app_env == "production",
+            samesite="none" if settings.app_env == "production" else "lax", path="/api",
+        )
+        return {"status": "authenticated", "registration_id": result["registration_id"]}
+
+    @application.get("/api/hackathon/auth/session", tags=["Hackathon participant account"])
+    def get_hackathon_session(request: Request):
+        raw_token = request.cookies.get(HACKATHON_SESSION_COOKIE)
+        if not raw_token:
+            raise HTTPException(status_code=401, detail="Authentication required.")
+        digest = hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
+        with _session(request) as session:
+            result = session.execute(
+                select(HackathonSession, HackathonRegistration)
+                .join(HackathonRegistration, HackathonRegistration.candidate_id == HackathonSession.candidate_id)
+                .where(
+                    HackathonSession.token_digest == digest,
+                    HackathonSession.revoked_at.is_(None),
+                    HackathonSession.expires_at > datetime.now(timezone.utc),
+                    HackathonRegistration.status == "registered",
+                )
+            ).first()
+            if result is None:
+                raise HTTPException(status_code=401, detail="Authentication required.")
+            registration = result[1]
+            return {
+                "registration_id": registration.registration_id,
+                "full_name": registration.full_name,
+                "email": registration.email,
+                "college_name": registration.college_name,
+                "year_of_study": registration.year_of_study,
+                "synopsis_deadline": HACKATHON_SYNOPSIS_DEADLINE.isoformat(),
+                "submission_email": "sutravya.connect@gmail.com",
+            }
+
+    @application.post("/api/hackathon/auth/logout", status_code=204, tags=["Hackathon participant account"])
+    def logout_hackathon(request: Request, response: Response):
+        raw_token = request.cookies.get(HACKATHON_SESSION_COOKIE)
+        if raw_token:
+            digest = hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
+            with _session(request) as session:
+                with session.begin():
+                    token_session = session.scalar(
+                        select(HackathonSession).where(HackathonSession.token_digest == digest)
+                    )
+                    if token_session is not None and token_session.revoked_at is None:
+                        token_session.revoked_at = datetime.now(timezone.utc)
+        response.delete_cookie(
+            HACKATHON_SESSION_COOKIE, path="/api",
+            secure=request.app.state.settings.app_env == "production",
+            httponly=True, samesite="none" if request.app.state.settings.app_env == "production" else "lax",
+        )
+        response.status_code = 204
+        return response
 
     @application.get("/api/payments/status", tags=["payments"])
     def candidate_payment_status(request: Request):
@@ -1237,7 +1566,7 @@ def create_app(
                 max_age=max(0, int((login.expires_at - datetime.now(timezone.utc)).total_seconds())),
                 httponly=True,
                 secure=settings.app_env == "production",
-                samesite="lax",
+                samesite="none" if settings.app_env == "production" else "lax",
                 path="/api",
             )
             return {"status": "authenticated"}
@@ -1264,7 +1593,7 @@ def create_app(
             revoke_candidate_session(session, request.cookies.get(SESSION_COOKIE))
         response.delete_cookie(
             SESSION_COOKIE, path="/api", secure=request.app.state.settings.app_env == "production",
-            httponly=True, samesite="lax",
+            httponly=True, samesite="none" if request.app.state.settings.app_env == "production" else "lax",
         )
         response.status_code = 204
         return response

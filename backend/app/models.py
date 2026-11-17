@@ -106,7 +106,7 @@ class VerificationChallenge(Base):
     __table_args__ = (
         CheckConstraint("channel IN ('mobile', 'email')", name="ck_verification_challenges_channel"),
         CheckConstraint(
-            "purpose IN ('contact_verification', 'registration_verification', 'login')",
+            "purpose IN ('contact_verification', 'registration_verification', 'login', 'hackathon_registration_verification', 'hackathon_login')",
             name="ck_verification_challenges_purpose",
         ),
         CheckConstraint(
@@ -261,6 +261,59 @@ class Registration(TimestampMixin, Base):
         back_populates="registrations", foreign_keys=[exam_slot_id]
     )
     attempts: Mapped[list["ExamAttempt"]] = relationship(back_populates="registration")
+
+
+class HackathonRegistration(TimestampMixin, Base):
+    """Separate, free Healthcare Innovation Hackathon registration."""
+
+    __tablename__ = "hackathon_registrations"
+    __table_args__ = (
+        UniqueConstraint("candidate_id", name="uq_hackathon_registrations_candidate_id"),
+        UniqueConstraint("registration_id", name="uq_hackathon_registrations_public_id"),
+        UniqueConstraint("email", name="uq_hackathon_registrations_email"),
+        CheckConstraint("year_of_study BETWEEN 1 AND 4", name="ck_hackathon_registrations_year"),
+        CheckConstraint("status IN ('pending', 'registered')", name="ck_hackathon_registrations_status"),
+        CheckConstraint("length(pin_code) = 6", name="ck_hackathon_registrations_pin_length"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    candidate_id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("candidates.id", ondelete="RESTRICT", name="fk_hackathon_registrations_candidate_id_candidates"),
+        nullable=False,
+    )
+    registration_id: Mapped[str | None] = mapped_column(String(32))
+    full_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    email: Mapped[str] = mapped_column(String(320), nullable=False)
+    mobile: Mapped[str] = mapped_column(String(16), nullable=False)
+    college_name: Mapped[str] = mapped_column(String(240), nullable=False)
+    year_of_study: Mapped[int] = mapped_column(Integer, nullable=False)
+    address: Mapped[str] = mapped_column(String(600), nullable=False)
+    pin_code: Mapped[str] = mapped_column(String(6), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending", server_default=text("'pending'"))
+
+
+class HackathonSession(Base):
+    """Opaque, revocable Hackathon session; only a token digest is stored."""
+
+    __tablename__ = "hackathon_sessions"
+    __table_args__ = (
+        UniqueConstraint("token_digest", name="uq_hackathon_sessions_token_digest"),
+        Index("ix_hackathon_sessions_candidate_expiry", "candidate_id", "expires_at"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    candidate_id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("candidates.id", ondelete="CASCADE", name="fk_hackathon_sessions_candidate_id_candidates"),
+        nullable=False,
+    )
+    token_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class CandidateSession(Base):

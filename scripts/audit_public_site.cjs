@@ -2,7 +2,7 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(process.argv[2]||'assessment-public');
-const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin-login.html','admin.html','exam.html'];
+const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','hackathon-portal.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin-login.html','admin.html','exam.html'];
 const errors=[];const report=[];
 function rgb(hex){const raw=hex.replace('#','');return [0,2,4].map(i=>parseInt(raw.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));}
 function luminance(hex){const c=rgb(hex);return .2126*c[0]+.7152*c[1]+.0722*c[2];}
@@ -34,4 +34,13 @@ if(fs.existsSync(layoutPath)){const css=fs.readFileSync(layoutPath,'utf8');if(/:
 const contrastPairs=[['#FFFFFF','#06766F'],['#FFFFFF','#138168'],['#253441','#F7F9F7'],['#5E707A','#F7F9F7'],['#061D42','#C9A45D']];
 for(const [foreground,background] of contrastPairs){const ratio=contrast(foreground,background);if(ratio<4.5)errors.push('contrast: '+foreground+' on '+background+' is '+ratio.toFixed(2)+':1, below 4.5:1');}
 const shell=fs.readFileSync(path.join(root,'site.js'),'utf8');if(/htse-campaign-postcard|function renderContextualPostcard/.test(shell))errors.push('site.js: repeated campaign postcard injection remains');if(!shell.includes('faq-search-input'))errors.push('site.js: FAQ search interaction missing');if(!shell.includes('footer-brand-pair'))errors.push('site.js: co-branded footer lockup missing');if(!shell.includes('aria-expanded'))errors.push('site.js: responsive menu state is not announced');
+const homepage=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const hackathon=fs.readFileSync(path.join(root,'hackathon.html'),'utf8');
+const portal=fs.readFileSync(path.join(root,'hackathon-portal.html'),'utf8');
+const faqPage=fs.readFileSync(path.join(root,'faqs.html'),'utf8');
+if(!homepage.includes('healthcare-talent-search-badge.svg'))errors.push('index.html: Healthcare Talent Search Exam badge is missing');
+if(!hackathon.includes('data-hackathon-register-form'))errors.push('hackathon.html: separate participant registration form is missing');
+if(!hackathon.includes('27 November 2026')||!hackathon.includes('sutravya.connect@gmail.com'))errors.push('hackathon.html: email-only synopsis deadline details are missing');
+if(!portal.includes('data-hk-login-form')||!portal.includes('registration_id'))errors.push('hackathon-portal.html: Registration ID and email sign-in flow is missing');
+if(/PDF|project upload deadline|upload your project/i.test(hackathon+'\\n'+faqPage))errors.push('Hackathon public copy: obsolete PDF or website-upload submission wording remains');
 console.log(JSON.stringify({root,checkedPages:pages.length,contrastRatios:contrastPairs.map(([fg,bg])=>({foreground:fg,background:bg,ratio:Number(contrast(fg,bg).toFixed(2))})),report,errors},null,2));if(errors.length)process.exit(1);

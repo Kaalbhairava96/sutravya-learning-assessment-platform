@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements-dev.txt
       - name: Run backend unit tests
-        run: for suite in test_admin_portal_api.py test_assessment_admin_api.py test_auth_api.py test_exam_service.py test_foundation.py test_models.py test_registration.py test_registration_details.py test_verification.py; do python -m unittest discover -s tests -p "$suite" -v || exit 1; done
+        run: for suite in test_admin_portal_api.py test_assessment_admin_api.py test_auth_api.py test_exam_service.py test_foundation.py test_models.py test_registration.py test_registration_details.py test_verification.py test_hackathon_api.py; do python -m unittest discover -s tests -p "$suite" -v || exit 1; done
 
   frontend-checks:
     runs-on: ubuntu-latest
@@ -46,6 +46,7 @@ jobs:
           node --check mock-test.js
           node --check sample-papers.js
           node --check registration.js
+          node --check hackathon.js
           node --check admin-login.js
           node --check admin-portal.js
           node --check question-bank.js
@@ -72,14 +73,14 @@ jobs:
             sleep 1
           done
           export CHROME_PATH="$(node -e "process.stdout.write(require('playwright').chromium.executablePath())")"
-          for item in "home:/" "registration:/register.html" "syllabus:/syllabus.html" "mock-tests:/mock-test.html" "help-centre:/faqs.html"; do
+          for item in "home:/" "registration:/register.html" "syllabus:/syllabus.html" "mock-tests:/mock-test.html" "help-centre:/faqs.html" "hackathon:/hackathon.html" "hackathon-portal:/hackathon-portal.html"; do
             name="${item%%:*}"
             route="${item#*:}"
             npx lighthouse "http://127.0.0.1:4173${route}" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance,accessibility,best-practices,seo --output=json --output-path="test-results/lighthouse/${name}.json" --quiet
           done
           node - <<'NODE'
           const fs=require('node:fs');
-          for(const name of ['home','registration','syllabus','mock-tests','help-centre']){
+          for(const name of ['home','registration','syllabus','mock-tests','help-centre','hackathon','hackathon-portal']){
             const report=JSON.parse(fs.readFileSync('test-results/lighthouse/'+name+'.json','utf8'));
             const score=key=>Math.round((report.categories[key]?.score??0)*100);
             process.stdout.write(name+': performance '+score('performance')+', accessibility '+score('accessibility')+', best practices '+score('best-practices')+', SEO '+score('seo')+'\n');

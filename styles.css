@@ -548,3 +548,158 @@
   .exam-actions .exam-button,.review-actions>.button{width:100%}
   .startup-support-grid{grid-template-columns:1fr}
 }
+
+
+/* Premium shared footer, accessible contact actions and Hackathon experience */
+.site-footer{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(132deg,#061d42 0%,#092d60 58%,#06364f 100%);color:#eaf2fb;border-top:1px solid rgba(201,164,93,.35)}
+.site-footer:before{content:"";position:absolute;inset:auto -8% -54% auto;width:520px;height:520px;border:1px solid rgba(201,164,93,.13);border-radius:50%;box-shadow:0 0 0 34px rgba(255,255,255,.018),0 0 0 72px rgba(255,255,255,.014);pointer-events:none;z-index:-1}
+.footer-top{padding:68px 0 54px}
+.footer-grid{display:grid;grid-template-columns:minmax(230px,1.35fr) minmax(125px,.7fr) minmax(210px,1fr) minmax(260px,1.2fr);gap:34px;align-items:start}
+.footer-brand{min-width:0}
+.footer-brand-pair{display:flex;align-items:center;gap:18px;min-height:54px}
+.footer-brand-pair>a{display:inline-flex;align-items:center;justify-content:center;min-width:0}
+.footer-sutravya-logo img{width:150px;max-height:52px;object-fit:contain;object-position:left center;filter:brightness(0) invert(1)}
+.footer-qualinova-logo img{width:116px;max-height:46px;object-fit:contain;filter:brightness(0) invert(1)}
+.footer-tagline{margin:20px 0 8px!important;color:#f4dba3!important;font-family:Manrope, sans-serif;font-weight:800;font-size:14px;letter-spacing:.015em}
+.footer-brand>p:not(.footer-tagline){max-width:360px;color:#c6d5e5;font-size:13px;line-height:1.8;margin:0}
+.footer-site-link{display:inline-flex;align-items:center;gap:9px;margin-top:18px;color:#fff;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.035em}
+.footer-site-link svg,.footer-column>a svg,.footer-bottom a svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.footer-column{display:flex;flex-direction:column;align-items:flex-start;gap:11px;min-width:0}
+.footer-column h2{margin:0 0 9px;color:#f4dba3;font-family:Manrope,sans-serif;font-size:12px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.footer-column>a,.footer-column>span{display:inline-flex;align-items:center;gap:7px;max-width:100%;color:#d0deec;text-decoration:none;font-size:12px;line-height:1.6;overflow-wrap:anywhere;transition:color .2s ease,transform .2s ease}
+.footer-column>a:hover,.footer-site-link:hover,.footer-bottom a:hover{color:#fff;transform:translateX(2px)}
+.footer-column .footer-exam-note{display:grid;gap:4px;margin-top:7px;padding:13px 14px;border:1px solid rgba(201,164,93,.25);border-radius:14px;background:rgba(255,255,255,.055)}
+.footer-exam-note b{color:#f4dba3;font-size:12px}
+.footer-exam-note span{color:#c6d5e5;font-size:11px;line-height:1.55}
+.footer-partners{gap:10px}
+.footer-partners .footer-subheading{margin:16px 0 3px}
+.footer-contact-link{display:grid!important;grid-template-columns:34px minmax(0,1fr) 14px;gap:10px!important;align-items:center;width:100%;padding:9px 10px;border:1px solid rgba(223,235,249,.13);border-radius:12px;background:rgba(255,255,255,.045);text-decoration:none!important;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.footer-contact-link:hover{background:rgba(255,255,255,.1);border-color:rgba(201,164,93,.5);transform:translateY(-2px)!important}
+.footer-contact-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.1);color:#f1dca9}
+.footer-contact-icon svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.footer-icon-whatsapp{background:rgba(7,143,136,.22);color:#83e0d4}
+.footer-contact-link>span:nth-child(2){display:grid;gap:2px;min-width:0}
+.footer-contact-link small{color:#a9bdd2;font-size:8px;font-weight:900;letter-spacing:.12em}
+.footer-contact-link b{color:#f3f7fb;font-size:11px;font-weight:700;overflow-wrap:anywhere}
+.footer-contact-arrow{color:#d8bd7c;font-size:13px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.12);background:rgba(2,15,35,.28)}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:64px;color:#aebfd1;font-size:10px;line-height:1.6}
+.footer-bottom a{display:inline-flex;align-items:center;gap:7px;color:#e8d5a6;text-decoration:none;font-weight:800;transition:color .2s ease,transform .2s ease}
+.footer-bottom-inner>span:first-child{font-weight:800;color:#dce7f2}
+.footer-contact-link:focus-visible,.footer-column a:focus-visible,.footer-site-link:focus-visible,.footer-bottom a:focus-visible{outline:3px solid #efcf82;outline-offset:3px;border-radius:8px}
+
+.htse-reference-badge{position:absolute;z-index:3;top:1.5%;right:1.5%;display:flex;flex-direction:column;align-items:center;gap:7px;width:clamp(116px,14.5vw,160px);padding:10px 9px 9px;border:1px solid rgba(201,164,93,.85);border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(232,242,249,.87));box-shadow:0 24px 55px rgba(4,25,56,.24),inset 0 1px 0 rgba(255,255,255,.95);text-decoration:none;transform:rotate(3deg);backdrop-filter:blur(9px);transition:transform .3s ease,box-shadow .3s ease}
+.htse-reference-badge:hover{transform:translateY(-5px) rotate(0);box-shadow:0 28px 60px rgba(4,25,56,.3)}
+.htse-reference-badge img{display:block;width:100%;height:auto;filter:drop-shadow(0 9px 10px rgba(6,29,66,.16))}
+.htse-reference-badge span{color:#092d60;text-align:center;font-size:8px;line-height:1.35;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.qv2-home-visual{perspective:1200px}
+.qv2-home-visual>img{filter:drop-shadow(0 28px 35px rgba(5,35,72,.16));transform:translateZ(15px)}
+.qv2-home-visual .qv2-float-card{box-shadow:0 18px 40px rgba(7,35,75,.16),inset 0 1px rgba(255,255,255,.8);backdrop-filter:blur(12px)}
+.qv2-home-visual .qv2-date-card{box-shadow:0 22px 44px rgba(7,35,75,.22),inset 0 1px rgba(255,255,255,.85)}
+.page-hero-art img,.qv2-hero-art img,.qv2-learning-art img,.qv2-recognition-visual img,.qv2-innovation-visual img,.qv2-hack-podium img{filter:drop-shadow(0 22px 32px rgba(7,35,75,.14));transition:transform .45s cubic-bezier(.2,.75,.25,1),filter .45s ease}
+.page-hero-art img:hover,.qv2-hero-art img:hover,.qv2-learning-art img:hover,.qv2-recognition-visual img:hover,.qv2-innovation-visual img:hover,.qv2-hack-podium img:hover{transform:translateY(-5px) scale(1.012);filter:drop-shadow(0 29px 38px rgba(7,35,75,.2))}
+.qv2-button,.button{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.qv2-button:hover,.button:hover{transform:translateY(-2px);filter:saturate(1.06)}
+.qv2-button:focus-visible,.button:focus-visible,.qv2-inline-link:focus-visible{outline:3px solid #c9a45d;outline-offset:4px}
+.qv2-button svg,.button svg,.qv2-button .button-icon{width:17px;height:17px;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.contact-link-icon svg{width:19px;height:19px;display:block;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.contact-card-actions{display:grid;gap:10px;margin-top:18px}
+.button-whatsapp{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,#06766f,#078f88);color:#fff;border:1px solid rgba(7,143,136,.35)}
+.contact-link-whatsapp .contact-link-icon{color:#078f88}
+.contact-disclaimer{margin-top:26px;padding:15px 18px;border:1px solid rgba(7,143,136,.18);border-radius:14px;background:#f4faf8;color:#37545b;font-size:13px;line-height:1.7}
+.contact-disclaimer a{color:#06766f;font-weight:800}
+
+.qv2-hack-submit-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.8fr);gap:34px;align-items:center}
+.qv2-hack-submit-address{display:grid;justify-items:start;gap:12px;padding:30px;border:1px solid rgba(201,164,93,.42);border-radius:24px;background:linear-gradient(145deg,#fff,#f2f7fa);box-shadow:0 24px 55px rgba(6,29,66,.12),inset 0 1px #fff}
+.qv2-hack-submit-icon,.qv2-hack-otp-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:linear-gradient(145deg,#e8f5f5,#d7ebee);color:#06766f;font-size:24px;box-shadow:inset 0 1px #fff,0 9px 18px rgba(6,29,66,.08)}
+.qv2-hack-submit-address small{color:#7b8d99;font-size:9px;font-weight:900;letter-spacing:.14em}
+.qv2-hack-submit-address b{color:#092d60;font-family:Manrope,sans-serif;font-size:clamp(16px,2vw,22px);overflow-wrap:anywhere}
+.qv2-hack-submit-address strong{padding-top:9px;border-top:1px solid rgba(9,45,96,.12);color:#755a2f;font-size:12px;line-height:1.55}
+.qv2-hack-registration{background:linear-gradient(180deg,#f4f8fa 0%,#edf3f6 100%)}
+.qv2-hack-register-grid{display:grid;grid-template-columns:minmax(260px,.78fr) minmax(0,1.22fr);gap:48px;align-items:start}
+.qv2-hack-register-aside{position:sticky;top:110px;padding:24px 0}
+.qv2-hack-register-aside h2{margin:16px 0;color:#092d60;font-family:Manrope,sans-serif;font-size:clamp(34px,4vw,52px);line-height:1.08;letter-spacing:-.045em}
+.qv2-hack-register-aside h2 em{color:#078f88;font-style:normal}
+.qv2-hack-register-aside>p{max-width:450px;color:#586b79;font-size:15px;line-height:1.85}
+.qv2-hack-register-points{display:grid;gap:13px;margin:27px 0}
+.qv2-hack-register-points span{display:flex;align-items:center;gap:13px;color:#243d56;font-size:13px;font-weight:700}
+.qv2-hack-register-points b{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#fff;border:1px solid rgba(7,143,136,.2);color:#078f88;font-size:10px;box-shadow:0 7px 16px rgba(6,29,66,.06)}
+.qv2-hack-form-card{position:relative;overflow:hidden;padding:clamp(22px,3.4vw,38px);border:1px solid rgba(9,45,96,.1);border-radius:27px;background:linear-gradient(145deg,#fff 0%,#fbfdff 70%,#f4f8fa);box-shadow:0 28px 65px rgba(7,35,75,.12),inset 0 1px 0 #fff}
+.qv2-hack-form-card:before{content:"";position:absolute;top:-110px;right:-100px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(7,143,136,.1),transparent 70%);pointer-events:none}
+.qv2-hack-form-head{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid rgba(9,45,96,.1)}
+.qv2-hack-form-head h3,.qv2-hack-otp-panel h3,.qv2-hack-success h3,.qv2-hack-participant-dashboard h3{margin:7px 0;color:#092d60;font-family:Manrope,sans-serif;font-size:25px;font-weight:800;letter-spacing:-.025em}
+.qv2-hack-form-head p{margin:0;color:#6a7d8b;font-size:12px;line-height:1.6}
+.qv2-hack-free-badge{flex:none;padding:9px 12px;border:1px solid rgba(7,143,136,.2);border-radius:999px;background:#eff9f7;color:#06766f;font-size:10px;font-weight:900;letter-spacing:.08em}
+.qv2-hack-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 18px}
+.qv2-hack-form-grid .field{display:grid;align-content:start;gap:8px;min-width:0}
+.qv2-hack-form-card .field label{color:#456073;font-size:9px;font-weight:900;letter-spacing:.11em}
+.qv2-hack-form-card .field input,.qv2-hack-form-card .field select,.qv2-hack-form-card .field textarea{width:100%;min-width:0;min-height:48px;padding:12px 14px;border:1px solid #d8e2e9;border-radius:12px;background:#fbfdfe;color:#173751;font:500 13px "DM Sans",sans-serif;outline:none;transition:border .18s ease,box-shadow .18s ease,background .18s ease}
+.qv2-hack-form-card .field textarea{min-height:90px;resize:vertical}
+.qv2-hack-form-card .field input:focus,.qv2-hack-form-card .field select:focus,.qv2-hack-form-card .field textarea:focus{border-color:#078f88;background:#fff;box-shadow:0 0 0 4px rgba(7,143,136,.1)}
+.qv2-hack-address-field{grid-column:1/-1}
+.qv2-hack-privacy{margin:18px 0;color:#738491;font-size:11px;line-height:1.7}
+.qv2-hack-submit-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding-inline:20px}
+.qv2-hack-form-card .qv2-hack-submit-button{width:100%}
+.qv2-hack-form-card button:disabled{cursor:wait;opacity:.65;transform:none}
+.qv2-hack-message{display:none;margin-top:13px;padding:11px 13px;border-radius:11px;background:#f0f8f6;color:#075d57;font-size:12px;line-height:1.6}
+.qv2-hack-message.is-visible{display:block}
+.qv2-hack-message.is-error{background:#fff2f1;color:#9b342c}
+.qv2-hack-otp-panel,.qv2-hack-success,.qv2-hack-participant-dashboard{position:relative}
+.qv2-hack-otp-panel>p,.qv2-hack-success>p,.qv2-hack-participant-dashboard>p{color:#607582;font-size:13px;line-height:1.8}
+.qv2-hack-otp-panel>.field{display:grid;gap:8px;margin:18px 0}
+.qv2-hack-otp-panel>.field label{color:#456073;font-size:9px;font-weight:900;letter-spacing:.11em}
+.qv2-hack-otp-panel>.field input{width:100%;min-height:52px;padding:13px 15px;border:1px solid #d8e2e9;border-radius:12px;background:#fbfdfe;color:#173751;font:700 20px "DM Sans",sans-serif;letter-spacing:.24em;text-align:center}
+.qv2-hack-otp-panel>.field input:focus{outline:3px solid rgba(7,143,136,.16);border-color:#078f88}
+.qv2-hack-success-mark{display:grid;place-items:center;width:54px;height:54px;margin-bottom:18px;border-radius:18px;background:linear-gradient(145deg,#dff6f0,#bce7db);color:#087668;font-size:26px;font-weight:900;box-shadow:0 10px 25px rgba(7,143,136,.12)}
+.qv2-hack-registration-id{display:block;margin:12px 0 18px;padding:15px;border:1px dashed rgba(7,143,136,.55);border-radius:13px;background:#f2faf8;color:#075d57;text-align:center;font-family:Manrope,sans-serif;font-size:clamp(16px,2.6vw,23px);font-weight:900;letter-spacing:.05em;overflow-wrap:anywhere}
+.qv2-hack-deadline-card{display:grid;gap:8px;margin:18px 0 22px;padding:17px;border:1px solid rgba(201,164,93,.35);border-radius:15px;background:linear-gradient(145deg,#fffaf0,#fff)}
+.qv2-hack-deadline-card>b{color:#84652e;font-size:10px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
+.qv2-hack-deadline-card>strong{color:#092d60;font-family:Manrope,sans-serif;font-size:15px}
+.qv2-hack-deadline-card>span{color:#566a78;font-size:12px;line-height:1.7}
+.qv2-hack-deadline-card a{color:#06766f;font-weight:800;overflow-wrap:anywhere}
+.qv2-hack-portal-section{background:linear-gradient(180deg,#f4f8fa 0%,#edf3f6 100%)}
+.qv2-hack-participant-dashboard .candidate-application-row{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid rgba(9,45,96,.1);font-size:12px}
+.qv2-hack-participant-dashboard .candidate-application-row span{color:#738491}
+.qv2-hack-participant-dashboard .candidate-application-row b{color:#173751;text-align:right;overflow-wrap:anywhere}
+.qv2-hack-participant-dashboard .link-button{margin-top:12px}
+[hidden]{display:none!important}
+
+@media(max-width:1120px){
+ .footer-grid{grid-template-columns:1.2fr .75fr 1fr 1.15fr;gap:23px}
+ .qv2-hack-register-grid{gap:30px}
+}
+@media(max-width:900px){
+ .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px}
+ .footer-brand{grid-column:1/-1}
+ .footer-brand>p:not(.footer-tagline){max-width:520px}
+ .qv2-hack-register-grid{grid-template-columns:1fr}
+ .qv2-hack-register-aside{position:static;padding:0}
+ .qv2-hack-register-aside>p{max-width:680px}
+ .qv2-hack-submit-grid{grid-template-columns:1fr}
+ .qv2-hack-submit-address{max-width:600px}
+}
+@media(max-width:600px){
+ .footer-top{padding:48px 0 38px}
+ .footer-grid{grid-template-columns:1fr;gap:25px}
+ .footer-brand{grid-column:auto}
+ .footer-bottom-inner{align-items:flex-start;flex-direction:column;justify-content:center;padding:17px 0}
+ .footer-sutravya-logo img{width:132px}
+ .footer-qualinova-logo img{width:105px}
+ .htse-reference-badge{top:0;right:0;width:108px;padding:6px;border-radius:13px}
+ .htse-reference-badge span{font-size:6.5px}
+ .qv2-hack-form-grid{grid-template-columns:1fr;gap:15px}
+ .qv2-hack-address-field{grid-column:auto}
+ .qv2-hack-form-head{gap:10px}
+ .qv2-hack-form-head h3{font-size:21px}
+ .qv2-hack-form-card{padding:22px 17px;border-radius:21px}
+ .qv2-hack-submit-address{padding:22px}
+ .qv2-hack-submit-address b{font-size:15px}
+ .qv2-hack-participant-dashboard .candidate-application-row{align-items:flex-start;flex-direction:column;gap:6px}
+ .qv2-hack-participant-dashboard .candidate-application-row b{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+ .htse-reference-badge,.page-hero-art img,.qv2-hero-art img,.qv2-learning-art img,.qv2-recognition-visual img,.qv2-innovation-visual img,.qv2-hack-podium img,.qv2-button,.button{transition:none}
+}
+
+/* Anchor the campaign badge to the hero art on desktop and mobile. */
+.qv2-home-visual{position:relative}

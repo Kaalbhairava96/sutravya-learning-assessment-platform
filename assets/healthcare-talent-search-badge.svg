@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="290" viewBox="0 0 260 290" role="img" aria-labelledby="title desc">
+<title id="title">Healthcare Talent Search Exam 2026</title>
+<desc id="desc">A navy shield badge with cyan and gold trim, reading Healthcare Talent Search Exam 2026, in the style of the supplied talent-hunt reference.</desc>
+<defs>
+ <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0c5890"/><stop offset=".52" stop-color="#092d60"/><stop offset="1" stop-color="#061a3e"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8e2a1"/><stop offset=".48" stop-color="#c9a45d"/><stop offset="1" stop-color="#9e7735"/></linearGradient>
+ <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4be9ff"/><stop offset="1" stop-color="#079ed2"/></linearGradient>
+ <filter id="shadow" x="-25%" y="-25%" width="150%" height="165%"><feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dy="5"/><feComponentTransfer><feFuncA type="linear" slope=".42"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g filter="url(#shadow)">
+ <path d="M22 20h216v166c0 38-47 75-108 92C69 261 22 224 22 186V20Z" fill="url(#gold)"/>
+ <path d="M27 25h206v158c0 35-45 69-103 87-58-18-103-52-103-87V25Z" fill="url(#shield)" stroke="#58dff1" stroke-width="2"/>
+ <path d="M36 34h188v145c0 29-41 60-94 78-53-18-94-49-94-78V34Z" fill="none" stroke="#c9a45d" stroke-width="1.3" opacity=".85"/>
+ <path d="M56 54h148" stroke="#c9a45d" stroke-width="1.4" opacity=".8"/>
+ <text x="130" y="48" text-anchor="middle" fill="url(#cyan)" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="900" letter-spacing="1.2">HEALTHCARE</text>
+ <rect x="30" y="62" width="200" height="33" rx="3" fill="#0a3268" stroke="url(#gold)" stroke-width="2.5"/>
+ <text x="130" y="85" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="900" letter-spacing=".65">TALENT SEARCH</text>
+ <text x="130" y="128" text-anchor="middle" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="900" letter-spacing="1">EXAM</text>
+ <text x="130" y="151" text-anchor="middle" fill="#f3d78e" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="900" letter-spacing="3">2026</text>
+ <path d="M58 166c14 8 25 16 38 27M202 166c-14 8-25 16-38 27" fill="none" stroke="#17c7df" stroke-width="2" opacity=".75"/>
+ <g transform="translate(130 190)">
+  <circle r="22" fill="none" stroke="#c9a45d" stroke-width="1.4"/>
+  <path d="M0-15v30M-15 0h30M-10-10 10 10M10-10-10 10" stroke="#31d8ed" stroke-width="1.5" opacity=".85"/>
+  <path d="M0-12 3-3 12 0 3 3 0 12-3 3-12 0-3-3Z" fill="#f2d48b"/>
+  <circle r="4" fill="#fdf7de"/>
+ </g>
+ <path d="M70 228c18 10 37 15 60 18 23-3 42-8 60-18" stroke="#31d8ed" stroke-width="2" fill="none"/>
+ <text x="130" y="260" text-anchor="middle" fill="#dffaff" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="800" letter-spacing="2">SUTRAVYA × QUALINOVA</text>
+ <text x="130" y="275" text-anchor="middle" fill="#d6bd80" font-family="Arial,Helvetica,sans-serif" font-size="7.5" font-weight="700" letter-spacing="1.4">HEALTHCARE TALENT SEARCH</text>
+</g></svg>
