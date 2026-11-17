@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="800" viewBox="0 0 1120 800" fill="none" role="img" aria-labelledby="title desc">
+<title id="title">Healthcare assessment ecosystem</title>
+<desc id="desc">A premium isometric three-dimensional healthcare learning and assessment platform, with connected registration, examination, learning, innovation and recognition stations.</desc>
+<defs>
+ <linearGradient id="baseTop" x1="280" y1="180" x2="860" y2="620" gradientUnits="userSpaceOnUse"><stop stop-color="#F6FCFC"/><stop offset=".55" stop-color="#C7E4E5"/><stop offset="1" stop-color="#8FC4CA"/></linearGradient>
+ <linearGradient id="baseSide" x1="260" y1="470" x2="830" y2="710" gradientUnits="userSpaceOnUse"><stop stop-color="#0B5277"/><stop offset=".5" stop-color="#0A3A66"/><stop offset="1" stop-color="#08254F"/></linearGradient>
+ <linearGradient id="baseFront" x1="500" y1="520" x2="520" y2="710" gradientUnits="userSpaceOnUse"><stop stop-color="#0C6384"/><stop offset="1" stop-color="#061E45"/></linearGradient>
+ <linearGradient id="hubFace" x1="398" y1="260" x2="680" y2="510" gradientUnits="userSpaceOnUse"><stop stop-color="#0C5D81"/><stop offset=".55" stop-color="#0A3564"/><stop offset="1" stop-color="#071F49"/></linearGradient>
+ <linearGradient id="screen" x1="425" y1="270" x2="680" y2="450" gradientUnits="userSpaceOnUse"><stop stop-color="#F8FFFF"/><stop offset="1" stop-color="#C9E8E9"/></linearGradient>
+ <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#49D9D0"/><stop offset="1" stop-color="#087F89"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFF0BD"/><stop offset=".52" stop-color="#D8B46C"/><stop offset="1" stop-color="#A77734"/></linearGradient>
+ <linearGradient id="whiteFace" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#D9EDF0"/></linearGradient>
+ <linearGradient id="blueSide" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3B91A5"/><stop offset="1" stop-color="#0A4269"/></linearGradient>
+ <filter id="shadow" x="80" y="50" width="960" height="730" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="25"/></filter>
+ <filter id="floatShadow" x="-35%" y="-50%" width="170%" height="220%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="11"/></filter>
+ <filter id="softGlow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="22"/></filter>
+ <filter id="smallShadow" x="-30%" y="-30%" width="160%" height="180%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="5"/></filter>
+ <clipPath id="screenClip"><path d="M414 300 634 174 830 287 610 415 414 300Z"/></clipPath>
+</defs>
+<ellipse cx="568" cy="645" rx="420" ry="91" fill="#031B3B" opacity=".24" filter="url(#shadow)"/>
+<ellipse cx="566" cy="606" rx="346" ry="69" fill="#29BFC0" opacity=".13" filter="url(#softGlow)"/>
+<!-- Isometric base platform: stacked polished layers -->
+<path d="m166 475 404-232 405 232-405 233-404-233Z" fill="#061C43" opacity=".3" filter="url(#floatShadow)"/>
+<path d="m145 431 425-245 425 245-425 246-425-246Z" fill="url(#baseSide)" stroke="#4CD6D4" stroke-opacity=".5" stroke-width="2"/>
+<path d="m145 431 425 246v36L145 467v-36Z" fill="url(#baseFront)"/>
+<path d="m570 677 425-246v35L570 713v-36Z" fill="#072B57"/>
+<path d="m145 431 425-245 425 245-425 246-425-246Z" fill="url(#baseTop)" stroke="#B5E8E6" stroke-width="3"/>
+<path d="m190 430 380-219 380 219-380 220-380-220Z" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="2"/>
+<path d="m222 430 348-201 348 201-348 201-348-201Z" stroke="#6BAEB7" stroke-opacity=".4" stroke-width="1.5"/>
+<!-- Circuit paths on the platform -->
+<g stroke="#168F9A" stroke-opacity=".45" stroke-width="2" stroke-dasharray="6 10">
+ <path d="m263 431 119-69 85 49M876 431l-113-65-81 47M570 600V531M333 529l85-49M807 528l-86-49"/>
+ <path d="m267 458 70 40m416 0 70-40M446 610l64-37m248 37-64-37"/>
+</g>
+<g fill="#DDFBFA" stroke="#138B96" stroke-width="2">
+ <circle cx="263" cy="431" r="8"/><circle cx="876" cy="431" r="8"/><circle cx="570" cy="600" r="8"/>
+ <circle cx="333" cy="529" r="6"/><circle cx="807" cy="528" r="6"/>
+</g>
+<!-- Central digital assessment hub shadow and body -->
+<path d="m347 293 221-128 221 128v167L568 588 347 460V293Z" fill="#001A39" opacity=".23" filter="url(#floatShadow)"/>
+<path d="m351 275 217-126 217 126v163L568 564 351 438V275Z" fill="#062850" stroke="#5EE1D8" stroke-opacity=".65" stroke-width="3"/>
+<path d="m351 275 217 126v163L351 438V275Z" fill="#0A4D73"/>
+<path d="m568 401 217-126v163L568 564V401Z" fill="#08264F"/>
+<path d="m370 282 198-115 198 115-198 115-198-115Z" fill="url(#hubFace)" stroke="#78DDD6" stroke-width="2"/>
+<path d="m394 282 174-101 174 101-174 101-174-101Z" fill="url(#screen)" stroke="#F5FFFF" stroke-width="3"/>
+<!-- Hub display: dashboard graph, medical cross and subject bars -->
+<g clip-path="url(#screenClip)">
+ <path d="m400 306 171-99 180 104-171 99-180-104Z" fill="url(#screen)"/>
+ <path d="m446 294 120-70 125 72-120 70-125-72Z" fill="#EAF8F7"/>
+ <path d="m443 291 123-71 130 75-123 71-130-75Z" fill="#D2EFF0" opacity=".8"/>
+ <path d="m481 278 84-49 87 50-84 49-87-50Z" fill="#0A6382"/>
+ <path d="m564 236 7-4 8 5v9l-8 5-7-4v-11Z" fill="#56DBD1"/>
+ <path d="M570 237v12M564 243h12" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+ <path d="m467 307 49-28m-39 41 49-28m-39 41 49-28" stroke="#1F9D9E" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+ <path d="m610 285 25-14 42 24-25 14-42-24Z" fill="#E4B968"/>
+ <path d="m610 300 25-14 42 24-25 14-42-24Z" fill="#BF914B"/>
+ <path d="m641 308 25-14 41 24-25 14-41-24Z" fill="#0B7F88"/>
+ <path d="m448 342 45-26m-35 39 45-26m-35 39 45-26" stroke="#3B99A5" stroke-width="5" stroke-linecap="round" opacity=".48"/>
+</g>
+<path d="m394 282 174 101 174-101" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="2"/>
+<!-- Hub lower front indicator -->
+<path d="m462 450 106 62 106-62" stroke="#3CCDC6" stroke-width="3" stroke-opacity=".8"/>
+<path d="m520 443 48 28 48-28" stroke="#D8B66E" stroke-width="2" stroke-opacity=".95"/>
+<circle cx="568" cy="473" r="8" fill="#D8B66E"/>
+<!-- Floating station: registration, upper-left -->
+<g>
+ <path d="m100 274 92-54 122 70-92 54-122-70Z" fill="#031D42" opacity=".27" filter="url(#floatShadow)"/>
+ <path d="m94 246 91-53 124 71-91 54-124-72Z" fill="#0B3D67" stroke="#8EE5DF" stroke-width="2"/>
+ <path d="m94 246 124 72v26L94 272v-26Z" fill="#0A315A"/>
+ <path d="m218 318 91-54v26l-91 54v-26Z" fill="#08264D"/>
+ <path d="m94 246 91-53 124 71-91 54-124-72Z" fill="url(#whiteFace)" stroke="#FFFFFF" stroke-width="2"/>
+ <path d="m149 245 37-21 42 24-37 21-42-24Z" fill="#D9F0EE"/>
+ <circle cx="188" cy="245" r="15" fill="#168A91"/>
+ <path d="M181 245a7 7 0 1 1 14 0 7 7 0 0 1-14 0Zm-10 20c2-8 8-12 17-12s15 4 17 12" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+ <path d="m234 248 28-16m-19 27 29-16" stroke="#4F9EAA" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- Floating station: examination, upper-right -->
+<g>
+ <path d="m751 185 83-48 133 77-83 48-133-77Z" fill="#031D42" opacity=".24" filter="url(#floatShadow)"/>
+ <path d="m750 158 83-48 134 77v26l-83 48-134-77v-26Z" fill="#0C4168" stroke="#D9B76F" stroke-width="2"/>
+ <path d="m750 158 134 77v26l-134-77v-26Z" fill="#0B315B"/>
+ <path d="m884 235 83-48v26l-83 48v-26Z" fill="#08264D"/>
+ <path d="m750 158 83-48 134 77-83 48-134-77Z" fill="url(#whiteFace)" stroke="#FFFFFF" stroke-width="2"/>
+ <path d="m801 157 42-24 52 30-42 24-52-30Z" fill="#D8EFED"/>
+ <path d="m839 142 10-6 23 13-10 6-23-13Z" fill="#118A91"/>
+ <path d="m828 156 10-6 34 20-10 6-34-20Z" fill="#D9B56E"/>
+ <path d="m816 178 10-6 34 20-10 6-34-20Z" fill="#0B7190"/>
+ <path d="m866 182 23-13m-13 24 23-13" stroke="#4D9DA8" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- Floating station: learning, lower-left -->
+<g>
+ <path d="m150 520 76-44 118 68-76 44-118-68Z" fill="#031D42" opacity=".25" filter="url(#floatShadow)"/>
+ <path d="m149 490 77-44 119 69v27l-77 44-119-69v-27Z" fill="#0B4269" stroke="#75D7D4" stroke-width="2"/>
+ <path d="m149 490 119 69v27l-119-69v-27Z" fill="#0A315C"/>
+ <path d="m268 559 77-44v27l-77 44v-27Z" fill="#08264D"/>
+ <path d="m149 490 77-44 119 69-77 44-119-69Z" fill="url(#whiteFace)" stroke="#FFFFFF" stroke-width="2"/>
+ <path d="m191 489 37-22 45 26-37 22-45-26Z" fill="#DDF1EF"/>
+ <path d="m202 483 24-14 33 19-24 14-33-19Z" fill="#0E8090"/>
+ <path d="m204 487 22-13 28 16-22 13-28-16Z" fill="#DCEFF0"/>
+ <path d="m226 474 10-6 34 20-10 6-34-20Z" fill="#D7B36B"/>
+ <path d="m280 507 22-13m-13 24 22-13" stroke="#4C9DAB" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- Floating station: innovation, lower-right -->
+<g>
+ <path d="m770 514 85-49 126 73-85 49-126-73Z" fill="#031D42" opacity=".25" filter="url(#floatShadow)"/>
+ <path d="m770 484 85-49 126 72v27l-85 49-126-72v-27Z" fill="#0B4168" stroke="#D9B66C" stroke-width="2"/>
+ <path d="m770 484 126 72v27l-126-72v-27Z" fill="#0A3159"/>
+ <path d="m896 556 85-49v27l-85 49v-27Z" fill="#08264D"/>
+ <path d="m770 484 85-49 126 72-85 49-126-72Z" fill="url(#whiteFace)" stroke="#FFFFFF" stroke-width="2"/>
+ <path d="m842 463 18-10 22 13-18 10-22-13Z" fill="#F3D99B"/>
+ <path d="M862 454c-11 0-19 8-19 18 0 7 4 12 9 15v8h20v-8c5-3 9-8 9-15 0-10-8-18-19-18Z" stroke="#C19243" stroke-width="3" fill="#FFE9B4"/>
+ <path d="M855 496h14m-12 6h10" stroke="#A77A39" stroke-width="3" stroke-linecap="round"/>
+ <path d="m915 479 24-14m-13 25 24-14" stroke="#4C9DAA" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- Recognition medallion, front centre -->
+<g>
+ <path d="m457 574 109-63 111 64-109 63-111-64Z" fill="#061E45" opacity=".26" filter="url(#floatShadow)"/>
+ <path d="m485 552 82-47 84 48-82 47-84-48Z" fill="url(#gold)" stroke="#FFF1CA" stroke-width="2"/>
+ <path d="m485 552 84 48v18l-84-48v-18Z" fill="#A5783C"/>
+ <path d="m569 600 82-47v18l-82 47v-18Z" fill="#865D32"/>
+ <circle cx="568" cy="551" r="27" fill="#F8E5B0" stroke="#B88945" stroke-width="4"/>
+ <path d="m568 532 6 12 13 2-10 9 2 13-11-6-12 6 2-13-10-9 13-2 7-12Z" fill="#B88743"/>
+</g>
+<!-- Data connections, crisp accent lights -->
+<g stroke="#35CCC4" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 9" opacity=".78">
+ <path d="m297 303 53 31m421-69 44-25M330 500l40-23m385 35 30 16"/>
+</g>
+<g fill="#F9E1A4">
+ <circle cx="348" cy="331" r="4"/><circle cx="765" cy="238" r="4"/><circle cx="368" cy="477" r="4"/><circle cx="754" cy="519" r="4"/>
+</g>
+<!-- Edge lighting and micro highlights -->
+<path d="m145 431 425 246 425-246" stroke="#71D9D5" stroke-width="2" stroke-opacity=".72"/>
+<path d="m351 275 217 126 217-126" stroke="#9AF0E9" stroke-width="2" stroke-opacity=".45"/>
+<path d="m394 282 174 101 174-101" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity=".75"/>
+<g fill="#F6D68E" opacity=".85"><circle cx="569" cy="148" r="3"/><circle cx="715" cy="238" r="2.5"/><circle cx="360" cy="360" r="2.5"/></g>
+</svg>

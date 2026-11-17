@@ -703,3 +703,130 @@
 
 /* Anchor the campaign badge to the hero art on desktop and mobile. */
 .qv2-home-visual{position:relative}
+/* HTSE 2026 homepage: refined hero, badge, pathways and section transitions. */
+body.qv2-home{
+ --home-art-glow:rgba(28,186,190,.22);--home-art-ring:rgba(145,221,221,.16);--home-image-shadow:rgba(1,14,34,.25);
+ --home-cta-border:rgba(255,239,195,.8);--home-cta-start:#F9E6B3;--home-cta-mid:#E7C77F;
+ --home-path-border:rgba(18,54,86,.1);--home-path-shadow:rgba(8,34,62,.075);--home-path-shadow-hover:rgba(8,34,62,.12);
+ --home-path-paramedical-border:rgba(9,143,136,.2);--home-path-nursing-border:rgba(198,96,102,.19);
+ --home-path-ug-border:rgba(76,119,182,.2);--home-path-pg-border:rgba(122,91,171,.2);
+ --home-path-line:rgba(22,61,92,.12);--home-badge-border:rgba(218,183,111,.8);
+ --home-badge-shadow:rgba(2,18,43,.22);--home-badge-hover-shadow:rgba(2,18,43,.25)
+}
+body.qv2-home .qv2-home-grid{min-height:590px;grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);gap:clamp(24px,3.2vw,44px)}
+body.qv2-home .qv2-home-copy{max-width:560px}
+body.qv2-home .qv2-home-copy h1{max-width:590px;font-size:clamp(42px,4.6vw,64px);line-height:1.04}
+body.qv2-home .qv2-home-copy>p{max-width:530px;margin:0 0 24px;font-size:clamp(16px,1.35vw,18px);line-height:1.72}
+body.qv2-home .qv2-home-actions{gap:14px}
+body.qv2-home .qv2-home-primary-cta{min-height:60px;padding:0 29px;border:1px solid var(--home-cta-border);background:linear-gradient(125deg,var(--home-cta-start) 0%,var(--home-cta-mid) 48%,var(--brand-champagne) 100%);color:var(--brand-navy-900);font-size:15px;font-weight:900;box-shadow:0 13px 30px rgba(201,164,93,.27),inset 0 1px 0 rgba(255,255,255,.8)}
+body.qv2-home .qv2-home-primary-cta:hover{box-shadow:0 17px 36px rgba(201,164,93,.35),inset 0 1px 0 rgba(255,255,255,.9)}
+body.qv2-home .qv2-home-actions .qv2-button-glass{min-height:56px;padding-inline:22px}
+body.qv2-home .qv2-home-visual{display:grid;grid-template-columns:minmax(0,1fr) 158px;align-items:center;gap:16px;min-height:0;perspective:none}
+body.qv2-home .qv2-home-art-stage{position:relative;display:grid;min-width:0;min-height:0;place-items:center;isolation:isolate}
+body.qv2-home .qv2-home-art-stage:before{position:absolute;z-index:-1;inset:12% 7%;border-radius:50%;background:radial-gradient(ellipse,var(--home-art-glow),rgba(28,186,190,.07) 48%,transparent 73%);filter:blur(16px);content:""}
+body.qv2-home .qv2-art-glow{position:absolute;z-index:-1;display:block;border:1px solid var(--home-art-ring);border-radius:50%;pointer-events:none}
+body.qv2-home .qv2-art-glow-one{inset:9% 4%;transform:rotate(-13deg)}
+body.qv2-home .qv2-art-glow-two{inset:1% 15%;transform:rotate(24deg)}
+body.qv2-home .qv2-ecosystem-image{position:relative;z-index:1;display:block;width:100%;height:auto;max-height:500px;object-fit:contain;filter:drop-shadow(0 24px 28px var(--home-image-shadow));transform:none;animation:none}
+body.qv2-home .qv2-home-visual .htse-reference-badge{position:relative;inset:auto;display:grid;justify-items:center;align-content:center;gap:10px;width:100%;padding:13px 11px 15px;border:1px solid var(--home-badge-border);border-radius:20px;background:linear-gradient(150deg,rgba(255,255,255,.98),rgba(237,245,246,.96));box-shadow:0 20px 38px var(--home-badge-shadow),inset 0 1px 0 #fff;text-decoration:none;text-align:center;transform:none;backdrop-filter:blur(10px)}
+body.qv2-home .qv2-home-visual .htse-reference-badge img{display:block;width:min(100%,142px);height:auto;filter:drop-shadow(0 8px 12px rgba(5,30,64,.16))}
+body.qv2-home .htse-badge-copy{display:grid;gap:4px;justify-items:center}
+body.qv2-home .htse-badge-copy b{color:var(--brand-navy);font-family:Manrope,sans-serif;font-size:11px;line-height:1.35;font-weight:900}
+body.qv2-home .htse-badge-copy small{color:#60768A;font-size:10px;line-height:1.35;font-weight:750;letter-spacing:.04em;text-transform:uppercase}
+body.qv2-home .htse-badge-arrow{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:var(--brand-navy);color:#fff;font-size:14px;font-weight:900}
+body.qv2-home .qv2-home-visual .htse-reference-badge:hover{transform:translateY(-3px);box-shadow:0 24px 42px var(--home-badge-hover-shadow),inset 0 1px 0 #fff}
+body.qv2-home .qv2-home-pathways{padding-top:58px;padding-bottom:66px}
+body.qv2-home .qv2-home-pathways .qv2-heading-split{align-items:end;gap:34px;margin-bottom:26px}
+body.qv2-home .qv2-home-pathways .qv2-heading-split>p{max-width:440px;margin:0 0 4px;font-size:15px;line-height:1.75}
+body.qv2-home .qv2-home-pathways .qv2-section-heading h2{font-size:clamp(30px,3.4vw,42px);line-height:1.12}
+body.qv2-home .qv2-home-pathways .qv2-pathway-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
+body.qv2-home .qv2-home-pathways .qv2-path-card{display:flex;min-width:0;min-height:320px;flex-direction:column;padding:22px 19px 19px;border:1px solid var(--home-path-border);border-radius:21px;box-shadow:0 12px 28px var(--home-path-shadow),inset 0 1px 0 rgba(255,255,255,.9);transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease}
+body.qv2-home .qv2-home-pathways .qv2-path-card:hover{transform:translateY(-5px);box-shadow:0 19px 36px var(--home-path-shadow-hover)}
+body.qv2-home .qv2-home-pathways .qv2-card-paramedical{background:linear-gradient(150deg,#fff 0%,#EFF9F8 100%);border-color:var(--home-path-paramedical-border)}
+body.qv2-home .qv2-home-pathways .qv2-card-nursing{background:linear-gradient(150deg,#fff 0%,#FFF4F1 100%);border-color:var(--home-path-nursing-border)}
+body.qv2-home .qv2-home-pathways .qv2-card-medical-ug{background:linear-gradient(150deg,#fff 0%,#F0F5FF 100%);border-color:var(--home-path-ug-border)}
+body.qv2-home .qv2-home-pathways .qv2-card-medical-pg{background:linear-gradient(150deg,#fff 0%,#F6F2FF 100%);border-color:var(--home-path-pg-border)}
+body.qv2-home .qv2-home-pathways .qv2-path-card:after{top:-84px;right:-82px;width:160px;height:160px;opacity:.35}
+body.qv2-home .qv2-home-pathways .qv2-path-card-top{margin-bottom:15px}
+body.qv2-home .qv2-home-pathways .qv2-path-number{font-size:10px;font-weight:900;letter-spacing:.11em;color:#637B8C}
+body.qv2-home .qv2-home-pathways .qv2-path-icon{display:grid;width:52px;height:52px;place-items:center;border:1px solid currentColor;border-radius:16px;font-size:0}
+body.qv2-home .qv2-home-pathways .qv2-path-icon svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+body.qv2-home .qv2-card-paramedical .qv2-path-icon{color:#087D78;background:#E5F5F2;border-color:#B8E5DD}
+body.qv2-home .qv2-card-nursing .qv2-path-icon{color:#B84D5C;background:#FFF0ED;border-color:#F0D1CC}
+body.qv2-home .qv2-card-medical-ug .qv2-path-icon{color:#416DAF;background:#EAF1FF;border-color:#CAD9F4}
+body.qv2-home .qv2-card-medical-pg .qv2-path-icon{color:#7653AA;background:#F0EAFE;border-color:#D9CCF1}
+body.qv2-home .qv2-home-pathways .qv2-card-kicker{min-height:29px;margin-top:0;color:#5F7889;font-size:10px;font-weight:900;letter-spacing:.09em;line-height:1.45}
+body.qv2-home .qv2-home-pathways .qv2-path-card h3{margin:6px 0 9px;font-size:22px;line-height:1.16;letter-spacing:-.035em}
+body.qv2-home .qv2-home-pathways .qv2-path-card>p{flex:1;min-height:88px;margin:0 0 15px;color:#506579;font-size:14px;line-height:1.65}
+body.qv2-home .qv2-home-pathways .qv2-card-tags{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px}
+body.qv2-home .qv2-home-pathways .qv2-card-tags span{padding:7px 9px;border:1px solid rgba(12,66,93,.08);border-radius:8px;background:rgba(255,255,255,.76);font-size:11px;font-weight:800;color:#294D67}
+body.qv2-home .qv2-home-pathways .qv2-inline-link{display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--home-path-line);color:var(--brand-teal-700);font-size:12px;font-weight:900}
+body.qv2-home .qv2-learning-section{padding-top:64px;padding-bottom:68px}
+body.qv2-home .qv2-learning-section:before{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(9,143,136,.25),rgba(201,164,93,.45),rgba(9,143,136,.25),transparent);content:""}
+body.qv2-home .qv2-innovation-section{position:relative;isolation:isolate;border-top:1px solid rgba(201,164,93,.36)}
+body.qv2-home .qv2-innovation-section:before{position:absolute;top:0;left:0;right:0;height:72px;background:linear-gradient(180deg,rgba(245,249,248,.12),transparent);pointer-events:none;content:""}
+body.qv2-home .qv2-recognition-section{background:linear-gradient(180deg,#0B6668 0px,var(--brand-pearl) 92px);padding-top:96px}
+body.qv2-home .qv2-event-section{padding-top:46px;padding-bottom:54px}
+body.qv2-home .qv2-event-section .qv2-section-heading{margin-bottom:12px}
+body.qv2-home .qv2-event-section .qv2-section-heading>p{max-width:560px;font-size:14px}
+body.qv2-home .qv2-event-section .qv2-timeline{margin-top:20px}
+body.qv2-home .qv2-event-section .qv2-timeline>div{min-height:128px;gap:6px;padding:16px 18px}
+body.qv2-home .qv2-event-section .qv2-timeline span{font-size:11px}
+body.qv2-home .qv2-event-section .qv2-timeline b{margin-top:2px;font-size:14px;line-height:1.35}
+body.qv2-home .qv2-event-section .qv2-timeline small{font-size:12px;line-height:1.5}
+body.qv2-home .qv2-event-section .qv2-event-notice{margin-top:12px;padding:13px 16px}
+@media(max-width:1120px){
+ body.qv2-home .qv2-home-grid{min-height:560px;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px}
+ body.qv2-home .qv2-home-visual{grid-template-columns:minmax(0,1fr) 138px;gap:12px}
+ body.qv2-home .qv2-home-visual .htse-reference-badge{padding:11px 9px}
+ body.qv2-home .qv2-home-visual .htse-reference-badge img{width:125px}
+ body.qv2-home .qv2-home-pathways .qv2-pathway-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.qv2-home .qv2-home-pathways .qv2-path-card{min-height:286px}
+}
+@media(max-width:760px){
+ body.qv2-home .qv2-home-grid{min-height:0;grid-template-columns:1fr;gap:2px;padding-top:36px;padding-bottom:22px}
+ body.qv2-home .qv2-home-copy{max-width:100%}
+ body.qv2-home .qv2-home-copy h1{max-width:620px;font-size:clamp(38px,8.4vw,52px)}
+ body.qv2-home .qv2-home-copy>p{max-width:620px;font-size:15px}
+ body.qv2-home .qv2-home-actions{display:grid;grid-template-columns:1fr;gap:10px}
+ body.qv2-home .qv2-home-actions .qv2-button{width:100%}
+ body.qv2-home .qv2-home-primary-cta{min-height:56px;font-size:14px}
+ body.qv2-home .qv2-home-visual{grid-template-columns:1fr;gap:8px;min-height:0;margin-top:0}
+ body.qv2-home .qv2-home-art-stage{width:min(100%,540px);justify-self:center}
+ body.qv2-home .qv2-ecosystem-image{width:100%;max-height:none}
+ body.qv2-home .qv2-home-visual .htse-reference-badge{display:flex;flex-direction:row;justify-content:flex-start;justify-self:center;gap:13px;width:min(100%,360px);padding:9px 13px;text-align:left}
+ body.qv2-home .qv2-home-visual .htse-reference-badge img{width:100px;flex:0 0 100px}
+ body.qv2-home .htse-badge-copy{justify-items:start;text-align:left}
+ body.qv2-home .htse-badge-copy b{font-size:11px}
+ body.qv2-home .htse-badge-arrow{margin-left:auto;flex:0 0 27px}
+ body.qv2-home .qv2-home-pathways{padding-top:48px;padding-bottom:52px}
+ body.qv2-home .qv2-home-pathways .qv2-heading-split{margin-bottom:21px}
+ body.qv2-home .qv2-home-pathways .qv2-heading-split>p{margin-top:12px;font-size:14px}
+ body.qv2-home .qv2-home-pathways .qv2-pathway-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ body.qv2-home .qv2-home-pathways .qv2-path-card{min-height:300px;padding:17px 15px}
+ body.qv2-home .qv2-home-pathways .qv2-path-icon{width:46px;height:46px}
+ body.qv2-home .qv2-home-pathways .qv2-path-icon svg{width:24px;height:24px}
+ body.qv2-home .qv2-home-pathways .qv2-path-card h3{font-size:19px}
+ body.qv2-home .qv2-home-pathways .qv2-path-card>p{min-height:100px;font-size:13px;line-height:1.58}
+ body.qv2-home .qv2-home-pathways .qv2-card-kicker{font-size:9px}
+ body.qv2-home .qv2-home-pathways .qv2-card-tags{gap:5px}
+ body.qv2-home .qv2-home-pathways .qv2-card-tags span{font-size:10px;padding:6px 7px}
+ body.qv2-home .qv2-home-pathways .qv2-inline-link{font-size:11px}
+ body.qv2-home .qv2-event-section{padding-top:40px;padding-bottom:46px}
+ body.qv2-home .qv2-event-section .qv2-timeline{margin-top:16px}
+ body.qv2-home .qv2-event-section .qv2-timeline>div{min-height:116px;padding:14px}
+}
+@media(max-width:520px){
+ body.qv2-home .qv2-home-pathways .qv2-pathway-cards{grid-template-columns:1fr}
+ body.qv2-home .qv2-home-pathways .qv2-path-card{min-height:250px;padding:19px}
+ body.qv2-home .qv2-home-pathways .qv2-path-card>p{min-height:0}
+ body.qv2-home .qv2-home-pathways .qv2-card-kicker{min-height:0}
+ body.qv2-home .qv2-home-pathways .qv2-path-card h3{font-size:21px}
+ body.qv2-home .qv2-home-visual .htse-reference-badge{width:min(100%,340px)}
+ body.qv2-home .qv2-home-visual .htse-reference-badge img{width:106px;flex-basis:106px}
+ body.qv2-home .qv2-event-section .qv2-timeline{grid-template-columns:1fr;gap:10px}
+ body.qv2-home .qv2-event-section .qv2-timeline>div{min-height:0;padding:15px 16px;border-radius:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.qv2-home .qv2-ecosystem-image,body.qv2-home .qv2-home-primary-cta,body.qv2-home .qv2-home-pathways .qv2-path-card{animation:none;transition:none}
+}
