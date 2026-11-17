@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 540" role="img" aria-labelledby="t d">
+<title id="t">Premium academic and innovation awards</title><desc id="d">A polished gold trophy with laurel branches, a merit medal, a certificate and a ribbon rosette.</desc>
+<defs>
+ <linearGradient id="a-gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4c8"/><stop offset=".25" stop-color="#e4bf73"/><stop offset=".52" stop-color="#a97634"/><stop offset=".72" stop-color="#f6dc98"/><stop offset="1" stop-color="#8f5c28"/></linearGradient>
+ <linearGradient id="a-bright" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#fff5d3"/><stop offset=".48" stop-color="#d6ad62"/><stop offset="1" stop-color="#fff0b4"/></linearGradient>
+ <linearGradient id="a-navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#153f6a"/><stop offset="1" stop-color="#061c3e"/></linearGradient>
+ <linearGradient id="a-paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e9eee9"/></linearGradient>
+ <filter id="a-shadow" x="-30%" y="-40%" width="160%" height="200%"><feGaussianBlur stdDeviation="15"/></filter>
+</defs>
+<ellipse cx="370" cy="452" rx="290" ry="44" fill="#092b50" opacity=".16" filter="url(#a-shadow)"/>
+<!-- laurel branch left -->
+<g fill="url(#a-gold)" stroke="#9b6b31" stroke-width="2">
+ <path d="M184 410C70 356 65 250 123 145" fill="none" stroke="url(#a-gold)" stroke-width="9" stroke-linecap="round"/>
+ <path d="M101 326q-45-17-53-65 43 6 53 65ZM83 276q-42-26-37-68 37 14 37 68ZM88 227q-28-35-12-70 28 24 12 70ZM109 186q-12-40 14-68 18 31-14 68Z"/>
+ <path d="M576 410c114-54 119-160 61-265" fill="none" stroke="url(#a-gold)" stroke-width="9" stroke-linecap="round"/>
+ <path d="M659 326q45-17 53-65-43 6-53 65ZM677 276q42-26 37-68-37 14-37 68ZM672 227q28-35 12-70-28 24-12 70ZM651 186q12-40-14-68-18 31 14 68Z"/>
+</g>
+<!-- trophy handles and body -->
+<g>
+ <path d="M274 115h212v107q0 125-106 152-106-27-106-152Z" fill="url(#a-gold)" stroke="#fff0bc" stroke-width="5"/>
+ <path d="M297 134h166v80q0 88-83 114-83-26-83-114Z" fill="url(#a-bright)" stroke="#a97838" stroke-width="3"/>
+ <path d="M274 151h-49q-25 0-25 34 0 65 83 81M486 151h49q25 0 25 34 0 65-83 81" fill="none" stroke="url(#a-gold)" stroke-width="19" stroke-linecap="round"/>
+ <path d="M274 151h-49q-25 0-25 34 0 65 83 81M486 151h49q25 0 25 34 0 65-83 81" fill="none" stroke="#fff0c0" stroke-width="4" opacity=".8"/>
+ <path d="M367 366h26v65h-26Z" fill="url(#a-gold)"/>
+ <path d="M330 423h100v26H330Z" fill="url(#a-gold)" stroke="#fff0bf" stroke-width="3"/>
+ <path d="M298 449h164v26H298Z" fill="url(#a-navy)" stroke="#d8b76e" stroke-width="4"/>
+ <path d="M280 475h200v21H280Z" fill="url(#a-gold)"/>
+ <circle cx="380" cy="265" r="49" fill="#fff0bd" stroke="#ad7b38" stroke-width="5"/>
+ <path d="m380 226 13 27 30 4-22 21 6 30-27-15-27 15 6-30-22-21 30-4Z" fill="url(#a-navy)"/>
+</g>
+<!-- certificate / recognition card -->
+<g transform="translate(510 278) rotate(8)">
+ <path d="M0 0h191v142H0Z" fill="#0a294c" opacity=".2" transform="translate(7 8)"/>
+ <path d="M0 0h191v142H0Z" fill="url(#a-paper)" stroke="#d1a964" stroke-width="5"/>
+ <path d="M14 14h163v114H14Z" fill="none" stroke="#c99d55" stroke-width="2"/>
+ <path d="M45 37h103M45 53h103M45 70h69" stroke="#75909d" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+ <path d="M51 91h88" stroke="#cba25c" stroke-width="3"/>
+ <circle cx="145" cy="105" r="21" fill="url(#a-gold)" stroke="#fff0c0" stroke-width="3"/>
+ <path d="m145 90 5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z" fill="#fff5d4"/>
+</g>
+<!-- rosette -->
+<g transform="translate(198 394)">
+ <path d="m-20 16-24 86 42-16 28 29 4-88Z" fill="url(#a-navy)" stroke="#d1a661" stroke-width="3"/>
+ <path d="m20 16 24 86-42-16-28 29-4-88Z" fill="#0a5372" stroke="#d1a661" stroke-width="3"/>
+ <circle r="46" fill="url(#a-gold)" stroke="#fff0be" stroke-width="4"/>
+ <circle r="33" fill="url(#a-navy)" stroke="#a57838" stroke-width="3"/>
+ <path d="m0-22 7 15 17 2-12 11 3 17L0 15-15 23l3-17-12-11 17-2Z" fill="url(#a-bright)"/>
+</g>
+<g fill="#f5d88f"><circle cx="123" cy="105" r="5"/><circle cx="632" cy="100" r="5"/><circle cx="596" cy="454" r="4"/></g>
+</svg>

@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 800" role="img" aria-labelledby="t d">
+<title id="t">Healthcare Talent Search Exam 2026 medical assessment scene</title>
+<desc id="d">A cinematic three-dimensional laptop displaying a medical assessment interface, surrounded by medical textbooks, stethoscope, microscope, molecular model and holographic clinical imagery.</desc>
+<defs>
+ <linearGradient id="h-navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#163f6e"/><stop offset=".55" stop-color="#092d60"/><stop offset="1" stop-color="#041a38"/></linearGradient>
+ <linearGradient id="h-screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efffff"/><stop offset=".5" stop-color="#b9e4e8"/><stop offset="1" stop-color="#7cbac5"/></linearGradient>
+ <linearGradient id="h-gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0bb"/><stop offset=".48" stop-color="#d4a95c"/><stop offset="1" stop-color="#95632b"/></linearGradient>
+ <linearGradient id="h-teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#69eee0"/><stop offset=".55" stop-color="#139f9e"/><stop offset="1" stop-color="#075c79"/></linearGradient>
+ <linearGradient id="h-metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".27" stop-color="#b9d0db"/><stop offset=".52" stop-color="#f8ffff"/><stop offset="1" stop-color="#66879a"/></linearGradient>
+ <linearGradient id="h-book" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#184a75"/><stop offset="1" stop-color="#061d40"/></linearGradient>
+ <radialGradient id="h-glow"><stop stop-color="#27d4cd" stop-opacity=".30"/><stop offset="1" stop-color="#27d4cd" stop-opacity="0"/></radialGradient>
+ <filter id="h-shadow" x="-30%" y="-40%" width="160%" height="200%"><feGaussianBlur stdDeviation="18"/></filter>
+ <filter id="h-soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="10"/></filter>
+ <filter id="h-glowfilter" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<ellipse cx="560" cy="668" rx="430" ry="72" fill="#03152f" opacity=".22" filter="url(#h-shadow)"/>
+<ellipse cx="550" cy="430" rx="430" ry="280" fill="url(#h-glow)"/>
+<g opacity=".62" fill="none" stroke="#56dcd5" stroke-width="2">
+ <path d="M585 88c-28 38-30 77 2 112s30 75-2 111" stroke-dasharray="5 9"/>
+ <path d="M610 79c35 38 36 77 2 113s-32 77 2 112" stroke-dasharray="5 9"/>
+ <path d="M858 125h74m-37-37v74" stroke-width="7" stroke-linecap="round"/>
+ <circle cx="899" cy="175" r="68" opacity=".35"/>
+</g>
+<!-- translucent clinical hologram -->
+<g opacity=".76">
+ <path d="M490 135q54-24 107 0v245q-53 25-107 0Z" fill="#0b6484" fill-opacity=".10" stroke="#58d8d4" stroke-opacity=".55" stroke-width="2"/>
+ <path d="M543 166c-20 0-29 16-29 34 0 14 9 25 17 29l-8 31-30 38 18 14 30-22 30 22 18-14-30-38-8-31c9-4 17-15 17-29 0-18-9-34-29-34Z" fill="#40d5cf" fill-opacity=".13" stroke="#75e7e0" stroke-width="2"/>
+ <path d="m543 300-30 75m30-75 31 75m-49-42 49 0m-37-54h14" stroke="#8cf4e8" stroke-width="2" stroke-linecap="round"/>
+ <circle cx="543" cy="201" r="19" fill="none" stroke="#8cf4e8" stroke-width="2"/>
+</g>
+<!-- laptop screen, three-dimensional -->
+<path d="M281 232q0-22 22-29l493-100q30-6 35 24l48 334q4 28-23 34L338 591q-31 6-36-23Z" fill="#02172e" opacity=".35" filter="url(#h-soft)"/>
+<path d="M274 218q0-19 21-24l508-98q26-5 30 22l51 335q4 23-19 28L338 581q-26 5-30-20Z" fill="url(#h-metal)" stroke="#d9edf0" stroke-width="4"/>
+<path d="M293 220q0-12 15-15l488-94q15-3 18 13l45 306q2 14-13 17L340 552q-15 3-18-12Z" fill="#071d3c"/>
+<path d="M310 221 794 127l43 299-484 96-43-301Z" fill="url(#h-screen)"/>
+<path d="M337 249 764 166l34 240-427 84-34-241Z" fill="#dff4f4" opacity=".92"/>
+<!-- exam interface detail -->
+<path d="M357 267 750 190" stroke="#0b3e69" stroke-width="5" stroke-linecap="round"/>
+<path d="M358 288 742 213" stroke="#4b8d9a" stroke-width="2" opacity=".55"/>
+<rect x="365" y="308" width="231" height="16" rx="8" fill="#9abdc7" transform="rotate(-11 365 308)"/>
+<rect x="365" y="308" width="174" height="16" rx="8" fill="url(#h-gold)" transform="rotate(-11 365 308)"/>
+<g fill="#fff" stroke="#4b99a4" stroke-width="2">
+ <rect x="370" y="354" width="245" height="33" rx="8" transform="rotate(-11 370 354)"/>
+ <rect x="376" y="397" width="246" height="33" rx="8" transform="rotate(-11 376 397)"/>
+ <rect x="382" y="440" width="247" height="33" rx="8" transform="rotate(-11 382 440)"/>
+ <rect x="388" y="483" width="244" height="30" rx="8" transform="rotate(-11 388 483)"/>
+</g>
+<g fill="none" stroke="#078f88" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+ <path d="m389 366 7 7 13-17M395 410l7 7 13-17M401 453l7 7 13-17"/>
+</g>
+<g stroke="#5b8e9a" stroke-width="4" stroke-linecap="round" opacity=".55">
+ <path d="M430 365h150M436 408h142M442 452h148M448 492h130"/>
+</g>
+<rect x="655" y="254" width="139" height="158" rx="14" fill="#0b3963" transform="rotate(-11 655 254)"/>
+<g fill="#d8f3ef" opacity=".9">
+ <rect x="675" y="283" width="31" height="25" rx="5" transform="rotate(-11 675 283)"/>
+ <rect x="715" y="275" width="31" height="25" rx="5" transform="rotate(-11 715 275)"/>
+ <rect x="755" y="267" width="24" height="25" rx="5" transform="rotate(-11 755 267)"/>
+</g>
+<path d="m686 347 19-4m-16 35 19-4m-12 34 19-4" stroke="#e4c47b" stroke-width="6" stroke-linecap="round"/>
+<!-- laptop base keyboard deck -->
+<path d="m338 582 571-113 82 76q13 13-11 19L406 692q-23 5-42-10l-75-75q-15-15 49-25Z" fill="url(#h-metal)" stroke="#dcecf0" stroke-width="3"/>
+<path d="m388 585 480-95 58 47-481 101-57-53Z" fill="#18354e" stroke="#8faebb" stroke-width="2"/>
+<g stroke="#8cabb8" stroke-width="3" opacity=".8">
+ <path d="m416 586 449-89m-421 110 449-89m-422 109 450-90"/>
+ <path d="m439 575 30 33m42-47 29 32m43-46 29 32m42-45 28 31m45-45 27 30m45-44 27 29m44-43 25 28"/>
+</g>
+<path d="m524 636 179-36 30 24-179 37Z" fill="#7b9daa" stroke="#d9e8e9" stroke-width="2"/>
+<path d="m542 641 144-29 17 13-143 30Z" fill="#b9cbd1"/>
+<!-- stacked medical textbooks -->
+<g>
+ <path d="m68 502 180-40 137 63-177 46-140-69Z" fill="#03172f" opacity=".22" filter="url(#h-soft)"/>
+ <path d="m75 453 180-42 135 61-179 47-136-66Z" fill="url(#h-book)" stroke="#bd9451" stroke-width="3"/>
+ <path d="m75 453 136 66-2 19-134-66v-19Z" fill="#082545"/>
+ <path d="m211 519 179-47v19l-179 47v-19Z" fill="#041a35"/>
+ <path d="m94 463 157-36 107 49-156 39-108-52Z" fill="#f4e7cb"/>
+ <path d="m92 422 178-42 137 61-177 46-138-65Z" fill="#0e6379" stroke="#dbb76f" stroke-width="3"/>
+ <path d="m92 422 138 65v18l-138-65v-18Z" fill="#08495f"/>
+ <path d="m230 487 177-46v18l-177 46v-18Z" fill="#052b48"/>
+ <path d="m110 430 158-37 109 48-157 40-110-51Z" fill="#eef4ec"/>
+ <path d="m113 391 179-43 135 61-177 46-137-64Z" fill="#13416e" stroke="#d7af66" stroke-width="3"/>
+ <path d="m113 391 137 64v17l-137-64v-17Z" fill="#0a3158"/>
+ <path d="m250 455 177-46v17l-177 46v-17Z" fill="#061f43"/>
+ <path d="m138 401 154-37 107 48-154 40-107-51Z" fill="#f7f0de"/>
+ <path d="m147 412 67-16" stroke="#d2a85f" stroke-width="3" opacity=".85"/>
+</g>
+<!-- microscope right -->
+<g transform="translate(900 230)">
+ <ellipse cx="92" cy="404" rx="111" ry="24" fill="#03172f" opacity=".18" filter="url(#h-soft)"/>
+ <path d="M26 374h150l30 24H-3Z" fill="url(#h-metal)" stroke="#9db5c2" stroke-width="3"/>
+ <path d="M38 355h117v23H38z" fill="#526d7d"/>
+ <path d="M65 333h48v28H65z" fill="url(#h-metal)"/>
+ <path d="M83 327c-5-42 8-72 38-98l40 34c-23 16-29 40-22 64Z" fill="#d5e1e4" stroke="#617c8a" stroke-width="4"/>
+ <path d="M119 229 86 126q-7-20 12-26l25-9q15-4 22 15l39 105-39 20Z" fill="url(#h-metal)" stroke="#7794a3" stroke-width="4"/>
+ <path d="m95 95 27-9 25 58-38 16Z" fill="#092d60" stroke="#d5b16b" stroke-width="3"/>
+ <path d="M85 127 54 142q-14 7-8 24l16 34q8 18 26 9l23-14Z" fill="#0b294a" stroke="#90aeb9" stroke-width="4"/>
+ <path d="M63 206h85l42 77H57Z" fill="#b6cbd2" stroke="#667e8d" stroke-width="3"/>
+ <path d="M79 279h99v20H79z" fill="#263f52"/>
+ <path d="M94 299h70v24H94z" fill="#8ea8b3"/>
+ <path d="M48 356c-5-23 6-41 27-50l-12-29" fill="none" stroke="#586f7f" stroke-width="10"/>
+ <circle cx="151" cy="269" r="9" fill="url(#h-gold)"/>
+</g>
+<!-- stethoscope foreground, broad polished tubing -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M265 690c-53 1-100-16-122-53-20-34-9-64 16-69 35-8 73 37 103 71 22 24 52 37 87 30 30-6 50-28 54-55" stroke="#03172f" stroke-width="22" opacity=".22" filter="url(#h-soft)"/>
+ <path d="M255 668c-51 4-95-13-117-48-18-28-11-55 11-62 30-9 64 32 91 61 25 28 56 43 98 34 34-8 56-36 55-72" stroke="#102e4f" stroke-width="17"/>
+ <path d="M255 664c-51 4-95-13-117-48-18-28-11-55 11-62 30-9 64 32 91 61 25 28 56 43 98 34 34-8 56-36 55-72" stroke="url(#h-metal)" stroke-width="9"/>
+ <path d="M390 576c24-17 48-14 64 5" stroke="#0d2d4e" stroke-width="17"/>
+ <path d="M390 576c24-17 48-14 64 5" stroke="url(#h-metal)" stroke-width="8"/>
+ <path d="M445 581c13-10 29-14 43-8" stroke="#092d60" stroke-width="12"/>
+</g>
+<circle cx="493" cy="580" r="34" fill="url(#h-metal)" stroke="#738d9d" stroke-width="4"/>
+<circle cx="493" cy="580" r="21" fill="#0a3158" stroke="#d2b06e" stroke-width="4"/>
+<circle cx="493" cy="580" r="10" fill="#95bcc7"/>
+<!-- molecular model and glass flask -->
+<g stroke="#d7b56f" stroke-width="5" fill="none" stroke-linecap="round">
+ <path d="m827 624 28-34 34 18 33-39"/>
+ <path d="m855 590 20-39 42 18 5-36"/>
+</g>
+<g fill="url(#h-metal)" stroke="#5b8795" stroke-width="2">
+ <circle cx="827" cy="624" r="13"/><circle cx="855" cy="590" r="13"/><circle cx="889" cy="608" r="13"/><circle cx="922" cy="569" r="13"/><circle cx="917" cy="533" r="13"/>
+</g>
+<g transform="translate(1000 480)">
+ <path d="M20 0h35v66l57 94q12 21-13 24H-19q-25-3-13-24l57-94Z" fill="url(#h-metal)" stroke="#7196a6" stroke-width="3"/>
+ <path d="M10 108h58l34 55q8 13-10 13H-7q-18 0-10-13Z" fill="url(#h-teal)" opacity=".88"/>
+ <path d="M18 0h39M7 112h62" stroke="#e8f4f2" stroke-width="5" stroke-linecap="round"/>
+</g>
+<!-- warm edge lights -->
+<path d="M63 732q250 65 501 0t492 3" fill="none" stroke="#d5ad68" stroke-width="2" opacity=".65"/>
+<g fill="#f6d88d"><circle cx="132" cy="359" r="4"/><circle cx="847" cy="96" r="4"/><circle cx="1015" cy="359" r="3"/></g>
+</svg>

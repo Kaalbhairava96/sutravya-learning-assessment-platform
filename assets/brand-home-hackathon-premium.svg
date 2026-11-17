@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 540" role="img" aria-labelledby="t d">
+<title id="t">Healthcare innovation hackathon prototype development</title><desc id="d">A three-dimensional robotic arm and medical prototype workstation with a glowing digital anatomical heart, laptop and laboratory equipment.</desc>
+<defs>
+ <linearGradient id="k-navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1b4e7c"/><stop offset=".55" stop-color="#092d60"/><stop offset="1" stop-color="#041b39"/></linearGradient>
+ <linearGradient id="k-teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8df5e5"/><stop offset=".5" stop-color="#19b9ac"/><stop offset="1" stop-color="#075f7a"/></linearGradient>
+ <linearGradient id="k-gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0b6"/><stop offset=".45" stop-color="#d2a45a"/><stop offset="1" stop-color="#95622d"/></linearGradient>
+ <linearGradient id="k-metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".5" stop-color="#b9d0d9"/><stop offset="1" stop-color="#637f91"/></linearGradient>
+ <filter id="k-shadow" x="-30%" y="-40%" width="160%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+ <filter id="k-glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="15"/></filter>
+</defs>
+<ellipse cx="380" cy="452" rx="320" ry="45" fill="#071d3a" opacity=".18" filter="url(#k-shadow)"/>
+<!-- illuminated prototype platform -->
+<path d="m92 405 324-99 258 101-324 107Z" fill="#082448" stroke="#49d6cf" stroke-width="3"/>
+<path d="m92 405 258 109v16L92 421Z" fill="#05213f"/><path d="m350 514 324-107v16L350 530Z" fill="#03182f"/>
+<path d="m138 403 278-85 212 84-277 88Z" fill="#0d4168" stroke="#d3b16f" stroke-width="2"/>
+<path d="m195 400 222-68 164 67-221 68Z" fill="#092e55" stroke="#4cd5cb" stroke-opacity=".65" stroke-width="2"/>
+<!-- prototype medical heart hologram -->
+<ellipse cx="420" cy="255" rx="132" ry="125" fill="#19b8bb" opacity=".18" filter="url(#k-glow)"/>
+<g transform="translate(420 238)">
+ <path d="M0-70C-42-114-100-73-92-24-86 17-40 53 0 92 42 51 86 12 92-25 100-75 43-113 0-70Z" fill="#18b8b2" fill-opacity=".14" stroke="#6cf0df" stroke-width="4"/>
+ <path d="M-3-66c-18 22-11 42-28 61-14 15-26 30-12 53 12 20 25 29 43 44 18-21 41-38 40-63-1-19-18-25-18-46 0-19 9-34-7-49-7 6-12 0-18 0Z" fill="url(#k-teal)" fill-opacity=".64" stroke="#b4fff0" stroke-width="3"/>
+ <path d="M-10-66v41l-25 19h29l14 26 10-38 23-15H8Z" fill="none" stroke="#fff0b5" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M-112 10h32l16-29 21 57 19-34h26m19 6h24l13-20 14 41 16-21h23" fill="none" stroke="#7cf7e7" stroke-width="3" stroke-linecap="round"/>
+</g>
+<!-- robotic arm base -->
+<g>
+ <path d="m80 407 96-28 75 31-98 31Z" fill="#051c39" stroke="#d5b16c" stroke-width="3"/>
+ <path d="m100 393 72-22 56 23-72 22Z" fill="url(#k-metal)"/>
+ <path d="m154 390-5-92 34-13 34 85-28 22Z" fill="url(#k-navy)" stroke="#87b6c6" stroke-width="3"/>
+ <circle cx="168" cy="292" r="35" fill="url(#k-metal)" stroke="#d6b16a" stroke-width="5"/>
+ <circle cx="168" cy="292" r="15" fill="#0a3760" stroke="#5adcd3" stroke-width="4"/>
+ <path d="m163 268 65-90 39 22-64 104Z" fill="url(#k-metal)" stroke="#64859a" stroke-width="4"/>
+ <circle cx="247" cy="189" r="30" fill="url(#k-gold)" stroke="#f6e2a9" stroke-width="4"/>
+ <circle cx="247" cy="189" r="12" fill="#0a3d62" stroke="#75e7dd" stroke-width="3"/>
+ <path d="m258 171 67-54 29 36-73 56Z" fill="url(#k-metal)" stroke="#628496" stroke-width="4"/>
+ <circle cx="341" cy="135" r="24" fill="url(#k-gold)" stroke="#fff0bb" stroke-width="3"/>
+ <circle cx="341" cy="135" r="9" fill="#082f56"/>
+ <path d="m353 126 46 22-18 34-51-27Z" fill="#c4d5da" stroke="#648497" stroke-width="3"/>
+ <path d="m390 146 20 9-15 37-18-9Z" fill="url(#k-metal)"/>
+ <path d="m394 184 8 29-26 4-9-27Z" fill="#0d4268" stroke="#d3b16f" stroke-width="3"/>
+ <path d="m378 215 13 0 12 28-20 0Z" fill="#082d54"/>
+ <path d="m371 242 24 0-10 19-13-2Z" fill="url(#k-gold)"/>
+</g>
+<!-- digital workstation laptop -->
+<g transform="translate(485 335) skewY(-12)">
+ <path d="M0 0h180v93H0Z" fill="#041c39" stroke="#7fa9b8" stroke-width="4"/>
+ <path d="M14 12h152v65H14Z" fill="#0c5a7a"/>
+ <path d="M25 26h130" stroke="#7eeadf" stroke-width="4"/>
+ <circle cx="57" cy="50" r="13" fill="#d7b56d"/><path d="m51 51 5 5 9-12" fill="none" stroke="#082c53" stroke-width="3"/>
+ <path d="M30 69h94m-94-12h70" stroke="#9ed9d8" stroke-width="3" opacity=".8"/>
+ <path d="m-20 94 182 0 42 26-190 12-34-23Z" fill="url(#k-metal)" stroke="#d2e5e7" stroke-width="3"/>
+ <path d="m20 100 119 0 17 10-119 10Z" fill="#718d9e"/>
+</g>
+<!-- glass lab vessels -->
+<g transform="translate(86 320)">
+ <path d="M20 0h30v54l38 56q11 17-9 19H-5q-20-2-9-19l34-56Z" fill="url(#k-metal)" fill-opacity=".65" stroke="#95c6d1" stroke-width="3"/>
+ <path d="M-1 91h76l14 19q6 8-10 8H-8q-14-1-8-9Z" fill="#16b9b0" fill-opacity=".82"/>
+ <path d="M12 0h46" stroke="#e7f7f6" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g transform="translate(630 365)">
+ <path d="M22 0h31v48l32 56q10 17-8 19H-5q-18-2-8-19l35-56Z" fill="url(#k-metal)" fill-opacity=".58" stroke="#8dc1cc" stroke-width="3"/>
+ <path d="M-2 94h73l14 14q5 9-10 9H-9q-14-1-8-9Z" fill="url(#k-teal)"/>
+ <path d="M13 0h48" stroke="#e7f7f6" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g fill="#f4d78f"><circle cx="87" cy="143" r="5"/><circle cx="652" cy="106" r="4"/><circle cx="566" cy="230" r="4"/></g>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 540" role="img" aria-labelledby="t d">
+<title id="t">Premium medical learning and academic preparation</title><desc id="d">A three-dimensional stack of medical books, a tablet with an anatomical hologram, a stethoscope and study tools.</desc>
+<defs>
+ <linearGradient id="l-navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1d5680"/><stop offset="1" stop-color="#062447"/></linearGradient>
+ <linearGradient id="l-teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7af1dc"/><stop offset=".5" stop-color="#13998f"/><stop offset="1" stop-color="#075c72"/></linearGradient>
+ <linearGradient id="l-gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0b5"/><stop offset=".5" stop-color="#d2a75d"/><stop offset="1" stop-color="#96612b"/></linearGradient>
+ <linearGradient id="l-pages" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#dce7e3"/></linearGradient>
+ <linearGradient id="l-metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".5" stop-color="#aac3d0"/><stop offset="1" stop-color="#526f86"/></linearGradient>
+ <filter id="l-shadow" x="-30%" y="-40%" width="160%" height="200%"><feGaussianBlur stdDeviation="15"/></filter>
+ <radialGradient id="l-glow"><stop stop-color="#29cbbd" stop-opacity=".24"/><stop offset="1" stop-color="#29cbbd" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="370" cy="455" rx="320" ry="48" fill="#0b2949" opacity=".17" filter="url(#l-shadow)"/>
+<ellipse cx="375" cy="255" rx="245" ry="210" fill="url(#l-glow)"/>
+<!-- tablet device -->
+<g transform="translate(350 75) rotate(-7 150 190)">
+ <path d="M18 27q0-18 20-18h262q20 0 20 20v285q0 19-20 19H38q-20 0-20-20Z" fill="#092543" stroke="#b5d0d9" stroke-width="5"/>
+ <path d="M33 36h270v277H33Z" fill="#0b345d" stroke="#1e7184" stroke-width="3"/>
+ <path d="M53 61h230v225H53Z" fill="#0b5b7a"/>
+ <path d="M72 81h193" stroke="#52d8d0" stroke-width="4" opacity=".8"/>
+ <path d="M168 101c-28 0-42 23-42 47 0 20 12 34 25 42l-11 44-39 40h133l-39-40-11-44c14-8 25-22 25-42 0-24-14-47-41-47Z" fill="#49d6d0" fill-opacity=".13" stroke="#8cece5" stroke-width="3"/>
+ <circle cx="168" cy="146" r="26" fill="none" stroke="#8cece5" stroke-width="3"/>
+ <path d="M127 238h83M111 257h114M139 221h58" stroke="#60c9c5" stroke-width="3" stroke-linecap="round"/>
+ <circle cx="168" cy="324" r="5" fill="#8aaebc"/>
+</g>
+<!-- book stack base -->
+<g>
+ <path d="m55 353 195-41 145 65-194 48-146-72Z" fill="#03172f" opacity=".20" filter="url(#l-shadow)"/>
+ <path d="m48 333 198-47 150 70-199 50-149-73Z" fill="url(#l-navy)" stroke="#d4af6e" stroke-width="3"/>
+ <path d="m48 333 149 73v23L48 356v-23Z" fill="#092a4e"/>
+ <path d="m197 406 199-50v23l-199 50v-23Z" fill="#041b38"/>
+ <path d="m64 328 183-44 128 60-184 46-127-62Z" fill="url(#l-pages)"/>
+ <path d="m75 284 199-47 148 69-199 49-148-71Z" fill="url(#l-teal)" stroke="#d8b46d" stroke-width="3"/>
+ <path d="m75 284 148 71v22L75 306v-22Z" fill="#0d6470"/>
+ <path d="m223 355 199-49v22l-199 49v-22Z" fill="#073b59"/>
+ <path d="m91 278 182-43 126 60-183 45-125-62Z" fill="url(#l-pages)"/>
+ <path d="m102 236 199-48 149 69-200 50-148-71Z" fill="url(#l-navy)" stroke="#d8b46d" stroke-width="3"/>
+ <path d="m102 236 148 71v20l-148-71v-20Z" fill="#0a3156"/>
+ <path d="m250 307 200-50v20l-200 50v-20Z" fill="#061e40"/>
+ <path d="m119 230 181-43 128 59-181 45-128-61Z" fill="url(#l-pages)"/>
+ <path d="m124 209 172-42 136 64-174 43-134-65Z" fill="#123f6c" stroke="#d8b46d" stroke-width="3"/>
+ <path d="m124 209 134 65v17l-134-65v-17Z" fill="#092b51"/>
+ <path d="m258 274 174-43v17l-174 43v-17Z" fill="#061e40"/>
+</g>
+<!-- open textbook detail -->
+<g transform="translate(68 85)">
+ <path d="M5 105q60-26 118 0v108q-58-24-118 0Z" fill="#fff" stroke="#aabfc6" stroke-width="3"/>
+ <path d="M123 105q61-26 120 0v108q-59-24-120 0Z" fill="#eaf1ed" stroke="#aabfc6" stroke-width="3"/>
+ <path d="M123 105v108" stroke="#b79355" stroke-width="4"/>
+ <path d="M24 133h77m-77 18h79m-79 18h66m-66 18h72m-72 18h52M144 133h77m-77 18h79m-79 18h66m-66 18h72m-72 18h48" stroke="#96aeb7" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+ <path d="m35 115 20-7 22 9-21 7Z" fill="#dcb872"/>
+</g>
+<!-- stethoscope -->
+<path d="M125 435c-33-4-54-21-55-48-1-15 9-25 20-24 18 2 27 20 38 34 14 18 34 24 54 14 17-8 23-24 21-41" fill="none" stroke="#082b50" stroke-width="15" stroke-linecap="round"/>
+<path d="M125 435c-33-4-54-21-55-48-1-15 9-25 20-24 18 2 27 20 38 34 14 18 34 24 54 14 17-8 23-24 21-41" fill="none" stroke="url(#l-metal)" stroke-width="7" stroke-linecap="round"/>
+<circle cx="204" cy="366" r="19" fill="url(#l-metal)" stroke="#53748a" stroke-width="3"/>
+<circle cx="204" cy="366" r="9" fill="#092d60" stroke="#d3af67" stroke-width="2"/>
+<!-- floating gold academic cap -->
+<g transform="translate(535 370)">
+ <path d="m0 20 93-39 92 39-92 39Z" fill="#072c52" stroke="#b78b4b" stroke-width="3"/>
+ <path d="m42 38v38q50 27 101 0V38l-50 21Z" fill="url(#l-navy)" stroke="#d4b16b" stroke-width="2"/>
+ <path d="M185 20v53" stroke="#d9b46d" stroke-width="4"/><circle cx="185" cy="75" r="7" fill="url(#l-gold)"/>
+</g>
+<g fill="#e6c47b"><circle cx="305" cy="103" r="5"/><circle cx="665" cy="155" r="4"/><circle cx="605" cy="445" r="5"/></g>
+</svg>
