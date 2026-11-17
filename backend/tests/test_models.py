@@ -87,6 +87,7 @@ class ModelSchemaTests(unittest.TestCase):
             "exam_attempts", "candidate_responses", "scoring_rules", "results",
             "admin_users", "audit_events", "question_banks", "verification_challenges",
             "candidate_sessions", "rate_limit_buckets", "admin_sessions",
+            "hackathon_registrations", "hackathon_sessions",
         }
         self.assertEqual(set(Base.metadata.tables), expected)
         slot_columns = Base.metadata.tables["exam_slots"].columns
@@ -247,7 +248,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0013_admin_browser_sessions"])
+        self.assertEqual(script.get_heads(), ["0014_hackathon_registrations"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
