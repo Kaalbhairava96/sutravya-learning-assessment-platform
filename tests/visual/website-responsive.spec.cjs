@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const screenshotRoot=path.join(process.cwd(),'test-results','screenshots');
 fs.mkdirSync(screenshotRoot,{recursive:true});
-const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin-login.html','exam.html'];
+const pages=['index.html','register.html','syllabus.html','sample-papers.html','mock-test.html','awards.html','hackathon.html','hackathon-portal.html','faqs.html','contact.html','login.html','team-prelaunch.html','admin-login.html','exam.html'];
 const widths=[1440,1024,768,390];
 for(const pagePath of pages){
  test(pagePath+' renders without overflow and with working local imagery at all target widths',async({browser})=>{
@@ -60,6 +60,25 @@ test('registration form keeps category fee and labelled fields visible on mobile
  await expect(page.locator('[data-fee-amount]')).toBeVisible();
  await expect(page.locator('.registration-consent')).toBeVisible();
 });
+
+test('signed-in Hackathon participant workspace fits 390px, 768px and desktop',async({browser})=>{
+ const page=await browser.newPage({viewport:{width:1440,height:900}});
+ await page.route('https://sutravya-assessment-api-demo.onrender.com/api/hackathon/auth/session',route=>route.fulfill({
+  status:200,contentType:'application/json',
+  body:JSON.stringify({full_name:'Test Candidate',registration_id:'HTSE26-HK-TEST00001',college_name:'Healthcare Test College',year_of_study:2})
+ }));
+ for(const width of [390,768,1440]){
+  await page.setViewportSize({width,height:900});
+  await page.goto('/hackathon-portal.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('[data-hkp-dashboard]')).toBeVisible();
+  await expect(page.locator('[data-hkp-regid]')).toContainText('HTSE26-HK-TEST00001');
+  const dimensions=await page.evaluate(()=>({viewport:innerWidth,documentWidth:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)}));
+  expect(dimensions.documentWidth,{message:'Participant workspace overflow at '+width+'px'}).toBeLessThanOrEqual(width+2);
+  await page.screenshot({path:path.join(screenshotRoot,'hackathon-portal-dashboard-'+width+'.png'),fullPage:true,animations:'disabled'});
+ }
+ await page.close();
+});
+
 test('reduced motion preference disables long animations and smooth scrolling',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/index.html',{waitUntil:'domcontentloaded'});
