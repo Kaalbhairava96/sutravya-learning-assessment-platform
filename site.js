@@ -6,7 +6,105 @@ const header=document.querySelector('[data-header]');
 if(header){header.innerHTML=`<div class="topline"></div><div class="header"><div class="wrap headerin"><a class="brand" href="index.html" aria-label="Sutrāvya home"><img src="assets/sutravya-logo.png" alt="Sutrāvya — The Digital Thread of Healthcare"></a><button class="navtoggle" aria-label="Open navigation" aria-expanded="false">☰ Menu</button><nav class="nav" aria-label="Main navigation">${pages.map(([url,label])=>`<a href="${url}" class="${url===current?'active':''}">${label}</a>`).join('')}<a class="navcta" href="index.html#register">Register now <span aria-hidden="true">→</span></a></nav></div></div>`;const toggle=header.querySelector('.navtoggle'),nav=header.querySelector('.nav');toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));});}
 const footer=document.querySelector('[data-footer]');
 if(footer){footer.innerHTML=`<footer class="footer"><div class="wrap"><div class="footergrid"><div class="footerbrand"><a href="index.html"><img src="assets/sutravya-logo.png" alt="Sutrāvya"></a><p>Nursing Talent Hunt Exam: a nursing knowledge assessment and digital-health idea challenge delivered by Sutrāvya for Bihar Healthcare Conclave 2026.</p></div><div><h4>Exam information</h4><div class="footerlinks"><a href="awards.html">Awards</a><a href="syllabus.html">Syllabus</a><a href="sample-papers.html">Sample papers</a><a href="faqs.html">FAQs</a></div></div><div><h4>About this event</h4><div class="footerlinks"><span>Organised by Qualinova</span><span>Assessment partner: Sutrāvya</span><a href="https://sutravya.in" target="_blank" rel="noopener">sutravya.in ↗</a><a href="contact.html">Contact</a></div></div></div><div class="copyright"><span>© 2026 Sutrāvya · Nursing Talent Hunt Exam</span><span>Built for Bihar Healthcare Conclave 2026</span></div></div></footer>`;}
-document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();const note=form.querySelector('.register-note');if(note){note.textContent='The registration screen is a prototype. Candidate registration will be connected to secure storage before the exam opens.';note.classList.add('show');}}));
+document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const note=form.querySelector('.register-note');
+  const button=form.querySelector('[data-payment-button]');
+  const originalButtonText=button?.innerHTML||'Pay ₹500 & register';
+  const showPaymentMessage=(message,isError=false)=>{
+    if(!note)return;
+    note.textContent=message;
+    note.classList.add('show');
+    note.classList.toggle('error',isError);
+    note.setAttribute('role',isError?'alert':'status');
+  };
+  const setBusy=(busy)=>{
+    if(!button)return;
+    button.disabled=busy;
+    button.setAttribute('aria-busy',String(busy));
+    button.textContent=busy?'Preparing secure checkout…':originalButtonText;
+  };
+  const config=window.SUTRAVYA_PAYMENT_CONFIG||{};
+  const apiBase=(config.apiBaseUrl||window.SUTRAVYA_API_BASE_URL||'').trim().replace(/\\/+$/,'');
+  const apiUrl=(path)=>apiBase+path;
+  const formData=Object.fromEntries(new FormData(form).entries());
+  if(!window.Razorpay){
+    showPaymentMessage('Secure checkout could not load. Please refresh the page and try again.',true);
+    return;
+  }
+  try{
+    setBusy(true);
+    showPaymentMessage('Creating your secure payment order…');
+    const orderResponse=await fetch(apiUrl('/api/create-order'),{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:formData.name,
+        email:formData.email,
+        phone:formData.phone,
+        program:formData.program
+      })
+    });
+    const orderData=await orderResponse.json().catch(()=>({}));
+    if(!orderResponse.ok)throw new Error(orderData.detail||'Unable to start checkout. Please try again.');
+    if(!orderData.order_id||!orderData.key_id||!orderData.amount||!orderData.currency){
+      throw new Error('The payment service returned incomplete order details.');
+    }
+    const checkout=new window.Razorpay({
+      key:orderData.key_id,
+      amount:orderData.amount,
+      currency:orderData.currency,
+      name:orderData.name||'Sutrāvya',
+      description:orderData.description||'Assessment registration',
+      order_id:orderData.order_id,
+      prefill:{
+        name:formData.name,
+        email:formData.email,
+        contact:formData.phone
+      },
+      theme:{color:'#073f78'},
+      handler:async function(paymentResponse){
+        try{
+          showPaymentMessage('Payment received. Verifying the payment signature…');
+          const verifyResponse=await fetch(apiUrl('/api/verify-payment'),{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              razorpay_payment_id:paymentResponse.razorpay_payment_id,
+              razorpay_order_id:paymentResponse.razorpay_order_id,
+              razorpay_signature:paymentResponse.razorpay_signature
+            })
+          });
+          const verifyData=await verifyResponse.json().catch(()=>({}));
+          if(!verifyResponse.ok||verifyData.success!==true){
+            throw new Error(verifyData.detail||'Payment verification failed. Do not retry the payment yet; please contact support.');
+          }
+          showPaymentMessage('Payment verified successfully. Keep your Razorpay payment ID: '+paymentResponse.razorpay_payment_id+'. Registration records are not yet saved by this prototype.');
+        }catch(error){
+          showPaymentMessage(error.message||'We could not verify your payment. Please contact support with your Razorpay payment ID.',true);
+        }finally{
+          setBusy(false);
+        }
+      },
+      modal:{
+        ondismiss:function(){
+          showPaymentMessage('Checkout was closed. No payment confirmation was received.');
+          setBusy(false);
+        }
+      }
+    });
+    checkout.on('payment.failed',function(event){
+      const description=event?.error?.description||event?.error?.reason||'The payment could not be completed.';
+      showPaymentMessage(description+' You can try again or use another payment method.',true);
+      setBusy(false);
+    });
+    setBusy(false);
+    checkout.open();
+  }catch(error){
+    showPaymentMessage(error.message||'Something went wrong while opening checkout.',true);
+    setBusy(false);
+  }
+}));
 document.querySelectorAll('[data-sample]').forEach(group=>group.addEventListener('change',()=>{const q=group.closest('.sample-question');const answer=q.querySelector('.answer');if(answer)answer.classList.add('show');}));
 
 // Homepage visual refresh: keep the homepage focused on the exam, not the award table.
