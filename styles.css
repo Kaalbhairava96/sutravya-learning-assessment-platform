@@ -20,6 +20,13 @@
   --brand-success:#138168;
   --brand-danger:#B23A48;
   --focus:#087F79;
+  --type-body:16px;
+  --type-label:12px;
+  --type-helper:13px;
+  --type-card-title:21px;
+  --type-section-title:clamp(32px,3vw,42px);
+  --type-page-title:clamp(42px,5vw,62px);
+  --form-field-height:56px;
   --surface:var(--brand-white);
   --surface-soft:var(--brand-pearl);
   --surface-muted:var(--brand-mist);
@@ -1906,15 +1913,6 @@ body.qv2-home .qv2-event-section .qv2-event-notice{margin-top:10px;padding:11px 
    HUMAN-CRAFTED VISUAL SYSTEM · HTSE 2026
    Icon-led form labels, confident typography, clear reading rhythm.
    ═══════════════════════════════════════════════════════════════════════ */
-:root{
-  --type-body:16px;
-  --type-label:12px;
-  --type-helper:13px;
-  --type-card-title:21px;
-  --type-section-title:clamp(32px,3vw,42px);
-  --type-page-title:clamp(42px,5vw,62px);
-  --form-field-height:56px;
-}
 body{font-size:16px;line-height:1.7}
 p{font-size:15.5px;line-height:1.72}
 .page-hero h1,.qv2-hero h1,.v4-page-hero h1,.awards-premium-hero h1{
@@ -2203,7 +2201,7 @@ input[type=checkbox],input[type=radio]{accent-color:#087f79}
   .qv2-hero-art img,.page-hero-art img,.v4-page-hero-visual img{max-height:310px}
 }
 @media(max-width:760px){
-  :root{--type-page-title:clamp(36px,9vw,49px);--type-section-title:clamp(28px,7vw,35px);--form-field-height:54px}
+  body{--type-page-title:clamp(36px,9vw,49px);--type-section-title:clamp(28px,7vw,35px);--form-field-height:54px}
   body{font-size:15.5px}
   p{font-size:15px}
   .page-hero-grid>div:first-child>p,.qv2-hero-copy>p,.v4-page-hero-copy>p{font-size:15.5px}
