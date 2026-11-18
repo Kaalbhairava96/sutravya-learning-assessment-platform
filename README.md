@@ -94,3 +94,34 @@ Migration commands require a reachable configured PostgreSQL database. The API h
 Development and production retain the existing URL policy: PostgreSQL/Psycopg URL scheme, a host, and a database name are required, while a remote host and non-test database name remain allowed for intentional deployment configuration. Keep deployment credentials in the host's secret configuration; this validation does not prove that a non-test URL is a production or development database.
 
 For a future local PostgreSQL rehearsal, start Docker Desktop and use a disposable container with no mounted volume, mapped only to loopback port `55432`, database `sutravya_m3_test`, then provide that exact URL to Alembic. Stop and remove the disposable container after the rehearsal. Do not point test mode at a shared or production database.
+
+
+### Razorpay Standard Checkout (test mode first)
+
+The Nursing Talent Hunt registration form uses Razorpay Standard Checkout. The FastAPI backend creates orders at `POST /api/create-order` and verifies the checkout HMAC signature at `POST /api/verify-payment`. The ₹500 nursing fee is fixed on the server as `RAZORPAY_REGISTRATION_AMOUNT_PAISE=50000`; a browser-supplied amount cannot change it. Razorpay secrets are read only by FastAPI and are never included in the public website bundle.
+
+Install dependencies from `backend/`:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
+
+For local configuration, copy `backend/.env.example` to `backend/.env` and set the existing `DATABASE_URL`, `RAZORPAY_KEY_ID`, and `RAZORPAY_KEY_SECRET`. Keep the actual `.env` file private; the repository ignores it. The supplied test credentials belong in this local file or the backend host's secret environment settings, not in GitHub. Set `CORS_ALLOWED_ORIGINS` to the exact website origins.
+
+Set `apiBaseUrl` in the public `payment-config.js` to the deployed FastAPI service origin (for local testing, `http://127.0.0.1:8000`). This file may contain a public API origin and public configuration only; never put `RAZORPAY_KEY_SECRET` in it. The GitHub Pages workflow copies this file into the public artifact.
+
+Start the backend from `backend/`:
+
+```powershell
+uvicorn app.main:app --reload --no-access-log
+```
+
+Open the website, complete the Nursing Program form, and click **Pay ₹500 & register**. Razorpay opens its hosted checkout modal. On payment success the browser submits the three Razorpay response fields to the verification endpoint; an invalid signature is rejected with HTTP 400. Closing checkout and failed payments display separate messages.
+
+Run the backend checks (from `backend/`):
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+**Important current scope:** this repository is still a prototype. A verified signature is not a substitute for an order/payment persistence workflow. Candidate and payment data are not saved, there is no registration completion API or webhook reconciliation yet, and a verified-payment message must not be treated as final registration confirmation. Add a durable server-side payment record and Razorpay webhook reconciliation before accepting public/production registrations. Test the integration with Razorpay test mode first.
