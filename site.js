@@ -10,7 +10,7 @@ document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventLis
   e.preventDefault();
   const note=form.querySelector('.register-note');
   const button=form.querySelector('[data-payment-button]');
-  const originalButtonText=button?.innerHTML||'Pay ₹500 & register';
+  const originalButtonHtml=button?.innerHTML||'Pay ₹500 &amp; register';
   const showPaymentMessage=(message,isError=false)=>{
     if(!note)return;
     note.textContent=message;
@@ -22,11 +22,16 @@ document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventLis
     if(!button)return;
     button.disabled=busy;
     button.setAttribute('aria-busy',String(busy));
-    button.textContent=busy?'Preparing secure checkout…':originalButtonText;
+    if(busy)button.textContent='Preparing secure checkout…';
+    else button.innerHTML=originalButtonHtml;
   };
   const config=window.SUTRAVYA_PAYMENT_CONFIG||{};
-  const apiBase=(config.apiBaseUrl||window.SUTRAVYA_API_BASE_URL||'').trim().replace(/\\/+$/,'');
+  const apiBase=(config.apiBaseUrl||window.SUTRAVYA_API_BASE_URL||'').trim().replace(/\/+$/,'');
   const apiUrl=(path)=>apiBase+path;
+  if(!apiBase){
+    showPaymentMessage('Online checkout is not connected yet. Please configure the FastAPI service URL in payment-config.js.',true);
+    return;
+  }
   const formData=Object.fromEntries(new FormData(form).entries());
   if(!window.Razorpay){
     showPaymentMessage('Secure checkout could not load. Please refresh the page and try again.',true);
@@ -98,7 +103,6 @@ document.querySelectorAll('[data-register-form]').forEach(form=>form.addEventLis
       showPaymentMessage(description+' You can try again or use another payment method.',true);
       setBusy(false);
     });
-    setBusy(false);
     checkout.open();
   }catch(error){
     showPaymentMessage(error.message||'Something went wrong while opening checkout.',true);
