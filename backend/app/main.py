@@ -6,6 +6,9 @@ import time
 import uuid
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.payments import create_payment_router
 
 from app.config import Settings
 from app.logging_config import configure_logging
@@ -22,6 +25,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
         openapi_url="/openapi.json" if docs_enabled else None,
     )
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=list(active_settings.cors_allowed_origins),
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Content-Type"],
+    )
+    application.include_router(create_payment_router(active_settings))
 
     @application.middleware("http")
     async def request_logging(request: Request, call_next):
