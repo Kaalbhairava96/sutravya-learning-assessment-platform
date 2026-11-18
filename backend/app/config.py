@@ -73,6 +73,10 @@ class Settings:
     app_env: str
     log_level: str
     database_url: str = field(repr=False)
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = field(default="", repr=False)
+    razorpay_registration_amount_paise: int = 50000
+    cors_allowed_origins: tuple[str, ...] = ("*",)
 
     def __post_init__(self) -> None:
         if self.app_env not in {"development", "test", "production"}:
@@ -100,4 +104,20 @@ class Settings:
             raise ConfigurationError("LOG_LEVEL must be a standard logging level.")
 
         database_url = values.get("DATABASE_URL", "").strip()
-        return cls(app_env=app_env, log_level=log_level, database_url=database_url)
+        razorpay_key_id = values.get("RAZORPAY_KEY_ID", "").strip()
+        razorpay_key_secret = values.get("RAZORPAY_KEY_SECRET", "").strip()
+        try:
+            razorpay_amount = int(values.get("RAZORPAY_REGISTRATION_AMOUNT_PAISE", "50000").strip())
+        except ValueError as exc:
+            raise ConfigurationError("RAZORPAY_REGISTRATION_AMOUNT_PAISE must be an integer.") from exc
+        origins_value = values.get("CORS_ALLOWED_ORIGINS", "*").strip()
+        cors_allowed_origins = tuple(origin.strip() for origin in origins_value.split(",") if origin.strip()) or ("*",)
+        return cls(
+            app_env=app_env,
+            log_level=log_level,
+            database_url=database_url,
+            razorpay_key_id=razorpay_key_id,
+            razorpay_key_secret=razorpay_key_secret,
+            razorpay_registration_amount_paise=razorpay_amount,
+            cors_allowed_origins=cors_allowed_origins,
+        )
