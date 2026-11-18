@@ -55,9 +55,91 @@ function icon(name) {
     shield: '<path d="M12 3 20 6v5c0 5-3 8-8 10-5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
     close: '<path d="m6 6 12 12M18 6 6 18"/>',
-    whatsapp: '<path d="M20.5 3.5a10.1 10.1 0 0 0-15.8 12.8l-1.2 4.2 4.3-1.1a10.1 10.1 0 1 0 12.7-15.9Z"/><path d="M8.5 7.7c.2-.4.4-.4.6-.4h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4-.1.6a7.4 7.4 0 0 0 3.1 3.1c.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.4.5 0 .3-.2 1-.6 1.3-.4.4-1.1.6-1.7.5a10.2 10.2 0 0 1-4.5-2.2 10 10 0 0 1-3.1-3.8c-.4-.8-.6-1.6-.3-2.2.3-.5.8-.9 1.1-1.1Z"/>'
+    whatsapp: '<path d="M20.5 3.5a10.1 10.1 0 0 0-15.8 12.8l-1.2 4.2 4.3-1.1a10.1 10.1 0 1 0 12.7-15.9Z"/><path d="M8.5 7.7c.2-.4.4-.4.6-.4h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4-.1.6a7.4 7.4 0 0 0 3.1 3.1c.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.4.5 0 .3-.2 1-.6 1.3-.4.4-1.1.6-1.7.5a10.2 10.2 0 0 1-4.5-2.2 10 10 0 0 1-3.1-3.8c-.4-.8-.6-1.6-.3-2.2.3-.5.8-.9 1.1-1.1Z"/>',
+    institution: '<path d="m3 9 9-5 9 5v11H3z"/><path d="M2 9h20M7 12v5m5-5v5m5-5v5M2 20h20"/>',
+    user: '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18M7 14h3m-3 3h7"/>',
+    map: '<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.4"/>',
+    book: '<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22Z"/><path d="M4 5v14a2.5 2.5 0 0 1 2.5-2.5H20M8 7h8m-8 3h8"/>',
+    clipboard: '<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M8 10h8m-8 4h8m-8 4h5"/>',
+    graduation: '<path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c3.5 3 8.5 3 12 0v-5m4-2v7"/>',
+    key: '<circle cx="8" cy="15" r="5"/><path d="m11.5 11.5 9-9m-3 3 3 3m-6 0 3 3"/>',
+    trophy: '<path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H3v2a4 4 0 0 0 4 4m10-6h4v2a4 4 0 0 1-4 4"/>',
+    lightbulb: '<path d="M9 18h6m-5 3h4m-5-6a7 7 0 1 1 6 0c-.8.6-1 1.1-1 2H10c0-.9-.2-1.4-1-2Z"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+    check: '<path d="m5 12 4 4L19 6"/>'
   };
   return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths[name] || paths.arrow}</svg>`;
+}
+
+function initHumanVisuals() {
+  if (!document.body) return;
+  document.body.dataset.page = currentPage;
+  const makeIcon = (name, className) => {
+    const node=document.createElement('span');
+    node.className=className;
+    node.setAttribute('aria-hidden','true');
+    node.innerHTML=icon(name);
+    return node;
+  };
+  const fieldIcon = label => {
+    const field = (label.htmlFor || '').toLowerCase();
+    const text = label.textContent.toLowerCase();
+    if (/college|institution|university|school|campus/.test(field+' '+text)) return 'institution';
+    if (/email|mail|otp|verification|code/.test(field+' '+text)) return 'mail';
+    if (/mobile|phone|telephone/.test(field+' '+text)) return 'phone';
+    if (/year|semester|stage|date|time/.test(field+' '+text)) return 'calendar';
+    if (/address|district|state|pin|postal|location/.test(field+' '+text)) return 'map';
+    if (/password|token|secure|access/.test(field+' '+text)) return 'shield';
+    if (/name|candidate|participant/.test(field+' '+text)) return 'user';
+    if (/category|programme|program|stream|subject/.test(field+' '+text)) return 'book';
+    if (/registration|application|declaration/.test(field+' '+text)) return 'clipboard';
+    return 'clipboard';
+  };
+  document.querySelectorAll('label[for]').forEach(label => {
+    if (label.querySelector('.form-label-icon')) return;
+    label.prepend(makeIcon(fieldIcon(label),'form-label-icon'));
+  });
+  document.querySelectorAll('.form-section-title').forEach(section => {
+    if (section.querySelector('.form-section-visual')) return;
+    const title=section.querySelector('b')?.textContent.toLowerCase()||'';
+    const name=/academic|education/.test(title)?'graduation':/personal|candidate/.test(title)?'user':/address|location/.test(title)?'map':/email|verification/.test(title)?'mail':/category|programme/.test(title)?'book':'clipboard';
+    const marker=section.querySelector(':scope > span');
+    if(marker) marker.classList.add('form-section-number');
+    const content=section.querySelector('div');
+    if(content) section.insertBefore(makeIcon(name,'form-section-visual'),content);
+  });
+  document.querySelectorAll('.qv2-hack-field-group').forEach(group => {
+    if(group.querySelector('.form-section-visual'))return;
+    const title=group.textContent.toLowerCase();
+    const name=/academic/.test(title)?'graduation':/address/.test(title)?'map':'user';
+    group.prepend(makeIcon(name,'form-section-visual'));
+  });
+  document.querySelectorAll('.qv2-faq-group h3,.contact-card h3,.contact-intent h3,.awards-track-card h3,.qv2-subject-card h4,.qv2-section h2,.section h2,.section-heading h2,.v4-section-heading h2,.admin-panel-heading h3,.admin-section-intro h2,.admin-login-panel h2,.admin-welcome-band h2,.register-panel-head h2').forEach(heading=>{
+    if(heading.querySelector('.heading-visual-icon'))return;
+    const text=heading.textContent.toLowerCase();
+    const name=/award|recognition|excellence|merit|result/.test(text)?'trophy':/hackathon|startup|innovation|idea|prototype/.test(text)?'lightbulb':/address|contact|support|help|login|email/.test(text)?'mail':/registration|eligibility|application/.test(text)?'clipboard':/exam|schedule|date|milestone|time/.test(text)?'calendar':/database|institution|college|university|school|table/.test(text)?'institution':/security|secure|access|protected/.test(text)?'shield':/syllabus|practice|subject|anatomy|nursing|medical|paramedical|laboratory|academic|learning/.test(text)?'graduation':'book';
+    heading.prepend(makeIcon(name,'heading-visual-icon'));
+  });
+  document.querySelectorAll('button.button,button.qv2-button,a.button,a.qv2-button,.nav-register').forEach(control=>{
+    if(control.querySelector('svg,.button-context-icon'))return;
+    const text=control.textContent.toLowerCase();
+    const name=/register|application|apply/.test(text)?'clipboard':/verify|email|code|otp/.test(text)?'mail':/login|sign in|secure/.test(text)?'shield':/contact|call|phone/.test(text)?'phone':/test|practice|start|explore|syllabus|continue/.test(text)?'graduation':/award|recognition/.test(text)?'trophy':null;
+    if(name)control.prepend(makeIcon(name,'button-context-icon'));
+  });
+  document.querySelectorAll('.register-step,.login-context-card,.qv2-milestone,.awards-winner-summary article').forEach((card,index)=>{
+    card.classList.add('human-visual-card');
+    card.style.setProperty('--visual-index',String(index%6));
+  });
+  document.querySelectorAll('.register-security-note>span,.registration-gate>.gate-mark').forEach(node=>{
+    if(node.querySelector('svg'))return;
+    node.innerHTML=icon('shield');
+    node.setAttribute('aria-hidden','true');
+  });
+  document.querySelectorAll('.qv2-hack-free-badge').forEach(node=>{
+    if(node.querySelector('svg'))return;
+    node.prepend(makeIcon(node.textContent.includes('₹')?'check':'shield','badge-visual-icon'));
+  });
 }
 
 const header = document.querySelector('[data-header]');
@@ -578,3 +660,5 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
   }), { threshold: 0.1 });
   document.querySelectorAll('.reveal-item').forEach(item => observer.observe(item));
 } else document.querySelectorAll('.reveal-item').forEach(item => item.classList.add('is-visible'));
+
+initHumanVisuals();

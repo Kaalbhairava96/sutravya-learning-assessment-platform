@@ -1900,3 +1900,544 @@ body.qv2-home .qv2-event-section .qv2-event-notice{margin-top:10px;padding:11px 
 .exam-question-nav-locked{margin:12px 0 0;padding-top:10px;border-top:1px solid #e4ebe7;color:#75838b;font-size:10px;line-height:1.55}
 @media(max-width:900px){.exam-body .exam-active-layout{grid-template-columns:1fr}.exam-question-navigator{position:static;order:2}.exam-question-nav-grid{grid-template-columns:repeat(10,minmax(0,1fr));max-height:210px}}
 @media(max-width:520px){.exam-question-navigator{padding:13px}.exam-question-nav-grid{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;max-height:190px}.exam-question-nav-item{min-height:34px;font-size:10px}.exam-question-navigator-head{display:grid;gap:3px}.exam-question-navigator-count{margin-bottom:10px}}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HUMAN-CRAFTED VISUAL SYSTEM · HTSE 2026
+   Icon-led form labels, confident typography, clear reading rhythm.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root{
+  --type-body:16px;
+  --type-label:12px;
+  --type-helper:13px;
+  --type-card-title:21px;
+  --type-section-title:clamp(32px,3vw,42px);
+  --type-page-title:clamp(42px,5vw,62px);
+  --form-field-height:56px;
+}
+body{font-size:16px;line-height:1.7}
+p{font-size:15.5px;line-height:1.72}
+.page-hero h1,.qv2-hero h1,.v4-page-hero h1,.awards-premium-hero h1{
+  font-size:var(--type-page-title);line-height:1.08;letter-spacing:-.055em
+}
+.page-hero-grid>div:first-child>p,.qv2-hero-copy>p,.v4-page-hero-copy>p{
+  max-width:58ch;font-size:17px;line-height:1.78
+}
+.qv2-section-heading h2,.section-heading h2,.qv2-section-copy h2,
+.qv2-innovation-grid h2,.qv2-recognition-grid h2{
+  font-size:var(--type-section-title);line-height:1.12;letter-spacing:-.045em
+}
+.qv2-section-heading>p,.qv2-heading-split>p,.section-heading>p{
+  font-size:16px;line-height:1.78
+}
+.qv2-eyebrow,.eyebrow,.card-kicker{font-size:11px;letter-spacing:.13em}
+.button,.qv2-button{min-height:51px;padding-inline:20px;font-size:14px}
+.button svg,.qv2-button svg{width:18px;height:18px}
+
+/* Label icons are real inline SVGs, not emoji or font glyphs. */
+.form-label-icon,.heading-visual-icon,.form-section-visual,.badge-visual-icon{
+  display:inline-grid;place-items:center;flex:0 0 auto;line-height:0
+}
+.form-label-icon{width:21px;height:21px;color:#087f79}
+.form-label-icon svg,.heading-visual-icon svg,.form-section-visual svg,
+.badge-visual-icon svg,.register-security-note>span svg,.registration-gate>.gate-mark svg{
+  display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.75;
+  stroke-linecap:round;stroke-linejoin:round
+}
+.form-label-icon svg,.heading-visual-icon svg{animation:htse-icon-drift 3.6s ease-in-out infinite}
+.form-label-icon{filter:drop-shadow(0 3px 4px rgba(7,143,136,.12))}
+.field label,.admin-field label,.registration-otp-field label{
+  display:flex;align-items:center;gap:9px;min-height:24px;margin:0 0 2px;
+  color:#092d60;font-size:12px;font-weight:850;letter-spacing:.085em;line-height:1.35
+}
+.field label .form-label-icon{margin-right:1px}
+.field,.admin-field{gap:8px;margin:16px 0}
+.field input,.field select,.field textarea,
+.admin-field input,.admin-field select,.admin-field textarea,
+.registration-field-grid input,.registration-field-grid select,.registration-field-grid textarea,
+.registration-otp-field input,.login-form input{
+  min-height:var(--form-field-height);padding:14px 16px;border:1px solid #bfd4d3;border-radius:13px;
+  background:linear-gradient(180deg,#fff 0%,#fbfdfc 100%);color:#153650;
+  font:500 16px/1.45 var(--font);box-shadow:0 2px 4px rgba(9,45,96,.025);
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease
+}
+.field textarea,.admin-field textarea{min-height:112px}
+.field input:hover,.field select:hover,.field textarea:hover,
+.admin-field input:hover,.admin-field select:hover,.admin-field textarea:hover{
+  border-color:#8dbab4;background:#fff
+}
+.field input:focus,.field select:focus,.field textarea:focus,
+.admin-field input:focus,.admin-field select:focus,.admin-field textarea:focus{
+  border-color:#078f88;background:#fff;box-shadow:0 0 0 4px rgba(7,143,136,.12),0 8px 20px rgba(9,45,96,.045)
+}
+.field input::placeholder,.field textarea::placeholder,.admin-field input::placeholder{
+  color:#91a0a8;font-size:14px
+}
+.field-help,.fineprint,.form-footnote,.field small{
+  color:#5b6e79;font-size:13px;line-height:1.65
+}
+select{cursor:pointer}
+input[type=checkbox],input[type=radio]{accent-color:#087f79}
+.field input:disabled,.field select:disabled{background:#f0f4f2;color:#71818a;cursor:not-allowed}
+
+/* A proper information hierarchy for candidate information and form sections. */
+.register-panel{padding:clamp(23px,3.2vw,42px);border-radius:24px;background:linear-gradient(165deg,#fff 0%,#fcfdfc 100%);box-shadow:0 22px 55px rgba(9,45,96,.085)}
+.register-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:27px;padding-bottom:22px;border-bottom:1px solid #e4ece8}
+.register-panel-head h2,.register-panel h2,.register-panel-head h2{
+  margin:7px 0 9px;color:#092d60;font:850 clamp(29px,3vw,36px)/1.12 var(--display);letter-spacing:-.05em
+}
+.register-panel-head p{max-width:62ch;margin:0;color:#566d7b;font-size:15px;line-height:1.7}
+.register-panel-head .card-kicker{color:#08766f;font-size:10px;font-weight:900;letter-spacing:.16em}
+.register-panel-icon{
+  display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border:1px solid #c9e0d9;
+  border-radius:16px;background:linear-gradient(145deg,#f4fbf7,#e2f1eb);
+  color:#08766f;font:900 14px var(--display);box-shadow:0 7px 16px rgba(7,143,136,.08)
+}
+.form-section-title{
+  display:grid;grid-template-columns:34px 44px minmax(0,1fr);align-items:center;gap:12px;
+  margin:29px 0 16px;padding:14px 16px;border:1px solid #e1eae6;border-radius:16px;
+  background:linear-gradient(105deg,#f7faf8 0%,#fff 75%);box-shadow:0 5px 15px rgba(9,45,96,.035)
+}
+.form-section-title:first-of-type{margin-top:17px}
+.form-section-number{
+  display:grid;place-items:center;width:31px;height:31px;border:1px solid #d9e7e1;
+  border-radius:10px;background:#edf5f1;color:#0a6d69;font:900 10px var(--display)
+}
+.form-section-visual{
+  width:43px;height:43px;border:1px solid #d5e6df;border-radius:14px;
+  background:linear-gradient(145deg,#fff,#e8f4ef);color:#087f79;
+  box-shadow:0 6px 14px rgba(7,143,136,.075)
+}
+.form-section-visual svg{width:23px;height:23px;animation:htse-icon-drift 3.8s ease-in-out infinite}
+.form-section-title b{display:block;color:#123957;font:850 17px/1.32 var(--display);letter-spacing:-.02em}
+.form-section-title small{display:block;margin-top:4px;color:#627681;font-size:13px;line-height:1.55}
+.registration-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;column-gap:18px;row-gap:8px}
+.registration-field-grid .field-span-2{grid-column:1/-1}
+.registration-consent{margin:20px 0;padding:15px 17px;border:1px solid #dfe9e4;border-radius:14px;background:#f8fbf9;font-size:13px;line-height:1.7}
+.registration-consent span{color:#526773}
+.registration-gate{align-items:center;min-height:78px;padding:17px 19px;border-radius:16px}
+.registration-gate .gate-mark{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid #c8e1d8;border-radius:13px;background:#e7f4ed;color:#0b786f}
+.registration-gate .gate-mark svg{width:22px;height:22px}
+.registration-gate b{font:850 15px var(--display)}
+.registration-gate p{margin:4px 0 0;font-size:14px;line-height:1.55}
+.fee-review-card{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;margin:23px 0;padding:20px 22px;
+  border:1px solid #e1c98d;border-radius:18px;background:linear-gradient(115deg,#fff5d9 0%,#fff 68%);
+  box-shadow:0 12px 24px rgba(174,132,54,.095)
+}
+.fee-review-card .eyebrow{color:#836129;font-size:10px;font-weight:900}
+.fee-review-amount{display:block;margin:5px 0 3px;font:900 clamp(24px,2.6vw,32px)/1.1 var(--display);letter-spacing:-.04em}
+.fee-review-card small{display:block;max-width:55ch;color:#65747a;font-size:13px;line-height:1.6}
+.fee-review-chip{display:grid;gap:4px;justify-items:center;min-width:100px;padding:12px 15px;border:1px solid #e5d2a6;border-radius:13px;background:#fffbf0}
+.fee-review-chip span{font-size:10px;font-weight:900;letter-spacing:.12em}
+.fee-review-chip b{font-size:13px}
+.register-step-list{gap:11px}
+.register-step{
+  display:flex;align-items:center;gap:13px;min-height:76px;padding:13px 15px;border-radius:15px;
+  box-shadow:0 6px 16px rgba(9,45,96,.035)
+}
+.register-step>span{
+  display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border:1px solid #d7e5df;
+  border-radius:13px;background:#f0f7f3;font:900 12px var(--display)
+}
+.register-step b{display:block;color:#183a55;font-size:14px}
+.register-step small{display:block;margin-top:3px;color:#637681;font-size:12px;line-height:1.5}
+.register-security-note,.register-help-card{border:1px solid #dce9e3;border-radius:16px;background:#f8fbf9;box-shadow:0 7px 17px rgba(9,45,96,.035)}
+.register-security-note{display:flex;align-items:center;gap:12px}
+.register-security-note>span{display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;border-radius:11px;background:#e1f0e8;color:#08766f}
+.register-security-note>span svg{width:20px;height:20px}
+.register-security-note b,.register-help-card b{font-size:14px}
+.register-security-note small,.register-help-card p{font-size:13px;line-height:1.65}
+.register-help-card a{font-size:13px;font-weight:850}
+.register-form-alert,.register-note{font-size:14px;line-height:1.6}
+.registration-review-panel,.registration-otp-panel,.registration-payment-panel{padding:clamp(22px,3vw,36px);border-radius:23px}
+.registration-review-list dt,.registration-review-list dd{font-size:14px;line-height:1.6}
+.registration-otp-field label{justify-content:center}
+.registration-otp-field input{font-size:24px;letter-spacing:.3em}
+[data-review-button], [data-review-send-otp], [data-verify-email]{
+  min-height:57px;border-radius:14px;font-size:15px;font-weight:900
+}
+
+/* All major headings now use the same left edge and readable supporting copy. */
+.qv2-section-heading,.section-heading,.v4-section-heading{max-width:100%;text-align:left}
+.qv2-section-heading h2,.section-heading h2,.v4-section-heading h2{max-width:22ch}
+.qv2-section-heading p,.section-heading p,.v4-section-heading p{max-width:64ch;margin:10px 0 0}
+.qv2-section-heading.centered,.section-heading.centered{text-align:center}
+.qv2-section-heading.centered p,.section-heading.centered p{margin-inline:auto}
+.qv2-hero-art,.page-hero-art,.v4-page-hero-visual,.awards-premium-art{
+  overflow:hidden;border-radius:26px
+}
+.qv2-hero-art img,.page-hero-art img,.v4-page-hero-visual img,.awards-premium-art img{
+  filter:drop-shadow(0 23px 27px rgba(6,29,66,.13));transition:transform .6s cubic-bezier(.2,.8,.2,1)
+}
+.qv2-hero-art:hover img,.page-hero-art:hover img,.v4-page-hero-visual:hover img,.awards-premium-art:hover img{transform:translateY(-4px) scale(1.015)}
+.qv2-path-card,.contact-card,.awards-track-card,.qv2-faq-group,.qv2-subject-card,.v4-topic-card,.admin-panel{
+  box-shadow:0 12px 30px rgba(9,45,96,.06);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease
+}
+.qv2-path-card:hover,.contact-card:hover,.awards-track-card:hover,.qv2-subject-card:hover,.v4-topic-card:hover{
+  transform:translateY(-4px);box-shadow:0 18px 38px rgba(9,45,96,.095);border-color:#b8d4ce
+}
+.heading-visual-icon{width:27px;height:27px;margin-right:10px;vertical-align:middle;color:#087f79}
+.heading-visual-icon svg{width:24px;height:24px}
+.qv2-faq-group h3,.contact-card h3,.contact-intent h3,.awards-track-card h3,.qv2-subject-card h4{
+  display:flex;align-items:center;gap:4px
+}
+.qv2-hack-field-group{
+  display:flex;align-items:center;gap:11px;min-height:43px;padding:8px 0 9px;
+  color:#08766f;font-size:12px;font-weight:900;letter-spacing:.13em
+}
+.qv2-hack-field-group .form-section-visual{width:36px;height:36px;border-radius:12px}
+.qv2-hack-field-group .form-section-visual svg{width:19px;height:19px}
+.qv2-hack-form-card .field{margin:11px 0 16px;gap:8px}
+.qv2-hack-form-card .field label{font-size:12px;letter-spacing:.08em;color:#163d58}
+.qv2-hack-form-card .field input,.qv2-hack-form-card .field select,.qv2-hack-form-card .field textarea{
+  min-height:55px;padding:14px 16px;border-radius:13px;font-size:16px
+}
+.qv2-hack-form-card .field textarea{min-height:115px}
+.qv2-hack-free-badge{display:inline-flex;align-items:center;gap:8px}
+.badge-visual-icon{width:17px;height:17px}
+.badge-visual-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.qv2-hack-application-steps,.qv2-hk-signin-steps,.login-flow-steps{margin-bottom:24px}
+.qv2-hack-application-steps>span,.qv2-hk-signin-steps>span,.login-flow-steps>span{min-height:58px;padding:11px 13px;border-radius:14px}
+.qv2-hack-application-steps>span small,.qv2-hk-signin-steps>span small,.login-flow-steps>span small{font-size:12px}
+.qv2-hack-otp-icon,.otp-icon{
+  display:grid;place-items:center;width:60px;height:60px;margin:18px 0 15px;border:1px solid #cfe4dc;
+  border-radius:19px;background:linear-gradient(145deg,#fff,#e8f5ef);color:#08766f;
+  font-size:0;box-shadow:0 10px 20px rgba(9,45,96,.055)
+}
+.qv2-hack-otp-icon:before,.otp-icon:before{content:"";width:27px;height:27px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='m4 7 8 6 8-6'/%3E%3C/svg%3E") center/contain no-repeat;animation:htse-icon-drift 3.4s ease-in-out infinite}
+
+/* More visual weight for each assessment and learning surface. */
+.v4-mock-stream,.qv2-subject-card,.v4-topic-card,.v4-sample-question{
+  border-radius:18px
+}
+.v4-mock-stream{min-height:132px;padding:20px;border-top:3px solid #c9a45d}
+.v4-mock-stream-copy b{font-size:19px}
+.v4-mock-stream-copy small{font-size:14px;line-height:1.6}
+.v4-mock-stream-copy em{font-size:12px}
+.v4-sample-question{padding:22px}
+.v4-sample-question h3{font-size:20px;line-height:1.58}
+.v4-sample-option{min-height:56px;padding:14px 16px;font-size:15px;line-height:1.55}
+.v4-sample-progress>span{width:38px;height:38px;font-size:12px}
+.qv2-syllabus-section .qv2-subject-card{min-height:205px}
+.qv2-syllabus-section .qv2-subject-card h4{font-size:19px;line-height:1.35}
+.qv2-syllabus-section .qv2-subject-card p{font-size:14px;line-height:1.7}
+.qv2-syllabus-section .qv2-subject-card>span{font-size:12px}
+.qv2-timeline>div,.qv2-home-milestones .qv2-milestone{min-height:185px}
+.qv2-timeline b{font-size:17px}
+.qv2-timeline small{font-size:14px;line-height:1.65}
+.qv2-faq-group{padding:23px;border-radius:18px}
+.qv2-faq-group h3{font-size:21px}
+.qv2-faq summary{font-size:16px;line-height:1.55}
+.qv2-faq p{font-size:15px;line-height:1.78}
+.contact-card{padding:26px;border-radius:22px}
+.contact-card h3{font-size:23px;line-height:1.3}
+.contact-link{min-height:60px}
+.contact-link b{font-size:14px}
+.contact-link small{font-size:11px}
+.awards-track-card{padding:clamp(21px,2.6vw,30px);border-radius:22px}
+.awards-track-card h3{font-size:23px}
+.awards-track-lede{font-size:17px;line-height:1.75}
+.awards-benefit-list b{font-size:17px}
+.awards-benefit-list small{font-size:14px}
+.qv2-hack-dates>div{min-height:205px;padding:22px;border-radius:18px}
+.qv2-hack-dates>div>b{font-size:20px}
+.qv2-hack-dates>div>small{font-size:14px;line-height:1.7}
+
+/* Login and participant portal should feel like a secure personal workspace. */
+.candidate-login-page .login-form,.candidate-login-page .candidate-application-dashboard{
+  border-radius:24px;box-shadow:0 20px 48px rgba(9,45,96,.085)
+}
+.candidate-login-page .login-form input{min-height:57px;font-size:16px}
+.candidate-login-page .login-form label{font-size:12px}
+.candidate-login-page .login-form .button-wide{min-height:57px;font-size:15px}
+.qv2-hack-portal-page .qv2-hack-form-card{border-radius:24px;box-shadow:0 20px 48px rgba(9,45,96,.1)}
+.qv2-hack-portal-page .qv2-hack-form-card h3{font-size:24px}
+.qv2-hack-portal-page .qv2-hack-form-card p{font-size:15px;line-height:1.7}
+.qv2-hack-portal-page .qv2-hack-form-card .field input{min-height:57px;font-size:16px}
+
+/* Restricted team workflow has a distinct, controlled look. */
+.team-prelaunch-page .internal-testing-panel{
+  padding:24px;border:1px solid #d3b875;border-radius:19px;
+  background:linear-gradient(145deg,#fffaf0,#fff 75%);box-shadow:0 16px 34px rgba(9,45,96,.075)
+}
+.team-prelaunch-page .internal-testing-panel h3{font-size:23px}
+.team-prelaunch-page .internal-testing-panel p{font-size:14px;line-height:1.7}
+.team-prelaunch-page .internal-testing-panel label{font-size:12px}
+.team-prelaunch-page .internal-testing-panel input{min-height:56px;font-size:16px}
+.team-prelaunch-page .internal-kicker{font-size:11px}
+.team-prelaunch-page .registration-progress-step{min-height:63px}
+
+/* Secure admin login / operations console typography and visual hierarchy. */
+.admin-login-body .admin-login-panel{border-radius:25px;box-shadow:0 24px 58px rgba(2,20,43,.18)}
+.admin-login-body .admin-login-panel h2{font-size:clamp(28px,3vw,35px);line-height:1.12}
+.admin-login-body .admin-login-panel p{font-size:15px;line-height:1.75}
+.admin-login-body .admin-login-form label{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:850}
+.admin-login-body .admin-login-form input{min-height:56px;border-radius:13px;font-size:16px}
+.admin-login-body .admin-login-submit{min-height:56px;border-radius:13px;font-size:15px}
+.admin-login-body .admin-login-feature-list span{font-size:14px}
+.admin-portal-body .admin-topbar h1{font-size:clamp(28px,3vw,38px);letter-spacing:-.045em}
+.admin-portal-body .admin-welcome-band{min-height:215px;padding:clamp(24px,3vw,38px);border-radius:24px}
+.admin-portal-body .admin-welcome-band h2{font-size:clamp(27px,3vw,37px);line-height:1.15}
+.admin-portal-body .admin-welcome-band p{font-size:15px;line-height:1.7}
+.admin-portal-body .admin-panel{padding:clamp(18px,2vw,26px);border-radius:19px}
+.admin-portal-body .admin-panel-heading h3{font-size:20px}
+.admin-portal-body .admin-panel-heading small{font-size:12px;line-height:1.55}
+.admin-portal-body .admin-metric-card{min-height:132px;padding:20px;border-radius:18px}
+.admin-portal-body .admin-metric-card>span{font-size:12px;font-weight:850}
+.admin-portal-body .admin-metric-card strong{font-size:34px}
+.admin-portal-body .admin-metric-card small{font-size:12px}
+.admin-portal-body .admin-section-intro h2{font-size:clamp(30px,3vw,40px)}
+.admin-portal-body .admin-section-intro p{font-size:15px;line-height:1.7}
+.admin-portal-body .admin-data-table th{font-size:11px}
+.admin-portal-body .admin-data-table td{font-size:13px;line-height:1.6}
+.admin-portal-body .admin-row-edit,.admin-portal-body .admin-row-actions button{min-height:36px;padding-inline:12px;font-size:11px}
+
+/* Keep visuals present on narrow screens without sacrificing form usability. */
+@media(max-width:950px){
+  .registration-field-grid{column-gap:14px}
+  .register-panel{padding:23px}
+  .register-panel-head h2{font-size:29px}
+  .form-section-title{margin-top:23px}
+  .qv2-hero-art,.page-hero-art,.v4-page-hero-visual{min-height:265px}
+  .qv2-hero-art img,.page-hero-art img,.v4-page-hero-visual img{max-height:310px}
+}
+@media(max-width:760px){
+  :root{--type-page-title:clamp(36px,9vw,49px);--type-section-title:clamp(28px,7vw,35px);--form-field-height:54px}
+  body{font-size:15.5px}
+  p{font-size:15px}
+  .page-hero-grid>div:first-child>p,.qv2-hero-copy>p,.v4-page-hero-copy>p{font-size:15.5px}
+  .register-panel{padding:18px;border-radius:19px}
+  .register-panel-head{gap:12px;margin-bottom:20px;padding-bottom:17px}
+  .register-panel-head h2,.register-panel h2{font-size:26px}
+  .register-panel-head p{font-size:14px}
+  .register-panel-icon{width:42px;height:42px;flex-basis:42px}
+  .form-section-title{grid-template-columns:29px 39px minmax(0,1fr);gap:9px;margin:22px 0 12px;padding:12px}
+  .form-section-number{width:28px;height:28px;font-size:9px}
+  .form-section-visual{width:38px;height:38px}
+  .form-section-visual svg{width:21px;height:21px}
+  .form-section-title b{font-size:15px}
+  .form-section-title small{font-size:12px}
+  .field label,.admin-field label,.registration-otp-field label{font-size:11px;gap:7px}
+  .form-label-icon{width:19px;height:19px}
+  .field,.admin-field{margin:13px 0;gap:7px}
+  .field input,.field select,.field textarea,.registration-field-grid input,.registration-field-grid select,.registration-field-grid textarea,.login-form input{padding:13px 14px;font-size:16px}
+  .registration-field-grid{grid-template-columns:1fr;row-gap:0}
+  .registration-field-grid .field-span-2{grid-column:auto}
+  .fee-review-card{align-items:flex-start;padding:16px;gap:10px}
+  .fee-review-amount{font-size:25px}
+  .fee-review-chip{min-width:78px;padding:10px}
+  .fee-review-chip b{font-size:11px}
+  .qv2-faq-group{padding:17px}
+  .qv2-faq summary{font-size:15px}
+  .qv2-faq p{font-size:14px}
+  .contact-card{padding:19px}
+  .contact-card h3{font-size:21px}
+  .awards-track-card h3{font-size:21px}
+  .qv2-hack-form-card .field label{font-size:11px}
+  .qv2-hack-field-group{font-size:11px}
+  .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-grid{grid-template-columns:minmax(0,1fr) 120px;align-items:center}
+  .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art{display:grid;min-height:110px;max-height:130px;overflow:hidden}
+  .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art img{max-height:125px;object-fit:contain}
+  .candidate-login-page .page-hero-grid{grid-template-columns:minmax(0,1fr) 105px;align-items:center}
+  .candidate-login-page .page-hero-art{display:grid;min-height:100px;max-height:120px;overflow:hidden}
+  .candidate-login-page .page-hero-art img{max-height:115px;object-fit:contain}
+  .candidate-login-page .login-context{display:grid}
+  .candidate-login-page .login-context>p,.candidate-login-page .login-context-card{display:none}
+  .candidate-login-page .login-layout{gap:12px}
+  .candidate-login-page .login-form{padding:18px}
+  .v4-sample-question{padding:16px}
+  .v4-sample-question h3{font-size:18px}
+  .admin-portal-body .admin-metric-card{min-height:112px;padding:14px}
+  .admin-portal-body .admin-metric-card strong{font-size:27px}
+}
+@media(max-width:520px){
+  .form-section-title{grid-template-columns:27px 35px minmax(0,1fr);gap:8px}
+  .form-section-visual{width:34px;height:34px;border-radius:11px}
+  .form-section-visual svg{width:19px;height:19px}
+  .form-section-title small{font-size:11.5px}
+  .register-step-list{grid-template-columns:1fr}
+  .register-step{min-height:67px}
+  .fee-review-card{display:grid;grid-template-columns:minmax(0,1fr) auto}
+  .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-grid{grid-template-columns:minmax(0,1fr) 88px}
+  .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art{min-height:84px;max-height:94px}
+  .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art img{max-height:90px}
+  .candidate-login-page .page-hero-grid{grid-template-columns:minmax(0,1fr) 78px}
+  .candidate-login-page .page-hero-art{min-height:78px;max-height:90px}
+  .candidate-login-page .page-hero-art img{max-height:85px}
+  .heading-visual-icon{width:22px;height:22px;margin-right:5px}
+}
+@keyframes htse-icon-drift{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-2px) rotate(-2deg)}
+}
+@media(prefers-reduced-motion:reduce){
+  .form-label-icon svg,.heading-visual-icon svg,.form-section-visual svg,.qv2-hack-otp-icon:before,.otp-icon:before{animation:none!important}
+  .qv2-path-card,.contact-card,.awards-track-card,.qv2-subject-card,.v4-topic-card,.qv2-hero-art img,.page-hero-art img{transition:none!important}
+}
+
+
+/* Human-made illustration blocks, animated field icons, and visual rhythm */
+.form-label-icon{color:#07847d}
+.form-label-icon svg{filter:drop-shadow(0 2px 3px rgba(7,143,136,.14))}
+.form-label-icon svg path,.form-label-icon svg circle,.form-label-icon svg rect{
+  vector-effect:non-scaling-stroke
+}
+.heading-visual-icon{display:inline-grid;place-items:center;vertical-align:middle;flex:0 0 auto}
+.heading-visual-icon svg{filter:drop-shadow(0 3px 5px rgba(7,143,136,.1))}
+.button-context-icon{display:inline-grid;place-items:center;flex:0 0 18px;width:18px;height:18px;line-height:0}
+.button-context-icon svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-register .button-context-icon{width:16px;height:16px;flex-basis:16px}
+.nav-register .button-context-icon svg{width:16px;height:16px}
+.register-aside-art{
+  position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;
+  margin:19px 0 21px;padding:14px 14px 13px;overflow:hidden;
+  border:1px solid rgba(201,164,93,.35);border-radius:19px;
+  background:radial-gradient(ellipse at 50% 43%,rgba(10,144,137,.09),transparent 62%),linear-gradient(150deg,#f4f9f6,#fff 76%);
+  box-shadow:0 12px 25px rgba(9,45,96,.055)
+}
+.register-aside-art:before,.register-aside-art:after{
+  position:absolute;z-index:0;content:"";width:150px;height:150px;border:1px solid rgba(201,164,93,.24);border-radius:50%;pointer-events:none
+}
+.register-aside-art:before{top:-90px;right:-55px;box-shadow:0 0 0 15px rgba(201,164,93,.04),0 0 0 30px rgba(7,143,136,.025)}
+.register-aside-art:after{bottom:-110px;left:-70px}
+.register-aside-art img{position:relative;z-index:1;display:block;width:100%;height:155px;object-fit:contain;filter:drop-shadow(0 13px 15px rgba(7,35,75,.13));animation:htse-art-float 6s ease-in-out infinite}
+.register-aside-art>span{position:relative;z-index:1;display:grid;gap:3px;padding:10px 11px;border-top:1px solid #e5ece7}
+.register-aside-art b{color:#0b3559;font:850 13px/1.35 var(--display)}
+.register-aside-art small{color:#637681;font-size:11px;line-height:1.55}
+.register-aside .eyebrow{color:#087f79}
+.register-aside h2{font-size:clamp(27px,2.6vw,34px);line-height:1.14}
+.register-aside>p{font-size:15px;line-height:1.7}
+.register-step{position:relative;overflow:hidden}
+.register-step:after{
+  position:absolute;right:-14px;bottom:-24px;width:66px;height:66px;border:1px solid rgba(7,143,136,.09);border-radius:50%;content:"";pointer-events:none
+}
+.register-step.is-current{border-color:#a8d5ca;background:linear-gradient(105deg,#e9f6f1,#fff 90%);box-shadow:0 8px 18px rgba(7,143,136,.075)}
+.register-step.is-current>span{background:linear-gradient(145deg,#d8efe5,#fff);border-color:#a4d3c3}
+.human-visual-card{animation:htse-card-enter .5s both;animation-delay:calc(var(--visual-index,0)*45ms)}
+.qv2-section .heading-visual-icon,.section .heading-visual-icon,.admin-panel-heading .heading-visual-icon{
+  width:31px;height:31px;padding:6px;border:1px solid #d7e7e0;border-radius:10px;
+  background:linear-gradient(145deg,#fff,#e8f4ee);color:#087f79
+}
+.admin-panel-heading .heading-visual-icon,.admin-section-intro .heading-visual-icon{width:30px;height:30px}
+.page-hero h2 .heading-visual-icon,.qv2-hero h2 .heading-visual-icon{width:32px;height:32px}
+.qv2-section-heading .heading-visual-icon{width:34px;height:34px;padding:6px;border-radius:11px}
+.qv2-faq-group h3 .heading-visual-icon,.contact-card h3 .heading-visual-icon,
+.contact-intent h3 .heading-visual-icon,.awards-track-card h3 .heading-visual-icon,
+.qv2-subject-card h4 .heading-visual-icon{width:28px;height:28px;padding:5px;border-radius:9px}
+.human-visual-card:hover{box-shadow:0 14px 30px rgba(9,45,96,.08)}
+.qv2-milestone-icon svg{filter:drop-shadow(0 3px 3px rgba(7,143,136,.16))}
+.qv2-path-icon{box-shadow:0 9px 20px rgba(9,45,96,.07)}
+.qv2-path-icon svg{animation:htse-icon-drift 4.5s ease-in-out infinite}
+.qv2-home .qv2-path-card:nth-child(2) .qv2-path-icon svg{animation-delay:.25s}
+.qv2-home .qv2-path-card:nth-child(3) .qv2-path-icon svg{animation-delay:.5s}
+.qv2-home .qv2-path-card:nth-child(4) .qv2-path-icon svg{animation-delay:.75s}
+.register-hero-art img,.qv2-hero-art img,.v4-page-hero-visual img,.page-hero-art img,.awards-premium-art img{
+  filter:drop-shadow(0 22px 31px rgba(7,35,75,.16))
+}
+.qv2-hero-art,.register-hero-art,.page-hero-art,.v4-page-hero-visual{
+  border:1px solid rgba(201,164,93,.17);background:radial-gradient(ellipse at 50% 50%,rgba(7,143,136,.055),transparent 66%)
+}
+.qv2-hero-art img,.page-hero-art img,.v4-page-hero-visual img{animation:htse-art-float 7.5s ease-in-out infinite}
+.qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art img,.candidate-login-page .page-hero-art img{animation-duration:8.5s}
+.qv2-milestone time{font-size:13px;font-weight:950;letter-spacing:.08em}
+.qv2-milestone b{font-size:17px}
+.qv2-milestone small{font-size:13px;line-height:1.65}
+.registration-gate .gate-mark{animation:htse-security-pulse 3.8s ease-in-out infinite}
+.fee-review-card{position:relative;overflow:hidden}
+.fee-review-card:after{
+  position:absolute;right:-32px;top:-50px;width:128px;height:128px;border:1px solid rgba(201,164,93,.16);
+  border-radius:50%;box-shadow:0 0 0 16px rgba(201,164,93,.035),0 0 0 32px rgba(7,143,136,.02);content:"";pointer-events:none
+}
+.qv2-hack-form-card .qv2-hack-field-group{border-bottom:1px solid #dce8e2}
+.qv2-hack-form-card .qv2-hack-field-group:after{height:1px;background:linear-gradient(90deg,#c9a45d,transparent);content:"";flex:1}
+.admin-welcome-visual{position:relative;display:grid;place-items:center;min-width:0;align-self:stretch}
+.admin-welcome-visual>img{position:absolute;right:7%;top:50%;width:min(42%,360px);max-height:220px;object-fit:contain;transform:translateY(-50%);filter:drop-shadow(0 19px 24px rgba(0,0,0,.2));opacity:.94;animation:htse-art-float 7s ease-in-out infinite}
+.admin-welcome-visual .admin-welcome-mark{position:relative;z-index:1}
+.admin-portal-body .admin-welcome-band>div:first-child{position:relative;z-index:2;max-width:66%}
+@keyframes htse-art-float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+@keyframes htse-card-enter{
+  from{opacity:.01;transform:translateY(9px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes htse-security-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(7,143,136,0)}
+  50%{box-shadow:0 0 0 6px rgba(7,143,136,.09)}
+}
+@media(max-width:760px){
+ .register-aside-art{grid-template-columns:110px minmax(0,1fr);align-items:center;gap:11px;padding:9px 11px}
+ .register-aside-art img{height:90px}
+ .register-aside-art>span{padding:7px 0 7px 10px;border-top:0;border-left:1px solid #e5ece7}
+ .register-aside-art b{font-size:12px}
+ .register-aside-art small{font-size:10px}
+ .admin-welcome-visual>img{right:0;width:44%;max-height:145px}
+ .admin-portal-body .admin-welcome-band>div:first-child{max-width:69%}
+}
+@media(max-width:520px){
+ .register-aside-art{grid-template-columns:86px minmax(0,1fr)}
+ .register-aside-art img{height:76px}
+ .register-aside-art b{font-size:11px}
+ .admin-welcome-visual>img{width:38%;max-height:115px;opacity:.72}
+ .admin-portal-body .admin-welcome-band>div:first-child{max-width:76%}
+}
+@media(prefers-reduced-motion:reduce){
+ .register-aside-art img,.qv2-hero-art img,.register-hero-art img,.page-hero-art img,.v4-page-hero-visual img,
+ .qv2-path-icon svg,.human-visual-card,.registration-gate .gate-mark,.admin-welcome-visual>img{
+   animation:none!important;transition:none!important
+ }
+}
+
+
+/* Examination access guide and administrator visual stage */
+.exam-access-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 0 18px}
+.exam-access-steps article{
+  display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;column-gap:11px;
+  min-height:92px;padding:14px;border:1px solid #dce8e2;border-radius:15px;
+  background:linear-gradient(145deg,#fff,#f5f9f6);box-shadow:0 8px 18px rgba(9,45,96,.045)
+}
+.exam-access-step-icon{display:grid;place-items:center;grid-row:1/3;width:42px;height:42px;border:1px solid #d2e5dc;border-radius:13px;background:#edf7f1;color:#08766f}
+.exam-access-step-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;animation:htse-icon-drift 4s ease-in-out infinite}
+.exam-access-steps b{align-self:end;color:#123957;font:850 13px var(--display)}
+.exam-access-steps small{align-self:start;color:#637681;font-size:11px;line-height:1.5}
+body.exam-in-progress .exam-access-steps{display:none}
+@media(max-width:760px){.exam-access-steps{grid-template-columns:1fr;gap:8px}.exam-access-steps article{min-height:72px;padding:11px 13px}}
+.admin-portal-body .admin-welcome-visual{flex:0 0 36%;min-height:170px}
+.admin-portal-body .admin-welcome-visual>img{right:0;width:100%;max-height:220px;opacity:1}
+.admin-portal-body .admin-welcome-visual .admin-welcome-mark{position:absolute;right:0;bottom:4px;padding:8px;background:rgba(255,255,255,.08);backdrop-filter:blur(8px)}
+.admin-portal-body .admin-welcome-visual .admin-welcome-mark span{width:35px;height:35px;font-size:16px}
+.admin-portal-body .admin-welcome-visual .admin-welcome-mark b{font-size:16px}
+.admin-portal-body .admin-welcome-band>div:first-child{flex:1;max-width:60%}
+.admin-login-illustration{position:relative;display:grid;place-items:center;min-height:195px;margin:25px 0 14px;overflow:hidden}
+.admin-login-illustration:before{position:absolute;width:220px;height:220px;border:1px solid rgba(143,225,213,.2);border-radius:50%;box-shadow:0 0 0 20px rgba(143,225,213,.035),0 0 0 42px rgba(143,225,213,.025);content:""}
+.admin-login-illustration img{position:relative;z-index:1;width:min(100%,390px);height:210px;object-fit:contain;filter:drop-shadow(0 19px 25px rgba(0,0,0,.2));animation:htse-art-float 7s ease-in-out infinite}
+.admin-login-orbit{z-index:2;transform:scale(.78);transform-origin:bottom right;opacity:.88}
+@media(max-width:850px){
+ .admin-portal-body .admin-welcome-visual{flex-basis:32%;min-height:135px}
+ .admin-portal-body .admin-welcome-visual>img{max-height:165px}
+ .admin-portal-body .admin-welcome-band>div:first-child{max-width:65%}
+}
+@media(max-width:760px){
+ .admin-portal-body .admin-welcome-visual{flex-basis:31%;min-height:115px}
+ .admin-portal-body .admin-welcome-visual>img{max-height:135px;opacity:.95}
+ .admin-portal-body .admin-welcome-band>div:first-child{max-width:67%}
+ .admin-login-illustration{min-height:125px;margin:12px 0}
+ .admin-login-illustration img{height:145px}
+ .admin-login-orbit{transform:scale(.55)}
+}
+@media(max-width:520px){
+ .admin-portal-body .admin-welcome-visual{flex-basis:27%;min-height:90px}
+ .admin-portal-body .admin-welcome-visual>img{max-height:105px}
+ .admin-portal-body .admin-welcome-band>div:first-child{max-width:72%}
+ .exam-access-steps article{grid-template-columns:38px minmax(0,1fr)}
+ .exam-access-step-icon{width:36px;height:36px}
+}
+
+@keyframes htse-admin-art-float{
+  0%,100%{transform:translateY(-50%)}
+  50%{transform:translateY(calc(-50% - 7px))}
+}
+.admin-portal-body .admin-welcome-visual>img{animation:htse-admin-art-float 7s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.admin-portal-body .admin-welcome-visual>img{animation:none!important;transform:translateY(-50%)}}

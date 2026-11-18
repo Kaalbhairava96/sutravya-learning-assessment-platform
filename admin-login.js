@@ -8,6 +8,23 @@
   const setupForm = $('#admin-setup-form');
   const status = $('#admin-login-status');
   const TOKEN_KEY = 'sutravya_admin_access_token';
+  document.body.dataset.page='admin-login.html';
+  const adminIconPaths={
+    mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
+    shield:'<path d="M12 3 20 6v5c0 5-3 8-8 10-5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
+    key:'<circle cx="8" cy="15" r="5"/><path d="m11.5 11.5 9-9m-3 3 3 3"/>',
+    user:'<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>'
+  };
+  const addAdminLabelIcons=root=>{
+    root.querySelectorAll('label[for]').forEach(label=>{
+      if(label.querySelector('.form-label-icon'))return;
+      const id=(label.htmlFor||'').toLowerCase(),text=label.textContent.toLowerCase();
+      const name=/email/.test(id+' '+text)?'mail':/token|password|confirm/.test(id+' '+text)?'shield':'user';
+      const node=document.createElement('span');node.className='form-label-icon';node.setAttribute('aria-hidden','true');
+      node.innerHTML='<svg viewBox="0 0 24 24" focusable="false">'+adminIconPaths[name]+'</svg>';label.prepend(node);
+    });
+  };
+  addAdminLabelIcons(document);
   const setStatus = (message, kind = '') => {
     status.textContent = message;
     status.className = 'admin-login-status' + (kind ? ' is-' + kind : '');

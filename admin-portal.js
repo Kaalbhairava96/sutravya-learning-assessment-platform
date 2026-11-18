@@ -375,5 +375,39 @@
   $('#admin-refresh-audit').addEventListener('click', loadAudit);
   $$('[data-close-edit]').forEach(button => button.addEventListener('click', closeEdit));
   $('#admin-edit-modal').addEventListener('keydown', event => { if (event.key === 'Escape') closeEdit(); });
+  document.body.dataset.page='admin.html';
+  const adminIcons={
+    mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
+    shield:'<path d="M12 3 20 6v5c0 5-3 8-8 10-5-2-8-5-8-10V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
+    user:'<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
+    calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/>',
+    institution:'<path d="m3 9 9-5 9 5v11H3z"/><path d="M2 9h20M7 12v5m5-5v5m5-5v5M2 20h20"/>',
+    clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M8 10h8m-8 4h8"/>'
+  };
+  const adminVisualIcon=name=>{
+    const span=document.createElement('span');span.className='form-label-icon';span.setAttribute('aria-hidden','true');
+    span.innerHTML='<svg viewBox="0 0 24 24" focusable="false">'+adminIcons[name]+'</svg>';return span;
+  };
+  const enhanceAdminVisuals=root=>{
+    root.querySelectorAll('label[for]').forEach(label=>{
+      if(label.querySelector('.form-label-icon'))return;
+      const key=(label.htmlFor+' '+label.textContent).toLowerCase();
+      const name=/email/.test(key)?'mail':/password|token/.test(key)?'shield':/start|end|date|time|capacity/.test(key)?'calendar':/registration|ids|record/.test(key)?'clipboard':/table|database|college|institution/.test(key)?'institution':'user';
+      label.prepend(adminVisualIcon(name));
+    });
+    root.querySelectorAll('.admin-panel-heading h3,.admin-section-intro h2').forEach(heading=>{
+      if(heading.querySelector('.admin-heading-icon'))return;
+      const key=heading.textContent.toLowerCase();
+      const name=/audit|history|record/.test(key)?'clipboard':/slot|schedule|exam/.test(key)?'calendar':/database|table/.test(key)?'institution':/result|approval/.test(key)?'shield':'user';
+      const node=adminVisualIcon(name);node.classList.add('admin-heading-icon');heading.prepend(node);
+    });
+  };
+  enhanceAdminVisuals(document);
+  if('MutationObserver' in window){
+    const adminObserver=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{
+      if(node.nodeType===1)enhanceAdminVisuals(node);
+    })));
+    adminObserver.observe(document.getElementById('admin-portal'),{childList:true,subtree:true});
+  }
   initialise();
 })();

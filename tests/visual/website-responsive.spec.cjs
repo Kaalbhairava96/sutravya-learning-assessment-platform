@@ -79,6 +79,48 @@ test('signed-in Hackathon participant workspace fits 390px, 768px and desktop',a
  await page.close();
 });
 
+
+test('icon-led form visual system, typography and institution icon render',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/register.html',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('.register-aside-art img')).toBeVisible();
+ await expect(page.locator('label[for="reg-category"] .form-label-icon')).toBeVisible();
+ const category=await page.locator('label[for="reg-category"]').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+ const control=await page.locator('#reg-category').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+ expect(category).toBeGreaterThanOrEqual(12);
+ expect(control).toBeGreaterThanOrEqual(16);
+ await page.goto('/hackathon.html',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('label[for="hk-college"] .form-label-icon')).toBeVisible();
+ await page.locator('label[for="hk-college"] .form-label-icon').evaluate(el=>{
+  if(el.querySelector('svg')===null)throw new Error('Institution field must use an SVG building icon');
+ });
+ await page.goto('/faqs.html',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('.qv2-faq-group h3 .heading-visual-icon').first()).toBeVisible();
+});
+test('signed-in admin console art and dashboard remain responsive',async({browser})=>{
+ const page=await browser.newPage({viewport:{width:1440,height:900}});
+ await page.addInitScript(()=>sessionStorage.setItem('sutravya_admin_access_token','qa-session-token'));
+ await page.route('https://sutravya-assessment-api-demo.onrender.com/api/admin/**',async route=>{
+  const url=new URL(route.request().url());let payload={};
+  if(url.pathname.endsWith('/auth/me'))payload={administrator:{email:'qa@example.com',role:'Owner'}};
+  else if(url.pathname.endsWith('/database/overview'))payload={database:{database_name:'qa',server_version:'16',schema_name:'public',schema_revision:'v1'},total_tables:2,total_rows:10,tables:[{name:'registrations',label:'Registrations',rows:4,description:'Candidate applications'},{name:'results',label:'Results',rows:2,description:'Assessment results'}]};
+  else if(url.pathname.endsWith('/assessment/summary'))payload={streams:{nursing:2,paramedical:1,mbbs_ug:1,mbbs_pg:0},unassigned:0};
+  else if(url.pathname.endsWith('/tables/registrations'))payload={columns:[{name:'registration_id'},{name:'stream'},{name:'status'},{name:'payment_status'},{name:'created_at'}],records:[],total:0,limit:8,offset:0};
+  else payload={records:[]};
+  await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(payload)});
+ });
+ for(const width of [390,768,1440]){
+  await page.setViewportSize({width,height:900});
+  await page.goto('/admin.html',{waitUntil:'domcontentloaded'});
+  await expect(page.locator('#admin-portal')).toBeVisible();
+  await expect(page.locator('.admin-welcome-visual img')).toBeVisible();
+  const result=await page.evaluate(()=>({viewport:innerWidth,documentWidth:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)}));
+  expect(result.documentWidth,{message:'Admin console overflow at '+width+'px'}).toBeLessThanOrEqual(width+2);
+  await page.screenshot({path:path.join(screenshotRoot,'admin-console-'+width+'.png'),fullPage:true,animations:'disabled'});
+ }
+ await page.close();
+});
+
 test('reduced motion preference disables long animations and smooth scrolling',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.goto('/index.html',{waitUntil:'domcontentloaded'});
