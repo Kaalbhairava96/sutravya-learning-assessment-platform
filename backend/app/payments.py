@@ -11,7 +11,7 @@ import hmac
 import logging
 import re
 import uuid
-from typing import Any, Callable
+from typing import Any
 
 import razorpay
 from fastapi import APIRouter, Body, HTTPException
@@ -108,12 +108,6 @@ def create_payment_router(settings: Settings) -> APIRouter:
             "amount": amount,
             "currency": "INR",
             "receipt": f"sv-{uuid.uuid4().hex[:24]}",
-            "notes": {
-                "candidate_name": name,
-                "candidate_email": email,
-                "candidate_phone": phone,
-                "candidate_program": program,
-            },
         }
         try:
             order = client.order.create(data=order_request)
