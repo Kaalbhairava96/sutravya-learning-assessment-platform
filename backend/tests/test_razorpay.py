@@ -61,7 +61,7 @@ class RazorpayCheckoutTests(unittest.TestCase):
         self.assertEqual(sent_order["amount"], 50000)
         self.assertEqual(sent_order["currency"], "INR")
         self.assertTrue(sent_order["receipt"].startswith("sv-"))
-        self.assertEqual(sent_order["notes"]["candidate_email"], "candidate@example.invalid")
+        self.assertNotIn("notes", sent_order)
 
     def test_create_order_rejects_missing_registration_fields_with_400(self):
         response = self.client.post("/api/create-order", json={"name": "Candidate"})
