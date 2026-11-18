@@ -538,7 +538,7 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
     if (!form.querySelector('#login-otp')?.reportValidity()) return;
     button.disabled = true; show('Verifying your code…');
     let signedIn = false;
-    try { await apiRequest('/api/auth/verify-otp', { email: form.elements.email.value, otp: form.elements.otp.value }); signedIn = true; await revealExamAccess(); show('You are signed in. Your secure session will remain active across refreshes.'); form.querySelectorAll('input,button').forEach(control => { control.disabled = true; }); }
+    try { await apiRequest('/api/auth/verify-otp', { email: form.elements.email.value, otp: form.elements.otp.value }); signedIn = true; setLoginStep(3); await revealExamAccess(); show('You are signed in. Your secure session will remain active across refreshes.'); form.querySelectorAll('input,button').forEach(control => { control.disabled = true; }); }
     catch (error) { show(error.message, true); }
     finally { if (!signedIn) button.disabled = false; }
   });

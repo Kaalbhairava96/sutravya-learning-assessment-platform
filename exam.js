@@ -15,6 +15,9 @@
   let busy = false;
   let moving = false;
   let answeredCount = 0;
+  let completedPositions = new Set();
+  let answeredPositions = new Set();
+  let skippedPositions = new Set();
 
   const sectionBlueprints = {
     paramedical:[['anatomy_physiology','Anatomy & Physiology'],['laboratory_sciences','Clinical Laboratory Sciences'],['microbiology_infection_control','Microbiology & Infection Control'],['diagnostic_technology','Diagnostic Technology & Equipment'],['patient_safety_communication','Patient Safety & Communication']],
@@ -61,16 +64,23 @@
       (currentPosition + 1) + ' of 100</span><b>' + currentSection.label + '</b><span>' +
       Math.round((currentPosition + 1) / 100 * 100) + '%</span></div><div class="exam-progress-track"><i style="width:' +
       ((currentPosition + 1) / 100 * 100) + '%"></i></div><div class="exam-section-strip">' +
-      sections.map((section,index) => '<span class="' + (index === sections.indexOf(currentSection) ? 'active' : '') +
-      '">' + section.label + '</span>').join('') + '</div></div>';
+      sections.map((section,index) => {
+        const state=index<sections.indexOf(currentSection)?'complete':index===sections.indexOf(currentSection)?'active':'upcoming';
+        const status=state==='complete'?'section completed':state==='active'?'current section':'not yet reached';
+        return '<span class="'+state+'" aria-label="'+escapeHtml(section.label)+', '+status+'"><i aria-hidden="true">'+String(index+1).padStart(2,'0')+'</i>'+escapeHtml(section.label)+'</span>';
+      }).join('') + '</div><p class="exam-navigator-note">Sequential assessment · previous questions lock when you continue</p></div>';
   };
   const startOverallTimer = seconds => {
     stopOverallTimer();
     overallRemaining = Math.max(0, seconds);
+    document.body.classList.add("exam-in-progress");
+    const label=document.getElementById("timer-label"); if(label)label.textContent="TIME REMAINING";
+    if(timer)timer.textContent=formatTime(overallRemaining);
     overallInterval = setInterval(() => {
       overallRemaining = Math.max(0, overallRemaining - 1);
       const node = document.getElementById('overall-clock');
       if (node) node.textContent = formatTime(overallRemaining);
+      if(timer)timer.textContent=formatTime(overallRemaining);
       if (overallRemaining <= 0) {
         stopOverallTimer();
         finish(true).catch(error => message(error.message, true));
@@ -93,13 +103,31 @@
       }
     },1000);
   };
+  const renderQuestionNavigator = () => {
+    const answered=answeredPositions.size;
+    const skipped=skippedPositions.size;
+    const completed=completedPositions.size;
+    return '<aside class="exam-question-navigator" aria-label="Question status navigator">' +
+      '<div class="exam-question-navigator-head"><b>Question navigator</b><span>Sequential · 100 questions</span></div>' +
+      '<p class="exam-question-navigator-count">'+answered+' answered · '+skipped+' skipped · '+Math.max(0,100-completed)+' remaining</p>' +
+      '<div class="exam-question-nav-grid">' + Array.from({length:100},(_,index)=>{
+        const current=index===currentPosition;
+        const isAnswered=answeredPositions.has(index);
+        const isSkipped=skippedPositions.has(index);
+        const isComplete=completedPositions.has(index)||index<currentPosition;
+        const state=current?'current':isAnswered?'answered':isSkipped?'skipped':isComplete?'completed':'upcoming';
+        const label='Question '+(index+1)+', '+(state==='current'?'current question':state==='answered'?'answered':state==='skipped'?'skipped':state==='completed'?'completed, navigation locked':'not yet reached');
+        return '<button type="button" disabled class="exam-question-nav-item is-'+state+'" aria-label="'+label+'" aria-current="'+(current?'step':'false')+'" title="'+label+'">'+(index+1)+'</button>';
+      }).join('') + '</div><div class="exam-question-nav-legend"><span><i class="is-answered"></i> Answered</span><span><i class="is-skipped"></i> Skipped</span><span><i class="is-current"></i> Current</span><span><i class="is-upcoming"></i> Upcoming</span></div>' +
+      '<p class="exam-question-nav-locked">Previous questions lock after you continue. This navigator is a progress guide and does not reopen a question.</p></aside>';
+  };
   const renderQuestion = () => {
     if (!currentQuestion) return;
     const q = currentQuestion;
     const section = sectionFor(currentPosition);
     const answered = q.answered || Boolean(q.selected_option_id);
     content.innerHTML = renderProgress() +
-      '<div class="exam-question-panel"><div class="exam-question-top"><span class="exam-kicker">' +
+      '<div class="exam-active-layout"><div class="exam-question-panel"><div class="exam-question-top"><span class="exam-kicker">' +
       escapeHtml(section.label) + ' · ' + escapeHtml(q.difficulty) + '</span><div class="exam-question-clock"><small>THIS QUESTION</small><strong id="question-clock">' +
       formatTime(questionRemaining) + '</strong></div></div>' +
       '<div class="exam-question-number">QUESTION ' + String(currentPosition + 1).padStart(2,'0') + ' / 100</div>' +
@@ -111,7 +139,7 @@
       ).join('') + '</div><div class="exam-actions">' +
       '<span class="exam-saved">' + (answered ? 'Answer saved on server' : 'Select one answer to save') + '</span>' +
       '<button class="exam-button" id="next-question">' + (currentPosition === 99 ? 'Review & submit' : 'Save & continue') + ' →</button>' +
-      '</div><p class="exam-muted">Each question has its own server-controlled timer. Once you continue, you cannot return to a previous question.</p></div>';
+      '</div><p class="exam-muted">Each question has its own server-controlled timer. Once you continue, you cannot return to a previous question.</p></div>' + renderQuestionNavigator() + '</div>';
     content.querySelectorAll('input[name="answer"]').forEach(input => input.addEventListener('change', () => save(input.value)));
     document.getElementById('next-question').addEventListener('click', () => moveNext(false));
   };
@@ -120,12 +148,14 @@
     moving = true;
     stopQuestionTimer();
     currentPosition = position;
+    for(let index=0;index<position;index++)completedPositions.add(index);
     let autoAdvance = false;
     let expiredOverall = false;
     message('Loading question ' + (position + 1) + '…');
     try {
       currentQuestion = await request('/api/exam/attempts/' + attempt.attempt_id + '/questions/' + position);
       questionRemaining = currentQuestion.remaining_seconds;
+      if(currentQuestion.answered||currentQuestion.selected_option_id){answeredPositions.add(position);completedPositions.add(position);}
       renderQuestion();
       startQuestionTimer(questionRemaining);
       message('Your answer is saved securely when selected.');
@@ -155,6 +185,11 @@
       });
       currentQuestion.selected_option_id = optionId;
       currentQuestion.answered = true;
+      answeredPositions.add(currentPosition);
+      completedPositions.add(currentPosition);
+      const navCurrent=content.querySelector('.exam-question-nav-item.is-current');
+      if(navCurrent){navCurrent.classList.remove('is-current');navCurrent.classList.add('is-answered');navCurrent.setAttribute('aria-label','Question '+(currentPosition+1)+', answered');}
+      const navCount=content.querySelector('.exam-question-navigator-count');if(navCount)navCount.textContent=answeredPositions.size+' answered · '+skippedPositions.size+' skipped · '+Math.max(0,100-completedPositions.size)+' remaining';
       const saved = document.querySelector('.exam-saved');
       if (saved) saved.textContent = 'Answer saved on server';
       message('Answer saved.');
@@ -170,15 +205,18 @@
   const moveNext = async automatic => {
     if (moving || busy || !attempt) return;
     const unanswered = !currentQuestion?.answered && !currentQuestion?.selected_option_id;
-    if (!automatic && unanswered) {
+    if (unanswered && !automatic) {
       if (!window.confirm('No answer is selected. Skip this question? You cannot return to it.')) return;
       try {
         await request('/api/exam/attempts/' + attempt.attempt_id + '/questions/' + currentPosition + '/skip','POST');
+        skippedPositions.add(currentPosition);
+        completedPositions.add(currentPosition);
       } catch (error) {
         message(error.message,true);
         return;
       }
     }
+    if(unanswered&&automatic){skippedPositions.add(currentPosition);completedPositions.add(currentPosition);}
     stopQuestionTimer();
     if (currentPosition >= 99) {
       await finish(false);
@@ -212,6 +250,8 @@
       const result = await request('/api/exam/attempts/' + attempt.attempt_id + '/submit','POST');
       attempt.status = 'submitted';
       renderResult(result);
+      document.body.classList.remove('exam-in-progress');
+      const label=document.getElementById('timer-label'); if(label)label.textContent='SESSION STATUS';
       timer.textContent = 'Submitted';
       message('Assessment submitted successfully.');
     } catch (error) {
@@ -245,6 +285,7 @@
       '<p class="exam-muted">Stream: ' + escapeHtml(availability.stream) + ' · ' + escapeHtml(slotStart) + '</p>' +
       '<p>100 questions · 5 subject blocks · approximately 47 minutes · +1 / −0.25 / 0 marking.</p>' +
       '<p class="exam-muted">Individual question timers vary from 18 to 45 seconds according to the reading and reasoning required.</p>' +
+      '<div class="exam-access-guidance"><b>How your slot works</b><span>Your account is checked against the slot assigned by the organiser. The Start button becomes available only during your assigned opening window and when the question bank is ready. If your slot is not assigned or is not yet open, the page explains the current status.</span></div>' +
       '<p class="exam-muted">The assessment opens in full-screen mode. Returning to another tab, leaving full screen, or attempting copy/paste is recorded as an integrity event. No camera recording is used.</p>' +
       '<button id="start-exam" class="exam-button" ' +
       (availability.assigned && availability.opens_now && availability.question_bank_ready ? '' : 'disabled') +
@@ -274,8 +315,7 @@
       showIntro(availability);
       if (availability.opens_now && availability.question_bank_ready) message('Your slot is open. Start when ready.');
     } catch (error) {
-      content.innerHTML = '<h2>Sign-in required</h2><p>' + escapeHtml(error.message) +
-        '</p><a class="exam-button" href="login.html">Candidate sign in</a>';
+      content.innerHTML = '<div class="exam-signin-required"><span aria-hidden="true">🔐</span><span class="exam-kicker">SECURE CANDIDATE ACCESS</span><h2>Sign-in required</h2><p>Your examination is available only to a signed-in candidate with an eligible registration and assigned slot. Sign in using the email registered with your application.</p><a class="exam-button" href="login.html">Candidate sign in →</a><a class="exam-text-link" href="register.html">Not registered yet? View registration</a></div>';
       candidateInfo.textContent = 'No active candidate session';
     }
   };

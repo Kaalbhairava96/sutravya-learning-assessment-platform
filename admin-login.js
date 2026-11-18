@@ -48,6 +48,7 @@
     setupForm.hidden = false;
   };
   async function initialise() {
+    if(retryButton)retryButton.hidden=true;
     try {
       const me = await request('/api/admin/auth/me');
       if (me.administrator) { location.replace('admin.html'); return; }

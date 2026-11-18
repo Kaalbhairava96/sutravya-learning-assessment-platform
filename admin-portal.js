@@ -37,13 +37,19 @@
     if (options.write) headers['X-Admin-Request'] = '1';
     const token = sessionStorage.getItem(TOKEN_KEY);
     if (token) headers.Authorization = 'Bearer ' + token;
-    const response = await fetch(apiBase + path, {
-      method: options.method || 'GET',
-      credentials: 'omit',
-      cache: 'no-store',
-      headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
-    });
+    let response;
+    try {
+      response = await fetch(apiBase + path, {
+        method: options.method || 'GET',
+        credentials: 'omit',
+        cache: 'no-store',
+        headers,
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+    } catch (error) {
+      if(error instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(error.message||'')) throw new Error('The assessment API is currently unreachable. Check the API service connection and use Refresh to retry.');
+      throw error;
+    }
     let data = {};
     if (response.status !== 204) {
       try { data = await response.json(); } catch { /* Generic API error below. */ }
@@ -303,8 +309,8 @@
       $('#admin-results-table').innerHTML = rows.length
         ? '<div class="admin-data-table-wrap"><table class="admin-data-table"><thead><tr>'+cols.map(c=>'<th>'+escapeHtml(c.replaceAll('_',' '))+'</th>').join('')+'<th>Actions</th></tr></thead><tbody>'+rows.map(row=>
           '<tr>'+cols.map(c=>'<td>'+escapeHtml(compact(row[c]))+'</td>').join('')+'<td class="admin-row-actions">'+
-          (row.approved_at ? '<span class="admin-readonly-chip">Approved</span>' : '<button type="button" data-result-action="approve" data-result-id="'+escapeHtml(row.id)+'">Approve</button>')+
-          (row.released_at ? '<span class="admin-readonly-chip">Released</span>' : (row.approved_at ? '<button type="button" data-result-action="release" data-result-id="'+escapeHtml(row.id)+'">Release</button>' : '<span class="admin-readonly-chip">Approval required</span>'))+
+          (row.approved_at ? '<span class="admin-readonly-chip">Approved</span>' : '<button type="button" class="admin-approve-action" data-result-action="approve" data-result-id="'+escapeHtml(row.id)+'">Approve result</button>')+
+          (row.released_at ? '<span class="admin-readonly-chip">Released</span>' : (row.approved_at ? '<button type="button" class="admin-release-action" data-result-action="release" data-result-id="'+escapeHtml(row.id)+'">Release to candidate</button>' : '<span class="admin-readonly-chip">Approval required</span>'))+
           '</td></tr>').join('')+'</tbody></table></div>'
         : '<div class="admin-empty-state"><b>No results available</b><span>Results will appear here after candidates complete their assessments.</span></div>';
       $$('#admin-results-table [data-result-action]').forEach(button => button.addEventListener('click', async () => {

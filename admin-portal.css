@@ -75,6 +75,19 @@
 .admin-welcome-mark span{display:grid;place-items:center;width:51px;height:51px;border-radius:12px;background:#fff;color:var(--brand-navy);font:900 22px var(--display)}
 .admin-welcome-mark b{color:#8FE1D5;font-size:22px}
 .admin-metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:19px 0}
+.admin-metric-card{position:relative;overflow:hidden;border-top:3px solid var(--brand-champagne);box-shadow:0 12px 26px rgba(9,45,96,.07)}
+.admin-metric-card:nth-child(2){border-top-color:var(--brand-teal)}.admin-metric-card:nth-child(3){border-top-color:#557ba8}.admin-metric-card:nth-child(4){border-top-color:#8f7442}
+.admin-metric-card strong{font-size:32px;letter-spacing:-.04em}
+.admin-retry-button{margin-top:10px;min-height:38px;padding:0 14px;border:1px solid #c9a45d;border-radius:9px;background:#fff8e7;color:#674d1b;font-size:12px;font-weight:850;cursor:pointer}
+.admin-retry-button[hidden]{display:none}
+.admin-approve-action{border-color:#b9d9d0!important;background:#edf8f3!important;color:#176b54!important}
+.admin-release-action{border-color:#d9bd7f!important;background:#fff6df!important;color:#77551b!important}
+.admin-row-actions button{min-height:34px;padding-inline:11px;font-size:10px}
+.admin-data-table th{font-size:10px;letter-spacing:.035em}
+.admin-data-table td{font-size:11px;line-height:1.5}
+.admin-edit-dialog{padding:clamp(20px,3vw,30px);border-radius:21px}
+.admin-edit-fields{gap:15px}
+.admin-modal-actions button{min-height:40px;padding-inline:15px;border-radius:9px;font-weight:800}
 .admin-metric-card{min-width:0;padding:17px;border:1px solid var(--brand-line);border-radius:15px;background:#fff;box-shadow:0 6px 18px rgba(9,45,96,.035)}
 .admin-metric-card span,.admin-metric-card small{display:block}.admin-metric-card span{color:var(--brand-muted);font-size:10px;font-weight:750}.admin-metric-card strong{display:block;margin:6px 0;color:var(--brand-navy);font:800 29px var(--display)}.admin-metric-card small{color:var(--brand-muted);font-size:9px}
 .admin-overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}

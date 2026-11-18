@@ -11,6 +11,21 @@
     const stream = bank[key];
     if (!stream) return;
     const questions = (stream.subjects || []).map(subject => stream.questions.find(question => question.subjectKey === subject.key)).filter(Boolean).slice(0, 5);
+    const previewProgress=document.querySelector('.v4-sample-progress');
+    const updatePreviewProgress=()=>{
+      if(!previewProgress)return;
+      const cards=[...panel.querySelectorAll('[data-sample-question]')];
+      const next=cards.findIndex(card=>card.dataset.answered!=='true');
+      previewProgress.querySelectorAll('[data-sample-progress]').forEach(node=>{
+        const index=Number(node.dataset.sampleProgress);
+        const card=cards[index];
+        const done=Boolean(card&&card.dataset.answered==='true');
+        const current=index===next;
+        node.classList.toggle('is-complete',done);
+        node.classList.toggle('is-current',current);
+        node.setAttribute('aria-label','Preview question '+(index+1)+(done?', answered':current?', next question':''));
+      });
+    };
     panel.innerHTML = `<div class="v4-sample-introline"><span>${escapeHTML(stream.label)} practice preview</span><small>5 syllabus-mapped preview questions · syllabus-linked answers and explanations</small></div>` + questions.map((q, index) => `
       <article class="v4-sample-question" data-sample-question="${index}">
         <div class="v4-sample-qmeta"><span>QUESTION ${String(index + 1).padStart(2,'0')}</span><span>${escapeHTML(q.subjectLabel || q.topic)} · ${escapeHTML(q.topic)}</span></div>
@@ -24,6 +39,8 @@
       card.querySelectorAll('[data-sample-option]').forEach(button => button.addEventListener('click', () => {
         if (card.dataset.answered === 'true') return;
         card.dataset.answered = 'true';
+        const progressNode=previewProgress?.querySelector('[data-sample-progress="'+index+'"]');
+        updatePreviewProgress();
         const selected = Number(button.dataset.sampleOption);
         const isCorrect = selected === question.answer;
         card.querySelectorAll('[data-sample-option]').forEach((option, optionIndex) => {
@@ -36,12 +53,28 @@
         feedback.innerHTML = `<b>${isCorrect ? 'Correct — well done.' : 'Not quite. Review the concept.'}</b><p><strong>Answer:</strong> ${escapeHTML(question.options[question.answer])}</p><p>${escapeHTML(question.explanation)}</p>`;
       }));
     });
+    updatePreviewProgress();
     panel.dataset.rendered = 'true';
   };
   const activate = key => {
     tabs.forEach(tab => { const active = tab.dataset.sampleTab === key; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', String(active)); tab.tabIndex=active?0:-1; });
     panels.forEach(panel => { const active = panel.dataset.samplePanel === key; panel.hidden = !active; panel.classList.toggle('is-active', active); });
-    if (key !== 'other') renderStream(key);
+    if (key !== 'other') {
+      renderStream(key);
+      const panel=panels.find(item=>item.dataset.samplePanel===key);
+      const progress=document.querySelector('.v4-sample-progress');
+      if(progress&&panel){
+        const cards=[...panel.querySelectorAll('[data-sample-question]')];
+        const next=cards.findIndex(card=>card.dataset.answered!=='true');
+        progress.querySelectorAll('[data-sample-progress]').forEach(node=>{
+          const index=Number(node.dataset.sampleProgress);
+          const done=Boolean(cards[index]&&cards[index].dataset.answered==='true');
+          node.classList.toggle('is-complete',done);
+          node.classList.toggle('is-current',index===next);
+          node.setAttribute('aria-label','Preview question '+(index+1)+(done?', answered':index===next?', next question':''));
+        });
+      }
+    }
   };
   tabs.forEach((tab,index) => {
     tab.addEventListener('click', () => activate(tab.dataset.sampleTab));

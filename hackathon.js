@@ -9,6 +9,14 @@
     node.classList.toggle('is-error', Boolean(error));
     node.classList.toggle('is-visible', Boolean(message));
   };
+  const setFlowStep = (root, selector, step) => {
+    root?.querySelectorAll(selector).forEach(node => {
+      const number=Number(node.dataset.hkFlowStep || node.dataset.hkpFlowStep);
+      node.classList.toggle('is-active',number===step);
+      node.classList.toggle('is-complete',number<step);
+      node.setAttribute('aria-current',number===step?'step':'false');
+    });
+  };
   const setBusy = (button, busy, label) => {
     if (!button) return;
     if (busy) {
@@ -59,6 +67,7 @@
         $('[data-hk-otp-email]').textContent = submittedEmail;
         registrationForm.hidden = true;
         otpPanel.hidden = false;
+        setFlowStep(registrationForm.parentElement,'[data-hk-flow-step]',2);
         otpInput.focus();
         otpPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch (error) {
@@ -87,6 +96,7 @@
         }
         otpPanel.hidden = true;
         successPanel.hidden = false;
+        setFlowStep(successPanel.parentElement,'[data-hk-flow-step]',3);
         successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
         challengeId = null;
       } catch (error) {
@@ -107,6 +117,15 @@
     const verifyButton = $('[data-hkp-verify]');
     const otpInput = $('#hkp-otp');
     let challengeId = null;
+    const registrationIdField=loginForm.elements.registration_id;
+    const registeredEmailField=loginForm.elements.email;
+    const syncParticipantStep=()=>{
+      const step=registrationIdField.value.trim().length>=6?2:1;
+      setFlowStep(loginForm.parentElement,'[data-hkp-flow-step]',step);
+    };
+    registrationIdField.addEventListener('input',syncParticipantStep);
+    registeredEmailField.addEventListener('focus',syncParticipantStep);
+    registeredEmailField.addEventListener('input',syncParticipantStep);
 
     const showDashboard = profile => {
       $('[data-hkp-name]').textContent = profile.full_name || 'participant';
@@ -116,6 +135,7 @@
       loginForm.hidden = true;
       otpPanel.hidden = true;
       dashboard.hidden = false;
+      setFlowStep(dashboard.parentElement,'[data-hkp-flow-step]',3);
     };
 
     loginForm.addEventListener('submit', async event => {
@@ -133,6 +153,7 @@
         challengeId = result.challenge_id;
         loginForm.hidden = true;
         otpPanel.hidden = false;
+        setFlowStep(loginForm.parentElement,'[data-hkp-flow-step]',3);
         otpInput.focus();
       } catch (error) {
         setMessage(loginMessage, error.message || 'A sign-in code could not be requested.', true);
