@@ -455,6 +455,7 @@ def create_app(
     cors_origins = list(dict.fromkeys([
         *active_settings.cors_origins,
         "https://assessment.sutravya.in",
+        "https://sutravya-assessment-web.onrender.com",
         *([active_settings.admin_frontend_origin] if active_settings.admin_frontend_origin else []),
     ]))
     if cors_origins:

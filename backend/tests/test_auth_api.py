@@ -524,7 +524,7 @@ class PasswordlessApiTests(unittest.TestCase):
                 )
             self.assertEqual(internal_start.exception.status_code, 410)
 
-    def test_internal_testing_cors_header_is_allowed(self) -> None:
+    def test_registration_and_internal_testing_cors_origins_are_allowed(self) -> None:
         settings = Settings(
             app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
             otp_hmac_pepper=PEPPER, cors_origins=("https://assessment.sutravya.in",),
@@ -532,6 +532,8 @@ class PasswordlessApiTests(unittest.TestCase):
         application = create_app(settings, session_factory=self.factory)
         cors = next(middleware for middleware in application.user_middleware if middleware.cls.__name__ == "CORSMiddleware")
         self.assertIn("X-Internal-Test-Code", cors.kwargs["allow_headers"])
+        self.assertIn("https://assessment.sutravya.in", cors.kwargs["allow_origins"])
+        self.assertIn("https://sutravya-assessment-web.onrender.com", cors.kwargs["allow_origins"])
 
     def _export_app_with_synthetic_rows(self):
         settings = Settings(
