@@ -402,37 +402,6 @@ def verify_registration_email(
             challenge_id=challenge_id, channel="email", otp=otp,
             purpose=REGISTRATION_OTP_PURPOSE, now=current,
         )
-        if outcome == ChallengeVerification.CONSUMED:
-            # A valid registration OTP may have succeeded server-side while the
-            # browser missed the response. Treat only an already-active verified
-            # registration as a safe, idempotent completion retry.
-            candidate = session.scalar(
-                select(Candidate).where(Candidate.id == challenge.candidate_id).with_for_update()
-            )
-            registration = session.scalar(
-                select(Registration).where(
-                    Registration.candidate_id == challenge.candidate_id,
-                    Registration.event_key == EVENT_KEY,
-                    Registration.is_internal_test.is_(False),
-                    Registration.registration_source != LEGACY_INTERNAL_TEST_SOURCE,
-                ).with_for_update()
-            )
-            if (
-                candidate is not None
-                and candidate.email_verified_at is not None
-                and registration is not None
-                and registration.registration_id
-                and registration.status == "active"
-            ):
-                return ChallengeVerification.VERIFIED, RegistrationSummary(
-                    registration_id=registration.registration_id,
-                    email=candidate.email or "",
-                    full_name=candidate.full_name or "Candidate",
-                    stream=registration.stream or "",
-                    registration_source=registration.registration_source,
-                    status=registration.status,
-                )
-            return outcome, None
         if outcome != ChallengeVerification.VERIFIED:
             return outcome, None
         candidate = session.scalar(

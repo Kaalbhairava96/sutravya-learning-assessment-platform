@@ -64,6 +64,7 @@ from app.registration import (
     TEAM_PRELAUNCH_SOURCE,
     RegistrationError,
     PendingEmailChallenge,
+    RegistrationSummary,
     normalize_mobile,
     create_login_challenge,
     create_registration_challenge,
@@ -635,6 +636,38 @@ def create_app(
             except IntegrityError:
                 # Includes a concurrent verified-email winner or Registration ID collision.
                 raise HTTPException(status_code=409, detail="Registration could not be completed. Please request a new code or contact support.")
+            if outcome == ChallengeVerification.CONSUMED:
+                # A retry can arrive after the first request committed OTP
+                # consumption but its HTTP response was lost by the browser.
+                # Recover only when this verified email already owns an active
+                # official registration with its final ID.
+                with session.begin():
+                    challenge = session.get(VerificationChallenge, payload.challenge_id)
+                    candidate = session.get(Candidate, challenge.candidate_id) if challenge else None
+                    existing = session.scalar(
+                        select(Registration).where(
+                            Registration.candidate_id == challenge.candidate_id,
+                            Registration.event_key == EVENT_KEY,
+                            Registration.is_internal_test.is_(False),
+                            Registration.registration_source != "legacy_internal_test",
+                        )
+                    ) if challenge else None
+                    if (
+                        candidate is not None
+                        and candidate.email_verified_at is not None
+                        and existing is not None
+                        and existing.registration_id
+                        and existing.status == "active"
+                    ):
+                        registration = RegistrationSummary(
+                            registration_id=existing.registration_id,
+                            email=candidate.email or "",
+                            full_name=candidate.full_name or "Candidate",
+                            stream=existing.stream or "",
+                            registration_source=existing.registration_source,
+                            status=existing.status,
+                        )
+                        outcome = ChallengeVerification.VERIFIED
             if outcome != ChallengeVerification.VERIFIED or registration is None:
                 status, message = _challenge_message(outcome)
                 raise HTTPException(status_code=status, detail=message)
