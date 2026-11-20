@@ -106,7 +106,7 @@ test('signed-in admin console art and dashboard remain responsive',async({browse
   if(url.pathname.endsWith('/auth/me'))payload={administrator:{email:'qa@example.com',role:'Owner'}};
   else if(url.pathname.endsWith('/database/overview'))payload={database:{database_name:'qa',server_version:'16',schema_name:'public',schema_revision:'v1'},total_tables:2,total_rows:10,tables:[{name:'registrations',label:'Registrations',rows:4,description:'Candidate applications'},{name:'results',label:'Results',rows:2,description:'Assessment results'}]};
   else if(url.pathname.endsWith('/assessment/summary'))payload={streams:{nursing:2,paramedical:1,mbbs_ug:1,mbbs_pg:0},unassigned:0};
-  else if(url.pathname.endsWith('/tables/registrations'))payload={columns:[{name:'registration_id'},{name:'stream'},{name:'status'},{name:'payment_status'},{name:'created_at'}],records:[],total:0,limit:8,offset:0};
+  else if(url.pathname.endsWith('/tables/registrations'))payload={columns:[{name:'registration_id'},{name:'stream'},{name:'status'},{name:'created_at'}],records:[],total:0,limit:8,offset:0};
   else payload={records:[]};
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(payload)});
  });
