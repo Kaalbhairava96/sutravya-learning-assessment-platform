@@ -701,7 +701,7 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertEqual(summary["registration_status"], "active")
         self.assertNotIn("payment_status", summary)
         self.assertNotIn("amount_paise", summary)
-        self.assertFalse(any(route.path.startswith("/api/payments") for route in application.routes))
+        self.assertFalse(any(getattr(route, "path", "").startswith("/api/payments") for route in application.routes))
 
     def test_registration_config_exposes_categories_without_fees_or_payment(self) -> None:
         config = route_endpoint(self.application, "/api/registration/config")(
