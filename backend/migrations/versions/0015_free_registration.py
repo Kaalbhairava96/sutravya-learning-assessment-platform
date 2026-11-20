@@ -17,20 +17,30 @@ def upgrade() -> None:
     # Ensure every existing, email-verified application has its official ID before
     # payment-only fields are removed. Existing IDs are retained unchanged.
     op.execute(sa.text("""
-        UPDATE registrations
+        UPDATE registrations AS registration
         SET registration_id =
             'SUT-' ||
-            to_char(created_at AT TIME ZONE 'Asia/Kolkata', 'YYYY/MM/DD') ||
+            to_char(registration.created_at AT TIME ZONE 'Asia/Kolkata', 'YYYY/MM/DD') ||
             '-' ||
             lpad(nextval('registration_id_serial_seq')::text, 11, '0')
-        WHERE registration_id IS NULL
+        FROM candidates AS candidate
+        WHERE candidate.id = registration.candidate_id
+          AND candidate.email_verified_at IS NOT NULL
+          AND registration.registration_id IS NULL
+          AND registration.is_internal_test IS FALSE
+          AND COALESCE(registration.registration_source, '') <> 'legacy_internal_test'
     """))
 
     # An email-verified application is now a fully confirmed free registration.
     op.execute(sa.text("""
-        UPDATE registrations
+        UPDATE registrations AS registration
         SET status = 'active'
-        WHERE status = 'payment_pending' OR status IS NULL
+        FROM candidates AS candidate
+        WHERE candidate.id = registration.candidate_id
+          AND candidate.email_verified_at IS NOT NULL
+          AND (registration.status = 'payment_pending' OR registration.status IS NULL)
+          AND registration.is_internal_test IS FALSE
+          AND COALESCE(registration.registration_source, '') <> 'legacy_internal_test'
     """))
 
     # Strip historical fee/payment metadata from saved JSON details, including

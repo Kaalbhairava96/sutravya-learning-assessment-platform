@@ -248,7 +248,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0014_hackathon_registrations"])
+        self.assertEqual(script.get_heads(), ["0015_free_registration"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -280,6 +280,8 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(admin_session_revision.down_revision, "0012_mbbs_ug_pg_subject_blocks")
         hackathon_revision = script.get_revision("0014_hackathon_registrations")
         self.assertEqual(hackathon_revision.down_revision, "0013_admin_browser_sessions")
+        free_registration_revision = script.get_revision("0015_free_registration")
+        self.assertEqual(free_registration_revision.down_revision, "0014_hackathon_registrations")
         self.assertEqual(len(Base.metadata.tables), 18)
 
     def test_migration_renders_offline_without_database(self) -> None:
@@ -365,7 +367,7 @@ class ModelSchemaTests(unittest.TestCase):
         with patch.dict(os.environ, test_env), patch("app.config._read_dotenv", return_value={}):
             output = StringIO()
             with redirect_stdout(output), self.assertRaisesRegex(
-                RuntimeError, "live checks are required"
+                RuntimeError, "cannot be safely downgraded"
             ):
                 command.downgrade(Config("alembic.ini"), "head:base", sql=True)
         self.assertNotIn("DROP TABLE candidate_sessions", output.getvalue())
