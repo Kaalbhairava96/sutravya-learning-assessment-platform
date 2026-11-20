@@ -52,12 +52,13 @@ test('FAQ search filters existing questions and announces an empty result',async
  await search.fill('');
  await expect(page.locator('.qv2-faq:visible').first()).toBeVisible();
 });
-test('registration form keeps category fee and labelled fields visible on mobile',async({page})=>{
+test('registration form displays free registration and labelled fields on mobile',async({page})=>{
  await page.setViewportSize({width:390,height:844});
  await page.goto('/register.html',{waitUntil:'domcontentloaded'});
  await expect(page.locator('#reg-category')).toBeVisible();
  await expect(page.locator('label[for="reg-category"]')).toBeVisible();
- await expect(page.locator('[data-fee-amount]')).toBeVisible();
+ await expect(page.locator('.free-registration-note')).toBeVisible();
+ await expect(page.locator('.free-registration-note')).toContainText('100% Free Registration');
  await expect(page.locator('.registration-consent')).toBeVisible();
 });
 
