@@ -2432,3 +2432,27 @@ body.exam-in-progress .exam-access-steps{display:none}
 }
 .admin-portal-body .admin-welcome-visual>img{animation:htse-admin-art-float 7s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.admin-portal-body .admin-welcome-visual>img{animation:none!important;transform:translateY(-50%)}}
+
+
+/* Duplicate email: clear, accessible blocking alert for a completed registration. */
+.registration-modal-open{overflow:hidden}
+.registration-duplicate-modal[hidden]{display:none!important}
+.registration-duplicate-modal{
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;
+  padding:22px;background:rgba(5,22,44,.66);backdrop-filter:blur(7px)
+}
+.registration-duplicate-dialog{
+  width:min(100%,490px);padding:clamp(25px,5vw,42px);border:1px solid #ead4ad;
+  border-radius:24px;background:linear-gradient(155deg,#fff 0%,#fffaf0 100%);
+  box-shadow:0 28px 90px rgba(0,0,0,.28);text-align:center
+}
+.duplicate-email-icon{
+  display:grid;place-items:center;width:54px;height:54px;margin:0 auto 15px;
+  border-radius:17px;background:#fff0d8;color:#9a5708;font:900 29px var(--display)
+}
+.registration-duplicate-dialog .card-kicker{display:block;color:#91601f;font-size:10px;font-weight:950;letter-spacing:.15em}
+.registration-duplicate-dialog h2{margin:12px 0 9px;color:#092d60;font:950 clamp(25px,5vw,32px)/1.15 var(--display);letter-spacing:-.035em}
+.registration-duplicate-dialog p{margin:0 0 23px;color:#334f65;font-size:16px;font-weight:800;line-height:1.5}
+.registration-duplicate-dialog button{min-height:54px;font-weight:950}
+.register-form-alert.is-error{padding:11px 13px;border:1px solid #e4b9b9;border-radius:12px;background:#fff3f2;color:#992c2c!important}
+.register-form-alert.is-visible{display:block}

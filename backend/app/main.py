@@ -304,6 +304,7 @@ def _registration_error(error: RegistrationError) -> HTTPException:
     messages = {
         "invalid_name": "Enter a valid full name.",
         "invalid_email": "Enter a valid email address.",
+        "email_already_registered": "This email is already registered. Try a new email for registration.",
         "invalid_mobile": "Enter a valid Indian mobile number.",
         "invalid_stream": "Select one of the available exam streams.",
         "too_many_requests": "Too many requests. Please try again later.",
@@ -694,6 +695,7 @@ def create_app(
                     ) else None
             except RegistrationError as error:
                 raise _registration_error(error)
+            sent = False
             if recipient:
                 recipient_email, recipient_name, registration_id, stream = recipient
                 try:
@@ -702,9 +704,17 @@ def create_app(
                         registration_id=registration_id or "", stream=stream or "",
                         settings=settings,
                     )
+                    sent = True
                 except Exception as error:
                     _log_email_delivery_failure(logger, purpose="registration_confirmation", error=error)
-            return {"message": "If the registration is eligible, a confirmation email will be sent."}
+            return {
+                "confirmation_email_sent": sent,
+                "message": (
+                    "Your registration confirmation email has been sent."
+                    if sent
+                    else "We could not send the confirmation email right now. Your registration is saved; please retry or contact the organiser."
+                ),
+            }
 
     @application.get("/api/registration/config", tags=["registration"])
     def registration_config(request: Request):

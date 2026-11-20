@@ -30,7 +30,7 @@ def payload(**overrides):
 
 
 class RegistrationDetailsTests(unittest.TestCase):
-    def test_nursing_programmes_and_fee(self):
+    def test_nursing_programmes(self):
         bsc = build_registration_details(payload())
         self.assertEqual(bsc["programme_label"], "B.Sc Nursing")
         self.assertEqual(bsc["academic_stage"], "Year 1")
@@ -108,6 +108,27 @@ class RegistrationDetailsTests(unittest.TestCase):
         with self.assertRaises(HTTPException):
             build_registration_details(payload(category="other", programme="mbbs"))
 
+
+
+    def test_all_indian_states_and_districts_are_loaded(self):
+        from app.registration_details import _STATE_DATA, _STATE_DISTRICTS
+        self.assertEqual(len(_STATE_DATA["states"]), 36)
+        self.assertEqual(sum(len(item["districts"]) for item in _STATE_DATA["states"]), 790)
+        self.assertEqual(len(_STATE_DISTRICTS["bihar"]), 38)
+        self.assertIn("saharsa", _STATE_DISTRICTS["bihar"])
+        self.assertEqual(len(_STATE_DISTRICTS["ladakh"]), 8)
+        self.assertIn("sankoo", _STATE_DISTRICTS["ladakh"])
+
+    def test_state_and_district_must_be_a_valid_pair(self):
+        valid = build_registration_details(payload(state="Bihar", district="Saharsa"))
+        self.assertEqual(valid["state"], "Bihar")
+        self.assertEqual(valid["district"], "Saharsa")
+        with self.assertRaises(HTTPException) as rejected:
+            build_registration_details(payload(state="Bihar", district="Leh"))
+        self.assertEqual(rejected.exception.status_code, 422)
+        with self.assertRaises(HTTPException) as rejected_state:
+            build_registration_details(payload(state="Atlantis", district="Patna"))
+        self.assertEqual(rejected_state.exception.status_code, 422)
 
 if __name__ == "__main__":
     unittest.main()

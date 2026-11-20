@@ -62,6 +62,64 @@ test('registration form displays free registration and labelled fields on mobile
  await expect(page.locator('.registration-consent')).toBeVisible();
 });
 
+test('India location selectors expose all States and dependent districts',async({page})=>{
+ await page.route('https://sutravya-assessment-api-demo.onrender.com/api/registration/config',route=>route.fulfill({
+  status:200,contentType:'application/json',
+  body:JSON.stringify({registration_enabled:true,categories:[
+   {id:'nursing',label:'Nursing',programmes:[{id:'bsc_nursing',label:'B.Sc Nursing',years:[1,2,3,4]}]},
+   {id:'paramedical',label:'Paramedical',programmes:[{id:'bmlt',label:'BMLT'}]},
+   {id:'medical',label:'Medical',programmes:[{id:'medical_ug',label:'Medical UG',years:[1,2,3,4,5]}]}
+  ]})
+ }));
+ await page.goto('/register.html',{waitUntil:'domcontentloaded'});
+ await expect(page.locator('#reg-state')).toBeEnabled();
+ await expect(page.locator('#reg-state option')).toHaveCount(37);
+ await page.locator('#reg-state').selectOption({label:'Bihar'});
+ await expect(page.locator('#reg-district')).toBeEnabled();
+ await expect(page.locator('#reg-district option')).toHaveCount(39);
+ await expect(page.locator('#reg-district')).toContainText('Saharsa');
+ await page.locator('#reg-state').selectOption({label:'Ladakh'});
+ await expect(page.locator('#reg-district option')).toHaveCount(9);
+ await expect(page.locator('#reg-district')).toContainText('Sankoo');
+});
+
+test('already registered email shows the prominent duplicate-email dialog',async({page})=>{
+ await page.route('https://sutravya-assessment-api-demo.onrender.com/api/registration/config',route=>route.fulfill({
+  status:200,contentType:'application/json',
+  body:JSON.stringify({registration_enabled:true,categories:[
+   {id:'nursing',label:'Nursing',programmes:[{id:'bsc_nursing',label:'B.Sc Nursing',years:[1,2,3,4]}]},
+   {id:'paramedical',label:'Paramedical',programmes:[{id:'bmlt',label:'BMLT'}]},
+   {id:'medical',label:'Medical',programmes:[{id:'medical_ug',label:'Medical UG',years:[1,2,3,4,5]}]}
+  ]})
+ }));
+ await page.route('https://sutravya-assessment-api-demo.onrender.com/api/registrations/start',route=>route.fulfill({
+  status:409,contentType:'application/json',
+  body:JSON.stringify({detail:'This email is already registered. Try a new email for registration.'})
+ }));
+ await page.goto('/register.html',{waitUntil:'domcontentloaded'});
+ await page.locator('#reg-category').selectOption('nursing');
+ await page.locator('#reg-programme').selectOption('bsc_nursing');
+ await page.locator('#reg-year').selectOption('1');
+ await page.locator('#reg-name').fill('Synthetic Duplicate Candidate');
+ await page.locator('#reg-email').fill('already@example.invalid');
+ await page.locator('#reg-mobile').fill('9876543210');
+ await page.locator('#reg-house').fill('12');
+ await page.locator('#reg-address1').fill('Main Road');
+ await page.locator('#reg-state').selectOption({label:'Bihar'});
+ await page.locator('#reg-district').selectOption({label:'Saharsa'});
+ await page.locator('#reg-pin').fill('852201');
+ await page.locator('[name="consent"]').check();
+ await page.locator('[data-review-button]').click();
+ await page.locator('[data-review-send-otp]').click();
+ const dialog=page.locator('[data-duplicate-email-modal]');
+ await expect(dialog).toBeVisible();
+ await expect(dialog.locator('h2')).toHaveText('This email is already registered.');
+ await expect(dialog).toContainText('Try a new email for registration.');
+ await dialog.locator('[data-duplicate-email-close]').click();
+ await expect(page.locator('#candidate-registration-form')).toBeVisible();
+ await expect(page.locator('#reg-email')).toBeFocused();
+});
+
 test('signed-in Hackathon participant workspace fits 390px, 768px and desktop',async({browser})=>{
  const page=await browser.newPage({viewport:{width:1440,height:900}});
  await page.route('https://sutravya-assessment-api-demo.onrender.com/api/hackathon/auth/session',route=>route.fulfill({

@@ -60,6 +60,15 @@
         <div class="register-help-card"><b>Need registration help?</b><p>Contact the event organiser for category or programme clarifications.</p><a href="contact.html">Contact QualiNova →</a></div>
       </aside>
 
+      <div class="registration-duplicate-modal" data-duplicate-email-modal hidden>
+        <section class="registration-duplicate-dialog" role="alertdialog" aria-modal="true" aria-labelledby="duplicate-email-title" aria-describedby="duplicate-email-description">
+          <span class="duplicate-email-icon" aria-hidden="true">!</span>
+          <span class="card-kicker">REGISTRATION EMAIL ALREADY IN USE</span>
+          <h2 id="duplicate-email-title">This email is already registered.</h2>
+          <p id="duplicate-email-description">Try a new email for registration.</p>
+          <button class="button button-primary button-wide" type="button" data-duplicate-email-close>Use a different email</button>
+        </section>
+      </div>
       <div class="register-panel">
         <div class="registration-gate" data-registration-gate role="status" aria-live="polite">
           <span class="gate-mark" aria-hidden="true">⌑</span>
@@ -106,8 +115,8 @@
             <div class="field"><label for="reg-house">FLAT / HOUSE NUMBER *</label><input id="reg-house" name="house_number" type="text" maxlength="100" autocomplete="address-line2" required></div>
             <div class="field"><label for="reg-address1">ADDRESS LINE 1 *</label><input id="reg-address1" name="address_line1" type="text" maxlength="240" autocomplete="address-line1" required></div>
             <div class="field field-span-2"><label for="reg-address2">ADDRESS LINE 2</label><input id="reg-address2" name="address_line2" type="text" maxlength="240" placeholder="Landmark, locality or area (optional)"></div>
-            <div class="field"><label for="reg-district">DISTRICT *</label><input id="reg-district" name="district" type="text" maxlength="120" autocomplete="address-level2" required></div>
-            <div class="field"><label for="reg-state">STATE *</label><input id="reg-state" name="state" type="text" maxlength="120" autocomplete="address-level1" required></div>
+            <div class="field"><label for="reg-state">STATE / UNION TERRITORY *</label><select id="reg-state" name="state" autocomplete="address-level1" required><option value="">Loading States / UTs…</option></select></div>
+            <div class="field"><label for="reg-district">DISTRICT *</label><select id="reg-district" name="district" autocomplete="address-level2" required disabled><option value="">Select State / UT first</option></select></div>
             <div class="field"><label for="reg-pin">PIN CODE *</label><input id="reg-pin" name="pin_code" type="text" inputmode="numeric" pattern="[1-9][0-9]{5}" minlength="6" maxlength="6" autocomplete="postal-code" placeholder="6-digit PIN" required></div>
           </div>
 
@@ -143,7 +152,8 @@
           <div class="registration-success-row"><span>Category</span><b data-success-category>—</b></div>
           <div class="registration-success-row"><span>Programme</span><b data-success-programme>—</b></div>
           <a class="button button-primary button-wide" href="login.html">Open candidate account →</a>
-          <p class="form-footnote" data-registration-success-message role="status">A registration confirmation has been sent to your verified email address.</p>
+          <p class="form-footnote register-form-alert" data-registration-success-message role="status">A registration confirmation has been sent to your verified email address.</p>
+          <button class="button button-light button-wide" type="button" data-resend-confirmation hidden>Resend registration confirmation email</button>
         </section>
       </div>
     </div>

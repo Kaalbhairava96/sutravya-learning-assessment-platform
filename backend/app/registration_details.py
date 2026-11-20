@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import re
+import json
+from pathlib import Path
 from fastapi import HTTPException
 
 PROGRAMMES = {
@@ -16,6 +18,23 @@ PROGRAMMES = {
     },
 }
 _MOBILE = re.compile(r"^[6-9][0-9]{9}$")
+
+_STATE_DATA_PATH = Path(__file__).resolve().parent / "data" / "india-states-districts.json"
+with _STATE_DATA_PATH.open("r", encoding="utf-8") as _state_file:
+    _STATE_DATA = json.load(_state_file)
+
+
+def _location_key(value: str) -> str:
+    return " ".join(value.split()).casefold()
+
+
+_STATE_DISTRICTS = {
+    _location_key(state["name"]): {
+        _location_key(district): (state["name"], district)
+        for district in state["districts"]
+    }
+    for state in _STATE_DATA["states"]
+}
 
 
 def _required(value: str | None, label: str, maximum: int = 240) -> str:
@@ -50,8 +69,15 @@ def build_registration_details(payload, session=None) -> dict:
     house = _required(payload.house_number, "house / flat number", 100)
     address1 = _required(payload.address_line1, "address line 1", 240)
     address2 = " ".join((payload.address_line2 or "").split())[:240]
-    district = _required(payload.district, "district", 120)
-    state = _required(payload.state, "state", 120)
+    district_input = _required(payload.district, "district", 120)
+    state_input = _required(payload.state, "state / Union Territory", 120)
+    state_entry = _STATE_DISTRICTS.get(_location_key(state_input))
+    if state_entry is None:
+        raise HTTPException(status_code=422, detail="Select a valid Indian State or Union Territory.")
+    district_entry = state_entry.get(_location_key(district_input))
+    if district_entry is None:
+        raise HTTPException(status_code=422, detail="Select a district that belongs to the selected State or Union Territory.")
+    state, district = district_entry
     pin = (payload.pin_code or "").strip()
     if not re.fullmatch(r"[1-9][0-9]{5}", pin):
         raise HTTPException(status_code=422, detail="Enter a valid six-digit PIN code.")

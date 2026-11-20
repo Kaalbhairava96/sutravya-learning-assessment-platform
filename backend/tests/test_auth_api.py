@@ -471,10 +471,15 @@ class PasswordlessApiTests(unittest.TestCase):
             )
         self.assertEqual(team_result["registration_source"], "team_prelaunch")
         with self._at(REGISTRATION_OPENS_AT):
-            duplicate_attempt = route_endpoint(application, "/api/registrations/start")(
-                payload, request_for(application, "/api/registrations/start"),
-            )
-        self.assertNotIn("challenge_id", duplicate_attempt)
+            with self.assertRaises(HTTPException) as duplicate_attempt:
+                route_endpoint(application, "/api/registrations/start")(
+                    payload, request_for(application, "/api/registrations/start"),
+                )
+        self.assertEqual(duplicate_attempt.exception.status_code, 409)
+        self.assertEqual(
+            duplicate_attempt.exception.detail,
+            "This email is already registered. Try a new email for registration.",
+        )
         with self.factory() as session:
             self.assertEqual(session.query(Registration).count(), 1)
 
@@ -681,6 +686,20 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertEqual(verified["registration_status"], "active")
         self.assertTrue(verified["confirmation_email_sent"])
         self.assertEqual(len(confirmations), 1)
+
+        # A browser retry after the server committed OTP consumption must return
+        # the existing Registration ID, not fail with "code already used".
+        retry_response = __import__("starlette.responses", fromlist=["Response"]).Response()
+        retried = route_endpoint(application, "/api/registrations/verify-email")(
+            EmailOtpRequest(challenge_id=started["challenge_id"], otp=codes[-1]["otp"]),
+            request_for(application, "/api/registrations/verify-email"),
+            retry_response,
+        )
+        self.assertEqual(retried["registration_id"], verified["registration_id"])
+        self.assertEqual(retried["registration_status"], "active")
+        self.assertTrue(retried["candidate_session_established"])
+        self.assertEqual(len(confirmations), 2)
+
         with self.factory() as session:
             registration = session.query(Registration).one()
             self.assertEqual(registration.registration_id, verified["registration_id"])
@@ -702,6 +721,71 @@ class PasswordlessApiTests(unittest.TestCase):
         self.assertNotIn("payment_status", summary)
         self.assertNotIn("amount_paise", summary)
         self.assertFalse(any(getattr(route, "path", "").startswith("/api/payments") for route in application.routes))
+
+
+    def test_public_duplicate_email_returns_clear_registration_message(self) -> None:
+        email = "already-registered@example.invalid"
+        with self._at(REGISTRATION_OPENS_AT):
+            started = route_endpoint(self.application, "/api/registrations/start")(
+                self._valid_payload(email=email),
+                request_for(self.application, "/api/registrations/start"),
+            )
+        response = __import__("starlette.responses", fromlist=["Response"]).Response()
+        with self._at(REGISTRATION_OPENS_AT):
+            verified = route_endpoint(self.application, "/api/registrations/verify-email")(
+                EmailOtpRequest(challenge_id=started["challenge_id"], otp=self.sent_codes[-1]["otp"]),
+                request_for(self.application, "/api/registrations/verify-email"),
+                response,
+            )
+        self.assertTrue(verified["registration_id"])
+        with self._at(REGISTRATION_OPENS_AT):
+            with self.assertRaises(HTTPException) as duplicate:
+                route_endpoint(self.application, "/api/registrations/start")(
+                    self._valid_payload(email=email),
+                    request_for(self.application, "/api/registrations/start"),
+                )
+        self.assertEqual(duplicate.exception.status_code, 409)
+        self.assertEqual(
+            duplicate.exception.detail,
+            "This email is already registered. Try a new email for registration.",
+        )
+
+    def test_registration_confirmation_email_can_be_retried_without_reregistering(self) -> None:
+        codes: list[dict] = []
+        confirmation_attempts: list[dict] = []
+
+        def confirmation_sender(**kwargs):
+            confirmation_attempts.append(kwargs)
+            if len(confirmation_attempts) == 1:
+                raise RuntimeError("synthetic confirmation delivery failure")
+
+        application = create_app(
+            self.settings,
+            session_factory=self.factory,
+            email_sender=lambda **kwargs: codes.append(kwargs),
+            confirmation_sender=confirmation_sender,
+        )
+        started = route_endpoint(application, "/api/registrations/start")(
+            self._valid_payload(email="retry-confirmation@example.invalid"),
+            request_for(application, "/api/registrations/start"),
+        )
+        verified = route_endpoint(application, "/api/registrations/verify-email")(
+            EmailOtpRequest(challenge_id=started["challenge_id"], otp=codes[-1]["otp"]),
+            request_for(application, "/api/registrations/verify-email"),
+        )
+        self.assertTrue(verified["registration_id"])
+        self.assertEqual(verified["registration_status"], "active")
+        self.assertFalse(verified["confirmation_email_sent"])
+
+        resent = route_endpoint(application, "/api/registrations/resend-confirmation")(
+            ConfirmationResendRequest(registration_id=verified["registration_id"]),
+            request_for(application, "/api/registrations/resend-confirmation"),
+        )
+        self.assertTrue(resent["confirmation_email_sent"])
+        self.assertEqual(len(confirmation_attempts), 2)
+        self.assertEqual(confirmation_attempts[-1]["registration_id"], verified["registration_id"])
+        with self.factory() as session:
+            self.assertEqual(session.query(Registration).count(), 1)
 
     def test_registration_config_exposes_categories_without_fees_or_payment(self) -> None:
         config = route_endpoint(self.application, "/api/registration/config")(

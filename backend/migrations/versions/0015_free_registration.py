@@ -54,6 +54,7 @@ def upgrade() -> None:
             - 'payment_status'
         )::json
         WHERE details IS NOT NULL
+          AND jsonb_typeof(CAST(details AS jsonb)) = 'object'
     """))
     op.execute(sa.text("""
         UPDATE candidates
@@ -64,6 +65,7 @@ def upgrade() -> None:
             - 'payment_status'
         )::json
         WHERE pending_registration_details IS NOT NULL
+          AND jsonb_typeof(CAST(pending_registration_details AS jsonb)) = 'object'
     """))
 
     op.drop_constraint("ck_registrations_payment_status", "registrations", type_="check")

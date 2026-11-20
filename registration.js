@@ -23,6 +23,13 @@
   const sendOtpButton = $("[data-review-send-otp]");
   const verifyButton = $("[data-verify-email]");
   const resendButton = $("[data-resend-otp]");
+  const stateSelect = $("#reg-state");
+  const districtSelect = $("#reg-district");
+  const duplicateEmailModal = $("[data-duplicate-email-modal]");
+  const duplicateEmailClose = $("[data-duplicate-email-close]");
+  const emailInput = $("#reg-email");
+  const resendConfirmationButton = $("[data-resend-confirmation]");
+  const successMessage = $("[data-registration-success-message]");
 
   const catalogue = {
     nursing: {label:"Nursing", programmes:[
@@ -43,6 +50,8 @@
   let challengeId = null;
   let resendTimer = null;
   let details = null;
+  let locationData = null;
+  let completedRegistrationId = null;
 
   async function api(path, payload, method="POST") {
     if (!apiBase) throw new Error("The secure registration service is not configured.");
@@ -54,7 +63,12 @@
     });
     let data = {};
     try { data = await response.json(); } catch {}
-    if (!response.ok) throw new Error(data.detail || "The request could not be completed. Please try again.");
+    if (!response.ok) {
+      const error = new Error(data.detail || "The request could not be completed. Please try again.");
+      error.status = response.status;
+      error.detail = data.detail || "";
+      throw error;
+    }
     return data;
   }
 
@@ -62,6 +76,44 @@
     node.textContent = message;
     node.classList.toggle("is-error", error);
     node.classList.add("is-visible");
+  }
+
+  function populateStates() {
+    stateSelect.replaceChildren(new Option("Choose State / UT", ""));
+    locationData.states.forEach(state => {
+      stateSelect.add(new Option(state.name, state.name));
+    });
+    stateSelect.disabled = false;
+    populateDistricts("");
+  }
+
+  function populateDistricts(stateName) {
+    districtSelect.replaceChildren(new Option(stateName ? "Choose district" : "Select State / UT first", ""));
+    const selected = locationData?.states.find(state => state.name === stateName);
+    (selected?.districts || []).forEach(district => {
+      districtSelect.add(new Option(district, district));
+    });
+    districtSelect.disabled = !selected;
+  }
+
+  function showDuplicateEmailPopup() {
+    if (!duplicateEmailModal) return;
+    duplicateEmailModal.hidden = false;
+    document.body.classList.add("registration-modal-open");
+    duplicateEmailClose.focus();
+  }
+
+  function closeDuplicateEmailPopup() {
+    if (!duplicateEmailModal) return;
+    duplicateEmailModal.hidden = true;
+    document.body.classList.remove("registration-modal-open");
+    reviewPanel.hidden = true;
+    otpPanel.hidden = true;
+    successPanel.hidden = true;
+    form.hidden = false;
+    setStep(1);
+    emailInput.focus();
+    emailInput.select();
   }
 
   function setStep(active) {
@@ -174,7 +226,16 @@
 
   async function initialise() {
     try {
-      const config = await api("/api/registration/config", undefined, "GET");
+      const [config, locationResponse] = await Promise.all([
+        api("/api/registration/config", undefined, "GET"),
+        fetch("assets/india-states-districts.json", {cache:"force-cache"})
+      ]);
+      if (!locationResponse.ok) throw new Error("State and district list could not be loaded. Please refresh the page.");
+      locationData = await locationResponse.json();
+      if (!Array.isArray(locationData.states) || locationData.states.length !== 36) {
+        throw new Error("The State / UT list is incomplete. Please refresh the page.");
+      }
+      populateStates();
       registrationEnabled = config.registration_enabled === true;
       if (Array.isArray(config.categories)) {
         config.categories.forEach(row => {
@@ -205,6 +266,14 @@
 
   category.addEventListener("change", refreshProgrammes);
   programme.addEventListener("change", refreshAcademicFields);
+  stateSelect.addEventListener("change", () => populateDistricts(stateSelect.value));
+  duplicateEmailClose.addEventListener("click", closeDuplicateEmailPopup);
+  duplicateEmailModal.addEventListener("click", event => {
+    if (event.target === duplicateEmailModal) closeDuplicateEmailPopup();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && duplicateEmailModal && !duplicateEmailModal.hidden) closeDuplicateEmailPopup();
+  });
 
   form.addEventListener("submit", event => {
     event.preventDefault();
@@ -246,7 +315,11 @@
       startResendCooldown();
       otpPanel.scrollIntoView({behavior:"smooth",block:"start"});
     } catch (error) {
-      notice(reviewAlert, error.message, true);
+      if (error.status === 409 && /already registered/i.test(error.message)) {
+        showDuplicateEmailPopup();
+      } else {
+        notice(reviewAlert, error.message, true);
+      }
     } finally {
       sendOtpButton.disabled = false;
       sendOtpButton.textContent = "Confirm & send email code →";
@@ -266,12 +339,15 @@
       if (result.candidate_session_established !== true || !result.registration_id || result.registration_status !== "active") {
         throw new Error("Email verification could not complete your registration. Please contact the organiser.");
       }
+      completedRegistrationId = result.registration_id;
       $("[data-registration-id]").textContent = result.registration_id;
       $("[data-success-category]").textContent = details.category_label;
       $("[data-success-programme]").textContent = details.programme_label;
-      $("[data-registration-success-message]").textContent = result.confirmation_email_sent
-        ? "Your registration confirmation has been sent to your verified email address."
-        : "Your registration is complete. Keep your Registration ID safe; the confirmation email may be delayed.";
+      successMessage.textContent = result.confirmation_email_sent
+        ? "Your registration is complete and your Registration ID is saved. A confirmation email has been submitted to your verified inbox."
+        : "Your registration is complete and your Registration ID is saved. The confirmation email could not be sent yet. Use the retry button below.";
+      successMessage.classList.toggle("is-error", !result.confirmation_email_sent);
+      resendConfirmationButton.hidden = result.confirmation_email_sent;
       otpPanel.hidden = true;
       successPanel.hidden = false;
       setStep(4);
@@ -281,6 +357,31 @@
     } finally {
       verifyButton.disabled = false;
       verifyButton.textContent = "Verify email and complete free registration →";
+    }
+  });
+
+  resendConfirmationButton.addEventListener("click", async () => {
+    if (!completedRegistrationId || resendConfirmationButton.disabled) return;
+    resendConfirmationButton.disabled = true;
+    resendConfirmationButton.textContent = "Sending confirmation email…";
+    try {
+      const result = await api("/api/registrations/resend-confirmation", {
+        registration_id:completedRegistrationId
+      });
+      if (result.confirmation_email_sent) {
+        successMessage.textContent = "Your registration confirmation email has been sent. Please check your inbox and spam folder.";
+        successMessage.classList.remove("is-error");
+        resendConfirmationButton.hidden = true;
+      } else {
+        successMessage.textContent = result.message || "The confirmation email could not be sent. Please try again later.";
+        successMessage.classList.add("is-error");
+      }
+    } catch (error) {
+      successMessage.textContent = error.message;
+      successMessage.classList.add("is-error");
+    } finally {
+      resendConfirmationButton.disabled = false;
+      resendConfirmationButton.textContent = "Resend registration confirmation email";
     }
   });
 
