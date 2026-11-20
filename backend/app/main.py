@@ -750,6 +750,49 @@ def create_app(
                 ),
             }
 
+    @application.post("/api/registrations/check-email", tags=["registration"])
+    def check_registration_email(payload: EmailRequest, request: Request):
+        """Check whether an email already owns an official verified registration."""
+        with _session(request) as session:
+            settings = request.app.state.settings
+            try:
+                email = normalize_email(payload.email)
+                _limit(
+                    session, settings, scope="registration_email_check_ip",
+                    subject=_client_ip(request), maximum=30,
+                )
+                email_digest = hashlib.sha256(email.encode("utf-8")).hexdigest()
+                _limit(
+                    session, settings, scope="registration_email_check_email",
+                    subject=email_digest, maximum=10,
+                )
+                with session.begin():
+                    candidate = session.scalar(
+                        select(Candidate).where(
+                            func.lower(Candidate.email) == email,
+                            Candidate.email_verified_at.is_not(None),
+                        ).limit(1)
+                    )
+                    existing_registration = session.scalar(
+                        select(Registration.id).where(
+                            Registration.candidate_id == candidate.id,
+                            Registration.event_key == EVENT_KEY,
+                            Registration.is_internal_test.is_(False),
+                            Registration.registration_source != "legacy_internal_test",
+                        ).limit(1)
+                    ) if candidate is not None else None
+            except RegistrationError as error:
+                raise _registration_error(error)
+        already_registered = existing_registration is not None
+        return {
+            "already_registered": already_registered,
+            "message": (
+                "This email is already registered. Try a new email for registration."
+                if already_registered
+                else "Email is available for registration."
+            ),
+        }
+
     @application.get("/api/registration/config", tags=["registration"])
     def registration_config(request: Request):
         """Public form configuration for free registration."""

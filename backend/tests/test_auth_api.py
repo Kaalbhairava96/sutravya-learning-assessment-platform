@@ -740,6 +740,20 @@ class PasswordlessApiTests(unittest.TestCase):
                 response,
             )
         self.assertTrue(verified["registration_id"])
+        checked = route_endpoint(self.application, "/api/registrations/check-email")(
+            EmailRequest(email=email),
+            request_for(self.application, "/api/registrations/check-email"),
+        )
+        self.assertTrue(checked["already_registered"])
+        self.assertEqual(
+            checked["message"],
+            "This email is already registered. Try a new email for registration.",
+        )
+        available = route_endpoint(self.application, "/api/registrations/check-email")(
+            EmailRequest(email="brand-new@example.invalid"),
+            request_for(self.application, "/api/registrations/check-email"),
+        )
+        self.assertFalse(available["already_registered"])
         with self._at(REGISTRATION_OPENS_AT):
             with self.assertRaises(HTTPException) as duplicate:
                 route_endpoint(self.application, "/api/registrations/start")(

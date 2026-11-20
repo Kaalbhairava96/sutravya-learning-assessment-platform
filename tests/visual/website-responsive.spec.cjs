@@ -83,7 +83,7 @@ test('India location selectors expose all States and dependent districts',async(
  await expect(page.locator('#reg-district')).toContainText('Sankoo');
 });
 
-test('already registered email shows the prominent duplicate-email dialog',async({page})=>{
+test('already registered email shows the prominent duplicate-email dialog on blur',async({page})=>{
  await page.route('https://sutravya-assessment-api-demo.onrender.com/api/registration/config',route=>route.fulfill({
   status:200,contentType:'application/json',
   body:JSON.stringify({registration_enabled:true,categories:[
@@ -92,25 +92,14 @@ test('already registered email shows the prominent duplicate-email dialog',async
    {id:'medical',label:'Medical',programmes:[{id:'medical_ug',label:'Medical UG',years:[1,2,3,4,5]}]}
   ]})
  }));
- await page.route('https://sutravya-assessment-api-demo.onrender.com/api/registrations/start',route=>route.fulfill({
-  status:409,contentType:'application/json',
-  body:JSON.stringify({detail:'This email is already registered. Try a new email for registration.'})
+ await page.route('https://sutravya-assessment-api-demo.onrender.com/api/registrations/check-email',route=>route.fulfill({
+  status:200,contentType:'application/json',
+  body:JSON.stringify({already_registered:true,message:'This email is already registered. Try a new email for registration.'})
  }));
  await page.goto('/register.html',{waitUntil:'domcontentloaded'});
- await page.locator('#reg-category').selectOption('nursing');
- await page.locator('#reg-programme').selectOption('bsc_nursing');
- await page.locator('#reg-year').selectOption('1');
- await page.locator('#reg-name').fill('Synthetic Duplicate Candidate');
+ await expect(page.locator('#reg-state')).toBeEnabled();
  await page.locator('#reg-email').fill('already@example.invalid');
- await page.locator('#reg-mobile').fill('9876543210');
- await page.locator('#reg-house').fill('12');
- await page.locator('#reg-address1').fill('Main Road');
- await page.locator('#reg-state').selectOption({label:'Bihar'});
- await page.locator('#reg-district').selectOption({label:'Saharsa'});
- await page.locator('#reg-pin').fill('852201');
- await page.locator('[name="consent"]').check();
- await page.locator('[data-review-button]').click();
- await page.locator('[data-review-send-otp]').click();
+ await page.locator('#reg-mobile').click();
  const dialog=page.locator('[data-duplicate-email-modal]');
  await expect(dialog).toBeVisible();
  await expect(dialog.locator('h2')).toHaveText('This email is already registered.');

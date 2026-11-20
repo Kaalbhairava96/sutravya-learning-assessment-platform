@@ -267,6 +267,25 @@
   category.addEventListener("change", refreshProgrammes);
   programme.addEventListener("change", refreshAcademicFields);
   stateSelect.addEventListener("change", () => populateDistricts(stateSelect.value));
+
+  let emailCheckSequence = 0;
+  emailInput.addEventListener("blur", async () => {
+    const email = emailInput.value.trim();
+    if (!registrationEnabled || !email || !emailInput.validity.valid) return;
+    const sequence = ++emailCheckSequence;
+    try {
+      const result = await api("/api/registrations/check-email", {email});
+      if (
+        sequence === emailCheckSequence
+        && emailInput.value.trim() === email
+        && result.already_registered === true
+      ) {
+        showDuplicateEmailPopup();
+      }
+    } catch {
+      // The final registration-start endpoint performs the authoritative check.
+    }
+  });
   duplicateEmailClose.addEventListener("click", closeDuplicateEmailPopup);
   duplicateEmailModal.addEventListener("click", event => {
     if (event.target === duplicateEmailModal) closeDuplicateEmailPopup();
