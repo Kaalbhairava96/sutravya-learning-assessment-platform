@@ -220,10 +220,6 @@ class Registration(TimestampMixin, Base):
             "registration_source IN ('team_prelaunch', 'public_registration', 'legacy_internal_test')",
             name="ck_registrations_registration_source",
         ),
-        CheckConstraint(
-            "payment_status IN ('not_required', 'pending', 'created', 'paid', 'failed', 'cancelled', 'refunded')",
-            name="ck_registrations_payment_status",
-        ),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
@@ -246,15 +242,6 @@ class Registration(TimestampMixin, Base):
         String(32), nullable=False, default="public_registration", server_default=text("'public_registration'")
     )
     details: Mapped[dict | None] = mapped_column(JSON)
-    payment_status: Mapped[str] = mapped_column(
-        String(24), nullable=False, default="not_required", server_default=text("'not_required'")
-    )
-    payment_provider: Mapped[str | None] = mapped_column(String(40))
-    payment_order_id: Mapped[str | None] = mapped_column(String(160), unique=True)
-    payment_reference: Mapped[str | None] = mapped_column(String(160), unique=True)
-    payment_amount_paise: Mapped[int | None] = mapped_column(Integer)
-    payment_currency: Mapped[str] = mapped_column(String(3), nullable=False, default="INR", server_default=text("'INR'"))
-    payment_paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     candidate: Mapped[Candidate] = relationship(back_populates="registrations")
     exam_slot: Mapped[ExamSlot | None] = relationship(

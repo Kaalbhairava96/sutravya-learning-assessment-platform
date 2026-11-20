@@ -240,7 +240,7 @@
   async function loadRegistrationPreview() {
     try {
       const data = await api('/api/admin/database/tables/registrations?limit=8&offset=0');
-      const cols = ['registration_id','stream','status','payment_status','created_at'].filter(key => data.columns.some(c => c.name === key));
+      const cols = ['registration_id','stream','status','created_at'].filter(key => data.columns.some(c => c.name === key));
       $('#admin-registration-preview').innerHTML = data.records.length
         ? '<div class="admin-data-table-wrap"><table class="admin-data-table"><thead><tr>'+cols.map(c=>'<th>'+escapeHtml(c.replaceAll('_',' '))+'</th>').join('')+'</tr></thead><tbody>'+data.records.map(row=>'<tr>'+cols.map(c=>'<td>'+escapeHtml(compact(row[c]))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div><button class="admin-link-button" data-open-table="registrations">View all registrations →</button>'
         : '<div class="admin-empty-state"><b>No registrations found</b><span>The registration table currently contains no records.</span></div>';

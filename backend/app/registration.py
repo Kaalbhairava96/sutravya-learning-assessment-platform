@@ -66,8 +66,6 @@ class RegistrationSummary:
     stream: str
     registration_source: str = PUBLIC_REGISTRATION_SOURCE
     status: str = "active"
-    payment_status: str = "not_required"
-    payment_amount_paise: int | None = None
 
 
 @dataclass(frozen=True)
@@ -77,8 +75,6 @@ class CandidateLogin:
     registration_id: str
     stream: str
     status: str = "active"
-    payment_status: str = "not_required"
-    payment_amount_paise: int | None = None
 
 
 def normalize_email(value: str) -> str:
@@ -422,24 +418,15 @@ def verify_registration_email(
             ).with_for_update()
         )
         if registration is None:
-            details = candidate.pending_registration_details
-            paid_application = details is not None
-            amount_paise = int(details.get("registration_fee_paise", 0)) if paid_application else None
-            expected_fee = {"nursing": 25000, "paramedical": 25000, "medical": 50000, "mbbs": 50000}.get(details.get("category")) if paid_application else None
-            if paid_application and (expected_fee is None or amount_paise != expected_fee):
-                raise RegistrationError("registration_fee_invalid", 422)
             registration = Registration(
                 candidate_id=candidate.id,
                 event_key=EVENT_KEY,
-                registration_id=None if paid_application else _new_registration_id(session, current),
+                registration_id=_new_registration_id(session, current),
                 stream=candidate.pending_stream,
-                status="payment_pending" if paid_application else "active",
+                status="active",
                 is_internal_test=False,
                 registration_source=challenge.registration_source,
-                details=details,
-                payment_status="pending" if paid_application else "not_required",
-                payment_amount_paise=amount_paise,
-                payment_currency="INR",
+                details=candidate.pending_registration_details,
             )
             session.add(registration)
             session.flush()
@@ -459,8 +446,6 @@ def verify_registration_email(
             stream=registration.stream or "",
             registration_source=registration.registration_source,
             status=registration.status or "active",
-            payment_status=registration.payment_status or "not_required",
-            payment_amount_paise=registration.payment_amount_paise,
         )
     return outcome, summary
 
@@ -499,108 +484,7 @@ def create_registration_candidate_session(
         ))
         return CandidateLogin(
             raw_token, expiry, registration.registration_id or "", registration.stream or "",
-            registration.status or "payment_pending", registration.payment_status or "not_required",
-            registration.payment_amount_paise,
-        )
-
-
-def record_payment_order(
-    session: Session, *, registration_record_id: UUID, provider: str,
-    order_id: str, amount_paise: int, currency: str = "INR",
-) -> RegistrationSummary:
-    normalized_provider = provider.strip().lower()
-    normalized_currency = currency.strip().upper()
-    if not normalized_provider or len(normalized_provider) > 40 or not order_id or len(order_id) > 160:
-        raise RegistrationError("payment_order_invalid", 422)
-    if type(amount_paise) is not int or amount_paise <= 0 or normalized_currency != "INR":
-        raise RegistrationError("payment_amount_invalid", 422)
-    with session.begin():
-        registration = session.scalar(
-            select(Registration).where(Registration.id == registration_record_id).with_for_update()
-        )
-        if registration is None:
-            raise RegistrationError("payment_application_unavailable", 404)
-        if registration.payment_status == "created":
-            if registration.payment_provider == normalized_provider and registration.payment_order_id == order_id:
-                candidate = session.get(Candidate, registration.candidate_id)
-                return RegistrationSummary(
-                    registration.registration_id or "", candidate.email or "", candidate.full_name or "Candidate",
-                    registration.stream or "", registration.registration_source, registration.status or "payment_pending",
-                    registration.payment_status, registration.payment_amount_paise,
-                )
-            raise RegistrationError("payment_order_already_created", 409)
-        if registration.payment_status != "pending" or registration.status != "payment_pending":
-            raise RegistrationError("payment_application_unavailable", 409)
-        if registration.payment_amount_paise != amount_paise or registration.payment_currency != normalized_currency:
-            raise RegistrationError("payment_amount_mismatch", 409)
-        candidate = session.get(Candidate, registration.candidate_id)
-        if candidate is None or candidate.email_verified_at is None:
-            raise RegistrationError("payment_application_unavailable", 409)
-        registration.payment_provider = normalized_provider
-        registration.payment_order_id = order_id
-        registration.payment_status = "created"
-        session.flush()
-        return RegistrationSummary(
-            registration.registration_id or "", candidate.email or "", candidate.full_name or "Candidate",
-            registration.stream or "", registration.registration_source, registration.status or "payment_pending",
-            registration.payment_status, registration.payment_amount_paise,
-        )
-
-
-def finalize_registration_payment(
-    session: Session, *, registration_record_id: UUID, provider: str, order_id: str,
-    payment_reference: str, amount_paise: int, currency: str = "INR",
-    now: datetime | None = None,
-) -> RegistrationSummary:
-    current = now or datetime.now(timezone.utc)
-    normalized_provider = provider.strip().lower()
-    normalized_currency = currency.strip().upper()
-    if not normalized_provider or len(normalized_provider) > 40:
-        raise RegistrationError("payment_provider_invalid", 422)
-    if not order_id or len(order_id) > 160 or not payment_reference or len(payment_reference) > 160:
-        raise RegistrationError("payment_reference_invalid", 422)
-    if type(amount_paise) is not int or amount_paise <= 0 or normalized_currency != "INR":
-        raise RegistrationError("payment_amount_invalid", 422)
-    with session.begin():
-        registration = session.scalar(
-            select(Registration).where(Registration.id == registration_record_id).with_for_update()
-        )
-        if registration is None:
-            raise RegistrationError("payment_application_unavailable", 404)
-        if registration.payment_status == "paid":
-            if (registration.payment_provider == normalized_provider
-                and registration.payment_order_id == order_id
-                and registration.payment_reference == payment_reference
-                and registration.payment_amount_paise == amount_paise
-                and registration.payment_currency == normalized_currency):
-                candidate = session.get(Candidate, registration.candidate_id)
-                return RegistrationSummary(
-                    registration.registration_id or "", candidate.email or "", candidate.full_name or "Candidate",
-                    registration.stream or "", registration.registration_source, registration.status or "active",
-                    registration.payment_status, registration.payment_amount_paise,
-                )
-            raise RegistrationError("payment_already_reconciled", 409)
-        if registration.payment_status not in {"pending", "created"} or registration.status != "payment_pending":
-            raise RegistrationError("payment_application_unavailable", 409)
-        if registration.payment_amount_paise != amount_paise or registration.payment_currency != normalized_currency:
-            raise RegistrationError("payment_amount_mismatch", 409)
-        if not registration.payment_order_id or registration.payment_order_id != order_id:
-            raise RegistrationError("payment_order_mismatch", 409)
-        candidate = session.get(Candidate, registration.candidate_id)
-        if candidate is None or candidate.email_verified_at is None:
-            raise RegistrationError("payment_application_unavailable", 409)
-        registration.payment_provider = normalized_provider
-        registration.payment_reference = payment_reference
-        registration.payment_status = "paid"
-        registration.payment_paid_at = current
-        registration.status = "active"
-        if not registration.registration_id:
-            registration.registration_id = _new_registration_id(session, current)
-        session.flush()
-        return RegistrationSummary(
-            registration.registration_id or "", candidate.email or "", candidate.full_name or "Candidate",
-            registration.stream or "", registration.registration_source, registration.status,
-            registration.payment_status, registration.payment_amount_paise,
+            registration.status or "active",
         )
 
 
@@ -669,8 +553,7 @@ def verify_login_email(
         )
         login = CandidateLogin(
             raw_token, expiry, registration.registration_id or "", registration.stream or "",
-            registration.status or "active", registration.payment_status or "not_required",
-            registration.payment_amount_paise,
+            registration.status or "active",
         )
     return outcome, login
 
@@ -709,8 +592,6 @@ def get_candidate_session(
         stream=registration.stream or "",
         registration_source=registration.registration_source,
         status=registration.status or "active",
-        payment_status=registration.payment_status or "not_required",
-        payment_amount_paise=registration.payment_amount_paise,
     )
 
 

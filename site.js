@@ -2,7 +2,6 @@
 const eventConfig = Object.freeze({
   title: 'Healthcare Talent Search Exam 2026',
   shortTitle: 'Healthcare Talent Search Exam',
-  examFee: '₹250–₹500 by category',
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
@@ -235,7 +234,6 @@ function registrationState(now = Date.now()) {
 function applyCentralEventContent() {
   document.querySelectorAll('[data-event-name]').forEach(node => { node.textContent = eventConfig.title; });
   document.querySelectorAll('[data-event-date]').forEach(node => { node.textContent = eventConfig.examDate; });
-  document.querySelectorAll('[data-event-fee]').forEach(node => { node.textContent = eventConfig.examFee; });
   document.querySelectorAll('[data-event-question-count]').forEach(node => { node.textContent = String(eventConfig.questionCount); });
   document.querySelectorAll('[data-event-duration]').forEach(node => { node.textContent = String(eventConfig.durationMinutes); });
   document.querySelectorAll('[data-event-stream-count]').forEach(node => { node.textContent = String(eventConfig.assessmentStreams.length); });
@@ -537,52 +535,19 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
     try {
       const account = await apiRequest('/api/auth/session', undefined, 'GET');
       const eligibleStream = ['nursing', 'paramedical', 'mbbs_ug', 'mbbs_pg', 'mbbs_1st_year'].includes(account.stream);
-      const examEligible = eligibleStream && account.registration_status === 'active' && account.payment_status !== 'pending';
+      const examEligible = eligibleStream && account.registration_status === 'active';
       if (examAccess) examAccess.hidden = !examEligible;
       const card = form.parentElement.querySelector('[data-candidate-application]');
       if (card) {
         card.hidden = false;
         card.querySelector('[data-application-name]').textContent = account.full_name || 'Candidate';
         card.querySelector('[data-application-status]').textContent = (account.registration_status || 'active').replaceAll('_', ' ');
-        card.querySelector('[data-application-payment]').textContent = (account.payment_status || 'not_required').replaceAll('_', ' ');
-        card.querySelector('[data-application-amount]').textContent = Number.isInteger(account.amount_paise)
-          ? new Intl.NumberFormat('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0}).format(account.amount_paise / 100) : '—';
         const idRow = card.querySelector('[data-application-id-row]');
         if (idRow) idRow.hidden = !account.registration_id;
         const id = card.querySelector('[data-application-id]');
-        if (id) id.textContent = account.registration_id || 'Not issued yet';
+        if (id) id.textContent = account.registration_id || '—';
         const message = card.querySelector('[data-application-message]');
-        if (message) message.textContent = account.payment_status === 'pending'
-          ? 'Your email is verified. Your application is saved as Payment Pending. No payment has been collected yet.'
-          : 'Your candidate account is active.';
-        const payButton = card.querySelector('[data-resume-payment]');
-        if (payButton) {
-          payButton.hidden = account.payment_status !== 'pending';
-          payButton.disabled = true;
-          payButton.textContent = 'Secure payment setup pending';
-          if (account.payment_status === 'pending') {
-            try {
-              const payment = await apiRequest('/api/payments/status', undefined, 'GET');
-              payButton.disabled = !payment.checkout_enabled;
-              payButton.textContent = payment.checkout_enabled ? 'Continue to secure payment' : 'Secure payment setup pending';
-              if (payment.checkout_enabled) {
-                payButton.addEventListener('click', async () => {
-                  payButton.disabled = true;
-                  try {
-                    const order = await apiRequest('/api/payments/create-order', {});
-                    if (order.checkout_url) location.assign(order.checkout_url);
-                    else if (message) message.textContent = 'Payment order created. Follow the secure checkout instructions.';
-                  } catch (error) { if (message) message.textContent = error.message; }
-                  finally { payButton.disabled = false; }
-                }, {once:true});
-              }
-            } catch (error) {
-              payButton.disabled = true;
-              payButton.textContent = 'Secure payment setup pending';
-              if (message && error.message) message.textContent = error.message;
-            }
-          }
-        }
+        if (message) message.textContent = 'Your free candidate registration is confirmed.';
         card.querySelector('[data-candidate-logout]')?.addEventListener('click', async () => {
           try { await apiRequest('/api/auth/logout', {}, 'POST'); }
           finally { location.reload(); }

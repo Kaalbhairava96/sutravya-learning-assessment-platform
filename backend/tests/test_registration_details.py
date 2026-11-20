@@ -32,7 +32,6 @@ def payload(**overrides):
 class RegistrationDetailsTests(unittest.TestCase):
     def test_nursing_programmes_and_fee(self):
         bsc = build_registration_details(payload())
-        self.assertEqual(bsc["registration_fee_paise"], 25000)
         self.assertEqual(bsc["programme_label"], "B.Sc Nursing")
         self.assertEqual(bsc["academic_stage"], "Year 1")
         msc = build_registration_details(payload(programme="msc_nursing", year=2))
@@ -49,7 +48,6 @@ class RegistrationDetailsTests(unittest.TestCase):
                 category="paramedical", programme=programme, year=None,
                 academic_stage="Semester 4 / Internship",
             ))
-            self.assertEqual(details["registration_fee_paise"], 25000)
             self.assertEqual(details["programme"], programme)
             self.assertEqual(details["stream"], "paramedical")
 
@@ -68,7 +66,6 @@ class RegistrationDetailsTests(unittest.TestCase):
             self.assertEqual(details["category"], "medical")
             self.assertEqual(details["subcategory"], "UG")
             self.assertEqual(details["stream"], "mbbs_ug")
-            self.assertEqual(details["registration_fee_paise"], 50000)
             self.assertEqual(details["academic_stage"], f"Year {year}")
         for year in range(1, 4):
             details = build_registration_details(payload(
@@ -76,7 +73,6 @@ class RegistrationDetailsTests(unittest.TestCase):
             ))
             self.assertEqual(details["subcategory"], "PG")
             self.assertEqual(details["stream"], "mbbs_pg")
-            self.assertEqual(details["registration_fee_paise"], 50000)
         with self.assertRaises(HTTPException):
             build_registration_details(payload(category="mbbs", programme="mbbs_ug", year=6))
         with self.assertRaises(HTTPException):

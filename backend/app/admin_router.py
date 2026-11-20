@@ -50,7 +50,7 @@ EDITABLE_FIELDS = {
 }
 SEARCH_COLUMNS = {
     "candidates": ("full_name", "email", "phone"),
-    "registrations": ("registration_id", "stream", "status", "payment_status"),
+    "registrations": ("registration_id", "stream", "status"),
     "exam_slots": ("stream",),
     "question_banks": ("bank_code", "title"),
     "questions": ("question_text", "section", "category"),
@@ -64,7 +64,7 @@ SEARCH_COLUMNS = {
 }
 TABLE_DESCRIPTIONS = {
     "candidates": "Candidate identity and verified contact information.",
-    "registrations": "Registration category, eligibility, payment state and slot assignment.",
+    "registrations": "Registration category, eligibility and slot assignment.",
     "exam_slots": "Stream-specific examination windows and capacity.",
     "question_banks": "Versioned question-bank metadata.",
     "questions": "Question wording, syllabus mapping and timing.",
@@ -296,8 +296,6 @@ def guard_edit(session: Session, table_name: str, record: dict, changes: dict) -
     if table_name == "registrations":
         if changes.get("status") not in {"active", "suspended", "cancelled"}:
             raise HTTPException(status_code=422, detail="Registration status may only be active, suspended or cancelled.")
-        if record["payment_status"] not in {"paid", "not_required"}:
-            raise HTTPException(status_code=409, detail="A pending or failed payment cannot be changed from this panel.")
         attempt = session.scalar(select(ExamAttempt.id).where(ExamAttempt.registration_id == record["id"]).limit(1))
         if attempt:
             raise HTTPException(status_code=409, detail="A registration with an exam attempt cannot be suspended or cancelled here.")

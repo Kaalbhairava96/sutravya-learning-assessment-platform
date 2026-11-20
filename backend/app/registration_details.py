@@ -1,10 +1,9 @@
-"""Server-side validation and pricing for QualiNova registration categories."""
+"""Server-side validation for free QualiNova registration categories."""
 from __future__ import annotations
 
 import re
 from fastapi import HTTPException
 
-CATEGORY_FEES = {"nursing": 25000, "paramedical": 25000, "medical": 50000}
 PROGRAMMES = {
     "nursing": {"bsc_nursing": "B.Sc Nursing", "msc_nursing": "M.Sc Nursing"},
     "paramedical": {
@@ -27,12 +26,12 @@ def _required(value: str | None, label: str, maximum: int = 240) -> str:
 
 
 def build_registration_details(payload, session=None) -> dict:
-    """Validate category and pathway; always calculate fee on the server."""
+    """Validate the selected category and academic pathway."""
     raw_category = (payload.category or "").strip().lower()
     # Backward compatibility for older API clients sending the retired MBBS labels.
     # Persisted details and all new public-facing records use canonical Medical labels.
     category = "medical" if raw_category == "mbbs" else raw_category
-    if category not in CATEGORY_FEES:
+    if category not in PROGRAMMES:
         raise HTTPException(status_code=422, detail="Choose Nursing, Paramedical or Medical.")
     raw_programme = (payload.programme or "").strip().lower()
     legacy_programmes = {"mbbs_ug": "medical_ug", "mbbs_pg": "medical_pg"}
@@ -86,9 +85,6 @@ def build_registration_details(payload, session=None) -> dict:
         "programme_label": PROGRAMMES[category][programme],
         "academic_stage": academic_stage,
         "stream": stream,
-        "registration_fee_paise": CATEGORY_FEES[category],
-        "currency": "INR",
-        "payment_status": "pending",
         "house_number": house,
         "address_line1": address1,
         "address_line2": address2,

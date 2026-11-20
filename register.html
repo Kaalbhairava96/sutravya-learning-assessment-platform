@@ -11,7 +11,7 @@
   <meta property="og:site_name" content="Healthcare Talent Search Exam 2026 | SUTRAVYA">
   <meta property="og:image" content="https://assessment.sutravya.in/assets/healthcare-talent-search-og.jpg">
   <meta property="og:title" content="Registration | QualiNova × SUTRAVYA">
-  <meta property="og:description" content="Complete your candidate application and review the category-wise registration fee.">
+  <meta property="og:description" content="Complete your free Healthcare Talent Search Exam registration across Nursing, Paramedical and Medical pathways.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="sutravya-api-base" content="https://sutravya-assessment-api-demo.onrender.com">
   <title>Candidate Registration | QualiNova × SUTRAVYA</title>
@@ -26,10 +26,10 @@
         <div class="breadcrumbs"><a href="index.html">Home</a><span>/</span> Registration</div>
         <span class="eyebrow eyebrow-light">QUALINOVA × SUTRAVYA · HTSE 2026</span>
         <h1>Begin your<br><em>application.</em></h1>
-        <p>Choose your academic category, provide the required details and review the applicable registration fee before verifying your email.</p>
+        <p>Choose your academic category, provide the required details and verify your email to complete your free registration.</p>
         <div class="register-hero-facts">
           <span><b>03</b> Registration categories</span>
-          <span><b>₹250–₹500</b> Category-wise fee</span>
+          <span><b>FREE</b> Registration for every category</span>
           <span><b>01</b> Email verification</span>
         </div>
       </div>
@@ -52,12 +52,12 @@
         </div>
         <div class="register-step-list" aria-label="Registration progress">
           <div class="register-step is-current" data-step-indicator="1"><span>01</span><div><b>Candidate details</b><small>Category, UG/PG level, academic and personal details</small></div></div>
-          <div class="register-step" data-step-indicator="2"><span>02</span><div><b>Review & declaration</b><small>Check your information and applicable fee</small></div></div>
+          <div class="register-step" data-step-indicator="2"><span>02</span><div><b>Review & declaration</b><small>Check your information and academic details</small></div></div>
           <div class="register-step" data-step-indicator="3"><span>03</span><div><b>Email verification</b><small>One-time code sent to your email</small></div></div>
-          <div class="register-step" data-step-indicator="4"><span>04</span><div><b>Application received</b><small>Payment remains pending until gateway launch</small></div></div>
+          <div class="register-step" data-step-indicator="4"><span>04</span><div><b>Application received</b><small>Your free registration is complete</small></div></div>
         </div>
-        <div class="register-security-note"><span aria-hidden="true">⌑</span><div><b>Secure by design</b><small>Category and fee are validated by the server. The browser cannot mark an application as paid.</small></div></div>
-        <div class="register-help-card"><b>Need registration help?</b><p>Contact the event organiser for category, programme or fee clarifications.</p><a href="contact.html">Contact QualiNova →</a></div>
+        <div class="register-security-note"><span aria-hidden="true">⌑</span><div><b>Secure by design</b><small>Your details are securely checked before the application is confirmed.</small></div></div>
+        <div class="register-help-card"><b>Need registration help?</b><p>Contact the event organiser for category or programme clarifications.</p><a href="contact.html">Contact QualiNova →</a></div>
       </aside>
 
       <div class="register-panel">
@@ -77,9 +77,9 @@
             <div class="field"><label for="reg-category">REGISTRATION CATEGORY *</label>
               <select id="reg-category" name="category" required>
                 <option value="">Choose category</option>
-                <option value="nursing">Nursing — ₹250</option>
-                <option value="paramedical">Paramedical — ₹250</option>
-                <option value="medical">Medical — ₹500</option>
+                <option value="nursing">Nursing</option>
+                <option value="paramedical">Paramedical</option>
+                <option value="medical">Medical</option>
               </select>
             </div>
             <div class="field"><label for="reg-programme">PROGRAMME / SUB-CATEGORY *</label>
@@ -111,21 +111,17 @@
             <div class="field"><label for="reg-pin">PIN CODE *</label><input id="reg-pin" name="pin_code" type="text" inputmode="numeric" pattern="[1-9][0-9]{5}" minlength="6" maxlength="6" autocomplete="postal-code" placeholder="6-digit PIN" required></div>
           </div>
 
-          <div class="fee-review-card" aria-live="polite">
-            <div><span class="eyebrow">REGISTRATION FEE</span><b class="fee-review-amount" data-fee-amount>Choose a category</b><small data-fee-description>The applicable fee will be validated by the registration server.</small></div>
-            <div class="fee-review-chip"><span>INR</span><b data-fee-category>Not selected</b></div>
-          </div>
+          <div class="free-registration-note" role="note"><b>100% Free Registration</b><span>Participation in the MCQ examination and Healthcare Innovation Hackathon is free.</span></div>
           <label class="registration-consent"><input type="checkbox" name="consent" required><span>I declare that the information provided is accurate and agree to the event's terms and registration-related communication from QualiNova and SUTRAVYA.</span></label>
           <div class="register-form-alert" data-register-alert role="status" aria-live="polite"></div>
           <button class="button button-primary button-wide" type="submit" data-review-button disabled>Review application <span aria-hidden="true">→</span></button>
-          <p class="form-footnote">Continuing will not collect payment. Your application is saved only after email verification. Payment and final registration confirmation will follow after an approved gateway is connected.</p>
+          <p class="form-footnote">Registration is completely free for every category. Email verification is the final step.</p>
         </form>
 
         <section class="registration-review-panel" data-review-panel hidden>
-          <div class="register-panel-head"><div><span class="card-kicker">STEP 02 · REVIEW & DECLARATION</span><h2>Review your application</h2><p>Check all details and the category-wise fee before requesting email verification.</p></div><span class="register-panel-icon">02</span></div>
+          <div class="register-panel-head"><div><span class="card-kicker">STEP 02 · REVIEW & DECLARATION</span><h2>Review your application</h2><p>Check all details and the academic and personal details before requesting email verification.</p></div><span class="register-panel-icon">02</span></div>
           <dl class="registration-review-list" data-review-list></dl>
-          <div class="fee-review-card"><div><span class="eyebrow">APPLICABLE REGISTRATION FEE</span><b class="fee-review-amount" data-review-fee>—</b><small>Final amount is calculated again by the server.</small></div><div class="fee-review-chip"><span>CATEGORY</span><b data-review-category>—</b></div></div>
-          <div class="review-declaration"><b>Declaration</b><p>By proceeding, I confirm that the details above are true and complete. I understand that the application remains unconfirmed until the payment provider verifies the applicable registration fee.</p></div>
+<div class="review-declaration"><b>Declaration</b><p>By proceeding, I confirm that the details above are true and complete. My registration will be confirmed after successful email verification.</p></div>
           <div class="review-actions"><button class="button button-light" type="button" data-review-back>← Edit details</button><button class="button button-primary" type="button" data-review-send-otp>Confirm & send email code →</button></div>
           <div class="register-form-alert" data-review-alert role="status" aria-live="polite"></div>
         </section>
@@ -134,20 +130,20 @@
           <div class="register-panel-head"><div><span class="card-kicker">STEP 03 · EMAIL VERIFICATION</span><h2>Verify your email</h2><p>Enter the six-digit one-time code sent to <b data-otp-email></b>.</p></div><span class="register-panel-icon">03</span></div>
           <div class="otp-icon" aria-hidden="true">✉</div>
           <div class="field registration-otp-field"><label for="registration-otp">6-DIGIT EMAIL CODE</label><input id="registration-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="Enter verification code" required></div>
-          <button class="button button-primary button-wide" type="button" data-verify-email>Verify email and save application →</button>
+          <button class="button button-primary button-wide" type="button" data-verify-email>Verify email and complete free registration →</button>
           <button class="link-button" type="button" data-resend-otp disabled>Resend code in 60 seconds</button>
           <div class="register-form-alert" data-otp-alert role="status" aria-live="polite"></div>
           <p class="form-footnote">The code expires after five minutes and can be used once. Never share this code with anyone.</p>
         </section>
 
-        <section class="registration-payment-panel" data-payment-panel hidden>
-          <div class="register-panel-head"><div><span class="card-kicker">STEP 04 · APPLICATION RECEIVED</span><h2>Your application is saved</h2><p>Your email has been verified. Your application is now in the candidate account.</p></div><span class="register-panel-icon">04</span></div>
-          <div class="payment-pending-banner"><span aria-hidden="true">◷</span><div><b>Payment Pending</b><small>Your final registration is not yet confirmed.</small></div></div>
-          <div class="payment-summary-row"><span>Category</span><b data-payment-category>—</b></div>
-          <div class="payment-summary-row"><span>Programme</span><b data-payment-programme>—</b></div>
-          <div class="payment-summary-row"><span>Amount payable</span><b class="payment-total" data-payment-amount>—</b></div>
-          <div class="payment-connection-card"><span class="eyebrow">SECURE CHECKOUT</span><h3>Payment gateway integration will follow.</h3><p>Your application and server-side payment handoff are prepared. The organiser-approved payment provider and verified webhook will be activated before payments are accepted.</p><button class="button button-primary button-wide" type="button" data-continue-payment disabled>Secure payment setup pending</button><p class="payment-disclaimer" data-payment-message>No money has been collected. Your application is Payment Pending. A Registration ID and exam eligibility are issued only after the payment is verified by the server.</p></div>
-          <a class="text-link" href="login.html">Open candidate account →</a>
+        <section class="registration-success-panel" data-registration-success hidden>
+          <div class="register-panel-head"><div><span class="card-kicker">STEP 04 · REGISTRATION CONFIRMED</span><h2>You are registered.</h2><p>Your email has been verified and your free application is complete.</p></div><span class="register-panel-icon">04</span></div>
+          <div class="registration-success-banner"><span aria-hidden="true">✓</span><div><b>Free registration successful</b><small>Your candidate profile is now active.</small></div></div>
+          <div class="registration-success-id"><span>YOUR REGISTRATION ID</span><b data-registration-id>—</b><small>Keep this ID safe. You will need it for future examination updates.</small></div>
+          <div class="registration-success-row"><span>Category</span><b data-success-category>—</b></div>
+          <div class="registration-success-row"><span>Programme</span><b data-success-programme>—</b></div>
+          <a class="button button-primary button-wide" href="login.html">Open candidate account →</a>
+          <p class="form-footnote" data-registration-success-message role="status">A registration confirmation has been sent to your verified email address.</p>
         </section>
       </div>
     </div>

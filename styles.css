@@ -222,7 +222,7 @@
   .qv3-flow-step>span{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--brand-mist);color:var(--brand-teal-700);font-weight:900;font-size:11px}
   .qv3-flow-step b{color:var(--brand-navy);font:800 13px var(--display)}
   .qv3-flow-step small{color:var(--brand-muted);font-size:11px;line-height:1.5}
-  .login-context-card,.register-security-note,.payment-connection-card,.register-help-card{border:1px solid var(--brand-line);border-radius:14px;background:var(--brand-pearl)}
+  .login-context-card,.register-security-note,.register-help-card{border:1px solid var(--brand-line);border-radius:14px;background:var(--brand-pearl)}
   .qv2-faq summary,.faq summary{color:var(--brand-navy);font-weight:800}
   .qv2-faq summary:focus-visible,.faq summary:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
   .contact-disclaimer{color:var(--brand-muted)}
@@ -280,7 +280,7 @@
   /* Registration journey */
   .register-workspace-grid{align-items:start}
   .register-aside h2,.register-panel h2,.login-context h2{color:var(--brand-navy)}
-  .register-panel,.register,.login-form,.candidate-application-card,.registration-review-panel,.registration-otp-panel,.registration-payment-panel{
+  .register-panel,.register,.login-form,.candidate-application-card,.registration-review-panel,.registration-otp-panel,.registration-success-panel{
     border:1px solid var(--brand-line);border-radius:20px;background:white;box-shadow:var(--shadow)
   }
   .register-panel{padding:clamp(20px,3vw,34px)}
@@ -293,15 +293,25 @@
   .register-form-alert.is-visible,.register-note.is-visible{padding:10px 12px;border-radius:10px;background:var(--brand-mist)}
   .registration-gate{display:flex;gap:13px;padding:15px;border:1px solid var(--brand-line);border-radius:14px;background:#EFF8F6;color:var(--brand-navy)}
   .registration-gate.is-closed{background:#FCEFF0;border-color:#E9C9CE}
-  .fee-review-card,.payment-pending-banner,.payment-connection-card,.review-declaration{border:1px solid var(--brand-line);border-radius:14px;background:var(--brand-pearl)}
-  .fee-review-amount,.payment-total{color:var(--brand-navy)}
-  .fee-review-chip{background:var(--brand-mist);color:var(--brand-teal-700)}
+.registration-success-banner,.registration-success-id,.review-declaration{border:1px solid var(--brand-line);border-radius:14px;background:var(--brand-pearl)}
+.free-registration-note{display:grid;gap:5px;margin:22px 0;padding:17px 19px;border:1px solid #c9e4d8;border-radius:16px;background:linear-gradient(115deg,#eff8f3,#fff 78%);color:var(--brand-graphite)}
+.free-registration-note b{color:#146b54;font:850 15px var(--display)}
+.free-registration-note span{font-size:13px;line-height:1.6}
+.registration-success-banner{display:flex;align-items:center;gap:13px;margin:18px 0;padding:16px;border-color:#c9e4d8;background:#eff8f3;color:#146b54}
+.registration-success-banner>span{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:#d8efe2;font-size:20px;font-weight:900}
+.registration-success-banner b,.registration-success-banner small{display:block}
+.registration-success-id{display:grid;gap:6px;margin:18px 0;padding:20px;border-color:#e4d2a5;background:#fffbf1;text-align:center}
+.registration-success-id span{font-size:10px;font-weight:900;letter-spacing:.14em;color:#836129}
+.registration-success-id>b{font:900 clamp(22px,3vw,30px) var(--display);letter-spacing:.04em;overflow-wrap:anywhere}
+.registration-success-id small{color:var(--brand-muted);font-size:12px;line-height:1.5}
+.registration-success-row{display:flex;justify-content:space-between;gap:15px;padding:12px 2px;border-bottom:1px solid var(--brand-line);font-size:14px}
+.registration-success-row b{color:var(--brand-navy)}
+.registration-success-id>b{color:var(--brand-navy)}
   .registration-consent{display:flex;align-items:flex-start;gap:10px;color:var(--brand-muted);font-size:12px;line-height:1.6}
   .registration-consent input{accent-color:var(--brand-teal);margin-top:3px}
   .registration-review-list dt{color:var(--brand-muted)}
   .registration-review-list dd{color:var(--brand-navy);font-weight:700}
   .otp-icon{color:var(--brand-teal)}
-  .payment-pending-banner{background:#FFF7E9;border-color:#EEDCB8;color:#75511C}
   .candidate-application-row{border-bottom:1px solid var(--brand-line)}
   /* Syllabus and question learning surfaces */
   .qv2-path-tabs,.v4-sample-tabs{display:flex;flex-wrap:wrap;gap:8px}
@@ -1599,7 +1609,6 @@ body.qv2-home .qv2-home-pathways .qv2-path-card a{color:#087d78}
 .registration-guided-workspace .register-panel,.registration-guided-workspace .register{padding:clamp(18px,2.6vw,29px)}
 .registration-guided-workspace .field label,.registration-guided-workspace .registration-field label{font-size:12px}
 .registration-guided-workspace input,.registration-guided-workspace select,.registration-guided-workspace textarea{min-height:47px;font-size:15px}
-.registration-guided-workspace .fee-review-card{border:1px solid #d6b66e;background:linear-gradient(115deg,#fff4d5,#fff 78%);box-shadow:0 8px 18px rgba(201,164,93,.12)}
 .v4-mock-stream{min-height:116px;gap:14px;padding:18px;border-top:3px solid #c9a45d;background:linear-gradient(145deg,#fff,#f6f8f6)}
 .v4-mock-stream-copy{display:grid;min-width:0;gap:4px}
 .v4-mock-stream-copy b{font-size:17px}
@@ -2018,17 +2027,10 @@ input[type=checkbox],input[type=radio]{accent-color:#087f79}
 .registration-gate .gate-mark svg{width:22px;height:22px}
 .registration-gate b{font:850 15px var(--display)}
 .registration-gate p{margin:4px 0 0;font-size:14px;line-height:1.55}
-.fee-review-card{
-  display:flex;align-items:center;justify-content:space-between;gap:18px;margin:23px 0;padding:20px 22px;
-  border:1px solid #e1c98d;border-radius:18px;background:linear-gradient(115deg,#fff5d9 0%,#fff 68%);
-  box-shadow:0 12px 24px rgba(174,132,54,.095)
-}
-.fee-review-card .eyebrow{color:#836129;font-size:10px;font-weight:900}
 .fee-review-amount{display:block;margin:5px 0 3px;font:900 clamp(24px,2.6vw,32px)/1.1 var(--display);letter-spacing:-.04em}
 .fee-review-card small{display:block;max-width:55ch;color:#65747a;font-size:13px;line-height:1.6}
 .fee-review-chip{display:grid;gap:4px;justify-items:center;min-width:100px;padding:12px 15px;border:1px solid #e5d2a6;border-radius:13px;background:#fffbf0}
 .fee-review-chip span{font-size:10px;font-weight:900;letter-spacing:.12em}
-.fee-review-chip b{font-size:13px}
 .register-step-list{gap:11px}
 .register-step{
   display:flex;align-items:center;gap:13px;min-height:76px;padding:13px 15px;border-radius:15px;
@@ -2048,7 +2050,7 @@ input[type=checkbox],input[type=radio]{accent-color:#087f79}
 .register-security-note small,.register-help-card p{font-size:13px;line-height:1.65}
 .register-help-card a{font-size:13px;font-weight:850}
 .register-form-alert,.register-note{font-size:14px;line-height:1.6}
-.registration-review-panel,.registration-otp-panel,.registration-payment-panel{padding:clamp(22px,3vw,36px);border-radius:23px}
+.registration-review-panel,.registration-otp-panel,.registration-success-panel{padding:clamp(22px,3vw,36px);border-radius:23px}
 .registration-review-list dt,.registration-review-list dd{font-size:14px;line-height:1.6}
 .registration-otp-field label{justify-content:center}
 .registration-otp-field input{font-size:24px;letter-spacing:.3em}
@@ -2222,10 +2224,6 @@ input[type=checkbox],input[type=radio]{accent-color:#087f79}
   .field input,.field select,.field textarea,.registration-field-grid input,.registration-field-grid select,.registration-field-grid textarea,.login-form input{padding:13px 14px;font-size:16px}
   .registration-field-grid{grid-template-columns:1fr;row-gap:0}
   .registration-field-grid .field-span-2{grid-column:auto}
-  .fee-review-card{align-items:flex-start;padding:16px;gap:10px}
-  .fee-review-amount{font-size:25px}
-  .fee-review-chip{min-width:78px;padding:10px}
-  .fee-review-chip b{font-size:11px}
   .qv2-faq-group{padding:17px}
   .qv2-faq summary{font-size:15px}
   .qv2-faq p{font-size:14px}
@@ -2256,7 +2254,6 @@ input[type=checkbox],input[type=radio]{accent-color:#087f79}
   .form-section-title small{font-size:11.5px}
   .register-step-list{grid-template-columns:1fr}
   .register-step{min-height:67px}
-  .fee-review-card{display:grid;grid-template-columns:minmax(0,1fr) auto}
   .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-grid{grid-template-columns:minmax(0,1fr) 88px}
   .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art{min-height:84px;max-height:94px}
   .qv2-hack-portal-page .qv2-portal-hero .qv2-hero-art img{max-height:90px}
@@ -2343,10 +2340,6 @@ input[type=checkbox],input[type=radio]{accent-color:#087f79}
 .qv2-milestone small{font-size:13px;line-height:1.65}
 .registration-gate .gate-mark{animation:htse-security-pulse 3.8s ease-in-out infinite}
 .fee-review-card{position:relative;overflow:hidden}
-.fee-review-card:after{
-  position:absolute;right:-32px;top:-50px;width:128px;height:128px;border:1px solid rgba(201,164,93,.16);
-  border-radius:50%;box-shadow:0 0 0 16px rgba(201,164,93,.035),0 0 0 32px rgba(7,143,136,.02);content:"";pointer-events:none
-}
 .qv2-hack-form-card .qv2-hack-field-group{border-bottom:1px solid #dce8e2}
 .qv2-hack-form-card .qv2-hack-field-group:after{height:1px;background:linear-gradient(90deg,#c9a45d,transparent);content:"";flex:1}
 .admin-welcome-visual{position:relative;display:grid;place-items:center;min-width:0;align-self:stretch}
