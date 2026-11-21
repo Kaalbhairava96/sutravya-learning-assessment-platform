@@ -33,13 +33,13 @@ def payload(**overrides):
 class RegistrationDetailsTests(unittest.TestCase):
     def setUp(self):
         self.pin_locations = {
-            "800001": (("Bihar", "Patna"),),
-            "852201": (("Bihar", "Saharsa"),),
-            "847211": (("Bihar", "Madhubani"),),
-            "560001": (("Karnataka", "Bengaluru Urban"),),
+            "800001": (("Patna", "Bihar"),),
+            "852201": (("Saharsa", "Bihar"),),
+            "847211": (("Madhubani", "Bihar"),),
+            "560001": (("Bengaluru Urban", "Karnataka"),),
         }
         lookup = patch(
-            "app.pincode_validation.lookup_pin_locations",
+            "app.postal_validation._fetch_postal_locations",
             side_effect=lambda pin: self.pin_locations.get(pin, ()),
         )
         lookup.start()
@@ -147,10 +147,10 @@ class RegistrationDetailsTests(unittest.TestCase):
         self.assertIn("not found", rejected.exception.detail.lower())
 
     def test_pin_lookup_outage_fails_closed_with_retryable_error(self):
-        from app.pincode_validation import PinCodeLookupUnavailable
+        from app.postal_validation import PostalLookupUnavailable
         with patch(
-            "app.pincode_validation.lookup_pin_locations",
-            side_effect=PinCodeLookupUnavailable("directory unavailable"),
+            "app.postal_validation._fetch_postal_locations",
+            side_effect=PostalLookupUnavailable("directory unavailable"),
         ):
             with self.assertRaises(HTTPException) as rejected:
                 build_registration_details(payload())
