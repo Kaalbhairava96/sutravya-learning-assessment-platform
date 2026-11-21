@@ -22,7 +22,22 @@
 <div class="admin-quick-links"><button data-admin-view="registrations"><b>Registrations</b><small>Review candidate records</small><span>→</span></button><button data-admin-view="database"><b>Database explorer</b><small>Browse and edit permitted fields</small><span>→</span></button><button data-admin-view="slots"><b>Exam scheduling</b><small>Create slots and assign candidates</small><span>→</span></button><button data-admin-view="audit"><b>Audit history</b><small>Review administrator actions</small><span>→</span></button></div></section></div>
 <section class="admin-panel"><div class="admin-panel-heading"><div><span class="admin-section-kicker">ASSESSMENT PATHWAYS</span><h3>Stream-wise readiness</h3></div></div><div class="admin-readiness-grid" id="admin-readiness"></div></section></section>
 <section class="admin-view" id="view-registrations" data-view-panel="registrations"><div class="admin-section-intro"><div><span class="admin-section-kicker">CANDIDATE MANAGEMENT</span><h2>Registrations</h2><p>Search, review and safely update eligible registration records.</p></div><button class="admin-secondary-button" data-open-table="registrations">Open in database explorer ↗</button></div>
-<div class="admin-panel"><div class="admin-panel-heading"><div><h3>Candidate applications</h3><small>Use the database explorer for search, pagination and permission-aware editing.</small></div></div><div id="admin-registration-preview"></div></div></section>
+<div class="admin-panel">
+<div class="admin-panel-heading admin-registration-heading">
+  <div><h3>Candidate applications</h3><small>Review recent registrations or download the complete candidate register for Excel.</small></div>
+  <div class="admin-export-controls">
+    <label class="admin-export-filter" for="admin-registration-export-source">Include</label>
+    <select id="admin-registration-export-source" aria-label="Choose registration records to export">
+      <option value="all">All candidates</option>
+      <option value="public_registration">Public registrations</option>
+      <option value="team_prelaunch">Team pre-launch</option>
+    </select>
+    <button class="admin-primary-button" id="admin-export-registrations" type="button"><span>Download Excel</span></button>
+  </div>
+</div>
+<div id="admin-registration-export-status" class="admin-export-status" role="status" aria-live="polite"></div>
+<div id="admin-registration-preview"></div>
+</div></section>
 <section class="admin-view" id="view-database" data-view-panel="database"><div class="admin-section-intro"><div><span class="admin-section-kicker">DATA MANAGEMENT</span><h2>Database explorer</h2><p>Browse all application tables. Authentication and OTP records are protected.</p></div><div class="admin-database-badges" id="admin-database-badges"></div></div>
 <div class="admin-database-layout"><aside class="admin-table-list-panel"><div class="admin-panel-heading"><div><h3>Tables</h3><small id="admin-table-count">Loading schema…</small></div></div><label class="admin-table-search-label" for="admin-table-filter">Find a table</label><input id="admin-table-filter" type="search" placeholder="Search tables…"><div id="admin-table-list" class="admin-table-list"></div></aside>
 <section class="admin-panel admin-table-workspace"><div class="admin-panel-heading admin-table-heading"><div><span class="admin-section-kicker" id="admin-table-kicker">SELECT A TABLE</span><h3 id="admin-selected-table">Database records</h3><small id="admin-selected-description">Choose a table from the left to browse records.</small></div><button class="admin-secondary-button" id="admin-refresh-table" type="button" disabled>↻ Refresh</button></div>
