@@ -2673,3 +2673,19 @@ button:hover .button-context-icon,a:hover .button-context-icon {transform:transl
 }
 .exam-body .exam-timer small .exam-duration-icon {color:#8fe1d5}
 .qv2-event-notice .notice-context-icon {flex:0 0 21px}
+
+
+/* Discreet administrator entry in the public navigation */
+.site-header .primary-nav .nav-admin-link {
+  display:inline-flex;align-items:center;gap:6px;
+  color:#9fb8c8;font-size:11px;font-weight:700;
+}
+.site-header .primary-nav .nav-admin-link:hover,
+.site-header .primary-nav .nav-admin-link[aria-current="page"] {color:#f3d79a}
+.site-header .primary-nav .nav-admin-link:before {
+  content:"";width:5px;height:5px;border-radius:50%;
+  background:#d5b36d;box-shadow:0 0 0 3px rgba(213,179,109,.13);
+}
+@media(max-width:760px) {
+  .site-header .primary-nav .nav-admin-link {font-size:13px}
+}
