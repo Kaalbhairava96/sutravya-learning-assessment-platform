@@ -186,3 +186,14 @@
 }
 @media(max-width:430px){.admin-side-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-metric-grid{gap:8px}.admin-metric-card{padding:12px}.admin-metric-card strong{font-size:24px}.admin-welcome-band h2{font-size:24px}.admin-edit-fields{grid-template-columns:1fr}.admin-database-summary{grid-template-columns:1fr 1fr}.admin-topbar{flex-wrap:wrap}.admin-topbar-actions{width:100%;justify-content:space-between}.admin-main-footer{display:grid}}
 @media(prefers-reduced-motion:reduce){.admin-portal-body *,.admin-login-body *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Consistent, high-contrast admin navigation, metric and action icons. */
+.admin-nav-icon{display:grid;place-items:center;width:21px;height:21px;flex:0 0 21px;color:#8FE1D5;line-height:0}
+.admin-nav-icon svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.admin-side-nav button>span.admin-nav-icon{display:grid}
+.admin-metric-icon{display:inline-grid;place-items:center;width:19px;height:19px;margin-right:7px;vertical-align:-4px;color:var(--brand-teal-700);line-height:0}
+.admin-metric-icon svg,.admin-context-button-icon svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.admin-context-button-icon{display:inline-grid;place-items:center;width:15px;height:15px;margin-right:7px;vertical-align:-3px;line-height:0}
+.admin-operation-form button[type="submit"],.admin-primary-button,.admin-secondary-button,.admin-logout-button,.admin-link-button,.admin-row-edit,.admin-approve-action,.admin-release-action,.admin-pagination button{align-items:center;gap:7px}
+@media(max-width:760px){.admin-side-nav button>span.admin-nav-icon{display:grid;flex:0 0 18px;width:18px;height:18px}}
