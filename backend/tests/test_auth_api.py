@@ -82,13 +82,13 @@ class PasswordlessApiTests(unittest.TestCase):
         self.window_time.start()
         self.addCleanup(self.window_time.stop)
         pin_locations = {
-            "800001": (("Bihar", "Patna"),),
-            "852201": (("Bihar", "Saharsa"),),
-            "847211": (("Bihar", "Madhubani"),),
-            "560001": (("Karnataka", "Bengaluru Urban"),),
+            "800001": (("Patna", "Bihar"),),
+            "852201": (("Saharsa", "Bihar"),),
+            "847211": (("Madhubani", "Bihar"),),
+            "560001": (("Bengaluru Urban", "Karnataka"),),
         }
         self.pin_lookup = patch(
-            "app.pincode_validation.lookup_pin_locations",
+            "app.postal_validation._fetch_postal_locations",
             side_effect=lambda pin: pin_locations.get(pin, ()),
         )
         self.pin_lookup.start()
