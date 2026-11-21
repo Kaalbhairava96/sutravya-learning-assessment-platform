@@ -2661,3 +2661,15 @@ button:hover .button-context-icon,a:hover .button-context-icon {transform:transl
   body.qv2-home .qv2-home-partner a {min-height:44px;padding:4px 6px}
   body.qv2-home .qv2-home-partner img {height:31px;max-width:116px}
 }
+
+/* Exam clock marker and small shared icon alignment */
+.exam-timer small .exam-duration-icon {
+  display:inline-grid;place-items:center;width:14px;height:14px;margin-right:5px;
+  vertical-align:-3px;color:#e7ca84;
+}
+.exam-timer small .exam-duration-icon svg {
+  display:block;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.exam-body .exam-timer small .exam-duration-icon {color:#8fe1d5}
+.qv2-event-notice .notice-context-icon {flex:0 0 21px}
