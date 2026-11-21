@@ -247,7 +247,7 @@
     try {
       if (!token) throw new Error('Your administrator session has expired. Please sign in again.');
       const response = await fetch(
-        apiBase + '/api/admin/registrations/export.csv?source=' + encodeURIComponent(source),
+        apiBase + '/api/admin/registrations/export.xlsx?source=' + encodeURIComponent(source),
         { method:'GET', credentials:'omit', cache:'no-store', headers:{ Authorization:'Bearer ' + token } }
       );
       if (response.status === 401) {
@@ -262,7 +262,7 @@
       }
       const blob = await response.blob();
       const disposition = response.headers.get('Content-Disposition') || '';
-      const name = (disposition.match(/filename="?([^";]+)"?/i) || [])[1] || 'sutravya-registrations.csv';
+      const name = (disposition.match(/filename="?([^";]+)"?/i) || [])[1] || 'sutravya-registrations.xlsx';
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
@@ -272,7 +272,7 @@
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 30000);
-      setStatus('#admin-registration-export-status', 'Downloaded ' + name + '. Open it in Excel and use Save As → .xlsx if you need a native workbook.', 'success');
+      setStatus('#admin-registration-export-status', 'Downloaded the Excel workbook: ' + name + '.', 'success');
     } catch (error) {
       setStatus('#admin-registration-export-status', error.message, 'error');
     } finally {
