@@ -65,6 +65,11 @@ function icon(name) {
     key: '<circle cx="8" cy="15" r="5"/><path d="m11.5 11.5 9-9m-3 3 3 3m-6 0 3 3"/>',
     trophy: '<path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H3v2a4 4 0 0 0 4 4m10-6h4v2a4 4 0 0 1-4 4"/>',
     lightbulb: '<path d="M9 18h6m-5 3h4m-5-6a7 7 0 1 1 6 0c-.8.6-1 1.1-1 2H10c0-.9-.2-1.4-1-2Z"/>',
+    chart: '<path d="M4 19V5m0 14h17"/><path d="m7 14 4-4 3 2 5-6"/><path d="M16 6h3v3"/>',
+    refresh: '<path d="M20 7v5h-5"/><path d="M4.7 9A8 8 0 0 1 18.2 6L20 12M4 17v-5h5"/><path d="M5.8 18A8 8 0 0 0 19.3 15L20 12"/>',
+    search: '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>',
+    download: '<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v4h16v-4"/>',
+    lock: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3m-4 4v3"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
     check: '<path d="m5 12 4 4L19 6"/>'
   };
@@ -123,7 +128,7 @@ function initHumanVisuals() {
   document.querySelectorAll('button.button,button.qv2-button,a.button,a.qv2-button,.nav-register,.admin-primary-button,.admin-secondary-button,.admin-logout-button,.admin-login-submit,.admin-retry-button').forEach(control=>{
     if(control.querySelector('svg,.button-context-icon'))return;
     const text=control.textContent.toLowerCase();
-    const name=/register|application|apply/.test(text)?'clipboard':/verify|email|code|otp/.test(text)?'mail':/login|sign in|secure/.test(text)?'shield':/contact|call|phone/.test(text)?'phone':/test|practice|start|explore|syllabus|continue/.test(text)?'graduation':/award|recognition/.test(text)?'trophy':null;
+    const name=/register|application|apply/.test(text)?'clipboard':/verify|email|code|otp/.test(text)?'mail':/sign out|log out|logout|login|sign in|secure/.test(text)?'shield':/contact|call|phone/.test(text)?'phone':/refresh|retry|update|time|duration/.test(text)?'clock':/save|submit|create|confirm|approve|release/.test(text)?'check':/test|practice|start|explore|syllabus|continue/.test(text)?'graduation':/award|recognition/.test(text)?'trophy':/search|find/.test(text)?'search':/database|table/.test(text)?'institution':'book';
     if(name)control.prepend(makeIcon(name,'button-context-icon'));
   });
   document.querySelectorAll('.register-step,.login-context-card,.qv2-milestone,.awards-winner-summary article').forEach((card,index)=>{
