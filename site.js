@@ -188,6 +188,9 @@ function initHumanVisuals() {
   document.querySelectorAll('.qv2-event-notice').forEach(node => {
     contextualIcon(node, 'clock', 'notice-context-icon');
   });
+  document.querySelectorAll('.v4-timer small').forEach(node => {
+    contextualIcon(node, 'clock', 'notice-context-icon');
+  });
   document.querySelectorAll('.footer-exam-note').forEach(node => {
     const parts = [...node.querySelectorAll('b,span')];
     parts.forEach(part => contextualIcon(part, iconForContext(part.textContent), 'footer-note-icon'));
