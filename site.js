@@ -120,7 +120,7 @@ function initHumanVisuals() {
     const name=/award|recognition|excellence|merit|result/.test(text)?'trophy':/hackathon|startup|innovation|idea|prototype/.test(text)?'lightbulb':/address|contact|support|help|login|email/.test(text)?'mail':/registration|eligibility|application/.test(text)?'clipboard':/exam|schedule|date|milestone|time/.test(text)?'calendar':/database|institution|college|university|school|table/.test(text)?'institution':/security|secure|access|protected/.test(text)?'shield':/syllabus|practice|subject|anatomy|nursing|medical|paramedical|laboratory|academic|learning/.test(text)?'graduation':'book';
     heading.prepend(makeIcon(name,'heading-visual-icon'));
   });
-  document.querySelectorAll('button.button,button.qv2-button,a.button,a.qv2-button,.nav-register').forEach(control=>{
+  document.querySelectorAll('button.button,button.qv2-button,a.button,a.qv2-button,.nav-register,.admin-primary-button,.admin-secondary-button,.admin-logout-button,.admin-login-submit,.admin-retry-button').forEach(control=>{
     if(control.querySelector('svg,.button-context-icon'))return;
     const text=control.textContent.toLowerCase();
     const name=/register|application|apply/.test(text)?'clipboard':/verify|email|code|otp/.test(text)?'mail':/login|sign in|secure/.test(text)?'shield':/contact|call|phone/.test(text)?'phone':/test|practice|start|explore|syllabus|continue/.test(text)?'graduation':/award|recognition/.test(text)?'trophy':null;
@@ -139,6 +139,66 @@ function initHumanVisuals() {
     if(node.querySelector('svg'))return;
     node.prepend(makeIcon(node.textContent.includes('₹')?'check':'shield','badge-visual-icon'));
   });
+
+  const contextualIcon = (target, name, className='ui-context-icon') => {
+    if (!target || target.querySelector(':scope > .'+className)) return;
+    target.prepend(makeIcon(name, className));
+  };
+  const iconForContext = value => {
+    const text = String(value || '').toLowerCase();
+    if (/47\\s*min|minute|duration|time|deadline|closes|opens/.test(text)) return 'clock';
+    if (/date|nov|dec|calendar|schedule|slot/.test(text)) return 'calendar';
+    if (/mcq|question|assessment|exam|test|score|result/.test(text)) return 'clipboard';
+    if (/pathway|subject|syllabus|academic|medical|nursing|paramedical|learning|study/.test(text)) return 'graduation';
+    if (/innovation|hackathon|idea|prototype|startup|design/.test(text)) return 'lightbulb';
+    if (/award|recognition|merit|bcmr|trophy|winner/.test(text)) return 'trophy';
+    if (/email|mail|otp|verification/.test(text)) return 'mail';
+    if (/phone|call|contact/.test(text)) return 'phone';
+    if (/free|secure|safety|protected|privacy/.test(text)) return 'shield';
+    if (/candidate|participant|team|account|profile/.test(text)) return 'user';
+    if (/location|address|district|state|venue/.test(text)) return 'map';
+    return 'book';
+  };
+
+  document.querySelectorAll('.qv2-stats>div').forEach(card => {
+    const value = card.querySelector('b');
+    const label = card.querySelector('span');
+    contextualIcon(value, iconForContext((label?.textContent || '')+' '+(value?.textContent || '')), 'metric-context-icon');
+  });
+  document.querySelectorAll('.qv2-card-tags span,.v4-hero-chips span,.qv2-hero-facts>span,.awards-track-tag,.qv2-recog-points>span').forEach(node => {
+    contextualIcon(node, iconForContext(node.textContent), 'metadata-context-icon');
+  });
+  document.querySelectorAll('.qv3-flow-step').forEach(step => {
+    const title = step.querySelector('b');
+    contextualIcon(title, iconForContext(title?.textContent || step.textContent), 'step-context-icon');
+  });
+  document.querySelectorAll('.qv2-hack-principles article h3,.login-flow-steps article b,.exam-access-steps article b').forEach(title => {
+    contextualIcon(title, iconForContext(title.textContent), 'step-context-icon');
+  });
+  document.querySelectorAll('.qv2-event-notice').forEach(node => {
+    contextualIcon(node, 'clock', 'notice-context-icon');
+  });
+  document.querySelectorAll('.footer-exam-note').forEach(node => {
+    const parts = [...node.querySelectorAll('b,span')];
+    parts.forEach(part => contextualIcon(part, iconForContext(part.textContent), 'footer-note-icon'));
+  });
+  document.querySelectorAll('.qv2-hack-application-steps>span,.register-step,.registration-progress-step').forEach(step => {
+    const title = step.querySelector('small,b');
+    if (title) contextualIcon(title, iconForContext(title.textContent), 'step-context-icon');
+  });
+  document.querySelectorAll('.admin-side-nav button').forEach(button => {
+    const view = button.dataset.adminView || '';
+    const names = {overview:'chart',registrations:'clipboard',database:'institution',slots:'calendar',results:'trophy',audit:'shield'};
+    const marker = button.querySelector(':scope > span');
+    if (marker && !marker.querySelector('svg')) {
+      marker.innerHTML = icon(names[view] || 'book');
+      marker.classList.add('admin-nav-icon');
+    }
+  });
+  document.querySelectorAll('.admin-login-feature-list i').forEach(node => {
+    if (!node.querySelector('svg')) node.innerHTML = icon('check');
+  });
+
 }
 
 const header = document.querySelector('[data-header]');
