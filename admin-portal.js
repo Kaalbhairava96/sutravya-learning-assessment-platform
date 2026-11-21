@@ -382,13 +382,39 @@
     user:'<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>',
     calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/>',
     institution:'<path d="m3 9 9-5 9 5v11H3z"/><path d="M2 9h20M7 12v5m5-5v5m5-5v5M2 20h20"/>',
-    clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M8 10h8m-8 4h8"/>'
+    clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M8 10h8m-8 4h8"/>',
+    chart:'<path d="M4 19V5m0 14h17"/><path d="m7 14 4-4 3 2 5-6"/><path d="M16 6h3v3"/>',
+    trophy:'<path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 6H3v2a4 4 0 0 0 4 4m10-6h4v2a4 4 0 0 1-4 4"/>',
+    check:'<path d="m5 12 4 4L19 6"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+    refresh:'<path d="M20 7v5h-5"/><path d="M4.7 9A8 8 0 0 1 18.2 6L20 12M4 17v-5h5"/><path d="M5.8 18A8 8 0 0 0 19.3 15L20 12"/>'
   };
   const adminVisualIcon=name=>{
     const span=document.createElement('span');span.className='form-label-icon';span.setAttribute('aria-hidden','true');
     span.innerHTML='<svg viewBox="0 0 24 24" focusable="false">'+adminIcons[name]+'</svg>';return span;
   };
   const enhanceAdminVisuals=root=>{
+    const navNames={overview:'chart',registrations:'clipboard',database:'institution',slots:'calendar',results:'trophy',audit:'shield'};
+    root.querySelectorAll('.admin-side-nav button').forEach(button=>{
+      const marker=button.querySelector(':scope > span');
+      if(!marker||marker.classList.contains('admin-nav-icon'))return;
+      const name=navNames[button.dataset.adminView]||'clipboard';
+      marker.className='admin-nav-icon';
+      marker.setAttribute('aria-hidden','true');
+      marker.innerHTML='<svg viewBox="0 0 24 24" focusable="false">'+adminIcons[name]+'</svg>';
+    });
+    root.querySelectorAll('.admin-metric-card>span').forEach(label=>{
+      if(label.querySelector('.admin-metric-icon'))return;
+      const text=label.textContent.toLowerCase();
+      const name=/database|record/.test(text)?'institution':/registration|candidate/.test(text)?'user':/attempt|exam/.test(text)?'clipboard':/result|published/.test(text)?'trophy':'chart';
+      const node=adminVisualIcon(name);node.classList.add('admin-metric-icon');label.prepend(node);
+    });
+    root.querySelectorAll('.admin-operation-form button[type="submit"],.admin-primary-button,.admin-secondary-button,.admin-logout-button,.admin-link-button,.admin-row-edit,.admin-approve-action,.admin-release-action,.admin-pagination button').forEach(button=>{
+      if(button.querySelector('svg,.admin-context-button-icon'))return;
+      const text=button.textContent.toLowerCase();
+      const name=/sign out|logout/.test(text)?'shield':/refresh|retry|previous|next/.test(text)?'refresh':/approve|release|save|submit|create|assign/.test(text)?'check':/result|award/.test(text)?'trophy':/database|table/.test(text)?'institution':/exam|slot|schedule/.test(text)?'calendar':'clipboard';
+      const node=adminVisualIcon(name);node.classList.add('admin-context-button-icon');button.prepend(node);
+    });
     root.querySelectorAll('label[for]').forEach(label=>{
       if(label.querySelector('.form-label-icon'))return;
       const key=(label.htmlFor+' '+label.textContent).toLowerCase();
