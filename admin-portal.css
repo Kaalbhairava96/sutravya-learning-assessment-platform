@@ -207,3 +207,25 @@
 .admin-login-submit{gap:9px}
 .admin-login-submit>span:nth-child(2){margin-left:auto}
 .admin-login-feature-list i svg{display:block;width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+
+/* Registration export controls */
+.admin-registration-heading{align-items:flex-start;flex-wrap:wrap}
+.admin-export-controls{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.admin-export-filter{color:var(--brand-muted);font-size:10px;font-weight:800}
+.admin-export-controls select{min-height:39px;max-width:190px;padding:0 28px 0 11px;border:1px solid var(--brand-line);border-radius:9px;background:#fff;color:var(--brand-navy);font:700 10px var(--font)}
+.admin-export-controls button{white-space:nowrap}
+.admin-export-status{min-height:0;margin:-5px 0 10px;color:var(--brand-muted);font-size:11px;line-height:1.5}
+.admin-export-status:empty{display:none}
+.admin-export-status.is-success{color:var(--brand-success)}
+.admin-export-status.is-error{color:var(--brand-danger)}
+@media(max-width:760px){
+ .admin-registration-heading{display:grid;grid-template-columns:1fr;width:100%}
+ .admin-export-controls{justify-content:flex-start;width:100%}
+ .admin-export-controls select{flex:1;min-width:0;max-width:none}
+ .admin-export-controls button{flex:0 0 auto}
+}
+@media(max-width:420px){
+ .admin-export-controls{display:grid;grid-template-columns:1fr}
+ .admin-export-controls button{width:100%}
+}
