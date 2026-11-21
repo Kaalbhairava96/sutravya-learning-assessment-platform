@@ -421,6 +421,15 @@
       const name=/email/.test(key)?'mail':/password|token/.test(key)?'shield':/start|end|date|time|capacity/.test(key)?'calendar':/registration|ids|record/.test(key)?'clipboard':/table|database|college|institution/.test(key)?'institution':'user';
       label.prepend(adminVisualIcon(name));
     });
+    root.querySelectorAll('.admin-topbar h1,.admin-welcome-band h2').forEach(heading=>{
+      if(heading.querySelector('.admin-heading-icon'))return;
+      const node=adminVisualIcon(heading.matches('.admin-topbar h1')?'chart':'institution');
+      node.classList.add('admin-heading-icon');heading.prepend(node);
+    });
+    root.querySelectorAll('.admin-operation-form small').forEach(note=>{
+      if(!/47\\s*minutes?|duration/i.test(note.textContent)||note.querySelector('.admin-duration-icon'))return;
+      const node=adminVisualIcon('clock');node.classList.add('admin-duration-icon');note.prepend(node);
+    });
     root.querySelectorAll('.admin-panel-heading h3,.admin-section-intro h2').forEach(heading=>{
       if(heading.querySelector('.admin-heading-icon'))return;
       const key=heading.textContent.toLowerCase();
