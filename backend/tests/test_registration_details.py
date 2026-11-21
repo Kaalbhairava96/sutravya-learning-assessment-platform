@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from fastapi import HTTPException
 from app.registration_details import build_registration_details
@@ -30,6 +31,20 @@ def payload(**overrides):
 
 
 class RegistrationDetailsTests(unittest.TestCase):
+    def setUp(self):
+        self.pin_locations = {
+            "800001": (("Bihar", "Patna"),),
+            "852201": (("Bihar", "Saharsa"),),
+            "847211": (("Bihar", "Madhubani"),),
+            "560001": (("Karnataka", "Bengaluru Urban"),),
+        }
+        lookup = patch(
+            "app.pincode_validation.lookup_pin_locations",
+            side_effect=lambda pin: self.pin_locations.get(pin, ()),
+        )
+        lookup.start()
+        self.addCleanup(lookup.stop)
+
     def test_nursing_programmes(self):
         bsc = build_registration_details(payload())
         self.assertEqual(bsc["programme_label"], "B.Sc Nursing")
@@ -104,6 +119,43 @@ class RegistrationDetailsTests(unittest.TestCase):
         with self.assertRaises(HTTPException):
             build_registration_details(payload(pin_code="12345"))
 
+
+    def test_pin_code_must_match_selected_state_and_district(self):
+        madhubani = build_registration_details(payload(
+            state="Bihar", district="Madhubani", pin_code="847211",
+        ))
+        self.assertEqual(madhubani["district"], "Madhubani")
+        self.assertEqual(madhubani["state"], "Bihar")
+
+        with self.assertRaises(HTTPException) as wrong_district:
+            build_registration_details(payload(
+                state="Bihar", district="Madhubani", pin_code="560001",
+            ))
+        self.assertEqual(wrong_district.exception.status_code, 422)
+        self.assertIn("Madhubani, Bihar", wrong_district.exception.detail)
+
+        with self.assertRaises(HTTPException) as wrong_state:
+            build_registration_details(payload(
+                state="Karnataka", district="Bengaluru Urban", pin_code="847211",
+            ))
+        self.assertEqual(wrong_state.exception.status_code, 422)
+
+    def test_unknown_pin_code_is_rejected(self):
+        with self.assertRaises(HTTPException) as rejected:
+            build_registration_details(payload(pin_code="999999"))
+        self.assertEqual(rejected.exception.status_code, 422)
+        self.assertIn("not found", rejected.exception.detail.lower())
+
+    def test_pin_lookup_outage_fails_closed_with_retryable_error(self):
+        from app.pincode_validation import PinCodeLookupUnavailable
+        with patch(
+            "app.pincode_validation.lookup_pin_locations",
+            side_effect=PinCodeLookupUnavailable("directory unavailable"),
+        ):
+            with self.assertRaises(HTTPException) as rejected:
+                build_registration_details(payload())
+        self.assertEqual(rejected.exception.status_code, 503)
+
     def test_category_controls_fee_not_client_values(self):
         with self.assertRaises(HTTPException):
             build_registration_details(payload(category="other", programme="mbbs"))
@@ -120,7 +172,7 @@ class RegistrationDetailsTests(unittest.TestCase):
         self.assertIn("sankoo", _STATE_DISTRICTS["ladakh"])
 
     def test_state_and_district_must_be_a_valid_pair(self):
-        valid = build_registration_details(payload(state="Bihar", district="Saharsa"))
+        valid = build_registration_details(payload(state="Bihar", district="Saharsa", pin_code="852201"))
         self.assertEqual(valid["state"], "Bihar")
         self.assertEqual(valid["district"], "Saharsa")
         with self.assertRaises(HTTPException) as rejected:
