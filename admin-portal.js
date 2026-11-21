@@ -237,6 +237,49 @@
       $('#admin-readiness').innerHTML = '<div class="admin-empty-state"><b>Stream summary unavailable</b><span>'+escapeHtml(error.message)+'</span></div>';
     }
   }
+
+  async function exportRegistrationCsv() {
+    const button = $('#admin-export-registrations');
+    const source = $('#admin-registration-export-source').value || 'all';
+    const token = sessionStorage.getItem(TOKEN_KEY);
+    button.disabled = true;
+    setStatus('#admin-registration-export-status', 'Preparing your candidate register…');
+    try {
+      if (!token) throw new Error('Your administrator session has expired. Please sign in again.');
+      const response = await fetch(
+        apiBase + '/api/admin/registrations/export.csv?source=' + encodeURIComponent(source),
+        { method:'GET', credentials:'omit', cache:'no-store', headers:{ Authorization:'Bearer ' + token } }
+      );
+      if (response.status === 401) {
+        sessionStorage.removeItem(TOKEN_KEY);
+        location.replace('admin-login.html');
+        return;
+      }
+      if (!response.ok) {
+        let message = 'The registration file could not be generated.';
+        try { const data = await response.json(); message = data.detail || message; } catch {}
+        throw new Error(message);
+      }
+      const blob = await response.blob();
+      const disposition = response.headers.get('Content-Disposition') || '';
+      const name = (disposition.match(/filename="?([^";]+)"?/i) || [])[1] || 'sutravya-registrations.csv';
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = name;
+      anchor.hidden = true;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 30000);
+      setStatus('#admin-registration-export-status', 'Downloaded ' + name + '. Open it in Excel and use Save As → .xlsx if you need a native workbook.', 'success');
+    } catch (error) {
+      setStatus('#admin-registration-export-status', error.message, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  }
+
   async function loadRegistrationPreview() {
     try {
       const data = await api('/api/admin/database/tables/registrations?limit=8&offset=0');
@@ -368,6 +411,7 @@
   }));
   $('#admin-table-filter').addEventListener('input', renderTableList);
   $('#admin-refresh-table').addEventListener('click', () => loadTable($('#admin-record-search')?.value || ''));
+  $('#admin-export-registrations').addEventListener('click', exportRegistrationCsv);
   $('#admin-edit-form').addEventListener('submit', saveEdit);
   $('#admin-slot-form').addEventListener('submit', createSlot);
   $('#admin-assign-form').addEventListener('submit', assignCandidates);
