@@ -81,6 +81,18 @@ class PasswordlessApiTests(unittest.TestCase):
         )
         self.window_time.start()
         self.addCleanup(self.window_time.stop)
+        pin_locations = {
+            "800001": (("Bihar", "Patna"),),
+            "852201": (("Bihar", "Saharsa"),),
+            "847211": (("Bihar", "Madhubani"),),
+            "560001": (("Karnataka", "Bengaluru Urban"),),
+        }
+        self.pin_lookup = patch(
+            "app.pincode_validation.lookup_pin_locations",
+            side_effect=lambda pin: pin_locations.get(pin, ()),
+        )
+        self.pin_lookup.start()
+        self.addCleanup(self.pin_lookup.stop)
         self.engine = create_engine("sqlite:///:memory:")
 
         @event.listens_for(self.engine, "connect")
