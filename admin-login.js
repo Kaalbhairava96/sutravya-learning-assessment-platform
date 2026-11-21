@@ -7,6 +7,7 @@
   const loginForm = $('#admin-login-form');
   const setupForm = $('#admin-setup-form');
   const status = $('#admin-login-status');
+  const retryButton = $('#admin-retry');
   const TOKEN_KEY = 'sutravya_admin_access_token';
   document.body.dataset.page='admin-login.html';
   const adminIconPaths={
@@ -43,6 +44,7 @@
     });
   };
   addAdminButtonIcons();
+  retryButton?.addEventListener('click', initialise);
   const setStatus = (message, kind = '') => {
     status.textContent = message;
     status.className = 'admin-login-status' + (kind ? ' is-' + kind : '');
