@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from fastapi import HTTPException
 
+from app import pincode_validation
+
 PROGRAMMES = {
     "nursing": {"bsc_nursing": "B.Sc Nursing", "msc_nursing": "M.Sc Nursing"},
     "paramedical": {
@@ -44,6 +46,46 @@ def _required(value: str | None, label: str, maximum: int = 240) -> str:
     return cleaned
 
 
+
+def validate_pin_code_for_location(pin_code: str, state_name: str, district_name: str) -> dict:
+    """Validate a PIN against the selected Indian state and district."""
+    pin = (pin_code or "").strip()
+    if not re.fullmatch(r"[1-9][0-9]{5}", pin):
+        raise HTTPException(status_code=422, detail="Enter a valid six-digit PIN code.")
+
+    state_entry = _STATE_DISTRICTS.get(_location_key(state_name or ""))
+    if state_entry is None:
+        raise HTTPException(status_code=422, detail="Select a valid Indian State or Union Territory.")
+    district_entry = state_entry.get(_location_key(district_name or ""))
+    if district_entry is None:
+        raise HTTPException(status_code=422, detail="Select a district that belongs to the selected State or Union Territory.")
+    canonical_state, canonical_district = district_entry
+
+    try:
+        pin_locations = pincode_validation.lookup_pin_locations(pin)
+    except pincode_validation.PinCodeLookupUnavailable as error:
+        raise HTTPException(
+            status_code=503,
+            detail="PIN code verification is temporarily unavailable. Please try again shortly.",
+        ) from error
+
+    if not pin_locations:
+        raise HTTPException(status_code=422, detail="This PIN code was not found in the postal directory. Check the six-digit PIN code.")
+
+    matches = pincode_validation.matching_pin_locations(pin, canonical_state, canonical_district)
+    if not matches:
+        raise HTTPException(
+            status_code=422,
+            detail=f"PIN code does not match {canonical_district}, {canonical_state}. Please correct the PIN code or selected address.",
+        )
+
+    return {
+        "valid": True,
+        "message": "PIN code matches the selected district and State / UT.",
+        "state": canonical_state,
+        "district": canonical_district,
+    }
+
 def build_registration_details(payload, session=None) -> dict:
     """Validate the selected category and academic pathway."""
     raw_category = (payload.category or "").strip().lower()
@@ -79,8 +121,7 @@ def build_registration_details(payload, session=None) -> dict:
         raise HTTPException(status_code=422, detail="Select a district that belongs to the selected State or Union Territory.")
     state, district = district_entry
     pin = (payload.pin_code or "").strip()
-    if not re.fullmatch(r"[1-9][0-9]{5}", pin):
-        raise HTTPException(status_code=422, detail="Enter a valid six-digit PIN code.")
+    validate_pin_code_for_location(pin, state, district)
 
     year = payload.year
     academic_stage = (payload.academic_stage or "").strip()
