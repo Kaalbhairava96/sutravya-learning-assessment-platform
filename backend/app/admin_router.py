@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import base64
-import csv
+import zipfile
+import xml.etree.ElementTree as ET
 import io
 import hashlib
 import hmac
@@ -491,9 +492,85 @@ def _spreadsheet_safe(value: Any) -> str:
     return cell
 
 
-@router.get("/registrations/export.csv")
-def export_registration_csv(request: Request, source: str = Query(default="all", pattern="^(all|public_registration|team_prelaunch)$")):
-    """Download candidate registrations as an Excel-compatible CSV for authenticated admins."""
+def _excel_column(index: int) -> str:
+    """Convert a zero-based column index to Excel letters."""
+    value = index + 1
+    letters = ""
+    while value:
+        value, remainder = divmod(value - 1, 26)
+        letters = chr(65 + remainder) + letters
+    return letters
+
+
+def _registrations_xlsx(rows: list[tuple[Any, ...]]) -> bytes:
+    """Build a standards-compliant, single-sheet XLSX using only the Python stdlib."""
+    main_ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    document_rel_ns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    package_rel_ns = "http://schemas.openxmlformats.org/package/2006/relationships"
+    content_types_ns = "http://schemas.openxmlformats.org/package/2006/content-types"
+    ET.register_namespace("", main_ns)
+    ET.register_namespace("r", document_rel_ns)
+
+    worksheet = ET.Element(f"{{{main_ns}}}worksheet")
+    sheet_data = ET.SubElement(worksheet, f"{{{main_ns}}}sheetData")
+    for row_number, values in enumerate(rows, start=1):
+        row_node = ET.SubElement(sheet_data, f"{{{main_ns}}}row", {"r": str(row_number)})
+        for column_number, raw_value in enumerate(values):
+            cell_ref = f"{_excel_column(column_number)}{row_number}"
+            cell = ET.SubElement(row_node, f"{{{main_ns}}}c", {"r": cell_ref, "t": "inlineStr"})
+            inline = ET.SubElement(cell, f"{{{main_ns}}}is")
+            text_node = ET.SubElement(inline, f"{{{main_ns}}}t", {"{http://www.w3.org/XML/1998/namespace}space": "preserve"})
+            text_node.text = _spreadsheet_safe(raw_value)
+
+    workbook = ET.Element(f"{{{main_ns}}}workbook")
+    sheets = ET.SubElement(workbook, f"{{{main_ns}}}sheets")
+    ET.SubElement(sheets, f"{{{main_ns}}}sheet", {
+        "name": "Registrations", "sheetId": "1", f"{{{document_rel_ns}}}id": "rId1"
+    })
+
+    workbook_rels = ET.Element(f"{{{package_rel_ns}}}Relationships")
+    ET.SubElement(workbook_rels, f"{{{package_rel_ns}}}Relationship", {
+        "Id": "rId1",
+        "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
+        "Target": "worksheets/sheet1.xml",
+    })
+
+    root_rels = ET.Element(f"{{{package_rel_ns}}}Relationships")
+    ET.SubElement(root_rels, f"{{{package_rel_ns}}}Relationship", {
+        "Id": "rId1",
+        "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
+        "Target": "xl/workbook.xml",
+    })
+
+    content_types = ET.Element(f"{{{content_types_ns}}}Types")
+    ET.SubElement(content_types, f"{{{content_types_ns}}}Default", {
+        "Extension": "rels", "ContentType": "application/vnd.openxmlformats-package.relationships+xml"
+    })
+    ET.SubElement(content_types, f"{{{content_types_ns}}}Default", {
+        "Extension": "xml", "ContentType": "application/xml"
+    })
+    ET.SubElement(content_types, f"{{{content_types_ns}}}Override", {
+        "PartName": "/xl/workbook.xml",
+        "ContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
+    })
+    ET.SubElement(content_types, f"{{{content_types_ns}}}Override", {
+        "PartName": "/xl/worksheets/sheet1.xml",
+        "ContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml",
+    })
+
+    package = io.BytesIO()
+    with zipfile.ZipFile(package, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("[Content_Types].xml", ET.tostring(content_types, encoding="utf-8", xml_declaration=True))
+        archive.writestr("_rels/.rels", ET.tostring(root_rels, encoding="utf-8", xml_declaration=True))
+        archive.writestr("xl/workbook.xml", ET.tostring(workbook, encoding="utf-8", xml_declaration=True))
+        archive.writestr("xl/_rels/workbook.xml.rels", ET.tostring(workbook_rels, encoding="utf-8", xml_declaration=True))
+        archive.writestr("xl/worksheets/sheet1.xml", ET.tostring(worksheet, encoding="utf-8", xml_declaration=True))
+    return package.getvalue()
+
+
+@router.get("/registrations/export.xlsx")
+def export_registration_xlsx(request: Request, source: str = Query(default="all", pattern="^(all|public_registration|team_prelaunch)$")):
+    """Download an Excel workbook of candidate registrations for authenticated admins."""
     with db_session(request) as session:
         admin = current_admin(session, request)
         statement = (
@@ -508,24 +585,24 @@ def export_registration_csv(request: Request, source: str = Query(default="all",
         if source != "all":
             statement = statement.where(Registration.registration_source == source)
 
-        output = io.StringIO(newline="")
-        writer = csv.writer(output, lineterminator="\r\n")
-        writer.writerow((
+        rows: list[tuple[Any, ...]] = [(
             "registration_id", "full_name", "email", "mobile", "registration_source",
             "registration_status", "category", "programme", "academic_year", "academic_stage",
             "professional_qualification", "designation", "institution", "council_name",
             "council_registration_number", "years_of_experience", "house_number",
             "address_line1", "address_line2", "district", "state", "pin_code", "stream",
             "registration_date_ist", "email_verified", "mobile_verified",
-        ))
-        rows = session.execute(statement).all()
-        for registration, candidate in rows:
+        )]
+        records = session.execute(statement).all()
+        for registration, candidate in records:
             created_at = registration.created_at
             if created_at.tzinfo is None:
                 created_at = created_at.replace(tzinfo=timezone.utc)
-            date_value = as_utc(created_at).astimezone(timezone(timedelta(hours=5, minutes=30))).isoformat(timespec="seconds")
+            date_value = as_utc(created_at).astimezone(
+                timezone(timedelta(hours=5, minutes=30))
+            ).isoformat(timespec="seconds")
             details = registration.details or {}
-            writer.writerow(tuple(_spreadsheet_safe(value) for value in (
+            rows.append(tuple(_spreadsheet_safe(value) for value in (
                 registration.registration_id, candidate.full_name, candidate.email, candidate.phone,
                 registration.registration_source, registration.status,
                 details.get("category_label") or details.get("category"),
@@ -542,17 +619,16 @@ def export_registration_csv(request: Request, source: str = Query(default="all",
             )))
         session.add(AuditEvent(
             actor_admin_id=admin.id,
-            action="registration_csv_exported",
+            action="registration_xlsx_exported",
             target_type="registration_export",
         ))
         session.commit()
 
-    content = ("\ufeff" + output.getvalue()).encode("utf-8")
     return Response(
-        content=content,
-        media_type="text/csv; charset=utf-8",
+        content=_registrations_xlsx(rows),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": f'attachment; filename="sutravya-registrations-{source}.csv"',
+            "Content-Disposition": f'attachment; filename="sutravya-registrations-{source}.xlsx"',
             "X-Content-Type-Options": "nosniff",
             "Cache-Control": "no-store",
         },
