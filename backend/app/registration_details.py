@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from fastapi import HTTPException
 
-from app import pincode_validation
+from app import postal_validation
 
 PROGRAMMES = {
     "nursing": {"bsc_nursing": "B.Sc Nursing", "msc_nursing": "M.Sc Nursing"},
@@ -62,21 +62,17 @@ def validate_pin_code_for_location(pin_code: str, state_name: str, district_name
     canonical_state, canonical_district = district_entry
 
     try:
-        pin_locations = pincode_validation.lookup_pin_locations(pin)
-    except pincode_validation.PinCodeLookupUnavailable as error:
+        result = postal_validation.validate_pin_location(pin, canonical_state, canonical_district)
+    except postal_validation.PostalLookupUnavailable as error:
         raise HTTPException(
             status_code=503,
             detail="PIN code verification is temporarily unavailable. Please try again shortly.",
         ) from error
 
-    if not pin_locations:
-        raise HTTPException(status_code=422, detail="This PIN code was not found in the postal directory. Check the six-digit PIN code.")
-
-    matches = pincode_validation.matching_pin_locations(pin, canonical_state, canonical_district)
-    if not matches:
+    if result.get("valid") is not True:
         raise HTTPException(
             status_code=422,
-            detail=f"PIN code does not match {canonical_district}, {canonical_state}. Please correct the PIN code or selected address.",
+            detail=str(result.get("detail") or "PIN code does not match the selected address."),
         )
 
     return {
