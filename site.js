@@ -170,8 +170,13 @@ function initHumanVisuals() {
     const label = card.querySelector('span');
     contextualIcon(value, iconForContext((label?.textContent || '')+' '+(value?.textContent || '')), 'metric-context-icon');
   });
-  document.querySelectorAll('.qv2-card-tags span,.v4-hero-chips span,.qv2-hero-facts>span,.awards-track-tag,.qv2-recog-points>span').forEach(node => {
+  document.querySelectorAll('.qv2-card-tags span,.v4-hero-chips span,.qv2-hero-facts>span,.awards-track-tag,.qv2-recog-points>span,.faq-filter-chips button').forEach(node => {
     contextualIcon(node, iconForContext(node.textContent), 'metadata-context-icon');
+  });
+  document.querySelectorAll('.v4-score-stats>div').forEach(card => {
+    const label=card.querySelector('span');
+    const value=card.querySelector('b');
+    contextualIcon(value, iconForContext(label?.textContent || ''), 'metric-context-icon');
   });
   document.querySelectorAll('.qv3-flow-step').forEach(step => {
     const title = step.querySelector('b');
