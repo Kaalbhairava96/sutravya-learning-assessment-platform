@@ -114,6 +114,7 @@
       content.hidden = false;
       showLogin();
       setStatus(error.message, 'error');
+      if (retryButton) retryButton.hidden = false;
     }
   }
   loginForm.addEventListener('submit', async event => {
