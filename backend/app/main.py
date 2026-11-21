@@ -43,7 +43,7 @@ from app.models import (
     QuestionBank, Registration, Result, ScoringRule, VerificationChallenge,
     HackathonRegistration, HackathonSession,
 )
-from app.registration_details import build_registration_details
+from app.registration_details import build_registration_details, validate_pin_code_for_location
 from app.exam_service import (
     ExamError,
     exam_availability,
@@ -143,6 +143,12 @@ def _csv_safe_cell(value: object) -> str:
     if cell.startswith(("\t", "\r", "\n")) or cell.lstrip("\ufeff").lstrip().startswith(("=", "+", "-", "@")):
         return "'" + cell
     return cell
+
+
+class PinCodeValidationRequest(BaseModel):
+    pin_code: str = Field(min_length=6, max_length=6, pattern=r"^[1-9][0-9]{5}$")
+    state: str = Field(min_length=2, max_length=120)
+    district: str = Field(min_length=2, max_length=120)
 
 
 class RegistrationRequest(BaseModel):
@@ -500,6 +506,13 @@ def create_app(
     @application.get("/health", tags=["operations"])
     async def health() -> dict[str, str]:
         return {"status": "ok"}
+
+
+
+    @application.post("/api/registration/validate-pin", tags=["registration"])
+    def validate_registration_pin(payload: PinCodeValidationRequest):
+        """Check that an Indian PIN code belongs to the selected state and district."""
+        return validate_pin_code_for_location(payload.pin_code, payload.state, payload.district)
 
     @application.post("/api/registrations/start", status_code=202, tags=["registration"])
     def start_registration(payload: RegistrationRequest, request: Request):
