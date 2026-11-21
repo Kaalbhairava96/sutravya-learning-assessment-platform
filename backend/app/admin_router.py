@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import base64
+import csv
+import io
 import hashlib
 import hmac
 import re
@@ -472,6 +474,82 @@ def logout(request: Request):
                 ))
                 session.commit()
     return Response(status_code=204)
+
+
+def _spreadsheet_safe(value: Any) -> str:
+    """Keep untrusted candidate text from becoming a spreadsheet formula."""
+    cell = "" if value is None else str(value)
+    if cell.startswith(("\\t", "\\r", "\\n")) or cell.lstrip("\\ufeff").lstrip().startswith(("=", "+", "-", "@")):
+        return "'" + cell
+    return cell
+
+
+@router.get("/registrations/export.csv")
+def export_registration_csv(request: Request, source: str = Query(default="all", pattern="^(all|public_registration|team_prelaunch)$")):
+    """Download candidate registrations as an Excel-compatible CSV for authenticated admins."""
+    with db_session(request) as session:
+        admin = current_admin(session, request)
+        statement = (
+            select(Registration, Candidate)
+            .join(Candidate, Candidate.id == Registration.candidate_id)
+            .where(
+                Registration.event_key == EVENT_KEY,
+                Registration.is_internal_test.is_(False),
+            )
+            .order_by(Registration.created_at.desc(), Registration.registration_id.desc())
+        )
+        if source != "all":
+            statement = statement.where(Registration.registration_source == source)
+
+        output = io.StringIO(newline="")
+        writer = csv.writer(output, lineterminator="\\r\\n")
+        writer.writerow((
+            "registration_id", "full_name", "email", "mobile", "registration_source",
+            "registration_status", "category", "programme", "academic_year", "academic_stage",
+            "professional_qualification", "designation", "institution", "council_name",
+            "council_registration_number", "years_of_experience", "house_number",
+            "address_line1", "address_line2", "district", "state", "pin_code", "stream",
+            "registration_date_ist", "email_verified", "mobile_verified",
+        ))
+        rows = session.execute(statement).all()
+        for registration, candidate in rows:
+            created_at = registration.created_at
+            if created_at.tzinfo is None:
+                created_at = created_at.replace(tzinfo=timezone.utc)
+            date_value = as_utc(created_at).astimezone(timezone(timedelta(hours=5, minutes=30))).isoformat(timespec="seconds")
+            details = registration.details or {}
+            writer.writerow(tuple(_spreadsheet_safe(value) for value in (
+                registration.registration_id, candidate.full_name, candidate.email, candidate.phone,
+                registration.registration_source, registration.status,
+                details.get("category_label") or details.get("category"),
+                details.get("programme_label") or details.get("programme"),
+                details.get("year"), details.get("academic_stage"),
+                details.get("professional_qualification"), details.get("designation"),
+                details.get("institution"), details.get("council_name"),
+                details.get("council_registration_number"), details.get("years_of_experience"),
+                details.get("house_number"), details.get("address_line1"), details.get("address_line2"),
+                details.get("district"), details.get("state"), details.get("pin_code"),
+                registration.stream, date_value,
+                "yes" if candidate.email_verified_at is not None else "no",
+                "yes" if candidate.phone_verified_at is not None else "no",
+            )))
+        session.add(AuditEvent(
+            actor_admin_id=admin.id,
+            action="registration_csv_exported",
+            target_type="registration_export",
+        ))
+        session.commit()
+
+    content = ("\\ufeff" + output.getvalue()).encode("utf-8")
+    return Response(
+        content=content,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="sutravya-registrations-{source}.csv"',
+            "X-Content-Type-Options": "nosniff",
+            "Cache-Control": "no-store",
+        },
+    )
 
 
 @router.get("/database/overview")
