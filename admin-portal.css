@@ -197,3 +197,13 @@
 .admin-context-button-icon{display:inline-grid;place-items:center;width:15px;height:15px;margin-right:7px;vertical-align:-3px;line-height:0}
 .admin-operation-form button[type="submit"],.admin-primary-button,.admin-secondary-button,.admin-logout-button,.admin-link-button,.admin-row-edit,.admin-approve-action,.admin-release-action,.admin-pagination button{align-items:center;gap:7px}
 @media(max-width:760px){.admin-side-nav button>span.admin-nav-icon{display:grid;flex:0 0 18px;width:18px;height:18px}}
+
+.admin-heading-icon{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:9px;vertical-align:-5px;color:var(--brand-teal-700)}
+.admin-heading-icon svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.admin-duration-icon{display:inline-grid;place-items:center;width:15px;height:15px;margin-right:6px;vertical-align:-3px;color:var(--brand-teal-700)}
+.admin-duration-icon svg{display:block;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.admin-login-submit .admin-action-icon{display:inline-grid;place-items:center;width:17px;height:17px;margin-right:9px;flex:0 0 17px}
+.admin-login-submit .admin-action-icon svg{display:block;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.admin-login-submit{gap:9px}
+.admin-login-submit>span:nth-child(2){margin-left:auto}
+.admin-login-feature-list i svg{display:block;width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
