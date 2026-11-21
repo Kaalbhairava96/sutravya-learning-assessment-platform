@@ -211,7 +211,14 @@ def require_csrf(request: Request) -> None:
         raise HTTPException(status_code=403, detail="The administrator request could not be verified. Refresh and try again.")
     origin = request.headers.get("origin")
     if origin:
-        allowed = {value.rstrip("/") for value in request.app.state.settings.cors_origins}
+        allowed = {
+            value.rstrip("/")
+            for value in request.app.state.settings.cors_origins
+        }
+        allowed.update({
+            "https://assessment.sutravya.in",
+            "https://sutravya-assessment-web.onrender.com",
+        })
         if request.app.state.settings.admin_frontend_origin:
             allowed.add(request.app.state.settings.admin_frontend_origin.rstrip("/"))
         if origin.rstrip("/") not in allowed:
@@ -479,7 +486,7 @@ def logout(request: Request):
 def _spreadsheet_safe(value: Any) -> str:
     """Keep untrusted candidate text from becoming a spreadsheet formula."""
     cell = "" if value is None else str(value)
-    if cell.startswith(("\\t", "\\r", "\\n")) or cell.lstrip("\\ufeff").lstrip().startswith(("=", "+", "-", "@")):
+    if cell.startswith(("\t", "\r", "\n")) or cell.lstrip("\ufeff").lstrip().startswith(("=", "+", "-", "@")):
         return "'" + cell
     return cell
 
@@ -502,7 +509,7 @@ def export_registration_csv(request: Request, source: str = Query(default="all",
             statement = statement.where(Registration.registration_source == source)
 
         output = io.StringIO(newline="")
-        writer = csv.writer(output, lineterminator="\\r\\n")
+        writer = csv.writer(output, lineterminator="\r\n")
         writer.writerow((
             "registration_id", "full_name", "email", "mobile", "registration_source",
             "registration_status", "category", "programme", "academic_year", "academic_stage",
@@ -540,7 +547,7 @@ def export_registration_csv(request: Request, source: str = Query(default="all",
         ))
         session.commit()
 
-    content = ("\\ufeff" + output.getvalue()).encode("utf-8")
+    content = ("\ufeff" + output.getvalue()).encode("utf-8")
     return Response(
         content=content,
         media_type="text/csv; charset=utf-8",
