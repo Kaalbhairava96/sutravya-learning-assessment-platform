@@ -2456,3 +2456,45 @@ body.exam-in-progress .exam-access-steps{display:none}
 .registration-duplicate-dialog button{min-height:54px;font-weight:950}
 .register-form-alert.is-error{padding:11px 13px;border:1px solid #e4b9b9;border-radius:12px;background:#fff3f2;color:#992c2c!important}
 .register-form-alert.is-visible{display:block}
+
+
+/* Accessible registration validation: invalid fields are clearly highlighted. */
+#candidate-registration-form .field.has-validation-error > label {
+  color: #b42318 !important;
+}
+#candidate-registration-form .field.has-validation-error input,
+#candidate-registration-form .field.has-validation-error select,
+#candidate-registration-form .field.has-validation-error textarea {
+  border-color: #c93636 !important;
+  background: #fff8f7 !important;
+  box-shadow: 0 0 0 3px rgba(201, 54, 54, .11) !important;
+}
+#candidate-registration-form .field.has-validation-error input:focus,
+#candidate-registration-form .field.has-validation-error select:focus,
+#candidate-registration-form .field.has-validation-error textarea:focus {
+  border-color: #b42318 !important;
+  box-shadow: 0 0 0 3px rgba(180, 35, 24, .16) !important;
+}
+#candidate-registration-form .registration-consent.has-validation-error {
+  border-color: #c93636 !important;
+  background: #fff8f7 !important;
+}
+#candidate-registration-form .registration-consent.has-validation-error input {
+  outline: 2px solid rgba(180, 35, 24, .35);
+  outline-offset: 2px;
+}
+#candidate-registration-form .field-validation-message {
+  display: block;
+  margin-top: 6px;
+  color: #b42318;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+#candidate-registration-form .field-validation-message.is-pending {
+  color: var(--brand-muted);
+  font-weight: 600;
+}
+#candidate-registration-form [aria-invalid="true"] {
+  border-color: #c93636 !important;
+}
