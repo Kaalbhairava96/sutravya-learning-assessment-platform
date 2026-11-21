@@ -216,7 +216,7 @@ function initHumanVisuals() {
 
 const header = document.querySelector('[data-header]');
 if (header) {
-  const navLink = ([url,label]) => '<a class="nav-link" href="'+url+'"'+(url===currentPage ? ' aria-current="page"' : '')+'>'+label+'</a>';
+  const navLink = ([url,label]) => '<a class="nav-link'+(url==='admin-login.html'?' nav-admin-link':'')+'" href="'+url+'"'+(url===currentPage ? ' aria-current="page"' : '')+'>'+label+'</a>';
   const preparation = ['syllabus.html','sample-papers.html','mock-test.html'];
   const innovation = ['hackathon.html','hackathon-portal.html','awards.html'];
   const inPreparation = preparation.includes(currentPage);
@@ -230,7 +230,7 @@ if (header) {
     navLink(['syllabus.html','Syllabus'])+navLink(['sample-papers.html','Sample MCQs'])+navLink(['mock-test.html','Mock Tests'])+'</div></details>' +
     '<details class="nav-dropdown"><summary '+(inInnovation?'aria-current="page"':'')+'>Innovation</summary><div class="nav-dropdown-menu">' +
     navLink(['hackathon.html','Hackathon'])+navLink(['hackathon-portal.html','Participant Portal'])+navLink(['awards.html','Awards &amp; Recognition'])+'</div></details>' +
-    navLink(['faqs.html','Help Centre'])+navLink(['contact.html','Contact']) +
+    navLink(['faqs.html','Help Centre'])+navLink(['contact.html','Contact'])+navLink(['admin-login.html','Admin']) +
     '<a class="nav-register" href="register.html"'+(currentPage==='register.html'?' aria-current="page"':'')+'>Register now '+icon('arrow')+'</a></nav></div></header>';
   const toggle=header.querySelector('.nav-toggle');
   const nav=header.querySelector('.primary-nav');
