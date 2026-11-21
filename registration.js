@@ -25,6 +25,7 @@
   const resendButton = $("[data-resend-otp]");
   const stateSelect = $("#reg-state");
   const districtSelect = $("#reg-district");
+  const pinInput = $("#reg-pin");
   const duplicateEmailModal = $("[data-duplicate-email-modal]");
   const duplicateEmailClose = $("[data-duplicate-email-close]");
   const emailInput = $("#reg-email");
@@ -76,6 +77,138 @@
     node.textContent = message;
     node.classList.toggle("is-error", error);
     node.classList.add("is-visible");
+  }
+
+
+  let validationAttempted = false;
+  let pinLookupSequence = 0;
+  let verifiedPinSignature = "";
+
+  function validationWrapper(field) {
+    return field.closest(".field, .registration-consent") || field.parentElement;
+  }
+
+  function showFieldMessage(field, message, state="error") {
+    const wrapper = validationWrapper(field);
+    if (!wrapper) return;
+    wrapper.classList.toggle("has-validation-error", state === "error");
+    wrapper.classList.toggle("has-validation-pending", state === "pending");
+    field.setAttribute("aria-invalid", state === "error" ? "true" : "false");
+    let node = field._validationMessageNode;
+    if (!node) {
+      node = document.createElement("small");
+      node.className = "field-validation-message";
+      if (field.type === "checkbox" && wrapper.classList.contains("registration-consent")) {
+        wrapper.insertAdjacentElement("afterend", node);
+      } else {
+        wrapper.append(node);
+      }
+      field._validationMessageNode = node;
+    }
+    node.className = "field-validation-message" + (state === "pending" ? " is-pending" : "");
+    node.textContent = message;
+  }
+
+  function clearFieldMessage(field) {
+    const wrapper = validationWrapper(field);
+    wrapper?.classList.remove("has-validation-error", "has-validation-pending");
+    field.removeAttribute("aria-invalid");
+    if (field._validationMessageNode) {
+      field._validationMessageNode.remove();
+      delete field._validationMessageNode;
+    }
+  }
+
+  function validateField(field) {
+    if (!field || field.disabled || field.type === "hidden" || field.closest("[hidden]")) {
+      if (field) {
+        field.setCustomValidity("");
+        clearFieldMessage(field);
+      }
+      return true;
+    }
+
+    field.setCustomValidity("");
+    const value = field.type === "checkbox" ? field.checked : String(field.value ?? "").trim();
+    let message = "";
+
+    if (field.required && field.type === "checkbox" && !value) {
+      message = "Please accept the declaration to continue.";
+    } else if (field.required && field.type !== "checkbox" && !value) {
+      message = "This field is required.";
+    } else if (field.name === "full_name" && value && value.length < 2) {
+      message = "Enter your full name (at least 2 characters).";
+    } else if (field.name === "mobile" && value && !/^[6-9][0-9]{9}$/.test(value)) {
+      message = "Enter a valid 10-digit Indian mobile number.";
+    } else if (field.name === "pin_code" && value && !/^[1-9][0-9]{5}$/.test(value)) {
+      message = "Enter a valid 6-digit PIN code.";
+    } else if (field.validity && !field.validity.valid) {
+      if (field.validity.typeMismatch) message = "Enter a valid email address.";
+      else if (field.validity.patternMismatch) message = "Enter a value in the required format.";
+      else if (field.validity.tooLong) message = "This value is too long.";
+      else if (field.validity.tooShort) message = "This value is too short.";
+      else message = field.validationMessage || "Please check this field.";
+    }
+
+    if (message) {
+      field.setCustomValidity(message);
+      showFieldMessage(field, message);
+      return false;
+    }
+    clearFieldMessage(field);
+    return true;
+  }
+
+  function validateAllFields() {
+    const controls = [...form.querySelectorAll("input, select, textarea")]
+      .filter(field => field.type !== "hidden" && !field.disabled && !field.closest("[hidden]"));
+    let firstInvalid = null;
+    controls.forEach(field => {
+      if (!validateField(field) && !firstInvalid) firstInvalid = field;
+    });
+    if (firstInvalid) {
+      firstInvalid.focus();
+      firstInvalid.scrollIntoView({behavior:"smooth", block:"center"});
+      return false;
+    }
+    return true;
+  }
+
+  function invalidatePinValidation() {
+    pinLookupSequence += 1;
+    verifiedPinSignature = "";
+    if (pinInput._validationMessageNode?.classList.contains("is-pending")) clearFieldMessage(pinInput);
+  }
+
+  async function checkPinAgainstLocation() {
+    if (!validateField(pinInput)) return false;
+    if (!stateSelect.value || !districtSelect.value) return false;
+
+    const pin = pinInput.value.trim();
+    const state = stateSelect.value;
+    const district = districtSelect.value;
+    const signature = [pin, state, district].join("|");
+    if (verifiedPinSignature === signature) return true;
+
+    const sequence = ++pinLookupSequence;
+    showFieldMessage(pinInput, "Verifying PIN code against the selected district…", "pending");
+    try {
+      const result = await api("/api/registration/validate-pin", {
+        pin_code:pin,
+        state,
+        district
+      });
+      if (sequence !== pinLookupSequence) return false;
+      if (result.valid !== true) throw new Error(result.message || "PIN code does not match the selected address.");
+      verifiedPinSignature = signature;
+      clearFieldMessage(pinInput);
+      return true;
+    } catch (error) {
+      if (sequence === pinLookupSequence) {
+        showFieldMessage(pinInput, error.message || "PIN code could not be verified. Please check it and try again.");
+      }
+      return false;
+    }
   }
 
   function populateStates() {
@@ -266,7 +399,37 @@
 
   category.addEventListener("change", refreshProgrammes);
   programme.addEventListener("change", refreshAcademicFields);
-  stateSelect.addEventListener("change", () => populateDistricts(stateSelect.value));
+  stateSelect.addEventListener("change", () => {
+    populateDistricts(stateSelect.value);
+    invalidatePinValidation();
+    if (validationAttempted) {
+      validateField(stateSelect);
+      validateField(districtSelect);
+    }
+  });
+  districtSelect.addEventListener("change", () => {
+    invalidatePinValidation();
+    if (validationAttempted) validateField(districtSelect);
+    if (/^[1-9][0-9]{5}$/.test(pinInput.value.trim()) && stateSelect.value && districtSelect.value) {
+      checkPinAgainstLocation();
+    }
+  });
+  pinInput.addEventListener("input", () => {
+    invalidatePinValidation();
+    if (validationAttempted || pinInput.getAttribute("aria-invalid") === "true") validateField(pinInput);
+  });
+  pinInput.addEventListener("blur", () => {
+    if (validateField(pinInput) && stateSelect.value && districtSelect.value) checkPinAgainstLocation();
+  });
+  form.querySelectorAll("input, select, textarea").forEach(field => {
+    field.addEventListener("blur", () => validateField(field));
+    field.addEventListener("input", () => {
+      if (field !== pinInput && (validationAttempted || field.getAttribute("aria-invalid") === "true")) validateField(field);
+    });
+    field.addEventListener("change", () => {
+      if (field !== stateSelect && field !== districtSelect && field !== pinInput && (validationAttempted || field.getAttribute("aria-invalid") === "true")) validateField(field);
+    });
+  });
 
   let emailCheckSequence = 0;
   emailInput.addEventListener("blur", async () => {
@@ -294,20 +457,42 @@
     if (event.key === "Escape" && duplicateEmailModal && !duplicateEmailModal.hidden) closeDuplicateEmailPopup();
   });
 
-  form.addEventListener("submit", event => {
+  form.addEventListener("submit", async event => {
     event.preventDefault();
     alertBox.classList.remove("is-visible", "is-error");
     if (!registrationEnabled) {
       notice(alertBox, "Registration is not open. Your details have not been submitted.", true);
       return;
     }
-    if (!form.reportValidity()) return;
-    details = collect();
-    makeReview(details);
-    form.hidden = true;
-    reviewPanel.hidden = false;
-    setStep(2);
-    reviewPanel.scrollIntoView({behavior:"smooth",block:"start"});
+    validationAttempted = true;
+    if (!validateAllFields()) {
+      notice(alertBox, "Please correct the highlighted fields before continuing.", true);
+      return;
+    }
+
+    reviewButton.disabled = true;
+    reviewButton.setAttribute("aria-busy", "true");
+    const originalButtonText = reviewButton.textContent;
+    reviewButton.textContent = "Verifying address…";
+    try {
+      const pinIsValid = await checkPinAgainstLocation();
+      if (!pinIsValid) {
+        notice(alertBox, pinInput._validationMessageNode?.textContent || "Please verify the PIN code and selected address.", true);
+        pinInput.focus();
+        pinInput.scrollIntoView({behavior:"smooth", block:"center"});
+        return;
+      }
+      details = collect();
+      makeReview(details);
+      form.hidden = true;
+      reviewPanel.hidden = false;
+      setStep(2);
+      reviewPanel.scrollIntoView({behavior:"smooth",block:"start"});
+    } finally {
+      reviewButton.disabled = !registrationEnabled;
+      reviewButton.removeAttribute("aria-busy");
+      reviewButton.textContent = originalButtonText;
+    }
   });
 
   $("[data-review-back]").addEventListener("click", () => {
