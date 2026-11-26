@@ -5,9 +5,9 @@ require('../question-bank.js');
 const banks = window.HTSE_QUESTION_BANK;
 const pathwayKeys = ['nursing', 'paramedical', 'pharmacy'];
 const expected = {
- nursing: ['anatomy','physiology','biochemistry','healthcare_it','oet_english'],
- paramedical: ['anatomy','physiology','biochemistry','healthcare_it','oet_english'],
- pharmacy: ['anatomy','physiology','biochemistry','healthcare_it','oet_english']
+ nursing: ['anatomy','physiology','microbiology','ai_healthcare','oet_english'],
+ paramedical: ['anatomy','physiology','microbiology','ai_healthcare','oet_english'],
+ pharmacy: ['anatomy','physiology','microbiology','ai_healthcare','oet_english']
 };
 for (const key of pathwayKeys) {
  const bank = banks[key];
