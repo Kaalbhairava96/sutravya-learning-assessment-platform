@@ -219,7 +219,7 @@ def send_hackathon_registration_confirmation(
                 "<p>Your email has been verified and your free Healthcare Innovation Hackathon registration is confirmed.</p>"
                 f"<p>Your unique Hackathon Registration ID is <strong>{safe_id}</strong>.</p>"
                 "<p>Keep this ID. To sign in later, enter this Registration ID and request an email one-time code.</p>"
-                "<p>Project synopsis deadline: 27 November 2026, 11:59 PM IST. Submission instructions are being sent in a separate email.</p>"
+                "<p>Project synopsis deadline: 08 December 2026, 11:59 PM IST. Submission instructions are being sent in a separate email.</p>"
                 "<p>Open your participant portal at <a href='https://assessment.sutravya.in/hackathon-portal.html'>Hackathon participant sign-in</a>.</p>"
             ),
         },
@@ -235,13 +235,13 @@ def send_hackathon_submission_instructions(
         {
             "from": settings.resend_from_email,
             "to": [recipient_email],
-            "subject": "Action required: email your Hackathon synopsis by 27 November 2026",
+            "subject": "Action required: email your Hackathon synopsis by 08 December 2026",
             "html": (
                 f"<p>Hello {safe_name},</p>"
                 f"<p>Your Hackathon Registration ID is <strong>{safe_id}</strong>.</p>"
                 "<p>Please submit your project synopsis by email only to "
                 "<a href='mailto:sutravya.connect@gmail.com'>sutravya.connect@gmail.com</a>.</p>"
-                "<p><strong>Deadline: 27 November 2026, 11:59 PM IST.</strong></p>"
+                "<p><strong>Deadline: 08 December 2026, 11:59 PM IST.</strong></p>"
                 "<p>There is no website upload or alternate submission form. Do not submit the synopsis through any other website or form.</p>"
                 "<p>Selected teams will be notified by email. Shortlisted teams are scheduled to present their prototype on 4 December 2026.</p>"
             ),
