@@ -39,7 +39,7 @@ const hackathon=fs.readFileSync(path.join(root,'hackathon.html'),'utf8');
 const portal=fs.readFileSync(path.join(root,'hackathon-portal.html'),'utf8');
 const faqPage=fs.readFileSync(path.join(root,'faqs.html'),'utf8');
 if(!homepage.includes('healthcare-talent-search-badge.svg'))errors.push('index.html: Healthcare Talent Search Exam badge is missing');
-if(!homepage.includes('htse-healthcare-hero.webp'))errors.push('index.html: original 3D healthcare hero artwork is missing');
+if(!homepage.includes('htse-healthcare-hero-3d.svg'))errors.push('index.html: original 3D healthcare hero artwork is missing');
 if(!homepage.includes('data-event-countdown'))errors.push('index.html: live assessment countdown is missing');
 if(!homepage.includes('2026-12-06T10:00:00+05:30'))errors.push('index.html: HTSE countdown must use the official 10:00 AM IST start');
 if(!homepage.includes('Online Examination'))errors.push('index.html: online examination venue must be stated in the countdown');
@@ -59,7 +59,11 @@ if(!homepageCss.includes('.footer-brand-pair>a{background:transparent!important'
 if(!homepageCss.includes('qv2-event-section .qv2-home-milestones:before'))errors.push('styles.css: connected homepage milestone timeline is missing');
 
 if(!hackathon.includes('data-hackathon-register-form'))errors.push('hackathon.html: separate participant registration form is missing');
-if(!hackathon.includes('27 November 2026')||!hackathon.includes('sutravya.connect@gmail.com'))errors.push('hackathon.html: email-only synopsis deadline details are missing');
+if(!hackathon.includes('08 December 2026')||!hackathon.includes('sutravya.connect@gmail.com'))errors.push('hackathon.html: updated email-only synopsis deadline details are missing');
+if(/27\\s*(?:NOV|November)|2026-11-27/i.test(hackathon))errors.push('hackathon.html: old 27 November synopsis deadline remains');
+const contact=fs.readFileSync(path.join(root,'contact.html'),'utf8');
+if(!contact.includes('tel:+919911350649')||!contact.includes('wa.me/919911350649'))errors.push('contact.html: QualiNova phone and WhatsApp must use 9911350649');
+if(!contact.includes('assets/handshake.svg'))errors.push('contact.html: partner handshake visual is missing');
 if(!portal.includes('data-hk-login-form')||!portal.includes('registration_id'))errors.push('hackathon-portal.html: Registration ID and email sign-in flow is missing');
 if(/PDF|project upload deadline|upload your project/i.test(hackathon+'\\n'+faqPage))errors.push('Hackathon public copy: obsolete PDF or website-upload submission wording remains');
 console.log(JSON.stringify({root,checkedPages:pages.length,contrastRatios:contrastPairs.map(([fg,bg])=>({foreground:fg,background:bg,ratio:Number(contrast(fg,bg).toFixed(2))})),report,errors},null,2));if(errors.length)process.exit(1);
