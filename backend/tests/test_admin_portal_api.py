@@ -146,6 +146,7 @@ class AdminPortalTests(unittest.TestCase):
             request_for(self.app, "/api/admin/auth/password-reset/request", "POST", csrf=True, origin=ADMIN_ORIGIN),
         )
         otp = self.sent_admin_reset_emails[-1]["otp"]
+        wrong_otp = "000000" if otp != "000000" else "000001"
         old_password_hash = None
         with self.factory() as session:
             user = session.query(AdminUser).filter_by(email="owner@example.invalid").one()
@@ -203,7 +204,7 @@ class AdminPortalTests(unittest.TestCase):
             with self.assertRaises(HTTPException) as rejected:
                 confirm(
                     AdminPasswordResetConfirm(
-                        email="owner@example.invalid", otp="000000",
+                        email="owner@example.invalid", otp=wrong_otp,
                         new_password="a-new-strong-test-password-phrase",
                     ),
                     request_for(self.app, "/api/admin/auth/password-reset/confirm", "POST", csrf=True, origin=ADMIN_ORIGIN),
