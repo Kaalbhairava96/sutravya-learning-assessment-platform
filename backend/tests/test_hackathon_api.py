@@ -27,6 +27,8 @@ with patch.dict(os.environ, _TEST_ENVIRONMENT), patch("app.config._read_dotenv",
         HACKATHON_SESSION_COOKIE,
         REGISTRATION_CLOSES_AT,
         REGISTRATION_OPENS_AT,
+        HACKATHON_REGISTRATION_CLOSES_AT,
+        HACKATHON_REGISTRATION_OPENS_AT,
         EmailOtpRequest,
         HackathonLoginRequest,
         HackathonRegistrationRequest,
@@ -96,7 +98,9 @@ class HackathonRegistrationFlowTests(unittest.TestCase):
 
     def test_hackathon_registration_window_matches_published_dates(self) -> None:
         self.assertEqual(REGISTRATION_OPENS_AT.isoformat(), "2026-11-01T00:00:00+05:30")
-        self.assertEqual(REGISTRATION_CLOSES_AT.isoformat(), "2026-12-07T00:00:00+05:30")
+        self.assertEqual(REGISTRATION_CLOSES_AT.isoformat(), "2026-12-02T00:00:00+05:30")
+        self.assertEqual(HACKATHON_REGISTRATION_OPENS_AT.isoformat(), "2026-11-01T00:00:00+05:30")
+        self.assertEqual(HACKATHON_REGISTRATION_CLOSES_AT.isoformat(), "2026-12-07T00:00:00+05:30")
 
     def test_free_registration_email_otp_login_and_logout(self) -> None:
         payload = HackathonRegistrationRequest(
