@@ -31,47 +31,20 @@ from app.models import (
 )
 from app.registration import EVENT_KEY, PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE
 
-EXAM_MAX_DURATION_SECONDS = 47 * 60
+EXAM_MAX_DURATION_SECONDS = 30 * 60
 QUESTION_COUNT = 100
 OPTIONS_PER_QUESTION = 4
 SCORING_RULE_CODE = "htse_2026"
 
 EXAM_SECTION_BLUEPRINTS = {
-    "paramedical": (
-        {"key": "anatomy_physiology", "label": "Anatomy & Physiology", "question_count": 20},
-        {"key": "laboratory_sciences", "label": "Clinical Laboratory Sciences", "question_count": 20},
-        {"key": "microbiology_infection_control", "label": "Microbiology & Infection Control", "question_count": 20},
-        {"key": "diagnostic_technology", "label": "Diagnostic Technology & Equipment", "question_count": 20},
-        {"key": "patient_safety_communication", "label": "Patient Safety & Healthcare Communication", "question_count": 20},
-    ),
-    "nursing": (
-        {"key": "nursing_foundations", "label": "Nursing Foundations", "question_count": 20},
-        {"key": "applied_anatomy_physiology", "label": "Applied Anatomy & Physiology", "question_count": 20},
-        {"key": "nutrition_biochemistry", "label": "Nutrition & Applied Biochemistry", "question_count": 20},
-        {"key": "psychology_community", "label": "Psychology, Sociology & Community Health", "question_count": 20},
-        {"key": "infection_safety_ethics", "label": "Infection Control, Patient Safety & Professional Ethics", "question_count": 20},
-    ),
-    "mbbs_ug": (
-        {"key": "anatomy", "label": "Human Anatomy", "question_count": 20},
-        {"key": "physiology", "label": "Human Physiology", "question_count": 20},
-        {"key": "biochemistry", "label": "Biochemistry", "question_count": 20},
-        {"key": "foundation_aetcom", "label": "Foundation Course, ECE & AETCOM", "question_count": 20},
-        {"key": "community_research", "label": "Community Medicine & Research Foundations", "question_count": 20},
-    ),
-    "mbbs_pg": (
-        {"key": "medicine", "label": "General Medicine & Clinical Reasoning", "question_count": 20},
-        {"key": "surgery", "label": "General Surgery & Perioperative Care", "question_count": 20},
-        {"key": "obgyn_paediatrics", "label": "Obstetrics, Gynaecology & Paediatrics", "question_count": 20},
-        {"key": "pathology_pharmacology", "label": "Pathology & Pharmacology", "question_count": 20},
-        {"key": "microbiology_forensic_allied", "label": "Microbiology, Forensic & Allied Clinical Subjects", "question_count": 20},
-    ),
-    "mbbs_1st_year": (
+    stream: (
         {"key": "anatomy", "label": "Anatomy", "question_count": 20},
         {"key": "physiology", "label": "Physiology", "question_count": 20},
-        {"key": "biology", "label": "Biology", "question_count": 20},
-        {"key": "quantitative_reasoning", "label": "Mathematics & Analytical Reasoning", "question_count": 20},
-        {"key": "english_communication", "label": "English & Communication", "question_count": 20},
-    ),
+        {"key": "biochemistry", "label": "Biochemistry", "question_count": 20},
+        {"key": "healthcare_it", "label": "Healthcare IT", "question_count": 20},
+        {"key": "oet_english", "label": "Healthcare English (OET-style)", "question_count": 20},
+    )
+    for stream in ("nursing", "paramedical", "pharmacy")
 }
 
 
@@ -103,7 +76,7 @@ def _candidate_registration(session: Session, raw_token: str | None, *, lock: bo
             Registration.is_internal_test.is_(False),
             Registration.registration_source.in_((PUBLIC_REGISTRATION_SOURCE, TEAM_PRELAUNCH_SOURCE)),
             Registration.status == "active",
-            Registration.stream.in_(("nursing", "paramedical", "mbbs_ug", "mbbs_pg", "mbbs_1st_year")),
+            Registration.stream.in_(("nursing", "paramedical", "pharmacy")),
         )
     )
     if lock:
@@ -290,7 +263,7 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
         total_seconds = sum(question.time_limit_seconds for question in questions)
         return {
             "attempt_id": str(attempt.id), "status": attempt.status,
-            "total_questions": len(questions), "total_question_time_seconds": total_seconds,
+            "total_questions": len(questions), "total_time_seconds": EXAM_MAX_DURATION_SECONDS,
             "overall_deadline": due.isoformat(),
             "remaining_seconds": max(0, int((due - current).total_seconds())),
             "sections": [dict(item) for item in EXAM_SECTION_BLUEPRINTS[registration.stream or ""]],
@@ -299,7 +272,10 @@ def start_exam(session: Session, raw_token: str | None, *, now: datetime | None 
 
 def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
                  position: int, now: datetime | None = None) -> dict:
+    """Return any question in the candidate's own attempt; all questions share one deadline."""
     current = _aware(now or datetime.now(timezone.utc))
+    if position < 0 or position >= QUESTION_COUNT:
+        raise ExamError("question_not_found", 404)
     with session.begin():
         registration, _candidate, _slot = _candidate_registration(session, raw_token, lock=True)
         attempt = session.scalar(select(ExamAttempt).where(
@@ -310,26 +286,13 @@ def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
         if attempt.status != "in_progress":
             raise ExamError("attempt_not_in_progress", 409)
         slot = session.get(ExamSlot, attempt.exam_slot_id)
-        if current >= _deadline(attempt, slot):
+        due = _deadline(attempt, slot)
+        if current >= due:
             raise ExamError("exam_time_expired", 410)
-        responses = session.scalars(select(CandidateResponse).where(
-            CandidateResponse.attempt_id == attempt.id
-        ).order_by(CandidateResponse.position).with_for_update()).all()
-        presented = [row.position for row in responses if row.presented_at is not None]
-        active_position = max(presented) if presented else -1
-        if position < active_position:
-            raise ExamError("question_already_passed", 409)
-        if position > active_position + 1:
-            raise ExamError("question_sequence_locked", 409)
-        if active_position >= 0 and position == active_position + 1:
-            previous = next(row for row in responses if row.position == active_position)
-            if (
-                previous.selected_option_id is None
-                and previous.deadline_at is not None
-                and current < _aware(previous.deadline_at)
-            ):
-                raise ExamError("question_time_not_complete", 409)
-        response = next((row for row in responses if row.position == position), None)
+        response = session.scalar(select(CandidateResponse).where(
+            CandidateResponse.attempt_id == attempt.id,
+            CandidateResponse.position == position,
+        ).with_for_update())
         if response is None:
             raise ExamError("question_not_found", 404)
         question = session.scalar(select(Question).where(
@@ -339,20 +302,18 @@ def get_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
             raise ExamError("question_not_found", 404)
         if response.presented_at is None:
             response.presented_at = current
-            response.deadline_at = min(
-                current + timedelta(seconds=question.time_limit_seconds), _deadline(attempt, slot)
-            )
+            response.deadline_at = due
             session.flush()
-        deadline = _aware(response.deadline_at)
         options_by_key = {option.identifier: option for option in question.options}
         option_order = response.option_order or ["A", "B", "C", "D"]
         return {
-            "question_id": str(question.id), "position": position, "total_questions": QUESTION_COUNT,
+            "question_id": str(question.id), "position": position,
+            "total_questions": QUESTION_COUNT,
             "section": question.section, "category": question.category,
             "difficulty": question.difficulty, "question_text": question.question_text,
-            "time_limit_seconds": question.time_limit_seconds,
-            "remaining_seconds": max(0, int((deadline - current).total_seconds())),
-            "deadline": deadline.isoformat(),
+            "time_limit_seconds": None,
+            "remaining_seconds": max(0, int((due - current).total_seconds())),
+            "deadline": due.isoformat(),
             "selected_option_id": str(response.selected_option_id) if response.selected_option_id else None,
             "answered": response.selected_option_id is not None,
             "options": [
@@ -389,6 +350,7 @@ def record_integrity_event(
 
 def skip_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
                   position: int, now: datetime | None = None) -> dict:
+    """Record an unanswered question without locking it; the candidate may return later."""
     current = _aware(now or datetime.now(timezone.utc))
     with session.begin():
         registration, _candidate, _slot = _candidate_registration(session, raw_token, lock=True)
@@ -399,31 +361,22 @@ def skip_question(session: Session, raw_token: str | None, *, attempt_id: UUID,
             raise ExamError("attempt_not_found", 404)
         if attempt.status != "in_progress":
             raise ExamError("attempt_not_in_progress", 409)
+        slot = session.get(ExamSlot, attempt.exam_slot_id)
+        if current >= _deadline(attempt, slot):
+            raise ExamError("exam_time_expired", 410)
         response = session.scalar(select(CandidateResponse).where(
             CandidateResponse.attempt_id == attempt.id,
             CandidateResponse.position == position,
         ).with_for_update())
         if response is None or response.presented_at is None:
             raise ExamError("question_not_presented", 409)
-        active_position = session.scalar(select(func.max(CandidateResponse.position)).where(
-            CandidateResponse.attempt_id == attempt.id,
-            CandidateResponse.presented_at.is_not(None),
-        ))
-        if response.position != active_position:
-            raise ExamError("question_already_passed", 409)
-        if response.selected_option_id is not None:
-            return {"skipped": False, "answered": True, "position": position}
-        if response.deadline_at is None:
-            raise ExamError("question_not_presented", 409)
-        if current < _aware(response.deadline_at):
-            response.deadline_at = current
-        return {"skipped": True, "position": position}
-
+        return {"skipped": response.selected_option_id is None, "answered": response.selected_option_id is not None, "position": position}
 
 def save_answer(
     session: Session, raw_token: str | None, *, attempt_id: UUID,
     question_id: UUID, option_id: UUID, now: datetime | None = None,
 ) -> dict:
+    """Save or change an answer for any previously opened question until the shared deadline."""
     current = _aware(now or datetime.now(timezone.utc))
     with session.begin():
         registration, _candidate, _slot = _candidate_registration(session, raw_token, lock=True)
@@ -436,6 +389,8 @@ def save_answer(
         if attempt.status != "in_progress":
             raise ExamError("attempt_not_in_progress", 409)
         slot = session.get(ExamSlot, attempt.exam_slot_id)
+        if current >= _deadline(attempt, slot):
+            raise ExamError("exam_time_expired", 410)
         question = session.scalar(select(Question).where(
             Question.id == question_id,
             Question.question_bank_id == attempt.question_bank_id,
@@ -451,20 +406,11 @@ def save_answer(
             CandidateResponse.attempt_id == attempt.id,
             CandidateResponse.question_id == question.id,
         ).with_for_update())
-        if response is None or response.presented_at is None or response.deadline_at is None:
+        if response is None or response.presented_at is None:
             raise ExamError("question_not_presented", 409)
-        active_position = session.scalar(select(func.max(CandidateResponse.position)).where(
-            CandidateResponse.attempt_id == attempt.id,
-            CandidateResponse.presented_at.is_not(None),
-        ))
-        if response.position != active_position:
-            raise ExamError("question_already_passed", 409)
-        if current >= _aware(response.deadline_at):
-            raise ExamError("question_time_expired", 410)
         response.selected_option_id = option.id
         response.answered_at = current
         return {"saved": True, "question_id": str(question.id), "position": response.position}
-
 
 def submit_exam(session: Session, raw_token: str | None, *, attempt_id: UUID, now: datetime | None = None) -> dict:
     current = _aware(now or datetime.now(timezone.utc))
