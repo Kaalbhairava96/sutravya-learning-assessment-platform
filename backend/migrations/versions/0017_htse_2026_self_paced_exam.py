@@ -49,8 +49,8 @@ def upgrade() -> None:
     bank_ids: dict[str, str] = {}
 
     existing_slots = connection.execute(
-        sa.text("SELECT stream FROM exam_slots WHERE event_key = :event_key AND stream IN :streams"),
-        {"event_key": EVENT_KEY, "streams": STREAMS},
+        sa.text("SELECT stream FROM exam_slots WHERE event_key = :event_key AND stream IN ('nursing', 'paramedical', 'pharmacy')"),
+        {"event_key": EVENT_KEY},
     ).fetchall()
     if existing_slots:
         raise RuntimeError("HTSE 2026 stream slots already exist; refusing to seed duplicate slots.")
