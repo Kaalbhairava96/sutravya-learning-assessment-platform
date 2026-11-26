@@ -6,6 +6,7 @@ import base64
 import zipfile
 import xml.etree.ElementTree as ET
 import io
+import logging
 import hashlib
 import hmac
 import re
@@ -89,6 +90,17 @@ TABLE_DESCRIPTIONS = {
 class AdminCredentials(BaseModel):
     email: str = Field(min_length=3, max_length=320)
     password: str = Field(min_length=14, max_length=256)
+
+
+
+class AdminPasswordResetRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=320)
+
+
+class AdminPasswordResetConfirm(BaseModel):
+    email: str = Field(min_length=3, max_length=320)
+    otp: str = Field(min_length=6, max_length=6, pattern=r"^[0-9]{6}$")
+    new_password: str = Field(min_length=14, max_length=256)
 
 
 class SlotPayload(BaseModel):
@@ -262,6 +274,53 @@ def record_failed_login(session: Session, request: Request, email: str) -> None:
     else:
         bucket.request_count += 1
     session.commit()
+
+
+
+def _admin_reset_digest(otp: str, reset_id: UUID, admin_id: UUID, secret: str) -> str:
+    message = "\x1f".join((
+        "sutravya-admin-password-reset-v1", str(reset_id), str(admin_id), otp,
+    )).encode("utf-8")
+    return hmac.new(secret.encode("utf-8"), message, hashlib.sha256).hexdigest()
+
+
+def _admin_reset_rate_limited(session: Session, request: Request, email: str, scope: str, maximum: int) -> bool:
+    subject = rate_limit_subject(request, email)
+    bucket = session.scalar(select(RateLimitBucket).where(
+        RateLimitBucket.scope == scope,
+        RateLimitBucket.subject_digest == subject,
+    ))
+    return bool(
+        bucket and now_utc() - as_utc(bucket.window_started_at) < timedelta(hours=1)
+        and bucket.request_count >= maximum
+    )
+
+
+def _record_admin_reset_rate(session: Session, request: Request, email: str, scope: str) -> None:
+    current = now_utc()
+    subject = rate_limit_subject(request, email)
+    bucket = session.scalar(select(RateLimitBucket).where(
+        RateLimitBucket.scope == scope,
+        RateLimitBucket.subject_digest == subject,
+    ).with_for_update())
+    if bucket is None:
+        session.add(RateLimitBucket(
+            scope=scope, subject_digest=subject,
+            window_started_at=current, request_count=1,
+        ))
+    elif current - as_utc(bucket.window_started_at) >= timedelta(hours=1):
+        bucket.window_started_at = current
+        bucket.request_count = 1
+    else:
+        bucket.request_count += 1
+
+
+_ADMIN_RESET_GENERIC_MESSAGE = (
+    "If an active administrator account matches this email, a reset code has been sent. "
+    "Check your inbox and spam folder."
+)
+_ADMIN_RESET_INVALID_MESSAGE = "The reset code is invalid or expired. Request a new code."
+
 
 
 def safe_user(user: AdminUser) -> dict[str, Any]:
@@ -459,6 +518,199 @@ def login(payload: AdminCredentials, request: Request):
         ))
         session.commit()
         return {"status": "authenticated", "access_token": access_token, "token_type": "bearer", "expires_in": min(max(int(settings.admin_session_ttl_seconds), 900), 43200), "administrator": safe_user(user)}
+
+
+
+@router.post("/auth/password-reset/request", status_code=202)
+def request_admin_password_reset(payload: AdminPasswordResetRequest, request: Request):
+    """Send a single-use reset code without disclosing whether an admin email exists."""
+    require_csrf(request)
+    settings = request.app.state.settings
+    if not settings.admin_session_secret:
+        raise HTTPException(status_code=503, detail="Administrator password recovery is temporarily unavailable.")
+    email = normalise_email(payload.email)
+    now = now_utc()
+    code_to_send: str | None = None
+    reset_id: UUID | None = None
+
+    with db_session(request) as session:
+        ip_limited = _admin_reset_rate_limited(
+            session, request, "__admin_password_reset_ip__", "admin_reset_request_ip", 12,
+        )
+        email_limited = _admin_reset_rate_limited(
+            session, request, email, "admin_reset_request_email", 5,
+        )
+        _record_admin_reset_rate(session, request, "__admin_password_reset_ip__", "admin_reset_request_ip")
+        _record_admin_reset_rate(session, request, email, "admin_reset_request_email")
+
+        if not ip_limited and not email_limited:
+            user = session.scalar(
+                select(AdminUser)
+                .where(func.lower(AdminUser.email) == email, AdminUser.is_active.is_(True))
+                .with_for_update()
+            )
+            if user is not None:
+                cooldown_after = now - timedelta(seconds=60)
+                recent = session.scalar(select(AdminPasswordReset.id).where(
+                    AdminPasswordReset.admin_user_id == user.id,
+                    AdminPasswordReset.created_at >= cooldown_after,
+                    AdminPasswordReset.consumed_at.is_(None),
+                    AdminPasswordReset.invalidated_at.is_(None),
+                ).limit(1))
+                if recent is None:
+                    session.execute(
+                        update(AdminPasswordReset)
+                        .where(
+                            AdminPasswordReset.admin_user_id == user.id,
+                            AdminPasswordReset.consumed_at.is_(None),
+                            AdminPasswordReset.invalidated_at.is_(None),
+                        )
+                        .values(invalidated_at=now)
+                    )
+                    otp = f"{secrets.randbelow(10**6):06d}"
+                    challenge = AdminPasswordReset(
+                        admin_user_id=user.id,
+                        otp_digest="0" * 64,
+                        expires_at=now + timedelta(seconds=settings.otp_expiry_seconds),
+                    )
+                    session.add(challenge)
+                    session.flush()
+                    challenge.otp_digest = _admin_reset_digest(
+                        otp, challenge.id, user.id, settings.admin_session_secret,
+                    )
+                    reset_id = challenge.id
+                    code_to_send = otp
+        session.commit()
+
+    if code_to_send is not None and reset_id is not None:
+        try:
+            request.app.state.email_sender(
+                recipient_email=email,
+                recipient_name="Administrator",
+                otp=code_to_send,
+                purpose="admin_password_reset",
+                settings=settings,
+            )
+        except Exception:
+            # Do not log recipient, OTP, request body, provider body or exception text.
+            logging.getLogger("sutravya.api").warning(
+                "admin_password_reset_email_failed",
+                extra={"failure_kind": "email_provider_unavailable"},
+            )
+            with db_session(request) as session:
+                session.execute(
+                    update(AdminPasswordReset)
+                    .where(
+                        AdminPasswordReset.id == reset_id,
+                        AdminPasswordReset.consumed_at.is_(None),
+                    )
+                    .values(invalidated_at=now_utc())
+                )
+                session.commit()
+
+    return {"message": _ADMIN_RESET_GENERIC_MESSAGE}
+
+
+@router.post("/auth/password-reset/confirm")
+def confirm_admin_password_reset(payload: AdminPasswordResetConfirm, request: Request):
+    """Verify a one-time admin reset code, update the password and revoke all sessions."""
+    require_csrf(request)
+    settings = request.app.state.settings
+    if not settings.admin_session_secret:
+        raise HTTPException(status_code=503, detail="Administrator password recovery is temporarily unavailable.")
+    email = normalise_email(payload.email)
+    password_policy(payload.new_password, email)
+    now = now_utc()
+    failure = False
+    updated_email = False
+
+    with db_session(request) as session:
+        ip_limited = _admin_reset_rate_limited(
+            session, request, "__admin_password_reset_ip__", "admin_reset_confirm_ip", 15,
+        )
+        email_limited = _admin_reset_rate_limited(
+            session, request, email, "admin_reset_confirm_email", 8,
+        )
+        _record_admin_reset_rate(session, request, "__admin_password_reset_ip__", "admin_reset_confirm_ip")
+        _record_admin_reset_rate(session, request, email, "admin_reset_confirm_email")
+
+        user = None if (ip_limited or email_limited) else session.scalar(
+            select(AdminUser)
+            .where(func.lower(AdminUser.email) == email, AdminUser.is_active.is_(True))
+            .with_for_update()
+        )
+        challenge = None
+        if user is not None:
+            challenge = session.scalar(
+                select(AdminPasswordReset)
+                .where(
+                    AdminPasswordReset.admin_user_id == user.id,
+                    AdminPasswordReset.consumed_at.is_(None),
+                    AdminPasswordReset.invalidated_at.is_(None),
+                )
+                .order_by(AdminPasswordReset.created_at.desc())
+                .limit(1)
+                .with_for_update()
+            )
+
+        if user is None or challenge is None:
+            # Perform a keyed comparison for unknown accounts too, reducing timing differences.
+            _admin_reset_digest(payload.otp, UUID(int=0), UUID(int=0), settings.admin_session_secret)
+            failure = True
+        else:
+            expiry = as_utc(challenge.expires_at)
+            expected = _admin_reset_digest(
+                payload.otp, challenge.id, user.id, settings.admin_session_secret,
+            )
+            valid_code = (
+                challenge.attempt_count < settings.otp_max_attempts
+                and expiry > now
+                and hmac.compare_digest(expected, challenge.otp_digest)
+            )
+            if not valid_code:
+                challenge.attempt_count += 1
+                if challenge.attempt_count >= settings.otp_max_attempts or expiry <= now:
+                    challenge.invalidated_at = now
+                failure = True
+            else:
+                challenge.consumed_at = now
+                user.password_hash = hash_password(payload.new_password)
+                session_rows = session.scalars(
+                    select(AdminSession)
+                    .where(
+                        AdminSession.admin_user_id == user.id,
+                        AdminSession.revoked_at.is_(None),
+                    )
+                    .with_for_update()
+                ).all()
+                for admin_session in session_rows:
+                    admin_session.revoked_at = now
+                session.execute(
+                    update(AdminPasswordReset)
+                    .where(
+                        AdminPasswordReset.admin_user_id == user.id,
+                        AdminPasswordReset.id != challenge.id,
+                        AdminPasswordReset.consumed_at.is_(None),
+                        AdminPasswordReset.invalidated_at.is_(None),
+                    )
+                    .values(invalidated_at=now)
+                )
+                session.add(AuditEvent(
+                    actor_admin_id=user.id,
+                    action="admin_password_reset_completed",
+                    target_type="admin_user",
+                    target_id=user.id,
+                ))
+                updated_email = True
+        session.commit()
+
+    if failure:
+        raise HTTPException(status_code=400, detail=_ADMIN_RESET_INVALID_MESSAGE)
+    return {
+        "status": "password_reset",
+        "message": "Your administrator password has been updated. Sign in with your new password.",
+        "email": email if updated_email else None,
+    }
 
 
 @router.get("/auth/me")
