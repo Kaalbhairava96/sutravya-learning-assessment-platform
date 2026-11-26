@@ -91,7 +91,7 @@ HACKATHON_LOGIN_PURPOSE = "hackathon_login"
 HACKATHON_SYNOPSIS_DEADLINE = datetime(2026, 11, 27, 23, 59, 0, tzinfo=ZoneInfo("Asia/Kolkata"))
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
-REGISTRATION_CLOSES_AT = datetime(2026, 11, 26, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+REGISTRATION_CLOSES_AT = datetime(2026, 12, 2, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 
 
 def _registration_now() -> datetime:
@@ -219,7 +219,7 @@ class ExamIntegrityEventRequest(BaseModel):
 
 
 class AdminSlotRequest(BaseModel):
-    stream: Literal["paramedical", "nursing", "mbbs_ug", "mbbs_pg"]
+    stream: Literal["nursing", "paramedical", "pharmacy"]
     starts_at: datetime
     ends_at: datetime
     capacity: int = Field(gt=0, le=1500)
@@ -1228,7 +1228,7 @@ def create_app(
     ):
         _require_admin(request.app.state.settings, x_admin_key)
         with _session(request) as session:
-            streams = ("paramedical", "nursing", "mbbs_ug", "mbbs_pg")
+            streams = ("nursing", "paramedical", "pharmacy")
             stream_summary = {}
             for stream in streams:
                 stream_summary[stream] = {
@@ -1273,8 +1273,8 @@ def create_app(
             raise HTTPException(status_code=422, detail="Slot timestamps must include a timezone.")
         starts_at = payload.starts_at.astimezone(timezone.utc)
         ends_at = payload.ends_at.astimezone(timezone.utc)
-        if starts_at <= datetime.now(timezone.utc) or ends_at - starts_at < timedelta(minutes=47):
-            raise HTTPException(status_code=422, detail="Choose a future slot of at least 47 minutes.")
+        if starts_at <= datetime.now(timezone.utc) or ends_at - starts_at < timedelta(hours=8):
+            raise HTTPException(status_code=422, detail="Choose a future self-paced exam window of at least eight hours.")
         with _session(request) as session:
             overlap = session.scalar(select(ExamSlot.id).where(
                 ExamSlot.event_key == EVENT_KEY,
@@ -1310,7 +1310,7 @@ def create_app(
             raise HTTPException(status_code=422, detail="Registration IDs must be unique and valid.")
         with _session(request) as session:
             slot = session.get(ExamSlot, slot_id)
-            if slot is None or slot.event_key != EVENT_KEY or slot.stream not in {"paramedical", "nursing", "mbbs_ug", "mbbs_pg", "mbbs_1st_year"}:
+            if slot is None or slot.event_key != EVENT_KEY or slot.stream not in {"nursing", "paramedical", "pharmacy"}:
                 raise HTTPException(status_code=404, detail="Assessment slot not found.")
             registrations = session.scalars(select(Registration).where(
                 Registration.event_key == EVENT_KEY,
