@@ -3,12 +3,11 @@ const assert = require('node:assert/strict');
 global.window = {};
 require('../question-bank.js');
 const banks = window.HTSE_QUESTION_BANK;
-const pathwayKeys = ['paramedical', 'nursing', 'mbbs_ug', 'mbbs_pg'];
+const pathwayKeys = ['nursing', 'paramedical', 'pharmacy'];
 const expected = {
- paramedical: ['anatomy_physiology','laboratory_sciences','microbiology_infection_control','diagnostic_technology','patient_safety_communication'],
- nursing: ['nursing_foundations','applied_anatomy_physiology','nutrition_biochemistry','psychology_community','infection_safety_ethics'],
- mbbs_ug: ['anatomy','physiology','biochemistry','foundation_aetcom','community_research'],
- mbbs_pg: ['medicine','surgery','obgyn_paediatrics','pathology_pharmacology','microbiology_forensic_allied']
+ nursing: ['anatomy','physiology','biochemistry','healthcare_it','oet_english'],
+ paramedical: ['anatomy','physiology','biochemistry','healthcare_it','oet_english'],
+ pharmacy: ['anatomy','physiology','biochemistry','healthcare_it','oet_english']
 };
 for (const key of pathwayKeys) {
  const bank = banks[key];
@@ -34,6 +33,6 @@ for (const key of pathwayKeys) {
  for (const subject of bank.subjects) assert.equal(counts[subject.key], subject.question_count, key + ': declared subject count mismatch');
  assert.equal(Object.values(counts).reduce((a,b)=>a+b,0), 100, key + ': subject counts total');
  assert.ok(positions.every(x=>x>0), key + ': answer key never uses one or more options');
- if (key === 'mbbs_pg') assert.deepEqual(positions,[25,25,25,25], 'MBBS PG answer key positions should be evenly distributed');
+ assert.deepEqual(positions,[25,25,25,25], key + ': answer key positions should be evenly distributed');
  console.log(key + ': 100 valid questions; subject counts ' + Object.values(counts).join('/') + '; answer positions ' + positions.join('/'));
 }
