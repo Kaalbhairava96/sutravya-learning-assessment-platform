@@ -1,89 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" role="img" aria-labelledby="title desc">
 <title id="title">HTSE 2026 common syllabus: five healthcare subjects</title>
-<desc id="desc">Three-dimensional subject cards for Anatomy, Physiology, Clinical Sciences, Safety and Ethics, and Communication connected to the central HTSE examination core.</desc>
+<desc id="desc">Five premium three-dimensional cards for Anatomy, Physiology, Microbiology, AI in Healthcare and OET, connected to the HTSE assessment core.</desc>
 <defs>
  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".55" stop-color="#F5FAF8"/><stop offset="1" stop-color="#EAF5F3"/></linearGradient>
  <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0D4875"/><stop offset=".54" stop-color="#092D60"/><stop offset="1" stop-color="#041D43"/></linearGradient>
  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#62E7DC"/><stop offset=".5" stop-color="#078F88"/><stop offset="1" stop-color="#06636D"/></linearGradient>
  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFF0B9"/><stop offset=".5" stop-color="#D8B46C"/><stop offset="1" stop-color="#A47A3B"/></linearGradient>
  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".58" stop-color="#F0F8F7"/><stop offset="1" stop-color="#D8EAE8"/></linearGradient>
- <filter id="panelShadow" x="-20%" y="-20%" width="140%" height="150%"><feGaussianBlur in="SourceAlpha" stdDeviation="13"/><feOffset dy="13"/><feComponentTransfer><feFuncA type="linear" slope=".13"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
- <filter id="cardShadow" x="-25%" y="-30%" width="160%" height="180%"><feGaussianBlur in="SourceAlpha" stdDeviation="7"/><feOffset dy="7"/><feComponentTransfer><feFuncA type="linear" slope=".17"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
- <filter id="hubGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="20"/></filter>
+ <filter id="shadow" x="-25%" y="-30%" width="160%" height="180%"><feGaussianBlur in="SourceAlpha" stdDeviation="8"/><feOffset dy="9"/><feComponentTransfer><feFuncA type="linear" slope=".17"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="20"/></filter>
 </defs>
 <rect x="14" y="14" width="1092" height="732" rx="38" fill="url(#panel)" stroke="#C8E0DD" stroke-width="2"/>
-<g fill="none" stroke="#A8D3D0" stroke-width="2" opacity=".48"><circle cx="560" cy="374" r="274"/><circle cx="560" cy="374" r="243" stroke-dasharray="5 13"/></g>
+<g fill="none" stroke="#A8D3D0" stroke-width="2" opacity=".42"><circle cx="560" cy="370" r="274"/><circle cx="560" cy="370" r="243" stroke-dasharray="5 13"/></g>
 <g fill="#D9B56E"><circle cx="78" cy="84" r="5"/><circle cx="1044" cy="115" r="5"/><circle cx="1040" cy="680" r="6"/><circle cx="86" cy="657" r="4"/></g>
-<!-- glowing connection spokes -->
-<g stroke="#078F88" stroke-width="5" stroke-linecap="round" opacity=".8">
- <path d="M466 300 356 212M654 300 764 212M449 375 358 405M671 375 762 405M560 455v125"/>
-</g>
-<g stroke="#C9A45D" stroke-width="2" stroke-dasharray="4 10" opacity=".55"><path d="M466 300 356 212M654 300 764 212M449 375 358 405M671 375 762 405M560 455v125"/></g>
-<!-- subject card 1 anatomy -->
-<g filter="url(#cardShadow)">
- <rect x="64" y="90" width="355" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/>
- <rect x="64" y="90" width="355" height="12" rx="6" fill="url(#teal)" opacity=".85"/>
- <circle cx="128" cy="155" r="34" fill="url(#gold)" opacity=".2"/>
- <circle cx="128" cy="155" r="28" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/>
- <g stroke="#F5FFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
-  <circle cx="128" cy="139" r="7"/><path d="M117 151c2-5 6-7 11-7s9 2 11 7l5 22h-12l-1 13h-7l-1-13h-12zM117 155l-9 11m31-11 9 11"/>
- </g>
- <text x="180" y="151" fill="#092D60" font-family="Manrope,Arial,sans-serif" font-size="22" font-weight="800">ANATOMY</text>
- <text x="180" y="181" fill="#078F88" font-family="DM Sans,Arial,sans-serif" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text>
-</g>
-<!-- subject card 2 physiology -->
-<g filter="url(#cardShadow)">
- <rect x="701" y="90" width="355" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/>
- <rect x="701" y="90" width="355" height="12" rx="6" fill="url(#gold)" opacity=".9"/>
- <circle cx="765" cy="155" r="34" fill="url(#gold)" opacity=".2"/>
- <circle cx="765" cy="155" r="28" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/>
- <path d="M765 166s-22-15-22-27c0-9 11-13 22-3 11-10 22-6 22 3 0 12-22 27-22 27Z" fill="#F17F75" stroke="#FFE7D9" stroke-width="2"/>
- <path d="M744 150h9l5-8 7 18 6-10h13" fill="none" stroke="#FFF6E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
- <text x="817" y="151" fill="#092D60" font-family="Manrope,Arial,sans-serif" font-size="22" font-weight="800">PHYSIOLOGY</text>
- <text x="817" y="181" fill="#078F88" font-family="DM Sans,Arial,sans-serif" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text>
-</g>
-<!-- subject card 3 clinical sciences -->
-<g filter="url(#cardShadow)">
- <rect x="44" y="342" width="370" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/>
- <rect x="44" y="342" width="370" height="12" rx="6" fill="url(#teal)" opacity=".85"/>
- <circle cx="109" cy="407" r="34" fill="url(#gold)" opacity=".2"/>
- <circle cx="109" cy="407" r="28" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/>
- <g stroke="#F1FFFF" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M94 388h23l7 6-7 7h-16v10h-7zM111 402l14 14m-13-2-8 15m-5 0h31"/>
- </g>
- <text x="161" y="402" fill="#092D60" font-family="Manrope,Arial,sans-serif" font-size="20" font-weight="800">CLINICAL SCIENCES</text>
- <text x="161" y="432" fill="#078F88" font-family="DM Sans,Arial,sans-serif" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text>
-</g>
-<!-- subject card 4 safety and ethics -->
-<g filter="url(#cardShadow)">
- <rect x="706" y="342" width="370" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/>
- <rect x="706" y="342" width="370" height="12" rx="6" fill="url(#gold)" opacity=".9"/>
- <circle cx="771" cy="407" r="34" fill="url(#gold)" opacity=".2"/>
- <circle cx="771" cy="407" r="28" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/>
- <path d="M771 382 791 390v15c0 16-11 25-20 30-9-5-20-14-20-30v-15Z" fill="#0C8F88" stroke="#D6FFF8" stroke-width="2.5"/>
- <path d="m759 407 9 9 16-19" stroke="#FFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
- <text x="823" y="402" fill="#092D60" font-family="Manrope,Arial,sans-serif" font-size="19" font-weight="800">SAFETY &amp; ETHICS</text>
- <text x="823" y="432" fill="#078F88" font-family="DM Sans,Arial,sans-serif" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text>
-</g>
+<g stroke="#078F88" stroke-width="5" stroke-linecap="round" opacity=".8" fill="none"><path d="M466 280 356 212M654 280 764 212M449 365 358 405M671 365 762 405M560 455v125"/></g>
+<!-- Anatomy -->
+<g filter="url(#shadow)"><rect x="64" y="90" width="355" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/><rect x="64" y="90" width="355" height="12" rx="6" fill="url(#teal)"/><circle cx="128" cy="155" r="29" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/><g stroke="#F5FFFF" stroke-width="3.5" stroke-linecap="round" fill="none"><circle cx="128" cy="139" r="7"/><path d="M117 151c2-5 6-7 11-7s9 2 11 7l5 22h-12l-1 13h-7l-1-13h-12zM117 155l-9 11m31-11 9 11"/></g><text x="180" y="151" fill="#092D60" font-family="Arial" font-size="22" font-weight="800">ANATOMY</text><text x="180" y="181" fill="#078F88" font-family="Arial" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text></g>
+<!-- Physiology -->
+<g filter="url(#shadow)"><rect x="701" y="90" width="355" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/><rect x="701" y="90" width="355" height="12" rx="6" fill="url(#gold)"/><circle cx="765" cy="155" r="29" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/><path d="M765 166s-22-15-22-27c0-9 11-13 22-3 11-10 22-6 22 3 0 12-22 27-22 27Z" fill="#F17F75" stroke="#FFE7D9" stroke-width="2"/><path d="M744 150h9l5-8 7 18 6-10h13" fill="none" stroke="#FFF6E8" stroke-width="2.5" stroke-linecap="round"/><text x="817" y="151" fill="#092D60" font-family="Arial" font-size="22" font-weight="800">PHYSIOLOGY</text><text x="817" y="181" fill="#078F88" font-family="Arial" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text></g>
+<!-- Microbiology -->
+<g filter="url(#shadow)"><rect x="44" y="342" width="370" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/><rect x="44" y="342" width="370" height="12" rx="6" fill="url(#teal)"/><circle cx="109" cy="407" r="29" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/><g fill="none" stroke="#F4FFFF" stroke-width="2.8"><circle cx="109" cy="407" r="12"/><path d="M109 388v-6m0 44v-6m-19-13h-6m44 0h-6m-27-14-5-5m33 33-5-5m0-23 5-5m-33 33 5-5"/><circle cx="105" cy="403" r="2" fill="#FFF"/><circle cx="115" cy="411" r="2" fill="#FFF"/></g><text x="161" y="402" fill="#092D60" font-family="Arial" font-size="21" font-weight="800">MICROBIOLOGY</text><text x="161" y="432" fill="#078F88" font-family="Arial" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text></g>
+<!-- AI in Healthcare -->
+<g filter="url(#shadow)"><rect x="706" y="342" width="370" height="132" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/><rect x="706" y="342" width="370" height="12" rx="6" fill="url(#gold)"/><circle cx="771" cy="407" r="29" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/><rect x="756" y="392" width="30" height="30" rx="6" fill="none" stroke="#D6FFF8" stroke-width="2.5"/><path d="M761 387v5m10-5v5m10-5v5m-20 35v-5m10 5v-5m10 5v-5m-30-20h5m-5 10h5m25-10h5m-5 10h5M764 410l5-8 5 5 5-8" fill="none" stroke="#FFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><text x="823" y="402" fill="#092D60" font-family="Arial" font-size="19" font-weight="800">AI IN HEALTHCARE</text><text x="823" y="432" fill="#078F88" font-family="Arial" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text></g>
 <!-- central assessment hub -->
-<g filter="url(#hubGlow)"><circle cx="560" cy="380" r="108" fill="#14A8A2" opacity=".23"/></g>
-<g filter="url(#cardShadow)">
- <circle cx="560" cy="380" r="91" fill="url(#navy)" stroke="#D5B56F" stroke-width="3"/>
- <circle cx="560" cy="380" r="77" fill="none" stroke="#66DDD5" stroke-opacity=".55" stroke-width="2"/>
- <path d="M546 324h28v42h42v28h-42v42h-28v-42h-42v-28h42z" fill="#FFF"/>
- <path d="M560 333v91m-45-45h90" stroke="#078F88" stroke-width="6" stroke-linecap="round"/>
- <text x="560" y="473" text-anchor="middle" fill="#FFFFFF" font-family="Manrope,Arial,sans-serif" font-size="16" font-weight="900">HTSE 2026</text>
-</g>
-<!-- subject card 5 communication -->
-<g filter="url(#cardShadow)">
- <rect x="384" y="586" width="352" height="128" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/>
- <rect x="384" y="586" width="352" height="12" rx="6" fill="url(#teal)" opacity=".85"/>
- <circle cx="451" cy="650" r="34" fill="url(#gold)" opacity=".2"/>
- <circle cx="451" cy="650" r="28" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/>
- <path d="M434 636h23a8 8 0 0 1 8 8v8a8 8 0 0 1-8 8h-7l-9 7v-7a8 8 0 0 1-7-8v-8a8 8 0 0 1 8-8Z" fill="url(#teal)" stroke="#F5FFFF" stroke-width="2"/>
- <path d="M444 642h12m-12 6h8" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
- <text x="504" y="645" fill="#092D60" font-family="Manrope,Arial,sans-serif" font-size="21" font-weight="800">COMMUNICATION</text>
- <text x="504" y="675" fill="#078F88" font-family="DM Sans,Arial,sans-serif" font-size="13" font-weight="800" letter-spacing="1.2">20 QUESTIONS</text>
-</g>
+<g filter="url(#glow)"><circle cx="560" cy="370" r="108" fill="#14A8A2" opacity=".23"/></g>
+<g filter="url(#shadow)"><circle cx="560" cy="370" r="84" fill="url(#navy)" stroke="#D5B56F" stroke-width="3"/><circle cx="560" cy="370" r="70" fill="none" stroke="#66DDD5" stroke-opacity=".55" stroke-width="2"/><path d="M548 322h24v36h36v24h-36v36h-24v-36h-36v-24h36z" fill="#FFF"/><path d="M560 330v80m-40-40h80" stroke="#078F88" stroke-width="5" stroke-linecap="round"/><text x="560" y="468" text-anchor="middle" fill="#FFF" font-family="Arial" font-size="15" font-weight="900">HTSE 2026</text></g>
+<!-- OET -->
+<g filter="url(#shadow)"><rect x="384" y="586" width="352" height="128" rx="23" fill="url(#glass)" stroke="#BCDCD8" stroke-width="3"/><rect x="384" y="586" width="352" height="12" rx="6" fill="url(#teal)"/><circle cx="451" cy="650" r="29" fill="url(#navy)" stroke="#8EDDD6" stroke-width="2"/><path d="M435 636h27a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8h-11l-9 7v-8a8 8 0 0 1-7-7v-12a8 8 0 0 1 8-8Z" fill="url(#teal)" stroke="#FFF" stroke-width="2"/><path d="M441 646h19m-19 6h15m-15 6h11" stroke="#FFF" stroke-width="2" stroke-linecap="round"/><text x="504" y="645" fill="#092D60" font-family="Arial" font-size="21" font-weight="800">OET</text><text x="504" y="675" fill="#078F88" font-family="Arial" font-size="13" font-weight="800" letter-spacing="1.2">OCCUPATIONAL ENGLISH TEST · 20 QUESTIONS</text></g>
 </svg>
