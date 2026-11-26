@@ -88,7 +88,7 @@ SESSION_COOKIE = "sutravya_candidate_session"
 HACKATHON_SESSION_COOKIE = "sutravya_hackathon_session"
 HACKATHON_REGISTRATION_PURPOSE = "hackathon_registration_verification"
 HACKATHON_LOGIN_PURPOSE = "hackathon_login"
-HACKATHON_SYNOPSIS_DEADLINE = datetime(2026, 11, 27, 23, 59, 0, tzinfo=ZoneInfo("Asia/Kolkata"))
+HACKATHON_SYNOPSIS_DEADLINE = datetime(2026, 12, 8, 23, 59, 0, tzinfo=ZoneInfo("Asia/Kolkata"))
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 REGISTRATION_CLOSES_AT = datetime(2026, 12, 2, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
@@ -969,7 +969,7 @@ def create_app(
             "registration_id": delivery_data["registration_id"],
             "confirmation_email_sent": confirmation_sent,
             "submission_instructions_email_sent": instructions_sent,
-            "message": "Your free Hackathon registration is complete. Save your unique Registration ID. Email your synopsis only to sutravya.connect@gmail.com by 27 November 2026, 11:59 PM IST.",
+            "message": "Your free Hackathon registration is complete. Save your unique Registration ID. Email your synopsis only to sutravya.connect@gmail.com by 08 December 2026, 11:59 PM IST.",
         }
 
     @application.post("/api/hackathon/auth/request-otp", status_code=202, tags=["Hackathon participant account"])
