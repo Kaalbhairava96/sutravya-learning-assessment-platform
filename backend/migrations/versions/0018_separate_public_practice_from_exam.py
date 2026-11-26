@@ -65,7 +65,11 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     # The deleted rows were public practice copies and must not be restored as
-    # official assessment questions. Re-import only a confidential approved paper.
+    # official assessment questions. Keep offline SQL generation deterministic,
+    # but refuse an online downgrade rather than silently re-expose practice keys.
+    if context.is_offline_mode():
+        op.execute(sa.text("-- irreversible: confidential exam bank must be re-imported after downgrade"))
+        return
     raise RuntimeError(
         "This security migration is intentionally irreversible. Re-import an approved confidential question bank."
     )
