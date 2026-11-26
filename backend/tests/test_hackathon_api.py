@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import unittest
+from datetime import datetime
 from http.cookies import SimpleCookie
 from unittest.mock import patch
 
@@ -29,6 +30,7 @@ with patch.dict(os.environ, _TEST_ENVIRONMENT), patch("app.config._read_dotenv",
         REGISTRATION_OPENS_AT,
         HACKATHON_REGISTRATION_CLOSES_AT,
         HACKATHON_REGISTRATION_OPENS_AT,
+        _hackathon_registration_is_open,
         EmailOtpRequest,
         HackathonLoginRequest,
         HackathonRegistrationRequest,
@@ -101,6 +103,8 @@ class HackathonRegistrationFlowTests(unittest.TestCase):
         self.assertEqual(REGISTRATION_CLOSES_AT.isoformat(), "2026-12-02T00:00:00+05:30")
         self.assertEqual(HACKATHON_REGISTRATION_OPENS_AT.isoformat(), "2026-11-01T00:00:00+05:30")
         self.assertEqual(HACKATHON_REGISTRATION_CLOSES_AT.isoformat(), "2026-12-07T00:00:00+05:30")
+        self.assertTrue(_hackathon_registration_is_open(datetime(2026, 12, 6, 23, 59, 59, tzinfo=REGISTRATION_OPENS_AT.tzinfo)))
+        self.assertFalse(_hackathon_registration_is_open(datetime(2026, 12, 7, 0, 0, 0, tzinfo=REGISTRATION_OPENS_AT.tzinfo)))
 
     def test_free_registration_email_otp_login_and_logout(self) -> None:
         payload = HackathonRegistrationRequest(
