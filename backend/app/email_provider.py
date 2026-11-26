@@ -242,7 +242,7 @@ def send_hackathon_submission_instructions(
                 "<p>Please submit your project synopsis / MVP details by email only to "
                 "<a href='mailto:sutravya.connect@gmail.com'>sutravya.connect@gmail.com</a>.</p>"
                 "<p><strong>Deadline: 08 December 2026, 11:59 PM IST.</strong></p>"
-                "<p>There is no website upload or alternate submission form. Do not submit the synopsis through any other website or form.</p>"
+                "<p>There is no website upload or alternate submission form. Do not submit the synopsis / MVP details through any other website or form.</p>"
                 "<p>Selected teams will be notified by email. The selected top three teams will get an opportunity to showcase their projects at Bihar Healthcare Conclave on 11 December 2026.</p>"
             ),
         },
