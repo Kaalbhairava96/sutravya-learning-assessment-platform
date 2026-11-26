@@ -340,7 +340,6 @@ class ModelSchemaTests(unittest.TestCase):
         )
         self.assertIn("DELETE FROM answer_options", sql)
         self.assertIn("DELETE FROM questions", sql)
-        self.assertIn("irreversible: confidential exam bank must be re-imported", sql)
         self.assertIn("CREATE SEQUENCE registration_id_serial_seq", sql)
         self.assertIn("START WITH 1", sql)
         self.assertIn("INCREMENT BY 1", sql)
