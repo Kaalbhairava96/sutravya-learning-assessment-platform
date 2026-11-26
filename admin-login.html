@@ -19,7 +19,24 @@
 <form id="admin-login-form" class="admin-login-form" hidden>
 <label for="admin-email">Administrator email</label><input id="admin-email" type="email" autocomplete="username" maxlength="320" placeholder="name@organisation.com" required>
 <label for="admin-password">Password</label><input id="admin-password" type="password" autocomplete="current-password" minlength="14" maxlength="256" placeholder="Enter your password" required>
-<button class="admin-login-submit" type="submit"><span>Sign in securely</span><span>→</span></button></form>
+<button class="admin-login-submit" type="submit"><span>Sign in securely</span><span>→</span></button>
+<button id="admin-forgot-password" class="admin-text-button" type="button">Forgot password?</button>
+</form>
+<form id="admin-reset-request-form" class="admin-login-form" hidden>
+<label for="admin-reset-request-email">Administrator email</label><input id="admin-reset-request-email" type="email" autocomplete="username" maxlength="320" placeholder="name@organisation.com" required>
+<button class="admin-login-submit" type="submit"><span>Send recovery code</span><span>→</span></button>
+<button id="admin-reset-request-back" class="admin-text-button" type="button">Back to sign in</button>
+<p class="admin-login-hint">For security, we show the same confirmation whether or not the email belongs to an active administrator.</p>
+</form>
+<form id="admin-reset-confirm-form" class="admin-login-form" hidden>
+<label for="admin-reset-confirm-email">Administrator email</label><input id="admin-reset-confirm-email" type="email" autocomplete="username" maxlength="320" required>
+<label for="admin-reset-otp">Six-digit email code</label><input id="admin-reset-otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="Enter the code from your email" required>
+<label for="admin-reset-new-password">New password</label><input id="admin-reset-new-password" type="password" autocomplete="new-password" minlength="14" maxlength="256" placeholder="At least 14 characters" required>
+<label for="admin-reset-confirm-password">Confirm new password</label><input id="admin-reset-confirm-password" type="password" autocomplete="new-password" minlength="14" maxlength="256" placeholder="Re-enter your new password" required>
+<button class="admin-login-submit" type="submit"><span>Reset password</span><span>→</span></button>
+<button id="admin-reset-confirm-back" class="admin-text-button" type="button">Back to sign in</button>
+<p class="admin-login-hint">The code expires after the displayed validity period and can only be used once.</p>
+</form>
 <form id="admin-setup-form" class="admin-login-form" hidden>
 <label for="admin-bootstrap-token">One-time setup token</label><input id="admin-bootstrap-token" type="password" autocomplete="off" minlength="32" maxlength="512" placeholder="Paste the server-provided setup token" required>
 <label for="admin-setup-email">Owner email</label><input id="admin-setup-email" type="email" autocomplete="username" maxlength="320" placeholder="owner@organisation.com" required>
