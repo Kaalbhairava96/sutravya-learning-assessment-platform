@@ -1,0 +1,1636 @@
+{
+  "nursing": {
+    "label": "Nursing",
+    "description": "Common five-subject healthcare syllabus at foundational nursing level. Original practice questions with 100 MCQs and 20 questions per subject.",
+    "difficulty_label": "Foundational",
+    "subjects": [
+      {
+        "key": "anatomy",
+        "label": "Anatomy",
+        "question_count": 20
+      },
+      {
+        "key": "physiology",
+        "label": "Physiology",
+        "question_count": 20
+      },
+      {
+        "key": "biochemistry",
+        "label": "Biochemistry",
+        "question_count": 20
+      },
+      {
+        "key": "healthcare_it",
+        "label": "Healthcare IT",
+        "question_count": 20
+      },
+      {
+        "key": "oet_english",
+        "label": "OET-style Healthcare English",
+        "question_count": 20
+      }
+    ],
+    "questions": [
+      {
+        "id": "NUR-001",
+        "question": "Which description matches the standard anatomical position?",
+        "options": [
+          "Standing upright, facing forward, arms at sides and palms facing forward",
+          "Standing with palms facing backward",
+          "Supine with arms crossed",
+          "Standing with the head turned sideways"
+        ],
+        "answer": 0,
+        "explanation": "The anatomical position is upright and forward-facing, with arms at the sides and palms anterior.",
+        "topic": "Anatomical position",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-002",
+        "question": "Which plane divides the body into left and right portions?",
+        "options": [
+          "Transverse",
+          "Sagittal",
+          "Coronal",
+          "Oblique"
+        ],
+        "answer": 1,
+        "explanation": "A sagittal plane separates left and right portions; a midsagittal plane creates equal halves.",
+        "topic": "Body planes",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-003",
+        "question": "Which bone forms the upper arm?",
+        "options": [
+          "Radius",
+          "Ulna",
+          "Humerus",
+          "Clavicle"
+        ],
+        "answer": 2,
+        "explanation": "The humerus is the long bone of the upper arm.",
+        "topic": "Skeletal system",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-004",
+        "question": "Which chamber receives oxygenated blood from the pulmonary veins?",
+        "options": [
+          "Right atrium",
+          "Left atrium",
+          "Right ventricle",
+          "Left ventricle"
+        ],
+        "answer": 1,
+        "explanation": "Pulmonary veins return oxygenated blood to the left atrium.",
+        "topic": "Cardiac anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-005",
+        "question": "Where does most gas exchange occur in the lungs?",
+        "options": [
+          "Trachea",
+          "Main bronchi",
+          "Alveoli",
+          "Pleural cavity"
+        ],
+        "answer": 2,
+        "explanation": "Alveoli provide a thin, extensive surface for oxygen and carbon dioxide exchange.",
+        "topic": "Respiratory anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-006",
+        "question": "What is the functional unit of the kidney?",
+        "options": [
+          "Nephron",
+          "Neuron",
+          "Alveolus",
+          "Hepatocyte"
+        ],
+        "answer": 0,
+        "explanation": "Each nephron filters blood and modifies filtrate to form urine.",
+        "topic": "Renal anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-007",
+        "question": "Which organ produces bile?",
+        "options": [
+          "Pancreas",
+          "Stomach",
+          "Gallbladder",
+          "Liver"
+        ],
+        "answer": 3,
+        "explanation": "The liver produces bile; the gallbladder stores and concentrates it.",
+        "topic": "Digestive anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-008",
+        "question": "The thyroid gland is primarily located:",
+        "options": [
+          "Behind the kidneys",
+          "In the anterior neck",
+          "Inside the pelvis",
+          "Within the thoracic cavity"
+        ],
+        "answer": 1,
+        "explanation": "The thyroid lies in the anterior neck, in front of the trachea.",
+        "topic": "Endocrine anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-009",
+        "question": "Where are most blood cells formed in healthy adults?",
+        "options": [
+          "Red bone marrow",
+          "Gallbladder",
+          "Thyroid follicles",
+          "Pleural membrane"
+        ],
+        "answer": 0,
+        "explanation": "Haematopoiesis occurs mainly in red bone marrow.",
+        "topic": "Blood and marrow",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-010",
+        "question": "Which structure protects the brain?",
+        "options": [
+          "Rib cage",
+          "Pelvic girdle",
+          "Cranium",
+          "Vertebral disc"
+        ],
+        "answer": 2,
+        "explanation": "The cranial bones form a protective enclosure around the brain.",
+        "topic": "Nervous anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-011",
+        "question": "Which muscle is the main muscle of quiet inspiration?",
+        "options": [
+          "Rectus abdominis",
+          "Diaphragm",
+          "Biceps brachii",
+          "Trapezius"
+        ],
+        "answer": 1,
+        "explanation": "Diaphragm contraction increases thoracic volume during inspiration.",
+        "topic": "Muscle anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-012",
+        "question": "Which vessels normally carry blood away from the heart?",
+        "options": [
+          "Veins",
+          "Venules",
+          "Arteries",
+          "Lymphatics"
+        ],
+        "answer": 2,
+        "explanation": "Arteries carry blood away from the heart; oxygen content depends on the circulation.",
+        "topic": "Vascular anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-013",
+        "question": "Which organ is the main site of nutrient absorption?",
+        "options": [
+          "Stomach",
+          "Small intestine",
+          "Oesophagus",
+          "Large intestine"
+        ],
+        "answer": 1,
+        "explanation": "Most digestion and nutrient absorption occur in the small intestine.",
+        "topic": "Gastrointestinal anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-014",
+        "question": "Which structure carries urine from a kidney to the bladder?",
+        "options": [
+          "Ureter",
+          "Urethra",
+          "Renal artery",
+          "Vena cava"
+        ],
+        "answer": 0,
+        "explanation": "The ureter transports urine from the renal pelvis to the urinary bladder.",
+        "topic": "Urinary anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-015",
+        "question": "Which layer contains most of the blood vessels and sensory structures of the skin?",
+        "options": [
+          "Stratum corneum",
+          "Epidermis",
+          "Dermis",
+          "Nail plate"
+        ],
+        "answer": 2,
+        "explanation": "The dermis contains vessels, nerves, glands and connective tissue.",
+        "topic": "Skin",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-016",
+        "question": "Which organ filters lymph from tissues?",
+        "options": [
+          "Thymus only",
+          "Lymph nodes",
+          "Pancreas",
+          "Adrenal gland"
+        ],
+        "answer": 1,
+        "explanation": "Lymph nodes filter lymph and support immune surveillance.",
+        "topic": "Lymphatic anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-017",
+        "question": "Where does fertilisation most commonly occur?",
+        "options": [
+          "Uterine tube",
+          "Cervix",
+          "Vagina",
+          "Uterine cavity"
+        ],
+        "answer": 0,
+        "explanation": "Fertilisation usually occurs in the ampullary region of the uterine tube.",
+        "topic": "Reproductive anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-018",
+        "question": "Which transparent structure at the front of the eye helps refract light?",
+        "options": [
+          "Retina",
+          "Optic nerve",
+          "Sclera",
+          "Cornea"
+        ],
+        "answer": 3,
+        "explanation": "The cornea provides much of the eye's initial refractive power.",
+        "topic": "Eye anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-019",
+        "question": "Which vessel brings nutrient-rich blood from the intestines to the liver?",
+        "options": [
+          "Pulmonary artery",
+          "Portal vein",
+          "Renal vein",
+          "Carotid artery"
+        ],
+        "answer": 1,
+        "explanation": "The hepatic portal vein carries absorbed nutrients from the gastrointestinal tract to the liver.",
+        "topic": "Liver anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-020",
+        "question": "Which structure connects one bone to another at a joint?",
+        "options": [
+          "Tendon",
+          "Ligament",
+          "Fascia",
+          "Cartilage only"
+        ],
+        "answer": 1,
+        "explanation": "Ligaments connect bone to bone and help stabilise joints.",
+        "topic": "Joint anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "NUR-021",
+        "question": "The primary function of the left ventricle is to:",
+        "options": [
+          "Pump blood to the lungs",
+          "Pump blood into systemic circulation",
+          "Receive blood from the vena cava",
+          "Store blood returning from the lungs"
+        ],
+        "answer": 1,
+        "explanation": "The left ventricle ejects oxygenated blood into the aorta for systemic circulation.",
+        "topic": "Cardiovascular function",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-022",
+        "question": "Which structure normally initiates the heartbeat?",
+        "options": [
+          "AV node",
+          "Bundle of His",
+          "Sinoatrial node",
+          "Purkinje fibres"
+        ],
+        "answer": 2,
+        "explanation": "The sinoatrial node is the usual pacemaker of the heart.",
+        "topic": "Heart rhythm",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-023",
+        "question": "Systolic blood pressure is measured during:",
+        "options": [
+          "Ventricular contraction",
+          "Ventricular relaxation",
+          "Atrial filling only",
+          "Venous return"
+        ],
+        "answer": 0,
+        "explanation": "Systolic pressure is the peak arterial pressure during ventricular systole.",
+        "topic": "Blood pressure",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-024",
+        "question": "Oxygen moves from alveoli into pulmonary capillary blood mainly by:",
+        "options": [
+          "Active transport",
+          "Diffusion down a partial-pressure gradient",
+          "Filtration",
+          "Osmosis"
+        ],
+        "answer": 1,
+        "explanation": "Oxygen diffuses from higher alveolar partial pressure to lower blood partial pressure.",
+        "topic": "Respiratory function",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-025",
+        "question": "Antidiuretic hormone generally causes the kidneys to:",
+        "options": [
+          "Excrete more water",
+          "Reduce water reabsorption",
+          "Increase water reabsorption",
+          "Stop filtration completely"
+        ],
+        "answer": 2,
+        "explanation": "ADH increases water reabsorption in collecting ducts, concentrating urine.",
+        "topic": "Kidney function",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-026",
+        "question": "Which hormone lowers blood glucose by promoting cellular uptake and storage?",
+        "options": [
+          "Glucagon",
+          "Insulin",
+          "Cortisol",
+          "Adrenaline"
+        ],
+        "answer": 1,
+        "explanation": "Insulin promotes glucose uptake in responsive tissues and supports glycogen synthesis.",
+        "topic": "Glucose regulation",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-027",
+        "question": "Which brain region is a major centre for temperature regulation?",
+        "options": [
+          "Cerebellum",
+          "Hypothalamus",
+          "Medulla only",
+          "Occipital lobe"
+        ],
+        "answer": 1,
+        "explanation": "The hypothalamus integrates signals and coordinates thermoregulatory responses.",
+        "topic": "Thermoregulation",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-028",
+        "question": "A negative-feedback mechanism usually:",
+        "options": [
+          "Amplifies the original change",
+          "Opposes a deviation from a set range",
+          "Prevents all hormone release",
+          "Works only during sleep"
+        ],
+        "answer": 1,
+        "explanation": "Negative feedback counteracts a change and helps maintain internal stability.",
+        "topic": "Homeostasis",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-029",
+        "question": "Peristalsis is best described as:",
+        "options": [
+          "Enzyme secretion by the liver",
+          "Wave-like contractions that move contents through the gut",
+          "Filtration of blood in kidneys",
+          "Gas exchange in alveoli"
+        ],
+        "answer": 1,
+        "explanation": "Coordinated smooth-muscle contractions propel gastrointestinal contents.",
+        "topic": "Digestion",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-030",
+        "question": "The basic signalling cell of the nervous system is the:",
+        "options": [
+          "Neuron",
+          "Osteocyte",
+          "Erythrocyte",
+          "Hepatocyte"
+        ],
+        "answer": 0,
+        "explanation": "Neurons receive and transmit electrical and chemical signals.",
+        "topic": "Nervous function",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-031",
+        "question": "The normal arterial blood pH range is approximately:",
+        "options": [
+          "6.8–7.0",
+          "7.00–7.20",
+          "7.35–7.45",
+          "7.60–7.80"
+        ],
+        "answer": 2,
+        "explanation": "Arterial blood pH is normally maintained within a narrow range around 7.4.",
+        "topic": "Acid-base balance",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-032",
+        "question": "Most oxygen in blood is transported:",
+        "options": [
+          "Dissolved freely in plasma",
+          "Bound to haemoglobin",
+          "Attached to platelets",
+          "As bicarbonate"
+        ],
+        "answer": 1,
+        "explanation": "Haemoglobin in red blood cells carries the large majority of blood oxygen.",
+        "topic": "Blood oxygen",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-033",
+        "question": "Stimulation of the sympathetic nervous system commonly:",
+        "options": [
+          "Slows the heart rate",
+          "Increases the heart rate",
+          "Stops sweating",
+          "Closes all airways"
+        ],
+        "answer": 1,
+        "explanation": "Sympathetic activity prepares the body for action and usually increases heart rate.",
+        "topic": "Autonomic function",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-034",
+        "question": "The kidneys contribute to long-term blood pressure regulation by controlling:",
+        "options": [
+          "Only body temperature",
+          "Fluid and sodium balance",
+          "Vision",
+          "Bile secretion"
+        ],
+        "answer": 1,
+        "explanation": "Renal handling of sodium and water affects circulating volume and blood pressure.",
+        "topic": "Renal function",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-035",
+        "question": "Platelets are most directly involved in:",
+        "options": [
+          "Oxygen transport",
+          "Primary haemostasis and plug formation",
+          "Insulin production",
+          "Bile storage"
+        ],
+        "answer": 1,
+        "explanation": "Platelets adhere and aggregate at an injured vessel to form the initial haemostatic plug.",
+        "topic": "Coagulation",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-036",
+        "question": "Which hormone raises blood glucose by stimulating glycogen breakdown?",
+        "options": [
+          "Insulin",
+          "Glucagon",
+          "Calcitonin",
+          "Oxytocin"
+        ],
+        "answer": 1,
+        "explanation": "Glucagon promotes hepatic glycogen breakdown and glucose release.",
+        "topic": "Endocrine response",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-037",
+        "question": "Carbon dioxide is transported in blood predominantly as:",
+        "options": [
+          "Bicarbonate ions",
+          "Oxygenated haemoglobin only",
+          "Dissolved gas only",
+          "Glucose"
+        ],
+        "answer": 0,
+        "explanation": "Most carbon dioxide is carried as bicarbonate after conversion in red blood cells.",
+        "topic": "Gas transport",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-038",
+        "question": "The main function of antibodies is to:",
+        "options": [
+          "Carry oxygen",
+          "Recognise specific antigens",
+          "Digest dietary fat",
+          "Produce urine"
+        ],
+        "answer": 1,
+        "explanation": "Antibodies bind specific antigens and support immune defence.",
+        "topic": "Immune physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-039",
+        "question": "Osmosis is the movement of:",
+        "options": [
+          "Solute from high to low concentration only",
+          "Water across a selectively permeable membrane toward higher solute concentration",
+          "Blood cells through arteries",
+          "Air into the lungs"
+        ],
+        "answer": 1,
+        "explanation": "Osmosis is water movement across a selectively permeable membrane down its water-potential gradient.",
+        "topic": "Fluid balance",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-040",
+        "question": "Pulse oximetry is used to estimate:",
+        "options": [
+          "Blood glucose",
+          "Peripheral oxygen saturation",
+          "Serum sodium",
+          "Haemoglobin type"
+        ],
+        "answer": 1,
+        "explanation": "A pulse oximeter estimates arterial oxygen saturation non-invasively.",
+        "topic": "Vital signs",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "NUR-041",
+        "question": "Which molecule is commonly described as the immediate energy currency of cells?",
+        "options": [
+          "DNA",
+          "ATP",
+          "Urea",
+          "Bilirubin"
+        ],
+        "answer": 1,
+        "explanation": "ATP stores and transfers usable energy for many cellular processes.",
+        "topic": "Energy metabolism",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-042",
+        "question": "The principal simple sugar measured in routine blood glucose testing is:",
+        "options": [
+          "Glucose",
+          "Lactose",
+          "Cellulose",
+          "Glycogen"
+        ],
+        "answer": 0,
+        "explanation": "Glucose is the main circulating monosaccharide and a key cellular fuel.",
+        "topic": "Carbohydrates",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-043",
+        "question": "Proteins are built from smaller units called:",
+        "options": [
+          "Fatty acids",
+          "Nucleotides",
+          "Amino acids",
+          "Monosaccharides"
+        ],
+        "answer": 2,
+        "explanation": "Amino acids join by peptide bonds to form proteins.",
+        "topic": "Proteins",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-044",
+        "question": "Most enzymes function by:",
+        "options": [
+          "Increasing activation energy",
+          "Lowering activation energy",
+          "Being consumed in every reaction",
+          "Changing the final equilibrium"
+        ],
+        "answer": 1,
+        "explanation": "Enzymes accelerate reactions by lowering activation energy without being consumed.",
+        "topic": "Enzymes",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-045",
+        "question": "Iron is essential for haemoglobin because it:",
+        "options": [
+          "Binds oxygen reversibly in the haem group",
+          "Forms the cell membrane",
+          "Digests proteins",
+          "Stores glucose"
+        ],
+        "answer": 0,
+        "explanation": "Ferrous iron in haem binds oxygen reversibly.",
+        "topic": "Haemoglobin",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-046",
+        "question": "Urea is formed mainly in the liver to help remove:",
+        "options": [
+          "Excess nitrogen from amino-acid metabolism",
+          "Carbon dioxide from lungs",
+          "Calcium from bone",
+          "Bile salts from intestine"
+        ],
+        "answer": 0,
+        "explanation": "The urea cycle converts toxic ammonia into urea for renal excretion.",
+        "topic": "Nitrogen metabolism",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-047",
+        "question": "The main storage form of glucose in human liver and muscle is:",
+        "options": [
+          "Cellulose",
+          "Glycogen",
+          "Lactose",
+          "Cholesterol"
+        ],
+        "answer": 1,
+        "explanation": "Glycogen is the principal storage polysaccharide in humans.",
+        "topic": "Glycogen",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-048",
+        "question": "Vitamin C is required for normal:",
+        "options": [
+          "Collagen synthesis",
+          "Thyroid hormone storage",
+          "Bile production",
+          "Oxygen binding by iron"
+        ],
+        "answer": 0,
+        "explanation": "Vitamin C supports hydroxylation reactions needed for collagen formation.",
+        "topic": "Vitamin function",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-049",
+        "question": "Vitamin D helps maintain calcium balance mainly by increasing:",
+        "options": [
+          "Intestinal calcium absorption",
+          "Urinary calcium loss only",
+          "Red-cell destruction",
+          "Bile secretion"
+        ],
+        "answer": 0,
+        "explanation": "Active vitamin D promotes intestinal calcium and phosphate absorption.",
+        "topic": "Vitamin D",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-050",
+        "question": "Albumin contributes significantly to:",
+        "options": [
+          "Plasma oncotic pressure",
+          "Oxygen synthesis",
+          "Platelet production",
+          "Bilirubin conjugation"
+        ],
+        "answer": 0,
+        "explanation": "Albumin is the major plasma protein maintaining colloid oncotic pressure.",
+        "topic": "Plasma proteins",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-051",
+        "question": "Triglycerides are primarily used for:",
+        "options": [
+          "Long-term energy storage",
+          "Carrying genetic information",
+          "Forming antibodies",
+          "Producing urea"
+        ],
+        "answer": 0,
+        "explanation": "Triglycerides store concentrated energy in adipose tissue.",
+        "topic": "Lipid metabolism",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-052",
+        "question": "Bilirubin is produced mainly during breakdown of:",
+        "options": [
+          "Haem from aged red blood cells",
+          "Insulin",
+          "Plasma glucose",
+          "Collagen"
+        ],
+        "answer": 0,
+        "explanation": "Haem catabolism produces bilirubin, which is processed by the liver.",
+        "topic": "Bilirubin",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-053",
+        "question": "The principal extracellular cation is:",
+        "options": [
+          "Potassium",
+          "Sodium",
+          "Magnesium",
+          "Calcium"
+        ],
+        "answer": 1,
+        "explanation": "Sodium is the main cation in extracellular fluid.",
+        "topic": "Electrolytes",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-054",
+        "question": "Bicarbonate in blood acts mainly as a:",
+        "options": [
+          "Buffer",
+          "Digestive enzyme",
+          "Hormone",
+          "Structural protein"
+        ],
+        "answer": 0,
+        "explanation": "The bicarbonate-carbonic acid system buffers changes in blood pH.",
+        "topic": "Acid-base chemistry",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-055",
+        "question": "HbA1c gives an estimate of average blood glucose over approximately:",
+        "options": [
+          "Several months",
+          "One hour",
+          "One day",
+          "One week"
+        ],
+        "answer": 0,
+        "explanation": "HbA1c reflects glycation over the lifespan of circulating red blood cells, roughly two to three months.",
+        "topic": "Diabetes monitoring",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-056",
+        "question": "Ketone bodies increase when the body relies heavily on:",
+        "options": [
+          "Fat breakdown during low carbohydrate availability",
+          "Protein synthesis after meals",
+          "Bile storage",
+          "Calcium absorption"
+        ],
+        "answer": 0,
+        "explanation": "Ketone production rises when hepatic fatty-acid oxidation is increased.",
+        "topic": "Ketone bodies",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-057",
+        "question": "ALT is commonly measured as a marker associated with injury to the:",
+        "options": [
+          "Liver",
+          "Thyroid",
+          "Lung alveoli",
+          "Bone marrow"
+        ],
+        "answer": 0,
+        "explanation": "Alanine aminotransferase is concentrated in hepatocytes and may rise with hepatocellular injury.",
+        "topic": "Liver enzymes",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-058",
+        "question": "Creatinine in blood is used clinically as part of assessing:",
+        "options": [
+          "Kidney filtration function",
+          "Lung volume",
+          "Thyroid size",
+          "Platelet adhesion"
+        ],
+        "answer": 0,
+        "explanation": "Serum creatinine helps estimate glomerular filtration when interpreted with clinical context.",
+        "topic": "Renal markers",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-059",
+        "question": "A very high temperature can reduce enzyme activity because it may:",
+        "options": [
+          "Denature the enzyme's structure",
+          "Create extra active sites indefinitely",
+          "Turn proteins into DNA",
+          "Stop all molecular motion"
+        ],
+        "answer": 0,
+        "explanation": "Heat can disrupt an enzyme's three-dimensional structure and active site.",
+        "topic": "Enzyme activity",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-060",
+        "question": "Glycolysis converts glucose primarily into:",
+        "options": [
+          "Pyruvate",
+          "Urea",
+          "Bilirubin",
+          "Cholesterol"
+        ],
+        "answer": 0,
+        "explanation": "Glycolysis breaks glucose down to pyruvate while generating ATP and NADH.",
+        "topic": "Metabolic pathways",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "NUR-061",
+        "question": "An electronic health record (EHR) is best described as:",
+        "options": [
+          "A digital longitudinal record of a patient's health information",
+          "A public social-media profile",
+          "A device used only to measure temperature",
+          "A paper prescription archive"
+        ],
+        "answer": 0,
+        "explanation": "An EHR organises patient information digitally across encounters and care settings.",
+        "topic": "Electronic health records",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-062",
+        "question": "Which action best protects a patient's electronic record from unauthorised viewing?",
+        "options": [
+          "Sharing a login with colleagues",
+          "Using an individual account with role-based access",
+          "Leaving the workstation unlocked",
+          "Sending screenshots to a personal email"
+        ],
+        "answer": 1,
+        "explanation": "Individual accounts and role-based access help ensure that users see only information required for their role.",
+        "topic": "Privacy",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-063",
+        "question": "Multi-factor authentication requires:",
+        "options": [
+          "Two or more different verification factors",
+          "Two usernames",
+          "A password written on paper",
+          "A shared department password"
+        ],
+        "answer": 0,
+        "explanation": "MFA combines different factors such as something known and something possessed.",
+        "topic": "Authentication",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-064",
+        "question": "A message asking a nurse to open an urgent unknown attachment and enter a password may be:",
+        "options": [
+          "A phishing attempt",
+          "A routine backup",
+          "A patient consent form",
+          "A laboratory calibration"
+        ],
+        "answer": 0,
+        "explanation": "Phishing messages impersonate trusted senders to steal credentials or deliver malware.",
+        "topic": "Cybersecurity",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-065",
+        "question": "An EHR audit trail is used to record:",
+        "options": [
+          "Who accessed or changed information and when",
+          "Only the patient's blood group",
+          "The colour of a computer screen",
+          "Only deleted files"
+        ],
+        "answer": 0,
+        "explanation": "Audit logs support accountability by recording access and changes to health information.",
+        "topic": "Audit trails",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-066",
+        "question": "Which practice most improves patient identification accuracy in a digital system?",
+        "options": [
+          "Using two approved patient identifiers",
+          "Searching by room number only",
+          "Reusing a previous patient's label",
+          "Using an abbreviated name without checking"
+        ],
+        "answer": 0,
+        "explanation": "Two identifiers reduce the risk of selecting the wrong patient record.",
+        "topic": "Data quality",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-067",
+        "question": "Healthcare interoperability means that systems can:",
+        "options": [
+          "Exchange and use health information in a meaningful way",
+          "Operate only without internet",
+          "Replace all clinical judgement",
+          "Store images without labels"
+        ],
+        "answer": 0,
+        "explanation": "Interoperability allows authorised systems to exchange and interpret information.",
+        "topic": "Interoperability",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-068",
+        "question": "FHIR is a healthcare standard primarily designed to support:",
+        "options": [
+          "Electronic exchange of healthcare information",
+          "Sterilisation of instruments",
+          "Measurement of blood pressure",
+          "Physical patient identification bands"
+        ],
+        "answer": 0,
+        "explanation": "FHIR provides standardised resources and interfaces for exchanging health data.",
+        "topic": "Healthcare standards",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-069",
+        "question": "A PACS is commonly used to:",
+        "options": [
+          "Store and access medical images",
+          "Schedule staff leave only",
+          "Dispense medicines",
+          "Measure blood glucose"
+        ],
+        "answer": 0,
+        "explanation": "Picture Archiving and Communication Systems manage storage and access to diagnostic images.",
+        "topic": "Imaging IT",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-070",
+        "question": "A laboratory information system (LIS) helps manage:",
+        "options": [
+          "Specimen tracking and laboratory results",
+          "Hospital catering orders",
+          "Ward furniture inventory only",
+          "Patient transport routes"
+        ],
+        "answer": 0,
+        "explanation": "An LIS supports laboratory workflows, specimen identification, test processing and result reporting.",
+        "topic": "Laboratory IT",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-071",
+        "question": "If the hospital EHR becomes unavailable, staff should first:",
+        "options": [
+          "Follow the approved downtime procedure and use authorised paper workflows",
+          "Share personal passwords",
+          "Stop documenting care",
+          "Enter all records into an unapproved public app"
+        ],
+        "answer": 0,
+        "explanation": "A downtime procedure preserves safe care and records until the system is restored.",
+        "topic": "Downtime planning",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-072",
+        "question": "Why are regular, tested backups important in healthcare IT?",
+        "options": [
+          "They help restore data after system failure or ransomware",
+          "They replace user authentication",
+          "They make every email public",
+          "They prevent all human errors"
+        ],
+        "answer": 0,
+        "explanation": "Tested backups help recover critical information after data loss or cyber incidents.",
+        "topic": "Backups",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-073",
+        "question": "Before a telehealth consultation, staff should verify:",
+        "options": [
+          "Patient identity, consent and a private communication setting",
+          "Only the screen brightness",
+          "That the patient uses social media",
+          "That no clinical record is created"
+        ],
+        "answer": 0,
+        "explanation": "Identity, consent and privacy are important parts of safe remote care.",
+        "topic": "Telehealth",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-074",
+        "question": "A clinical decision-support alert should be treated as:",
+        "options": [
+          "Information to be considered with clinical judgement",
+          "A command that always overrides the clinician",
+          "A replacement for patient assessment",
+          "A guaranteed diagnosis"
+        ],
+        "answer": 0,
+        "explanation": "Decision support can assist clinicians but does not replace assessment or professional judgement.",
+        "topic": "Clinical decision support",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-075",
+        "question": "An electronic medication administration record (eMAR) is used to document:",
+        "options": [
+          "Medication orders and administration events",
+          "Only a patient's appointment history",
+          "Staff payroll",
+          "Radiology equipment maintenance"
+        ],
+        "answer": 0,
+        "explanation": "An eMAR records medication administration and supports safer medication workflows.",
+        "topic": "Medication records",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-076",
+        "question": "Encryption helps protect information by:",
+        "options": [
+          "Making data unreadable without the required key",
+          "Automatically deleting incorrect records",
+          "Removing the need for consent",
+          "Making all passwords identical"
+        ],
+        "answer": 0,
+        "explanation": "Encryption transforms data so that only authorised parties with the key can read it.",
+        "topic": "Data security",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-077",
+        "question": "The principle of least privilege means users receive:",
+        "options": [
+          "Only the minimum access needed for their duties",
+          "Administrator access by default",
+          "Access to every patient record",
+          "No access logging"
+        ],
+        "answer": 0,
+        "explanation": "Least privilege reduces the exposure of sensitive information.",
+        "topic": "Least privilege",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-078",
+        "question": "If a staff member suspects a patient-data breach, they should:",
+        "options": [
+          "Report it promptly through the approved incident process",
+          "Delete all evidence",
+          "Post details in a group chat",
+          "Ignore it unless media report it"
+        ],
+        "answer": 0,
+        "explanation": "Prompt reporting allows the organisation to contain, investigate and manage a possible breach.",
+        "topic": "Incident response",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-079",
+        "question": "Patient information should be shared externally only when:",
+        "options": [
+          "There is a lawful, authorised purpose and appropriate safeguards",
+          "A colleague asks informally",
+          "The file is easy to download",
+          "The recipient promises not to forward it"
+        ],
+        "answer": 0,
+        "explanation": "Healthcare data sharing requires a justified purpose, authority and appropriate privacy safeguards.",
+        "topic": "Data sharing",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-080",
+        "question": "A good electronic clinical note should be:",
+        "options": [
+          "Accurate, timely, relevant and attributable to its author",
+          "Written under another user's account",
+          "Altered without an audit trail",
+          "Filled with unexplained abbreviations"
+        ],
+        "answer": 0,
+        "explanation": "Good documentation is accurate, timely and clearly linked to the responsible professional.",
+        "topic": "Clinical documentation",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "NUR-081",
+        "question": "A patient says, 'I am worried about the test.' Which response is most empathetic?",
+        "options": [
+          "There is nothing to worry about.",
+          "You should not ask questions.",
+          "I understand this may feel worrying. What would you like me to explain?",
+          "Everyone has this test."
+        ],
+        "answer": 2,
+        "explanation": "Acknowledging emotion and inviting questions supports patient-centred communication.",
+        "topic": "Patient communication",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-082",
+        "question": "Which instruction is clearest for a patient collecting a morning urine sample?",
+        "options": [
+          "Do the urine thing tomorrow.",
+          "Please collect the first urine you pass in the morning in the sterile container provided.",
+          "Bring something from the bathroom.",
+          "Collect it whenever you remember."
+        ],
+        "answer": 1,
+        "explanation": "A clear instruction specifies timing, the sample and the approved container.",
+        "topic": "Clear instructions",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-083",
+        "question": "Choose the most appropriate phrase when asking a patient to confirm their date of birth.",
+        "options": [
+          "Tell me your birthday now.",
+          "You must know your date.",
+          "Could you please confirm your date of birth for me?",
+          "Say the date quickly."
+        ],
+        "answer": 2,
+        "explanation": "Polite, direct wording is appropriate during identity checks.",
+        "topic": "Professional tone",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-084",
+        "question": "Choose the correct sentence.",
+        "options": [
+          "The results has been reviewed.",
+          "The results have been reviewed.",
+          "The results is reviewed yesterday.",
+          "The results was review."
+        ],
+        "answer": 1,
+        "explanation": "The plural subject 'results' takes the verb 'have'.",
+        "topic": "Grammar",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-085",
+        "question": "The patient was admitted ___ the medical ward yesterday.",
+        "options": [
+          "in",
+          "at",
+          "to",
+          "on"
+        ],
+        "answer": 2,
+        "explanation": "The usual phrase is 'admitted to the ward'.",
+        "topic": "Prepositions",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-086",
+        "question": "A 'discharge summary' is a document that usually:",
+        "options": [
+          "Records key information about care and follow-up when a patient leaves hospital",
+          "Lists only hospital staff salaries",
+          "Replaces informed consent",
+          "Contains only room numbers"
+        ],
+        "answer": 0,
+        "explanation": "A discharge summary communicates the admission, treatment, status and follow-up plan.",
+        "topic": "Clinical vocabulary",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-087",
+        "question": "Which detail is most important in a referral letter?",
+        "options": [
+          "The writer's favourite treatment",
+          "The reason for referral and relevant clinical findings",
+          "A long unrelated personal story",
+          "The colour of the clinic"
+        ],
+        "answer": 1,
+        "explanation": "A referral should state the purpose and relevant clinical information clearly.",
+        "topic": "Referral writing",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-088",
+        "question": "A note states: 'Review wound dressing in 48 hours.' When should the dressing be reviewed?",
+        "options": [
+          "Immediately",
+          "Within two days",
+          "After two weeks",
+          "Only at discharge"
+        ],
+        "answer": 1,
+        "explanation": "Forty-eight hours equals two days.",
+        "topic": "Reading a note",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-089",
+        "question": "Which sentence is most appropriate when asking a patient to keep still during a procedure?",
+        "options": [
+          "Don't move or you will cause trouble.",
+          "Keep quiet.",
+          "Please try to remain still while I complete the procedure.",
+          "You are moving too much."
+        ],
+        "answer": 2,
+        "explanation": "A courteous explanation gives the patient a clear and respectful request.",
+        "topic": "Polite request",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-090",
+        "question": "In the SBAR communication format, the letter 'A' stands for:",
+        "options": [
+          "Action",
+          "Assessment",
+          "Admission",
+          "Allergy"
+        ],
+        "answer": 1,
+        "explanation": "SBAR stands for Situation, Background, Assessment and Recommendation.",
+        "topic": "Handover",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-091",
+        "question": "The phrase 'take the medicine twice daily' means:",
+        "options": [
+          "Take two tablets at once every week",
+          "Take it two times each day",
+          "Take it only when pain occurs",
+          "Take it every two hours"
+        ],
+        "answer": 1,
+        "explanation": "Twice daily means two administrations per day; the dose and timing should also be specified.",
+        "topic": "Sentence meaning",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-092",
+        "question": "Which instruction is safest and clearest?",
+        "options": [
+          "Take one tablet after breakfast and one after dinner.",
+          "Take two sometime.",
+          "Use as usual.",
+          "Take it when needed, maybe."
+        ],
+        "answer": 0,
+        "explanation": "Specific timing reduces the risk of misunderstanding.",
+        "topic": "Avoiding ambiguity",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-093",
+        "question": "A useful way to check whether a patient understands an instruction is to:",
+        "options": [
+          "Ask them to explain the plan in their own words",
+          "Repeat the same sentence louder",
+          "Assume they understand",
+          "Ask only a family member"
+        ],
+        "answer": 0,
+        "explanation": "Teach-back helps confirm understanding without blaming the patient.",
+        "topic": "Active listening",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-094",
+        "question": "In a clinical note, 'monitor' most nearly means:",
+        "options": [
+          "Ignore",
+          "Observe and check regularly",
+          "Discharge immediately",
+          "Change the diagnosis"
+        ],
+        "answer": 1,
+        "explanation": "To monitor is to observe or measure a condition over time.",
+        "topic": "Vocabulary",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-095",
+        "question": "Choose the correct sentence for a completed action.",
+        "options": [
+          "The sample is collected yesterday.",
+          "The sample was collected yesterday.",
+          "The sample collect yesterday.",
+          "The sample has collect yesterday."
+        ],
+        "answer": 1,
+        "explanation": "The past simple passive 'was collected' describes a completed action.",
+        "topic": "Tense",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-096",
+        "question": "Which phrase is most appropriate before administering a medicine?",
+        "options": [
+          "I think this is probably yours.",
+          "Let me confirm your identity and the medication details first.",
+          "Take it because I said so.",
+          "The label does not matter."
+        ],
+        "answer": 1,
+        "explanation": "Verification before administration is a key safety step.",
+        "topic": "Patient safety",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-097",
+        "question": "A professional referral letter should normally begin with:",
+        "options": [
+          "An unrelated quotation",
+          "The recipient and purpose of the letter",
+          "A list of abbreviations without context",
+          "The patient's social-media details"
+        ],
+        "answer": 1,
+        "explanation": "Clear recipient details and purpose help the reader understand the referral immediately.",
+        "topic": "Letter structure",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-098",
+        "question": "A patient is advised to 'fast for 8 hours before the test.' What does this mean?",
+        "options": [
+          "Avoid food and drink as instructed for the eight-hour period",
+          "Eat a large meal immediately before the test",
+          "Exercise for eight hours",
+          "Take extra medication"
+        ],
+        "answer": 0,
+        "explanation": "Fasting means following the specified restrictions on food and sometimes drink before testing.",
+        "topic": "Comprehension",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-099",
+        "question": "Which word best completes the sentence: 'Please ___ me if you experience dizziness.'",
+        "options": [
+          "inform",
+          "informs",
+          "informing",
+          "informed"
+        ],
+        "answer": 0,
+        "explanation": "After 'please', use the base form of the verb.",
+        "topic": "Word choice",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NUR-100",
+        "question": "Which explanation is most appropriate for a patient unfamiliar with a blood test?",
+        "options": [
+          "It is routine, so do not ask.",
+          "The test uses a small blood sample to help us check your health. I can explain each step before we begin.",
+          "It is too technical to explain.",
+          "You will understand later."
+        ],
+        "answer": 1,
+        "explanation": "Plain language and an offer to explain support informed participation.",
+        "topic": "Clinical explanation",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      }
+    ]
+  }
+}
