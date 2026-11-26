@@ -168,6 +168,9 @@ def send_otp_email(
     elif purpose == "hackathon_login":
         subject = "Your Healthcare Innovation Hackathon sign-in code"
         lead = "Use this one-time code to sign in with your Hackathon Registration ID."
+    elif purpose == "admin_password_reset":
+        subject = "Your SUTRAVYA administrator password reset code"
+        lead = "Use this one-time code to reset your SUTRAVYA administrator password. If you did not request this, ignore this email."
     else:
         raise ValueError("Unsupported email OTP purpose.")
     safe_name = escape(recipient_name)
