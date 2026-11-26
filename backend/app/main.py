@@ -91,7 +91,16 @@ HACKATHON_LOGIN_PURPOSE = "hackathon_login"
 HACKATHON_SYNOPSIS_DEADLINE = datetime(2026, 12, 8, 23, 59, 0, tzinfo=ZoneInfo("Asia/Kolkata"))
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
-REGISTRATION_CLOSES_AT = datetime(2026, 12, 7, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+REGISTRATION_CLOSES_AT = datetime(2026, 12, 2, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+HACKATHON_REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+HACKATHON_REGISTRATION_CLOSES_AT = datetime(2026, 12, 7, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+
+
+def _hackathon_registration_is_open(now: datetime) -> bool:
+    current = now.replace(tzinfo=timezone.utc) if now.tzinfo is None else now
+    current = current.astimezone(REGISTRATION_TIMEZONE)
+    return HACKATHON_REGISTRATION_OPENS_AT <= current < HACKATHON_REGISTRATION_CLOSES_AT
+
 
 
 def _registration_now() -> datetime:
@@ -319,7 +328,7 @@ def _registration_error(error: RegistrationError) -> HTTPException:
         "challenge_unavailable": "This code request is unavailable. Request a new code.",
         "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
         "registration_not_open": "Registration opens 1 November 2026 at 12:00 AM IST.",
-        "registration_closed": "Hackathon registration closed after 6 December 2026 at 11:59:59 PM IST.",
+        "registration_closed": "Registration closed after 1 December 2026 at 11:59:59 PM IST.",
         "internal_test_unauthorized": "Internal testing access could not be authorized.",
         "internal_test_unavailable": "Internal testing access is no longer available.",
     }
@@ -838,6 +847,8 @@ def create_app(
     @application.post("/api/hackathon/registrations/start", status_code=202, tags=["Hackathon registration"])
     def start_hackathon_registration(payload: HackathonRegistrationRequest, request: Request):
         settings = request.app.state.settings
+        if not _hackathon_registration_is_open(_registration_now()):
+            raise HTTPException(status_code=410, detail="Hackathon registration is open from 1 November 2026 through 6 December 2026, 11:59 PM IST.")
         try:
             email = normalize_email(payload.email)
             mobile = normalize_mobile(payload.mobile)
@@ -922,6 +933,8 @@ def create_app(
     @application.post("/api/hackathon/registrations/verify-email", tags=["Hackathon registration"])
     def verify_hackathon_registration(payload: EmailOtpRequest, request: Request):
         settings = request.app.state.settings
+        if not _hackathon_registration_is_open(_registration_now()):
+            raise HTTPException(status_code=410, detail="Hackathon registration closed after 6 December 2026, 11:59:59 PM IST.")
         outcome = ChallengeVerification.NOT_FOUND
         delivery_data = None
         with _session(request) as session:
