@@ -41,10 +41,12 @@
       {id:"bmlt",label:"BMLT"},{id:"bott",label:"BOTT"},{id:"bhm",label:"BHM"},
       {id:"bopt",label:"B.Opt"},{id:"brit",label:"BRIT"}
     ]},
-    medical: {label:"Medical", programmes:[
-      {id:"medical_ug",label:"Medical UG",years:[1,2,3,4,5]},
-      {id:"medical_pg",label:"Medical PG",years:[1,2,3]}
-    ]}
+    pharmacy: {label:"Pharmacy", programmes:[
+      {id:"dpharm",label:"D.Pharm",years:[1,2]},
+      {id:"bpharm",label:"B.Pharm",years:[1,2,3,4]},
+      {id:"pharmd",label:"Pharm.D",years:[1,2,3,4,5,6]},
+      {id:"mpharm",label:"M.Pharm",years:[1,2]}
+    ]}}
   };
 
   let registrationEnabled = false;
@@ -286,9 +288,7 @@
     const item = catalogue[category.value];
     const selected = item.programmes.find(option => option.id === programme.value);
     const yearValue = year.value ? Number(year.value) : null;
-    const stream = category.value === "medical"
-      ? (programme.value === "medical_ug" ? "mbbs_ug" : "mbbs_pg")
-      : category.value;
+    const stream = category.value;
 
     return {
       payload: {
