@@ -12,12 +12,12 @@ from sqlalchemy.orm import sessionmaker
 from starlette.requests import Request
 
 from app.config import Settings
-from app.models import AuditEvent, Base, Candidate
+from app.models import AdminPasswordReset, AdminSession, AdminUser, AuditEvent, Base, Candidate
 
 TEST_DATABASE_URL = "postgresql+psycopg://synthetic:synthetic@127.0.0.1:55432/sutravya_m3_test"
 with patch.dict(os.environ, {"APP_ENV": "test", "LOG_LEVEL": "CRITICAL", "DATABASE_URL": TEST_DATABASE_URL}), patch("app.config._read_dotenv", return_value={}):
     from app.main import create_app
-    from app.admin_router import AdminCredentials, RecordPatch, router as secure_admin_router
+    from app.admin_router import (AdminCredentials, AdminPasswordResetConfirm, AdminPasswordResetRequest, RecordPatch, router as secure_admin_router)
 
 BOOTSTRAP = "one-time-bootstrap-token-for-tests-only-32-bytes"
 SESSION_SECRET = "admin-session-signing-and-rate-limit-test-secret-32-bytes"
@@ -57,6 +57,7 @@ class AdminPortalTests(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         self.factory = sessionmaker(bind=self.engine, expire_on_commit=False)
         self.addCleanup(self.engine.dispose)
+        self.sent_admin_reset_emails = []
         self.app = create_app(
             Settings(
                 app_env="test", log_level="CRITICAL", database_url=TEST_DATABASE_URL,
@@ -64,6 +65,7 @@ class AdminPortalTests(unittest.TestCase):
                 admin_frontend_origin=ADMIN_ORIGIN,
             ),
             session_factory=self.factory,
+            email_sender=lambda **kwargs: self.sent_admin_reset_emails.append(kwargs),
         )
 
     def setup_owner(self):
@@ -109,6 +111,110 @@ class AdminPortalTests(unittest.TestCase):
         with self.assertRaises(HTTPException) as rejected:
             me(request_for(self.app, "/api/admin/auth/me", token=token))
         self.assertEqual(rejected.exception.status_code, 401)
+
+
+    def test_password_reset_request_does_not_reveal_unknown_admin_emails(self):
+        token = self.setup_owner()
+        request_endpoint = endpoint(self.app, "/api/admin/auth/password-reset/request")
+        known = request_endpoint(
+            AdminPasswordResetRequest(email="owner@example.invalid"),
+            request_for(self.app, "/api/admin/auth/password-reset/request", "POST", token, csrf=True, origin=ADMIN_ORIGIN),
+        )
+        self.assertEqual(known["message"], "If an active administrator account matches this email, a reset code has been sent. Check your inbox and spam folder.")
+        self.assertEqual(len(self.sent_admin_reset_emails), 1)
+        self.assertEqual(self.sent_admin_reset_emails[0]["purpose"], "admin_password_reset")
+        self.assertEqual(self.sent_admin_reset_emails[0]["recipient_email"], "owner@example.invalid")
+
+        unknown = request_endpoint(
+            AdminPasswordResetRequest(email="not-an-admin@example.invalid"),
+            request_for(self.app, "/api/admin/auth/password-reset/request", "POST", csrf=True, origin=ADMIN_ORIGIN),
+        )
+        self.assertEqual(unknown, known)
+        self.assertEqual(len(self.sent_admin_reset_emails), 1)
+
+        with self.factory() as session:
+            challenge = session.query(AdminPasswordReset).one()
+            self.assertNotEqual(challenge.otp_digest, self.sent_admin_reset_emails[0]["otp"])
+            self.assertEqual(challenge.attempt_count, 0)
+            self.assertIsNone(challenge.consumed_at)
+
+    def test_password_reset_changes_password_consumes_code_and_revokes_all_sessions(self):
+        old_token = self.setup_owner()
+        request_endpoint = endpoint(self.app, "/api/admin/auth/password-reset/request")
+        request_endpoint(
+            AdminPasswordResetRequest(email="owner@example.invalid"),
+            request_for(self.app, "/api/admin/auth/password-reset/request", "POST", csrf=True, origin=ADMIN_ORIGIN),
+        )
+        otp = self.sent_admin_reset_emails[-1]["otp"]
+        old_password_hash = None
+        with self.factory() as session:
+            user = session.query(AdminUser).filter_by(email="owner@example.invalid").one()
+            old_password_hash = user.password_hash
+            session.add(AdminSession(
+                admin_user_id=user.id,
+                token_digest="f" * 64,
+                expires_at=__import__("datetime").datetime.now(__import__("datetime").timezone.utc) + __import__("datetime").timedelta(hours=1),
+            ))
+            session.commit()
+
+        confirm_endpoint = endpoint(self.app, "/api/admin/auth/password-reset/confirm")
+        response = confirm_endpoint(
+            AdminPasswordResetConfirm(
+                email="owner@example.invalid", otp=otp,
+                new_password="a-new-strong-test-password-phrase",
+            ),
+            request_for(self.app, "/api/admin/auth/password-reset/confirm", "POST", csrf=True, origin=ADMIN_ORIGIN),
+        )
+        self.assertEqual(response["status"], "password_reset")
+        with self.factory() as session:
+            user = session.query(AdminUser).filter_by(email="owner@example.invalid").one()
+            self.assertNotEqual(user.password_hash, old_password_hash)
+            challenges = session.query(AdminPasswordReset).all()
+            self.assertEqual(sum(row.consumed_at is not None for row in challenges), 1)
+            sessions = session.query(AdminSession).all()
+            self.assertTrue(all(row.revoked_at is not None for row in sessions))
+            self.assertTrue(session.query(AuditEvent).filter_by(action="admin_password_reset_completed").one())
+
+        me = endpoint(self.app, "/api/admin/auth/me")
+        with self.assertRaises(HTTPException) as old_session_rejected:
+            me(request_for(self.app, "/api/admin/auth/me", token=old_token))
+        self.assertEqual(old_session_rejected.exception.status_code, 401)
+
+        login = endpoint(self.app, "/api/admin/auth/login")
+        with self.assertRaises(HTTPException):
+            login(
+                AdminCredentials(email="owner@example.invalid", password="a-long-test-only-password-phrase"),
+                request_for(self.app, "/api/admin/auth/login", "POST", csrf=True, origin=ADMIN_ORIGIN),
+            )
+        signed_in = login(
+            AdminCredentials(email="owner@example.invalid", password="a-new-strong-test-password-phrase"),
+            request_for(self.app, "/api/admin/auth/login", "POST", csrf=True, origin=ADMIN_ORIGIN),
+        )
+        self.assertTrue(signed_in["access_token"])
+
+    def test_password_reset_rejects_incorrect_code_and_enforces_attempt_limit(self):
+        self.setup_owner()
+        endpoint(self.app, "/api/admin/auth/password-reset/request")(
+            AdminPasswordResetRequest(email="owner@example.invalid"),
+            request_for(self.app, "/api/admin/auth/password-reset/request", "POST", csrf=True, origin=ADMIN_ORIGIN),
+        )
+        confirm = endpoint(self.app, "/api/admin/auth/password-reset/confirm")
+        for attempt in range(5):
+            with self.assertRaises(HTTPException) as rejected:
+                confirm(
+                    AdminPasswordResetConfirm(
+                        email="owner@example.invalid", otp="000000",
+                        new_password="a-new-strong-test-password-phrase",
+                    ),
+                    request_for(self.app, "/api/admin/auth/password-reset/confirm", "POST", csrf=True, origin=ADMIN_ORIGIN),
+                )
+            self.assertEqual(rejected.exception.status_code, 400)
+        with self.factory() as session:
+            challenge = session.query(AdminPasswordReset).one()
+            self.assertEqual(challenge.attempt_count, 5)
+            self.assertIsNotNone(challenge.invalidated_at)
+        self.assertEqual(len(self.sent_admin_reset_emails), 1)
+
 
     def test_database_overview_lists_all_tables_and_restricts_authentication_stores(self):
         token = self.setup_owner()
