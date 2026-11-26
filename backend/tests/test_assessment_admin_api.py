@@ -100,7 +100,7 @@ class AssessmentAdminApiTests(unittest.TestCase):
         created = create_slot(
             AdminSlotRequest(
                 stream="paramedical", starts_at=starts,
-                ends_at=starts + timedelta(hours=1), capacity=1000,
+                ends_at=starts + timedelta(hours=8), capacity=1000,
             ),
             request_for(self.application, "/api/admin/assessment/slots"),
             x_admin_key=ADMIN_KEY,
