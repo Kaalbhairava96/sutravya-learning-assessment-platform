@@ -3266,5 +3266,1639 @@
         "subjectLabel": "OET-style Healthcare English"
       }
     ]
+  },
+  "pharmacy": {
+    "label": "Pharmacy",
+    "description": "Common five-subject healthcare syllabus applied to medicines, pharmacy practice and patient safety. Original practice questions with 100 MCQs and 20 questions per subject.",
+    "difficulty_label": "Applied",
+    "subjects": [
+      {
+        "key": "anatomy",
+        "label": "Anatomy",
+        "question_count": 20
+      },
+      {
+        "key": "physiology",
+        "label": "Physiology",
+        "question_count": 20
+      },
+      {
+        "key": "biochemistry",
+        "label": "Biochemistry",
+        "question_count": 20
+      },
+      {
+        "key": "healthcare_it",
+        "label": "Healthcare IT",
+        "question_count": 20
+      },
+      {
+        "key": "oet_english",
+        "label": "OET-style Healthcare English",
+        "question_count": 20
+      }
+    ],
+    "questions": [
+      {
+        "id": "PHA-001",
+        "question": "The median nerve passes through which structure at the wrist?",
+        "options": [
+          "Carpal tunnel",
+          "Cubital tunnel",
+          "Guyon canal",
+          "Radial groove"
+        ],
+        "answer": 0,
+        "explanation": "The median nerve traverses the carpal tunnel beneath the flexor retinaculum.",
+        "topic": "Upper limb",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-002",
+        "question": "The deltoid muscle is primarily responsible for:",
+        "options": [
+          "Shoulder abduction",
+          "Elbow extension",
+          "Wrist flexion",
+          "Hip extension"
+        ],
+        "answer": 0,
+        "explanation": "The deltoid is a major shoulder abductor, particularly after the initial range.",
+        "topic": "Anatomical landmark",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-003",
+        "question": "The trachea divides into the main bronchi at the:",
+        "options": [
+          "Carina",
+          "Epiglottis",
+          "Hilar ligament",
+          "Diaphragm"
+        ],
+        "answer": 0,
+        "explanation": "The carina is the ridge at the tracheal bifurcation.",
+        "topic": "Thorax",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-004",
+        "question": "The portal triad is found within the:",
+        "options": [
+          "Hepatoduodenal ligament",
+          "Round ligament of uterus",
+          "Greater omentum only",
+          "Falciform ligament only"
+        ],
+        "answer": 0,
+        "explanation": "The portal triad comprises the portal vein, hepatic artery and bile duct within the hepatoduodenal ligament.",
+        "topic": "Abdominal anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-005",
+        "question": "The loop of Henle is part of the:",
+        "options": [
+          "Nephron",
+          "Collecting pelvis",
+          "Ureter",
+          "Renal capsule"
+        ],
+        "answer": 0,
+        "explanation": "The loop of Henle is a segment of the nephron involved in establishing the medullary gradient.",
+        "topic": "Renal anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-006",
+        "question": "The urinary bladder is located primarily in the:",
+        "options": [
+          "Pelvic cavity",
+          "Pleural cavity",
+          "Cranial cavity",
+          "Pericardial cavity"
+        ],
+        "answer": 0,
+        "explanation": "The urinary bladder lies in the pelvis when empty and expands superiorly as it fills.",
+        "topic": "Pelvis",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-007",
+        "question": "The parotid gland is located:",
+        "options": [
+          "Anterior and inferior to the ear",
+          "Under the tongue",
+          "Behind the sternum",
+          "Inside the orbit"
+        ],
+        "answer": 0,
+        "explanation": "The parotid gland lies over the mandibular ramus, anterior and inferior to the ear.",
+        "topic": "Head and neck",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-008",
+        "question": "The optic nerve is cranial nerve:",
+        "options": [
+          "II",
+          "III",
+          "V",
+          "VII"
+        ],
+        "answer": 0,
+        "explanation": "The optic nerve is the second cranial nerve and carries visual information.",
+        "topic": "Nervous system",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-009",
+        "question": "The sinoatrial node is located in the:",
+        "options": [
+          "Right atrium near the superior vena cava",
+          "Left ventricle apex",
+          "Interventricular septum",
+          "Coronary sinus only"
+        ],
+        "answer": 0,
+        "explanation": "The SA node is in the right atrium near the opening of the superior vena cava.",
+        "topic": "Cardiac anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-010",
+        "question": "The right main bronchus is generally:",
+        "options": [
+          "Wider, shorter and more vertical",
+          "Narrower and more horizontal",
+          "Longer than the left",
+          "Absent in adults"
+        ],
+        "answer": 0,
+        "explanation": "The right main bronchus is wider, shorter and more vertical, influencing aspiration patterns.",
+        "topic": "Respiratory anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-011",
+        "question": "The islets of Langerhans are located in the:",
+        "options": [
+          "Pancreas",
+          "Thyroid",
+          "Adrenal cortex",
+          "Pituitary"
+        ],
+        "answer": 0,
+        "explanation": "The pancreatic islets contain endocrine cells including insulin- and glucagon-secreting cells.",
+        "topic": "Endocrine anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-012",
+        "question": "The patella is classified as a:",
+        "options": [
+          "Sesamoid bone",
+          "Flat bone",
+          "Irregular bone",
+          "Pneumatic bone"
+        ],
+        "answer": 0,
+        "explanation": "The patella is a sesamoid bone embedded in the quadriceps tendon.",
+        "topic": "Musculoskeletal",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-013",
+        "question": "The major duodenal papilla receives the opening of the:",
+        "options": [
+          "Common bile and main pancreatic ducts (usually via ampulla)",
+          "Cystic duct only",
+          "Ureter",
+          "Hepatic vein"
+        ],
+        "answer": 0,
+        "explanation": "The hepatopancreatic ampulla commonly opens at the major duodenal papilla.",
+        "topic": "GI anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-014",
+        "question": "The femoral artery is a continuation of the:",
+        "options": [
+          "External iliac artery",
+          "Internal iliac artery",
+          "Popliteal artery",
+          "Common carotid artery"
+        ],
+        "answer": 0,
+        "explanation": "The external iliac artery becomes the femoral artery after passing beneath the inguinal ligament.",
+        "topic": "Vascular anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-015",
+        "question": "The thymus is most active in:",
+        "options": [
+          "Childhood",
+          "Late adulthood only",
+          "Pregnancy only",
+          "Old age only"
+        ],
+        "answer": 0,
+        "explanation": "The thymus is prominent in childhood and undergoes involution after puberty.",
+        "topic": "Lymphatic anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-016",
+        "question": "The ciliary body contributes to:",
+        "options": [
+          "Accommodation of the lens",
+          "Auditory balance",
+          "Tear drainage only",
+          "Pupil pigmentation"
+        ],
+        "answer": 0,
+        "explanation": "Ciliary muscle contraction changes zonular tension and lens curvature for accommodation.",
+        "topic": "Eye anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-017",
+        "question": "The vas deferens transports sperm from the:",
+        "options": [
+          "Epididymis toward the ejaculatory duct",
+          "Prostate to bladder",
+          "Urethra to kidney",
+          "Seminal vesicle to testis"
+        ],
+        "answer": 0,
+        "explanation": "The vas deferens carries sperm from the epididymis toward the ejaculatory duct.",
+        "topic": "Reproductive anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-018",
+        "question": "The epidermis is primarily composed of:",
+        "options": [
+          "Keratinised stratified squamous epithelium",
+          "Simple columnar epithelium",
+          "Cardiac muscle",
+          "Dense cartilage"
+        ],
+        "answer": 0,
+        "explanation": "The epidermis is keratinised stratified squamous epithelium.",
+        "topic": "Skin anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-019",
+        "question": "The medullary cavity of a long bone contains:",
+        "options": [
+          "Bone marrow",
+          "Synovial fluid",
+          "Cerebrospinal fluid",
+          "Bile"
+        ],
+        "answer": 0,
+        "explanation": "The medullary cavity houses bone marrow.",
+        "topic": "Bone anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-020",
+        "question": "The intramuscular injection site in the ventrogluteal region avoids the major:",
+        "options": [
+          "Sciatic nerve",
+          "Median nerve",
+          "Optic nerve",
+          "Phrenic nerve"
+        ],
+        "answer": 0,
+        "explanation": "The ventrogluteal site is selected to reduce risk to the sciatic nerve and major vessels.",
+        "topic": "Clinical anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PHA-021",
+        "question": "Mean arterial pressure is influenced most directly by cardiac output and:",
+        "options": [
+          "Systemic vascular resistance",
+          "Body height alone",
+          "Serum bilirubin",
+          "Pulmonary volume"
+        ],
+        "answer": 0,
+        "explanation": "MAP is approximately cardiac output multiplied by systemic vascular resistance.",
+        "topic": "Cardiovascular",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-022",
+        "question": "The majority of filtered sodium is reabsorbed in the:",
+        "options": [
+          "Proximal convoluted tubule",
+          "Collecting duct only",
+          "Bowman capsule",
+          "Ureter"
+        ],
+        "answer": 0,
+        "explanation": "The proximal tubule reabsorbs most filtered sodium and water.",
+        "topic": "Renal physiology",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-023",
+        "question": "Aldosterone increases sodium reabsorption mainly in the:",
+        "options": [
+          "Distal nephron",
+          "Glomerular capsule",
+          "Proximal oesophagus",
+          "Alveoli"
+        ],
+        "answer": 0,
+        "explanation": "Aldosterone acts on distal nephron principal cells to increase sodium reabsorption and potassium secretion.",
+        "topic": "Endocrine physiology",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-024",
+        "question": "A low arterial oxygen level is detected primarily by:",
+        "options": [
+          "Peripheral chemoreceptors",
+          "Pancreatic islets",
+          "Hepatic stellate cells",
+          "Platelets"
+        ],
+        "answer": 0,
+        "explanation": "Carotid and aortic bodies respond to reduced arterial oxygen tension.",
+        "topic": "Respiratory physiology",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-025",
+        "question": "Beta-1 adrenergic receptor stimulation typically increases:",
+        "options": [
+          "Heart rate and contractility",
+          "Bronchoconstriction",
+          "Gastric acid neutralisation",
+          "Insulin degradation"
+        ],
+        "answer": 0,
+        "explanation": "Cardiac beta-1 receptors increase rate and contractile force when stimulated.",
+        "topic": "Autonomic physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-026",
+        "question": "Gastrin primarily stimulates:",
+        "options": [
+          "Gastric acid secretion",
+          "Insulin degradation",
+          "Bile storage",
+          "Renal filtration"
+        ],
+        "answer": 0,
+        "explanation": "Gastrin promotes gastric acid secretion and mucosal growth.",
+        "topic": "GI physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-027",
+        "question": "Insulin promotes:",
+        "options": [
+          "Glycogen synthesis",
+          "Glycogen breakdown",
+          "Ketone production",
+          "Hepatic glucose release"
+        ],
+        "answer": 0,
+        "explanation": "Insulin promotes glucose uptake and storage, including glycogen synthesis.",
+        "topic": "Metabolic regulation",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-028",
+        "question": "Thyroid hormones generally increase:",
+        "options": [
+          "Basal metabolic rate",
+          "Blood clotting time only",
+          "Bile storage",
+          "Urine pH only"
+        ],
+        "answer": 0,
+        "explanation": "T3 and T4 increase metabolic activity and influence growth and development.",
+        "topic": "Thyroid physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-029",
+        "question": "A hypotonic extracellular solution tends to make cells:",
+        "options": [
+          "Swell",
+          "Shrink",
+          "Remain unchanged in all cases",
+          "Lose all protein"
+        ],
+        "answer": 0,
+        "explanation": "Water moves into cells in a hypotonic environment, increasing cell volume.",
+        "topic": "Fluid physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-030",
+        "question": "The neurotransmitter released at the skeletal neuromuscular junction is:",
+        "options": [
+          "Acetylcholine",
+          "Dopamine",
+          "Serotonin",
+          "GABA"
+        ],
+        "answer": 0,
+        "explanation": "Motor neurons release acetylcholine at nicotinic receptors on skeletal muscle.",
+        "topic": "Neurophysiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-031",
+        "question": "The primary function of erythropoietin is to stimulate:",
+        "options": [
+          "Red blood cell production",
+          "Platelet destruction",
+          "Bile secretion",
+          "Neutrophil apoptosis"
+        ],
+        "answer": 0,
+        "explanation": "Erythropoietin from the kidneys stimulates erythropoiesis in bone marrow.",
+        "topic": "Haematology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-032",
+        "question": "The LH surge is responsible for triggering:",
+        "options": [
+          "Ovulation",
+          "Menstruation immediately",
+          "Implantation",
+          "Lactation"
+        ],
+        "answer": 0,
+        "explanation": "The mid-cycle LH surge triggers ovulation.",
+        "topic": "Reproductive physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-033",
+        "question": "The plateau phase of the ventricular action potential is mainly associated with:",
+        "options": [
+          "Calcium influx through L-type channels",
+          "Rapid chloride loss only",
+          "Sodium-potassium pump stopping",
+          "Potassium influx only"
+        ],
+        "answer": 0,
+        "explanation": "L-type calcium influx sustains the plateau phase in ventricular myocytes.",
+        "topic": "Cardiac electrophysiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-034",
+        "question": "Parathyroid hormone reduces renal reabsorption of:",
+        "options": [
+          "Phosphate",
+          "Calcium",
+          "Water in all segments",
+          "Glucose"
+        ],
+        "answer": 0,
+        "explanation": "PTH promotes phosphate excretion by reducing proximal tubular phosphate reabsorption.",
+        "topic": "Renal regulation",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-035",
+        "question": "The Bohr effect describes reduced haemoglobin oxygen affinity with increased:",
+        "options": [
+          "Carbon dioxide and hydrogen ion concentration",
+          "Oxygen concentration",
+          "Plasma albumin",
+          "Calcium concentration"
+        ],
+        "answer": 0,
+        "explanation": "Higher CO2 and H+ shift the dissociation curve right, aiding oxygen unloading.",
+        "topic": "Respiratory control",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-036",
+        "question": "Prostaglandins can increase pain sensitivity by:",
+        "options": [
+          "Sensitising peripheral nociceptors",
+          "Blocking all sodium channels",
+          "Destroying sensory nerves",
+          "Inhibiting inflammation in every tissue"
+        ],
+        "answer": 0,
+        "explanation": "Prostaglandins sensitise nociceptors and contribute to inflammatory hyperalgesia.",
+        "topic": "Pain physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-037",
+        "question": "Sweating cools the body mainly through:",
+        "options": [
+          "Evaporation",
+          "Conduction from bone",
+          "Increased shivering",
+          "Vasoconstriction"
+        ],
+        "answer": 0,
+        "explanation": "Evaporation of sweat removes heat from the skin.",
+        "topic": "Thermoregulation",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-038",
+        "question": "Baroreceptors are located mainly in the carotid sinus and:",
+        "options": [
+          "Aortic arch",
+          "Pulmonary veins",
+          "Renal pelvis",
+          "Portal vein"
+        ],
+        "answer": 0,
+        "explanation": "Carotid sinus and aortic arch baroreceptors sense arterial wall stretch.",
+        "topic": "Blood pressure",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-039",
+        "question": "The migrating motor complex occurs mainly:",
+        "options": [
+          "During fasting between meals",
+          "Only during sleep paralysis",
+          "Only after bowel surgery",
+          "During swallowing alone"
+        ],
+        "answer": 0,
+        "explanation": "The migrating motor complex is an interdigestive motility pattern that clears residual contents.",
+        "topic": "GI motility",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-040",
+        "question": "Tolerance to a drug refers to:",
+        "options": [
+          "Reduced response after repeated exposure",
+          "An allergic response after one dose",
+          "A drug's expiry date",
+          "The fraction excreted unchanged"
+        ],
+        "answer": 0,
+        "explanation": "Tolerance is a reduced response after repeated administration, often requiring a higher dose for the same effect.",
+        "topic": "Drug response physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PHA-041",
+        "question": "Cytochrome P450 enzymes are important in:",
+        "options": [
+          "Drug metabolism",
+          "Oxygen transport only",
+          "Bone mineralisation only",
+          "Platelet aggregation"
+        ],
+        "answer": 0,
+        "explanation": "CYP enzymes metabolise many drugs and other compounds, especially in the liver.",
+        "topic": "Pharmacological biochemistry",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-042",
+        "question": "A competitive enzyme inhibitor typically increases the apparent:",
+        "options": [
+          "Km",
+          "Vmax",
+          "Enzyme concentration",
+          "Product equilibrium constant"
+        ],
+        "answer": 0,
+        "explanation": "Competitive inhibition increases apparent Km while Vmax can be reached at high substrate concentration.",
+        "topic": "Enzyme inhibition",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-043",
+        "question": "The major structural lipid component of cell membranes is:",
+        "options": [
+          "Phospholipid",
+          "Triglyceride only",
+          "Cholesteryl ester only",
+          "Free fatty acid only"
+        ],
+        "answer": 0,
+        "explanation": "Phospholipids form the bilayer structure of biological membranes.",
+        "topic": "Lipid chemistry",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-044",
+        "question": "Disulfide bonds form between residues of:",
+        "options": [
+          "Cysteine",
+          "Glycine",
+          "Alanine",
+          "Valine"
+        ],
+        "answer": 0,
+        "explanation": "Oxidation of cysteine thiol groups forms stabilising disulfide bonds.",
+        "topic": "Protein chemistry",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-045",
+        "question": "Vitamin K is required for gamma-carboxylation of several:",
+        "options": [
+          "Coagulation factors",
+          "Thyroid hormones",
+          "Bile acids only",
+          "Plasma glucose molecules"
+        ],
+        "answer": 0,
+        "explanation": "Vitamin K enables activation of factors II, VII, IX and X and proteins C and S.",
+        "topic": "Vitamins",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-046",
+        "question": "Phase II drug metabolism commonly involves:",
+        "options": [
+          "Conjugation reactions",
+          "Only oxidation",
+          "Passive filtration in glomerulus",
+          "Drug absorption in stomach"
+        ],
+        "answer": 0,
+        "explanation": "Phase II reactions conjugate drugs or metabolites with polar groups to aid elimination.",
+        "topic": "Drug metabolism",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-047",
+        "question": "The pentose phosphate pathway produces NADPH and:",
+        "options": [
+          "Ribose-5-phosphate",
+          "Urea",
+          "Lactate only",
+          "Bile salts"
+        ],
+        "answer": 0,
+        "explanation": "The pathway provides NADPH for reductive biosynthesis and ribose-5-phosphate for nucleotides.",
+        "topic": "Metabolic pathways",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-048",
+        "question": "An increased unconjugated bilirubin may occur with:",
+        "options": [
+          "Increased haemolysis",
+          "Obstructive bile duct stone only",
+          "Reduced red cell destruction",
+          "Low haem synthesis only"
+        ],
+        "answer": 0,
+        "explanation": "Increased red-cell breakdown can raise unconjugated bilirubin production.",
+        "topic": "Clinical chemistry",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-049",
+        "question": "Severe hyperkalaemia is dangerous partly because it can cause:",
+        "options": [
+          "Cardiac conduction disturbances",
+          "Improved clotting",
+          "Increased haemoglobin synthesis",
+          "Reduced neuronal excitability only"
+        ],
+        "answer": 0,
+        "explanation": "High extracellular potassium alters cardiac membrane potential and can provoke arrhythmias.",
+        "topic": "Electrolytes",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-050",
+        "question": "The Henderson-Hasselbalch equation relates pH to bicarbonate and:",
+        "options": [
+          "Dissolved carbon dioxide",
+          "Serum calcium",
+          "Haemoglobin concentration only",
+          "Chloride alone"
+        ],
+        "answer": 0,
+        "explanation": "The bicarbonate buffer equation relates pH to bicarbonate and dissolved CO2.",
+        "topic": "Acid-base",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-051",
+        "question": "Gluconeogenesis occurs predominantly in the:",
+        "options": [
+          "Liver",
+          "Spleen",
+          "Skin",
+          "Red blood cells"
+        ],
+        "answer": 0,
+        "explanation": "The liver is the principal site of gluconeogenesis, with the kidney contributing in prolonged fasting.",
+        "topic": "Carbohydrate metabolism",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-052",
+        "question": "Phenylketonuria is associated with impaired metabolism of:",
+        "options": [
+          "Phenylalanine",
+          "Tyrosine only due to iodine lack",
+          "Glycine",
+          "Histidine"
+        ],
+        "answer": 0,
+        "explanation": "Classical PKU is usually due to phenylalanine hydroxylase deficiency.",
+        "topic": "Amino acid metabolism",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-053",
+        "question": "A spectrophotometer estimates analyte concentration by measuring:",
+        "options": [
+          "Light absorbance",
+          "Electrical resistance only",
+          "Sound frequency",
+          "Magnetic field strength"
+        ],
+        "answer": 0,
+        "explanation": "Absorbance at an appropriate wavelength is related to concentration under defined conditions.",
+        "topic": "Biochemical testing",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-054",
+        "question": "Creatine kinase-MB has historically been associated with injury to:",
+        "options": [
+          "Cardiac muscle",
+          "Kidney glomeruli",
+          "Thyroid follicles",
+          "Pancreatic islets"
+        ],
+        "answer": 0,
+        "explanation": "CK-MB can rise with myocardial injury, though cardiac troponin is preferred in most modern settings.",
+        "topic": "Enzyme marker",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-055",
+        "question": "A weak acid drug is generally more ionised in:",
+        "options": [
+          "Alkaline solution",
+          "Acidic solution",
+          "Pure lipid",
+          "A vacuum"
+        ],
+        "answer": 0,
+        "explanation": "Weak acids donate protons more readily at higher pH and become more ionised.",
+        "topic": "Drug chemistry",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-056",
+        "question": "Glutathione helps protect cells by:",
+        "options": [
+          "Reducing reactive oxidants",
+          "Producing bile",
+          "Transporting oxygen",
+          "Breaking down DNA"
+        ],
+        "answer": 0,
+        "explanation": "Reduced glutathione participates in antioxidant defence and peroxide detoxification.",
+        "topic": "Oxidative stress",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-057",
+        "question": "Albumin is synthesised mainly by the:",
+        "options": [
+          "Liver",
+          "Kidney",
+          "Spleen",
+          "Pancreas"
+        ],
+        "answer": 0,
+        "explanation": "Hepatocytes synthesise albumin, a major plasma protein.",
+        "topic": "Liver function",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-058",
+        "question": "RNA differs from DNA because RNA normally contains:",
+        "options": [
+          "Uracil",
+          "Thymine",
+          "Deoxyribose only",
+          "No phosphate"
+        ],
+        "answer": 0,
+        "explanation": "RNA contains uracil and ribose, whereas DNA contains thymine and deoxyribose.",
+        "topic": "Nucleic acids",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-059",
+        "question": "Transferrin transports:",
+        "options": [
+          "Iron in plasma",
+          "Calcium in bone",
+          "Glucose into cells",
+          "Bilirubin into urine"
+        ],
+        "answer": 0,
+        "explanation": "Transferrin binds and transports ferric iron in the bloodstream.",
+        "topic": "Iron metabolism",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-060",
+        "question": "Procalcitonin may be used as an adjunct marker in assessment of:",
+        "options": [
+          "Bacterial infection",
+          "Bone fracture alignment",
+          "Renal stone location",
+          "Thyroid size"
+        ],
+        "answer": 0,
+        "explanation": "Procalcitonin may support assessment of bacterial infection but should not replace clinical judgement.",
+        "topic": "Clinical markers",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PHA-061",
+        "question": "A pharmacy information system should maintain an auditable record of:",
+        "options": [
+          "Prescription processing and dispensing",
+          "Staff personal social accounts",
+          "Patient entertainment preferences only",
+          "Unverified medicine stock"
+        ],
+        "answer": 0,
+        "explanation": "Auditability supports safe prescribing, dispensing and traceability.",
+        "topic": "Pharmacy information systems",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-062",
+        "question": "Medication reconciliation is performed to:",
+        "options": [
+          "Compare current medicines with new orders and resolve discrepancies",
+          "Automatically stop every chronic medicine",
+          "Replace patient identity checks",
+          "Delete old prescriptions"
+        ],
+        "answer": 0,
+        "explanation": "Reconciliation identifies omissions, duplications, dosing errors and unintended changes.",
+        "topic": "Medication reconciliation",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-063",
+        "question": "A safe electronic prescription should include:",
+        "options": [
+          "Patient identity, drug, dose, route and frequency",
+          "Only a medicine brand name",
+          "A prescriber's first name only",
+          "No date or patient identifier"
+        ],
+        "answer": 0,
+        "explanation": "Complete prescription data reduces ambiguity and supports safe dispensing.",
+        "topic": "E-prescribing",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-064",
+        "question": "Barcode medication administration helps verify:",
+        "options": [
+          "The right patient and medication at administration",
+          "The patient's diet preference only",
+          "Hospital building access",
+          "The prescriber's payroll"
+        ],
+        "answer": 0,
+        "explanation": "Barcode checks can support the medication rights when used with clinical verification.",
+        "topic": "Barcode medication administration",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-065",
+        "question": "A pharmacy stock system should flag medicines approaching expiry to support:",
+        "options": [
+          "Stock rotation and reduction of expired products",
+          "Automatic dose escalation",
+          "Removal of batch numbers",
+          "Public release of patient records"
+        ],
+        "answer": 0,
+        "explanation": "Expiry alerts support FEFO stock rotation and safe inventory management.",
+        "topic": "Inventory management",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-066",
+        "question": "A drug-interaction alert should be:",
+        "options": [
+          "Reviewed in patient context by an authorised clinician or pharmacist",
+          "Accepted blindly in every situation",
+          "Deleted without documentation",
+          "Shared publicly"
+        ],
+        "answer": 0,
+        "explanation": "Clinical decision support assists but requires contextual professional review.",
+        "topic": "Drug interaction software",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-067",
+        "question": "Pharmacy staff should open a patient's medication profile only:",
+        "options": [
+          "For an authorised work-related purpose",
+          "Out of curiosity",
+          "To share with friends",
+          "Using another worker's login"
+        ],
+        "answer": 0,
+        "explanation": "Role-based authorised access protects confidential health information.",
+        "topic": "Patient privacy",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-068",
+        "question": "Interoperability is valuable because it can:",
+        "options": [
+          "Support exchange of medication and clinical information across systems",
+          "Make prescriptions anonymous to providers",
+          "Remove the need for validation",
+          "Guarantee no adverse drug events"
+        ],
+        "answer": 0,
+        "explanation": "Interoperability can reduce fragmentation when information is exchanged accurately and securely.",
+        "topic": "EHR interoperability",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-069",
+        "question": "A pharmacist receives an email asking to reset their password through an unfamiliar link. The safest action is to:",
+        "options": [
+          "Use the official portal and report the suspicious email",
+          "Click immediately",
+          "Forward the link to all patients",
+          "Reply with current credentials"
+        ],
+        "answer": 0,
+        "explanation": "Using trusted routes and reporting phishing helps protect account security.",
+        "topic": "Cybersecurity",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-070",
+        "question": "An electronic dispensing audit trail records:",
+        "options": [
+          "Who performed key actions and when",
+          "Only the medicine colour",
+          "Patient's social-media username",
+          "The pharmacist's private messages"
+        ],
+        "answer": 0,
+        "explanation": "Audit trails provide accountability and traceability for dispensing actions.",
+        "topic": "Clinical audit trails",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-071",
+        "question": "A duplicate patient profile can increase the risk of:",
+        "options": [
+          "Incomplete or fragmented medication history",
+          "Improved allergy checking",
+          "Automatic identity certainty",
+          "Reduced need for reconciliation"
+        ],
+        "answer": 0,
+        "explanation": "Duplicate records may split allergies and medication data, increasing safety risk.",
+        "topic": "Data quality",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-072",
+        "question": "A remote pharmacy consultation should protect:",
+        "options": [
+          "Patient identity, consent and confidentiality",
+          "Only the camera background",
+          "The internet speed alone",
+          "The pharmacy logo"
+        ],
+        "answer": 0,
+        "explanation": "Telepharmacy must preserve the same privacy and professional standards as in-person services.",
+        "topic": "Telepharmacy",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-073",
+        "question": "A pharmacy system backup should be:",
+        "options": [
+          "Regularly tested for restoration",
+          "Stored only on the live workstation",
+          "Never monitored",
+          "Accessible to every public user"
+        ],
+        "answer": 0,
+        "explanation": "Tested backups support continuity after hardware failure or cyberattack.",
+        "topic": "Backup and recovery",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-074",
+        "question": "When a pharmacist leaves an organisation, their access should be:",
+        "options": [
+          "Revoked promptly",
+          "Kept active indefinitely",
+          "Shared with a new employee",
+          "Removed from the audit database"
+        ],
+        "answer": 0,
+        "explanation": "Prompt deprovisioning prevents former staff from retaining unauthorised access.",
+        "topic": "Access control",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-075",
+        "question": "A digital batch and lot record helps support:",
+        "options": [
+          "Product recall and traceability",
+          "Patient appointment reminders only",
+          "Staff attendance",
+          "Unrelated laboratory calibration"
+        ],
+        "answer": 0,
+        "explanation": "Batch traceability helps identify and locate affected products during a recall.",
+        "topic": "Batch traceability",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-076",
+        "question": "A medicine code system in an EHR helps improve:",
+        "options": [
+          "Consistent identification of medicinal products",
+          "The colour of tablets",
+          "Internet connectivity",
+          "Clinical examination speed"
+        ],
+        "answer": 0,
+        "explanation": "Standardised medicine identifiers improve consistency in prescribing and data exchange.",
+        "topic": "Digital health standards",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-077",
+        "question": "A suspected dispensing system error should be:",
+        "options": [
+          "Reported and documented through the approved safety process",
+          "Hidden by changing the record",
+          "Ignored if the patient has left",
+          "Posted on social media"
+        ],
+        "answer": 0,
+        "explanation": "Prompt incident reporting supports review, correction and prevention.",
+        "topic": "Incident reporting",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-078",
+        "question": "A high-dose warning in prescribing software should prompt the user to:",
+        "options": [
+          "Check the order, patient factors and approved reference before proceeding",
+          "Ignore all warnings",
+          "Increase the dose automatically",
+          "Delete the patient's allergy list"
+        ],
+        "answer": 0,
+        "explanation": "Dose alerts require contextual review and appropriate clinical action.",
+        "topic": "Decision support",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-079",
+        "question": "Sending a prescription screenshot to a personal messaging group may:",
+        "options": [
+          "Expose sensitive personal health information",
+          "Improve access control",
+          "Create a valid clinical audit trail",
+          "Encrypt the record automatically"
+        ],
+        "answer": 0,
+        "explanation": "Personal messaging may bypass approved safeguards and disclose confidential information.",
+        "topic": "Data protection",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-080",
+        "question": "During pharmacy software downtime, staff should use:",
+        "options": [
+          "The approved downtime and reconciliation procedure",
+          "A shared personal account",
+          "Memory without records",
+          "An unapproved public spreadsheet"
+        ],
+        "answer": 0,
+        "explanation": "Approved downtime procedures protect dispensing safety and ensure later reconciliation.",
+        "topic": "System downtime",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PHA-081",
+        "question": "Which phrase best checks a patient's understanding of a new medicine?",
+        "options": [
+          "Can you tell me how you will take this medicine at home?",
+          "You know this already, right?",
+          "Read the label and leave.",
+          "There is no need to ask questions."
+        ],
+        "answer": 0,
+        "explanation": "Teach-back checks understanding in a respectful, patient-centred way.",
+        "topic": "Patient counselling",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-082",
+        "question": "Which instruction is least ambiguous?",
+        "options": [
+          "Take one tablet twice daily, in the morning and evening, as prescribed.",
+          "Take it often.",
+          "Use some tablets each day.",
+          "Take it when you remember."
+        ],
+        "answer": 0,
+        "explanation": "Specific dose frequency and timing reduce interpretation errors.",
+        "topic": "Clear directions",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-083",
+        "question": "Which sentence is appropriate in a medication review note?",
+        "options": [
+          "The patient reports taking the medicine once daily instead of the prescribed twice-daily schedule.",
+          "The patient is careless.",
+          "The patient never listens.",
+          "The patient is difficult."
+        ],
+        "answer": 0,
+        "explanation": "Objective documentation records what the patient reports without judgement.",
+        "topic": "Professional writing",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-084",
+        "question": "Choose the correct sentence.",
+        "options": [
+          "The pharmacist have checked the prescription.",
+          "The pharmacist has checked the prescription.",
+          "The pharmacist were checked the prescription.",
+          "The pharmacist checking the prescription yesterday."
+        ],
+        "answer": 1,
+        "explanation": "A singular subject takes 'has' in the present perfect.",
+        "topic": "Grammar",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-085",
+        "question": "'Contraindicated' most nearly means:",
+        "options": [
+          "Not recommended because of a specific risk or condition",
+          "Always required",
+          "Available without a prescription",
+          "Taken with food"
+        ],
+        "answer": 0,
+        "explanation": "A contraindication is a reason a treatment should not be used in a particular situation.",
+        "topic": "Vocabulary",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-086",
+        "question": "A patient reports a possible side effect. The best opening is:",
+        "options": [
+          "Please describe what happened and when it started.",
+          "That cannot be related.",
+          "Stop everything immediately.",
+          "You should not complain."
+        ],
+        "answer": 0,
+        "explanation": "Open questions invite relevant information and support safe assessment.",
+        "topic": "Counselling",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-087",
+        "question": "A medicine information leaflet should use:",
+        "options": [
+          "Clear language, headings and understandable instructions",
+          "Unexplained abbreviations only",
+          "Long technical sentences for every patient",
+          "No safety information"
+        ],
+        "answer": 0,
+        "explanation": "Accessible language supports patient comprehension.",
+        "topic": "Written communication",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-088",
+        "question": "A label says 'Do not exceed 4 doses in 24 hours.' This means:",
+        "options": [
+          "Use no more than four doses in one 24-hour period.",
+          "Take four doses every hour.",
+          "Take one dose every four hours without limit.",
+          "Double the dose after a missed dose."
+        ],
+        "answer": 0,
+        "explanation": "The label sets a maximum of four doses over any 24-hour period.",
+        "topic": "Reading comprehension",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-089",
+        "question": "Which request is most appropriate when confirming allergies?",
+        "options": [
+          "Could you tell me whether you have any medicine allergies or previous reactions?",
+          "You have no allergies, correct?",
+          "List them quickly.",
+          "Allergies do not matter."
+        ],
+        "answer": 0,
+        "explanation": "Open, non-leading questions support accurate allergy history.",
+        "topic": "Polite request",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-090",
+        "question": "Which handover is clearest?",
+        "options": [
+          "The patient reports a rash two hours after the first dose; the medicine has been withheld pending clinical review.",
+          "There was a problem earlier.",
+          "The patient looks strange.",
+          "Someone should check later."
+        ],
+        "answer": 0,
+        "explanation": "A concise handover states the event, timing and action taken.",
+        "topic": "Handover",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-091",
+        "question": "Complete the sentence: 'The prescription was reviewed ___ the pharmacist.'",
+        "options": [
+          "by",
+          "at",
+          "on",
+          "from"
+        ],
+        "answer": 0,
+        "explanation": "The passive construction uses 'by' to identify the person who performed the action.",
+        "topic": "Preposition",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-092",
+        "question": "Which response is most empathetic when a patient is anxious about side effects?",
+        "options": [
+          "It is understandable to be concerned. Let us discuss the benefits and possible risks.",
+          "There is nothing to worry about.",
+          "Do not read the leaflet.",
+          "Everyone takes it."
+        ],
+        "answer": 0,
+        "explanation": "Acknowledging concern and offering a discussion supports shared decisions.",
+        "topic": "Patient-centred language",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-093",
+        "question": "'Adherence' refers to:",
+        "options": [
+          "How closely medicine use follows an agreed treatment plan",
+          "The colour of a capsule",
+          "The medicine's price only",
+          "The number of pharmacy shelves"
+        ],
+        "answer": 0,
+        "explanation": "Adherence describes the extent to which medicine-taking corresponds with an agreed plan.",
+        "topic": "Clinical terminology",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-094",
+        "question": "Choose the correct phrase: 'Please take this medicine ___ meals.'",
+        "options": [
+          "after",
+          "between of",
+          "among",
+          "beside to"
+        ],
+        "answer": 0,
+        "explanation": "'After meals' is the correct prepositional phrase.",
+        "topic": "Grammar",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-095",
+        "question": "A referral for suspected adverse drug reaction should include:",
+        "options": [
+          "Suspected medicine, dose, timing, symptoms and relevant history",
+          "Only the patient's first name",
+          "A personal opinion without facts",
+          "No contact information"
+        ],
+        "answer": 0,
+        "explanation": "Relevant details help the receiving clinician assess causality and severity.",
+        "topic": "Referral writing",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-096",
+        "question": "Which instruction is safest for a patient who misses a dose?",
+        "options": [
+          "Follow the medicine-specific advice from the leaflet or prescriber; do not double a dose unless instructed.",
+          "Always take two doses next time.",
+          "Stop treatment permanently.",
+          "Take every missed dose together."
+        ],
+        "answer": 0,
+        "explanation": "Missed-dose instructions vary by medicine; doubling should not be assumed.",
+        "topic": "Clarity",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-097",
+        "question": "Choose the best word: 'Please ___ the medicine in its original labelled container.'",
+        "options": [
+          "keep",
+          "keeps",
+          "keeping",
+          "kept"
+        ],
+        "answer": 0,
+        "explanation": "The base verb follows 'please'.",
+        "topic": "Word choice",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-098",
+        "question": "A medicine is labelled 'for external use only'. It should be:",
+        "options": [
+          "Applied to the body as directed and not swallowed",
+          "Taken orally with water",
+          "Injected",
+          "Stored in food"
+        ],
+        "answer": 0,
+        "explanation": "External-use products are not for oral administration.",
+        "topic": "Comprehension",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-099",
+        "question": "Which is the best opening when calling a prescriber about a prescription discrepancy?",
+        "options": [
+          "Hello, this is the pharmacist calling to clarify the dose written on the prescription for [patient identifier].",
+          "Your prescription is wrong.",
+          "I need an answer now.",
+          "Who made this mistake?"
+        ],
+        "answer": 0,
+        "explanation": "A professional opening identifies the caller, reason and patient using approved identifiers.",
+        "topic": "Telephone communication",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHA-100",
+        "question": "Which closing is appropriate after medicine counselling?",
+        "options": [
+          "Please contact the pharmacy or your healthcare team if you have further questions.",
+          "You should already know this.",
+          "That is all; do not call again.",
+          "Ask someone else."
+        ],
+        "answer": 0,
+        "explanation": "A clear invitation for follow-up supports safe medicine use.",
+        "topic": "Professional tone",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      }
+    ]
   }
 }
