@@ -239,11 +239,11 @@ def send_hackathon_submission_instructions(
             "html": (
                 f"<p>Hello {safe_name},</p>"
                 f"<p>Your Hackathon Registration ID is <strong>{safe_id}</strong>.</p>"
-                "<p>Please submit your project synopsis by email only to "
+                "<p>Please submit your project synopsis / MVP details by email only to "
                 "<a href='mailto:sutravya.connect@gmail.com'>sutravya.connect@gmail.com</a>.</p>"
                 "<p><strong>Deadline: 08 December 2026, 11:59 PM IST.</strong></p>"
                 "<p>There is no website upload or alternate submission form. Do not submit the synopsis through any other website or form.</p>"
-                "<p>Selected teams will be notified by email. Shortlisted teams are scheduled to present their prototype on 4 December 2026.</p>"
+                "<p>Selected teams will be notified by email. The selected top three teams will get an opportunity to showcase their projects at Bihar Healthcare Conclave on 11 December 2026.</p>"
             ),
         },
         settings=settings,
