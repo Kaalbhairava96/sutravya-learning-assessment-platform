@@ -199,6 +199,7 @@ class AdminPortalTests(unittest.TestCase):
             AdminPasswordResetRequest(email="owner@example.invalid"),
             request_for(self.app, "/api/admin/auth/password-reset/request", "POST", csrf=True, origin=ADMIN_ORIGIN),
         )
+        wrong_otp = "000000" if self.sent_admin_reset_emails[-1]["otp"] != "000000" else "000001"
         confirm = endpoint(self.app, "/api/admin/auth/password-reset/confirm")
         for attempt in range(5):
             with self.assertRaises(HTTPException) as rejected:
