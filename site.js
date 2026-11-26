@@ -9,6 +9,9 @@ const eventConfig = Object.freeze({
   registrationClosesDate: '1 December 2026',
   registrationClosesTime: '11:59:59 PM IST',
   examDate: '6 December 2026',
+  examStartsAt: Date.parse('2026-12-06T10:00:00+05:30'),
+  examEndsAt: Date.parse('2026-12-06T18:00:00+05:30'),
+  examVenue: 'Online Examination · Start from anywhere in India',
   registrationOpensAt: Date.parse('2026-10-31T18:30:00.000Z'), // 1 Nov, 00:00 IST
   registrationClosesAt: Date.parse('2026-12-01T18:29:59.999Z'), // 1 Dec, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
@@ -700,3 +703,46 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
 } else document.querySelectorAll('.reveal-item').forEach(item => item.classList.add('is-visible'));
 
 initHumanVisuals();
+
+
+function initExamCountdown() {
+  const panel = document.querySelector('[data-event-countdown]');
+  if (!panel) return;
+  const target = eventConfig.examStartsAt;
+  const close = eventConfig.examEndsAt;
+  const fields = {
+    days: panel.querySelector('[data-countdown-days]'),
+    hours: panel.querySelector('[data-countdown-hours]'),
+    minutes: panel.querySelector('[data-countdown-minutes]'),
+    seconds: panel.querySelector('[data-countdown-seconds]'),
+    status: panel.querySelector('[data-countdown-status]')
+  };
+  const pad = value => String(value).padStart(2, '0');
+  const update = () => {
+    const now = Date.now();
+    const remaining = Math.max(0, target - now);
+    const days = Math.floor(remaining / 86400000);
+    const hours = Math.floor((remaining % 86400000) / 3600000);
+    const minutes = Math.floor((remaining % 3600000) / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    if (fields.days) fields.days.textContent = pad(days);
+    if (fields.hours) fields.hours.textContent = pad(hours);
+    if (fields.minutes) fields.minutes.textContent = pad(minutes);
+    if (fields.seconds) fields.seconds.textContent = pad(seconds);
+    if (fields.status) {
+      if (now < target) {
+        fields.status.textContent = 'The online assessment opens on Sunday, 6 December 2026 at 10:00 AM IST.';
+        panel.dataset.countdownState = 'upcoming';
+      } else if (now < close) {
+        fields.status.textContent = 'The examination window is now open. Sign in to your candidate account to begin your 30-minute attempt.';
+        panel.dataset.countdownState = 'open';
+      } else {
+        fields.status.textContent = 'The 6 December 2026 examination window has closed.';
+        panel.dataset.countdownState = 'closed';
+      }
+    }
+  };
+  update();
+  window.setInterval(update, 1000);
+}
+initExamCountdown();
