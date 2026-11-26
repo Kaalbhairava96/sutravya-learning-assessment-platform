@@ -1,7 +1,7 @@
 /* Shared microsite shell and interactions. Keep event facts in this object. */
 const eventConfig = Object.freeze({
-  title: 'Healthcare Talent Search Exam 2026',
-  shortTitle: 'Healthcare Talent Search Exam',
+  title: 'Healthcare Talent Search Examination 2026',
+  shortTitle: 'Healthcare Talent Search Examination',
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
