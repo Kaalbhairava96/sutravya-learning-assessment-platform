@@ -73,45 +73,27 @@ class RegistrationDetailsTests(unittest.TestCase):
             ))
         self.assertEqual(rejected.exception.status_code, 422)
 
-    def test_medical_ug_and_pg_are_distinct_programmes_and_exam_streams(self):
-        for year in range(1, 6):
-            details = build_registration_details(payload(
-                category="medical", programme="medical_ug", year=year,
-            ))
-            self.assertEqual(details["category"], "medical")
-            self.assertEqual(details["subcategory"], "UG")
-            self.assertEqual(details["stream"], "mbbs_ug")
-            self.assertEqual(details["academic_stage"], f"Year {year}")
-        for year in range(1, 4):
-            details = build_registration_details(payload(
-                category="medical", programme="medical_pg", year=year,
-            ))
-            self.assertEqual(details["subcategory"], "PG")
-            self.assertEqual(details["stream"], "mbbs_pg")
+    def test_pharmacy_programmes_map_to_pharmacy_stream_for_all_years(self):
+        programmes = {"dpharm": 2, "bpharm": 4, "pharmd": 6, "mpharm": 2}
+        for programme, maximum in programmes.items():
+            for year in range(1, maximum + 1):
+                details = build_registration_details(payload(
+                    category="pharmacy", programme=programme, year=year,
+                ))
+                self.assertEqual(details["category"], "pharmacy")
+                self.assertEqual(details["stream"], "pharmacy")
+                self.assertEqual(details["academic_stage"], f"Year {year}")
         with self.assertRaises(HTTPException):
-            build_registration_details(payload(category="mbbs", programme="mbbs_ug", year=6))
-        with self.assertRaises(HTTPException):
-            build_registration_details(payload(category="mbbs", programme="mbbs_pg", year=4))
+            build_registration_details(payload(category="pharmacy", programme="bpharm", year=5))
 
-    def test_legacy_mbbs_api_values_are_normalised_to_medical_labels(self):
-        ug = build_registration_details(payload(category="mbbs", programme="mbbs_ug", year=5))
-        self.assertEqual(ug["category"], "medical")
-        self.assertEqual(ug["category_label"], "Medical")
-        self.assertEqual(ug["programme"], "medical_ug")
-        self.assertEqual(ug["programme_label"], "Medical UG")
-        self.assertEqual(ug["stream"], "mbbs_ug")
-
-        pg = build_registration_details(payload(category="mbbs", programme="mbbs_pg", year=2))
-        self.assertEqual(pg["category"], "medical")
-        self.assertEqual(pg["category_label"], "Medical")
-        self.assertEqual(pg["programme"], "medical_pg")
-        self.assertEqual(pg["programme_label"], "Medical PG")
-        self.assertEqual(pg["stream"], "mbbs_pg")
-
-    def test_jdn_is_rejected_for_new_registrations(self):
+    def test_retired_medical_streams_are_rejected_for_new_registrations(self):
         with self.assertRaises(HTTPException) as rejected:
-            build_registration_details(payload(category="jdn", programme="junior_doctor_network", year=None))
+            build_registration_details(payload(category="medical", programme="medical_ug", year=1))
         self.assertEqual(rejected.exception.status_code, 422)
+
+        with self.assertRaises(HTTPException) as rejected_legacy:
+            build_registration_details(payload(category="mbbs", programme="mbbs_ug", year=1))
+        self.assertEqual(rejected_legacy.exception.status_code, 422)
 
     def test_declaration_and_address_are_required(self):
         with self.assertRaises(HTTPException):
@@ -156,7 +138,7 @@ class RegistrationDetailsTests(unittest.TestCase):
                 build_registration_details(payload())
         self.assertEqual(rejected.exception.status_code, 503)
 
-    def test_category_controls_fee_not_client_values(self):
+    def test_invalid_category_values_are_rejected(self):
         with self.assertRaises(HTTPException):
             build_registration_details(payload(category="other", programme="mbbs"))
 
