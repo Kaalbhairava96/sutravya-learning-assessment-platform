@@ -248,7 +248,7 @@ class ModelSchemaTests(unittest.TestCase):
     def test_alembic_discovers_new_revision_and_metadata(self) -> None:
         config = Config("alembic.ini")
         script = ScriptDirectory.from_config(config)
-        self.assertEqual(script.get_heads(), ["0018_separate_public_practice_from_exam"])
+        self.assertEqual(script.get_heads(), ["0018_sep_practice_exam"])
         revision = script.get_revision("0002_core_application_schema")
         self.assertEqual(revision.down_revision, "0001_backend_foundation")
         verification_revision = script.get_revision("0003_secure_verify")
@@ -286,7 +286,7 @@ class ModelSchemaTests(unittest.TestCase):
         self.assertEqual(admin_password_reset_revision.down_revision, "0015_free_registration")
         htse_revision = script.get_revision("0017_htse_2026_self_paced_exam")
         self.assertEqual(htse_revision.down_revision, "0016_admin_password_resets")
-        separation_revision = script.get_revision("0018_separate_public_practice_from_exam")
+        separation_revision = script.get_revision("0018_sep_practice_exam")
         self.assertEqual(separation_revision.down_revision, "0017_htse_2026_self_paced_exam")
         self.assertEqual(len(Base.metadata.tables), 19)
 
