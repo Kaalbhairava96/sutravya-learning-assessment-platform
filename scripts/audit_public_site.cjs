@@ -41,7 +41,7 @@ const faqPage=fs.readFileSync(path.join(root,'faqs.html'),'utf8');
 if(!homepage.includes('healthcare-talent-search-badge.svg'))errors.push('index.html: Healthcare Talent Search Exam badge is missing');
 if(!homepage.includes('htse-healthcare-hero.webp'))errors.push('index.html: original 3D healthcare hero artwork is missing');
 for(const asset of ['brand-home-learning-premium.svg','brand-home-hackathon-premium.svg','brand-home-recognition-premium.svg'])if(!homepage.includes(asset))errors.push('index.html: missing coordinated 3D section artwork '+asset);
-if(!homepage.includes('Healthcare Talent<br><em>Search Exam 2026</em>'))errors.push('index.html: official HTSE headline is missing');
+if(!homepage.includes('Healthcare Talent<br><em>Search Examination 2026</em>'))errors.push('index.html: official HTSE headline is missing');
 if(!homepage.includes('qv2-home-partners')||!homepage.includes('qualinova-logo.png')||!homepage.includes('sutravya-logo.png'))errors.push('index.html: organiser and technology partner logo lockup is incomplete');
 if(!homepage.includes('1 December 2026'))errors.push('index.html: registration closing date cue is missing');
 if((homepage.match(/class="qv2-milestone"/g)||[]).length!==4)errors.push('index.html: homepage should show four event milestones');
