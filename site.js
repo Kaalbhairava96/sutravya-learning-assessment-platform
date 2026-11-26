@@ -262,7 +262,7 @@ if(footer){
   footer.innerHTML='<footer class="site-footer"><div class="footer-top"><div class="wrap footer-grid">' +
     '<div class="footer-brand"><div class="footer-brand-pair" aria-label="SUTRAVYA and QualiNova event partnership">' +
     '<a class="footer-sutravya-logo" href="https://sutravya.in" target="_blank" rel="noopener" aria-label="SUTRAVYA website"><img src="assets/sutravya-logo.png" alt="SUTRAVYA — The Digital Thread of Healthcare"></a>' +
-    '<a class="footer-qualinova-logo" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova website"><img src="assets/qualinova-logo.png" alt="QualiNova Solutions — event organiser"></a></div>' +
+    '<span class="footer-brand-handshake" aria-hidden="true"><img src="assets/handshake.svg" alt=""></span><a class="footer-qualinova-logo" href="https://qualinovahub.com" target="_blank" rel="noopener" aria-label="QualiNova website"><img src="assets/qualinova-logo.png" alt="QualiNova Solutions — event organiser"></a></div>' +
     '<p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p>' +
     '<a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in '+icon('arrow')+'</a></div>' +
     '<div class="footer-column"><h2>Explore</h2>'+navigation.slice(0,7).map(([url,label])=>'<a href="'+url+'">'+label+'</a>').join('')+'</div>' +
@@ -272,7 +272,8 @@ if(footer){
     contactLink('mailto:sutravya.connect@gmail.com','mail','sutravya.connect@gmail.com','EMAIL SUTRAVYA')+
     contactLink('https://wa.me/916239646429','whatsapp','WhatsApp support','WHATSAPP SUTRAVYA')+
     '<h2 class="footer-subheading">Event organiser · QualiNova</h2>'+
-    contactLink('tel:+919955521842','phone','+91 99555 21842','CALL QUALINOVA')+
+    contactLink('tel:+919911350649','phone','+91 99113 50649','CALL QUALINOVA')+
+    contactLink('https://wa.me/919911350649','whatsapp','WhatsApp support','WHATSAPP QUALINOVA')+
     contactLink('mailto:info@qualinovahub.com','mail','info@qualinovahub.com','EMAIL QUALINOVA')+
     '</div></div></div><div class="footer-bottom"><div class="wrap footer-bottom-inner"><span>© 2026 SUTRAVYA · Healthcare Talent Search Exam 2026</span><span>Event information is subject to official organiser updates.</span><a href="contact.html">Contact '+icon('arrow')+'</a></div></div></footer>';
 }

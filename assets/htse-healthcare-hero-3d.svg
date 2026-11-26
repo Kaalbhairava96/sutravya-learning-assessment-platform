@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840" fill="none" role="img" aria-labelledby="title desc">
+<title id="title">HTSE 2026 three-dimensional healthcare science visual</title>
+<desc id="desc">A luminous anatomical torso and heart with a DNA helix, microscope, medical glassware and stethoscope in a futuristic clinical science environment.</desc>
+<defs>
+ <linearGradient id="torso" x1="380" y1="150" x2="790" y2="740" gradientUnits="userSpaceOnUse"><stop stop-color="#D8FFFF" stop-opacity=".78"/><stop offset=".34" stop-color="#58D5D5" stop-opacity=".35"/><stop offset=".72" stop-color="#0B7894" stop-opacity=".27"/><stop offset="1" stop-color="#092E61" stop-opacity=".1"/></linearGradient>
+ <linearGradient id="edge" x1="380" y1="160" x2="770" y2="650" gradientUnits="userSpaceOnUse"><stop stop-color="#B7FFFF"/><stop offset=".45" stop-color="#43D4D1"/><stop offset="1" stop-color="#DDB86F"/></linearGradient>
+ <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F6FFFF"/><stop offset=".25" stop-color="#93C8D2"/><stop offset=".55" stop-color="#123F69"/><stop offset=".78" stop-color="#D9B56C"/><stop offset="1" stop-color="#5A879B"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FFF2BE"/><stop offset=".5" stop-color="#E3B768"/><stop offset="1" stop-color="#8A6437"/></linearGradient>
+ <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7DF4E9"/><stop offset=".55" stop-color="#16AAA8"/><stop offset="1" stop-color="#075B80"/></linearGradient>
+ <linearGradient id="heart" x1="500" y1="360" x2="670" y2="565" gradientUnits="userSpaceOnUse"><stop stop-color="#FFB5A4"/><stop offset=".45" stop-color="#F06F66"/><stop offset="1" stop-color="#9A3A52"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#27D8D4" stop-opacity=".34"/><stop offset=".5" stop-color="#0B85A1" stop-opacity=".12"/><stop offset="1" stop-color="#0B85A1" stop-opacity="0"/></radialGradient>
+ <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="18"/></filter>
+ <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>
+ <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="13"/><feOffset dy="17"/><feComponentTransfer><feFuncA type="linear" slope=".3"/></feComponentTransfer></filter>
+ <filter id="shine" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<ellipse cx="642" cy="706" rx="448" ry="76" fill="#00172F" opacity=".26" filter="url(#shadow)"/>
+<ellipse cx="624" cy="415" rx="382" ry="345" fill="url(#halo)"/>
+<g opacity=".38" stroke="#6BE8E2" stroke-width="2">
+ <ellipse cx="626" cy="410" rx="470" ry="270"/>
+ <ellipse cx="626" cy="410" rx="420" ry="310" transform="rotate(-24 626 410)"/>
+ <ellipse cx="626" cy="410" rx="425" ry="310" transform="rotate(24 626 410)"/>
+</g>
+<g opacity=".48" stroke="#D5B46F" stroke-width="2" stroke-dasharray="3 13"><path d="M120 530c165-225 310-330 502-319 187 10 318 121 452 328"/><path d="M190 650c146-160 293-229 442-210 155 19 281 93 385 204"/></g>
+<!-- DNA helix and molecular rungs -->
+<g transform="translate(120 112)" stroke-linecap="round">
+ <path d="M15 20C180 95 180 188 15 263S-150 430 15 505" stroke="#46D5D0" stroke-width="13" opacity=".9"/>
+ <path d="M15 20C-150 95-150 188 15 263S180 430 15 505" stroke="#E4B96F" stroke-width="12" opacity=".94"/>
+ <g stroke="#B6EEF0" stroke-width="5" opacity=".82">
+  <path d="m-29 53 88 0m-118 50 149 0m-145 65 113 0m-84 82h118m-120 69 142 0m-104 62h117m-73 72h83m-45 65h53"/>
+ </g>
+ <g fill="#E5C37D" stroke="#FFF0BE" stroke-width="2"><circle cx="-29" cy="53" r="9"/><circle cx="59" cy="53" r="9"/><circle cx="-118" cy="103" r="8"/><circle cx="31" cy="103" r="8"/><circle cx="-145" cy="168" r="8"/><circle cx="-32" cy="168" r="8"/></g>
+</g>
+<!-- Medical holographic torso -->
+<g>
+ <ellipse cx="625" cy="454" rx="246" ry="310" fill="#24D5CF" opacity=".17" filter="url(#glow)"/>
+ <path d="M522 82c-29 10-50 41-52 75-3 42 14 77 43 96l-8 42c-61 13-116 39-145 91-26 46-31 109-20 179 10 65 34 123 79 162h414c45-39 69-97 79-162 11-70 6-133-20-179-29-52-84-78-145-91l-8-42c29-19 46-54 43-96-2-34-23-65-52-75-61-21-147-21-208 0Z" fill="url(#torso)" stroke="url(#edge)" stroke-width="5" opacity=".94"/>
+ <path d="M493 246c-51 26-83 60-103 109m347-109c51 26 83 60 103 109" stroke="#B7FFFF" stroke-width="9" stroke-linecap="round" opacity=".43"/>
+ <path d="M562 255c20 31 42 48 63 48s43-17 63-48" stroke="#B8FFFF" stroke-width="6" opacity=".54"/>
+ <!-- clavicle and ribs -->
+ <path d="M490 298c42 29 85 41 135 41s93-12 135-41" stroke="#D5FFFF" stroke-width="5" opacity=".55"/>
+ <g stroke="#8DE8E6" stroke-width="5" opacity=".38" fill="none">
+  <path d="M625 346c-52 0-96 16-119 45-18 22-24 45-20 70 31 17 71 24 139 24"/>
+  <path d="M625 346c52 0 96 16 119 45 18 22 24 45 20 70-31 17-71 24-139 24"/>
+  <path d="M625 350c-65 13-110 42-121 80 36 17 77 25 121 25 44 0 85-8 121-25-11-38-56-67-121-80Z"/>
+  <path d="M625 370c-67 21-104 52-104 87 32 15 67 22 104 22 37 0 72-7 104-22 0-35-37-66-104-87Z"/>
+  <path d="M625 393c-58 19-87 44-87 73 26 11 55 17 87 17 32 0 61-6 87-17 0-29-29-54-87-73Z"/>
+ </g>
+ <!-- lungs and bronchi -->
+ <path d="M595 367c-46-34-84-12-105 30-25 50-23 109 8 139 24 22 58 14 85-11 18-17 25-42 28-74l-1-76Z" fill="#82DAE0" fill-opacity=".2" stroke="#C4FFFF" stroke-opacity=".65" stroke-width="4"/>
+ <path d="M655 367c46-34 84-12 105 30 25 50 23 109-8 139-24 22-58 14-85-11-18-17-25-42-28-74l1-76Z" fill="#82DAE0" fill-opacity=".2" stroke="#C4FFFF" stroke-opacity=".65" stroke-width="4"/>
+ <path d="M625 305v105m0-42-40 45m40-45 40 45" stroke="#E6FDFB" stroke-width="9" stroke-linecap="round"/>
+ <path d="M625 410c-6 36-14 62-27 82m27-82c6 36 14 62 27 82" stroke="#82F4EB" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+ <!-- glowing heart -->
+ <path d="M620 432c-25-41-79-26-78 16 1 36 39 70 83 103 44-33 82-67 83-103 1-42-53-57-78-16l-5 8-5-8Z" fill="#F76D69" opacity=".6" filter="url(#glow)"/>
+ <path d="M620 432c-25-41-79-26-78 16 1 36 39 70 83 103 44-33 82-67 83-103 1-42-53-57-78-16l-5 8-5-8Z" fill="url(#heart)" stroke="#FFE3D8" stroke-width="5"/>
+ <path d="M625 430c-8-31-4-53 12-68m-14 76c-32-3-48 7-60 24m67-10c31-8 49-2 65 17" stroke="#FFE5D8" stroke-width="6" stroke-linecap="round"/>
+ <path d="M558 481c23 4 38 1 50-10 8-7 17-10 28-9" stroke="#FFE9DB" stroke-width="4" opacity=".8" stroke-linecap="round"/>
+</g>
+<!-- Gold-lit clinical microscope -->
+<g transform="translate(850 290)">
+ <ellipse cx="155" cy="340" rx="160" ry="24" fill="#001A3A" opacity=".35" filter="url(#soft)"/>
+ <path d="M56 297h215l-21 32H70Z" fill="url(#metal)" stroke="#BEE4E6" stroke-width="3"/>
+ <path d="M103 289c1-54 17-92 47-117l31 18c-24 30-33 62-31 99Z" fill="#0D4870" stroke="#91DDE1" stroke-width="4"/>
+ <path d="m142 174 33-49 64 39-32 49Z" fill="url(#metal)" stroke="#E5D6A8" stroke-width="3"/>
+ <path d="m181 121 25-58 51 31-24 57Z" fill="#113A66" stroke="#8DE5E6" stroke-width="4"/>
+ <path d="m198 69 18-39 75 45-18 37Z" fill="url(#gold)" stroke="#FFF0BE" stroke-width="3"/>
+ <path d="m111 205 48 29m-55 28 44 22" stroke="#DAF6F5" stroke-width="4" stroke-linecap="round"/>
+ <path d="M74 329h191v15H74Z" fill="#D5AE67"/>
+ <path d="M148 320h56v16h-56Z" fill="#0B315B"/>
+ <circle cx="188" cy="286" r="15" fill="url(#gold)" stroke="#FFF1BE" stroke-width="3"/>
+ <circle cx="188" cy="286" r="6" fill="#0B6784"/>
+</g>
+<!-- Stethoscope with polished metal chestpiece -->
+<g stroke-linecap="round" stroke-linejoin="round">
+ <path d="M200 626c-6 81 44 125 126 125 68 0 102-41 105-100" stroke="#041F45" stroke-width="33" opacity=".3" filter="url(#soft)"/>
+ <path d="M200 617c-6 81 44 125 126 125 68 0 102-41 105-100" stroke="url(#metal)" stroke-width="18"/>
+ <path d="M200 617c-6 81 44 125 126 125 68 0 102-41 105-100" stroke="#BDF8F2" stroke-width="4" opacity=".8"/>
+ <path d="M431 642c15-31 47-44 71-28" stroke="url(#metal)" stroke-width="16"/>
+ <path d="M431 642c15-31 47-44 71-28" stroke="#DDFDFC" stroke-width="4"/>
+ <circle cx="520" cy="614" r="33" fill="url(#metal)" stroke="#FFF0BD" stroke-width="4"/>
+ <circle cx="520" cy="614" r="21" fill="#0A315D" stroke="#75DFD7" stroke-width="3"/>
+ <circle cx="520" cy="614" r="8" fill="#F5D68F"/>
+</g>
+<!-- Diagnostic glassware and illuminated sample tubes -->
+<g transform="translate(1000 545)">
+ <path d="M18 0h55m-43 0v58l-42 88q-8 19 14 19h98q22 0 14-19L72 58V0" fill="#D7F5F4" fill-opacity=".2" stroke="#A6E8E8" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M-8 128h139l-24 35H10Z" fill="url(#teal)" opacity=".8"/>
+ <path d="M29 3h33" stroke="#FFE8B1" stroke-width="5" stroke-linecap="round"/>
+ <path d="M-4 129h126" stroke="#F0CF8B" stroke-width="3" opacity=".9"/>
+ <g stroke="#D8FFFF" stroke-width="4"><path d="M145 22h25v115h-25z"/><path d="M184 36h24v101h-24z"/><path d="M221 12h24v125h-24z"/></g>
+ <g fill="url(#teal)"><path d="M147 100h21v37h-21z"/><path d="M186 91h20v46h-20z"/><path d="M223 85h20v52h-20z"/></g>
+</g>
+<!-- Floating clinical data tiles -->
+<g filter="url(#shine)">
+ <g transform="translate(292 210)">
+  <rect width="122" height="74" rx="17" fill="#082D5B" fill-opacity=".55" stroke="#62DAD4" stroke-opacity=".62" stroke-width="2"/>
+  <path d="M18 44h20l9-18 11 34 12-23h29" stroke="#6FF0E5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="26" cy="18" r="5" fill="#E9C47A"/>
+ </g>
+ <g transform="translate(806 124)">
+  <rect width="136" height="80" rx="18" fill="#082D5B" fill-opacity=".5" stroke="#E4BE76" stroke-opacity=".7" stroke-width="2"/>
+  <circle cx="33" cy="40" r="18" stroke="#72E6DF" stroke-width="5"/>
+  <path d="M33 28v24m-12-12h24" stroke="#F5D88F" stroke-width="5" stroke-linecap="round"/>
+  <path d="M65 28h52M65 42h41M65 56h47" stroke="#C5EFF0" stroke-width="4" stroke-linecap="round"/>
+ </g>
+</g>
+<g fill="#F8D997"><circle cx="265" cy="365" r="5"/><circle cx="811" cy="260" r="4"/><circle cx="1035" cy="300" r="6"/><circle cx="949" cy="720" r="4"/><circle cx="366" cy="690" r="4"/></g>
+</svg>
