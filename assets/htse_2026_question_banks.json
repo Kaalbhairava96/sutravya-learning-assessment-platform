@@ -685,7 +685,7 @@
         "topic": "Patient communication",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-082",
@@ -701,7 +701,7 @@
         "topic": "Clear instructions",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-083",
@@ -717,7 +717,7 @@
         "topic": "Professional tone",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-084",
@@ -733,7 +733,7 @@
         "topic": "Grammar",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-085",
@@ -749,7 +749,7 @@
         "topic": "Prepositions",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-086",
@@ -765,7 +765,7 @@
         "topic": "Clinical vocabulary",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-087",
@@ -781,7 +781,7 @@
         "topic": "Referral writing",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-088",
@@ -797,7 +797,7 @@
         "topic": "Reading a note",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-089",
@@ -813,7 +813,7 @@
         "topic": "Polite request",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-090",
@@ -829,7 +829,7 @@
         "topic": "Handover",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-091",
@@ -845,7 +845,7 @@
         "topic": "Sentence meaning",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-092",
@@ -861,7 +861,7 @@
         "topic": "Avoiding ambiguity",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-093",
@@ -877,7 +877,7 @@
         "topic": "Active listening",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-094",
@@ -893,7 +893,7 @@
         "topic": "Vocabulary",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-095",
@@ -909,7 +909,7 @@
         "topic": "Tense",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-096",
@@ -925,7 +925,7 @@
         "topic": "Patient safety",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-097",
@@ -941,7 +941,7 @@
         "topic": "Letter structure",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-098",
@@ -957,7 +957,7 @@
         "topic": "Comprehension",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-099",
@@ -973,7 +973,7 @@
         "topic": "Word choice",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NUR-100",
@@ -989,7 +989,7 @@
         "topic": "Clinical explanation",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "NURSING-MIC-001",
@@ -2319,7 +2319,7 @@
         "topic": "Specimen instructions",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-082",
@@ -2335,7 +2335,7 @@
         "topic": "Patient preparation",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-083",
@@ -2351,7 +2351,7 @@
         "topic": "Professional handover",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-084",
@@ -2367,7 +2367,7 @@
         "topic": "Vocabulary",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-085",
@@ -2383,7 +2383,7 @@
         "topic": "Grammar",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-086",
@@ -2399,7 +2399,7 @@
         "topic": "Clinical explanation",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-087",
@@ -2415,7 +2415,7 @@
         "topic": "Referral language",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-088",
@@ -2431,7 +2431,7 @@
         "topic": "Comprehension",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-089",
@@ -2447,7 +2447,7 @@
         "topic": "Polite request",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-090",
@@ -2463,7 +2463,7 @@
         "topic": "Written communication",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-091",
@@ -2479,7 +2479,7 @@
         "topic": "Vocabulary",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-092",
@@ -2495,7 +2495,7 @@
         "topic": "Patient-centred language",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-093",
@@ -2511,7 +2511,7 @@
         "topic": "Grammar",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-094",
@@ -2527,7 +2527,7 @@
         "topic": "Clinical note",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-095",
@@ -2543,7 +2543,7 @@
         "topic": "Time expression",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-096",
@@ -2559,7 +2559,7 @@
         "topic": "Safety communication",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-097",
@@ -2575,7 +2575,7 @@
         "topic": "Reading a result",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-098",
@@ -2591,7 +2591,7 @@
         "topic": "Polite telephone call",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-099",
@@ -2607,7 +2607,7 @@
         "topic": "Word choice",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PAR-100",
@@ -2623,7 +2623,7 @@
         "topic": "Communication",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PARAMEDICAL-MIC-001",
@@ -3953,7 +3953,7 @@
         "topic": "Patient counselling",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-082",
@@ -3969,7 +3969,7 @@
         "topic": "Clear directions",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-083",
@@ -3985,7 +3985,7 @@
         "topic": "Professional writing",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-084",
@@ -4001,7 +4001,7 @@
         "topic": "Grammar",
         "difficulty": "easy",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-085",
@@ -4017,7 +4017,7 @@
         "topic": "Vocabulary",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-086",
@@ -4033,7 +4033,7 @@
         "topic": "Counselling",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-087",
@@ -4049,7 +4049,7 @@
         "topic": "Written communication",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-088",
@@ -4065,7 +4065,7 @@
         "topic": "Reading comprehension",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-089",
@@ -4081,7 +4081,7 @@
         "topic": "Polite request",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-090",
@@ -4097,7 +4097,7 @@
         "topic": "Handover",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-091",
@@ -4113,7 +4113,7 @@
         "topic": "Preposition",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-092",
@@ -4129,7 +4129,7 @@
         "topic": "Patient-centred language",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-093",
@@ -4145,7 +4145,7 @@
         "topic": "Clinical terminology",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-094",
@@ -4161,7 +4161,7 @@
         "topic": "Grammar",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-095",
@@ -4177,7 +4177,7 @@
         "topic": "Referral writing",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-096",
@@ -4193,7 +4193,7 @@
         "topic": "Clarity",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-097",
@@ -4209,7 +4209,7 @@
         "topic": "Word choice",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-098",
@@ -4225,7 +4225,7 @@
         "topic": "Comprehension",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-099",
@@ -4241,7 +4241,7 @@
         "topic": "Telephone communication",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHA-100",
@@ -4257,7 +4257,7 @@
         "topic": "Professional tone",
         "difficulty": "moderate",
         "subjectKey": "oet_english",
-        "subjectLabel": "OET-style Healthcare English"
+        "subjectLabel": "OET (Occupational English Test)"
       },
       {
         "id": "PHARMACY-MIC-001",
