@@ -5,7 +5,7 @@ never double as the official exam, because their correct answers are public.
 The bank shells and approved scoring rules are retained so the organiser can
 load confidential papers through the authenticated admin import endpoint.
 
-Revision ID: 0018_separate_public_practice_from_exam
+Revision ID: 0018_sep_practice_exam
 Revises: 0017_htse_2026_self_paced_exam
 """
 from __future__ import annotations
@@ -14,7 +14,7 @@ from alembic import context, op
 import sqlalchemy as sa
 
 
-revision = "0018_separate_public_practice_from_exam"
+revision = "0018_sep_practice_exam"
 down_revision = "0017_htse_2026_self_paced_exam"
 branch_labels = None
 depends_on = None
