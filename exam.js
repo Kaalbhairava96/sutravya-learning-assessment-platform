@@ -274,7 +274,7 @@
       '<p>100 questions · 5 common subjects · 30 minutes total · +1 / −0.25 / 0 marking.</p>' +
       '<p class="exam-muted">Self-paced assessment: start any time between 10:00 AM and 6:00 PM IST on 6 December 2026. Your 30-minute timer begins when you start.</p>' +
       '<div class="exam-access-guidance"><b>How your self-paced window works</b><span>Start any time between 10:00 AM and 6:00 PM IST on Sunday, 6 December 2026. Once started, you have 30 minutes total. You may revisit questions and change answers until submission or time expiry.</span></div>' +
-      (availability.question_bank_ready ? '' : '<div class="exam-bank-pending" role="status"><b>Official examination paper is being finalised.</b><span>The assessment remains locked until the organiser loads the confidential question bank. Your registration and slot assignment are محفوظ.</span></div>') +
+      (availability.question_bank_ready ? '' : '<div class="exam-bank-pending" role="status"><b>Official examination paper is being finalised.</b><span>The assessment remains locked until the organiser loads the confidential question bank. Your registration and exam-slot assignment remain saved.</span></div>') +
       '<p class="exam-muted">The assessment opens in full-screen mode. Returning to another tab, leaving full screen, or attempting copy/paste is recorded as an integrity event. No camera recording is used.</p>' +
       '<button id="start-exam" class="exam-button" ' +
       (availability.assigned && availability.opens_now && availability.question_bank_ready ? '' : 'disabled') +
