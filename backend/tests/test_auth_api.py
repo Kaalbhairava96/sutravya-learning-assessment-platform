@@ -273,7 +273,7 @@ class PasswordlessApiTests(unittest.TestCase):
 
     def test_email_verification_is_allowed_at_the_last_instant_of_closing_date(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
-        with patch("app.main._registration_now", return_value=datetime(2026, 11, 25, 23, 55, tzinfo=ZoneInfo("Asia/Kolkata"))):
+        with patch("app.main._registration_now", return_value=datetime(2026, 12, 1, 23, 55, tzinfo=ZoneInfo("Asia/Kolkata"))):
             started = start(
                 self._valid_payload(email="closing-boundary@example.invalid"),
                 request_for(self.application, "/api/registrations/start"),
@@ -292,7 +292,7 @@ class PasswordlessApiTests(unittest.TestCase):
         start = route_endpoint(self.application, "/api/registrations/start")
         with patch("app.main._registration_now", return_value=REGISTRATION_OPENS_AT):
             started = start(
-                self._valid_payload(email="after-deadline@example.invalid", category="mbbs"),
+                self._valid_payload(email="after-deadline@example.invalid", category="pharmacy", programme="dpharm"),
                 request_for(self.application, "/api/registrations/start"),
             )
         emails_before_expiry = len(self.sent_codes)
@@ -317,13 +317,12 @@ class PasswordlessApiTests(unittest.TestCase):
         with self.factory() as session:
             self.assertEqual(session.query(Registration).count(), 0)
 
-    def test_four_categories_are_accepted_with_their_server_mapped_exam_stream(self) -> None:
+    def test_three_categories_are_accepted_with_their_server_mapped_exam_stream(self) -> None:
         start = route_endpoint(self.application, "/api/registrations/start")
         categories = (
-            ("nursing", "nursing", "bsc_nursing", None, 1),
+            ("nursing", "nursing", "bsc_nursing", "Year 1", 1),
             ("paramedical", "paramedical", "bmlt", "Year 1", None),
-            ("mbbs", "mbbs_ug", "mbbs_ug", None, 5),
-            ("mbbs", "mbbs_pg", "mbbs_pg", None, 2),
+            ("pharmacy", "pharmacy", "bpharm", "Year 4", 4),
         )
         for category, expected_stream, programme, stage, year in categories:
             with self.subTest(category=category):
@@ -336,10 +335,8 @@ class PasswordlessApiTests(unittest.TestCase):
                 with self.factory() as session:
                     candidate = session.query(Candidate).filter_by(email=f"pathway-{expected_stream}@example.invalid").one()
                     self.assertEqual(candidate.pending_stream, expected_stream)
+                    self.assertEqual(candidate.pending_registration_details["stream"], expected_stream)
                     self.assertNotIn("registration_fee_paise", candidate.pending_registration_details)
-                    if category == "mbbs":
-                        expected_subcategory = "UG" if expected_stream == "mbbs_ug" else "PG"
-                        self.assertEqual(candidate.pending_registration_details["subcategory"], expected_subcategory)
 
     def _internal_app(self):
         settings = Settings(
@@ -355,11 +352,11 @@ class PasswordlessApiTests(unittest.TestCase):
     def _valid_payload(self, email="candidate@example.invalid", category="nursing", programme=None,
                        academic_stage="Year 1", year=1, full_name="Synthetic API Candidate",
                        mobile="9876543210"):
-        programmes = {"nursing":"bsc_nursing","paramedical":"bmlt","mbbs":"mbbs_ug"}
+        programmes = {"nursing":"bsc_nursing","paramedical":"bmlt","pharmacy":"dpharm"}
         return RegistrationRequest(
             full_name=full_name, mobile=mobile, email=email,
             category=category, programme=programme or programmes[category],
-            stream={"nursing":"nursing","paramedical":"paramedical","mbbs":"mbbs_ug"}[category],
+            stream={"nursing":"nursing","paramedical":"paramedical","pharmacy":"pharmacy"}[category],
             year=year, academic_stage=academic_stage,
             house_number="12", address_line1="Main Road", address_line2="Near Market",
             district="Patna", state="Bihar", pin_code="800001", declaration_accepted=True,
@@ -687,7 +684,7 @@ class PasswordlessApiTests(unittest.TestCase):
             confirmation_sender=lambda **kwargs: confirmations.append(kwargs),
         )
         started = route_endpoint(application, "/api/registrations/start")(
-            self._valid_payload(email="free-registration@example.invalid", category="mbbs"),
+            self._valid_payload(email="free-registration@example.invalid", category="pharmacy", programme="dpharm"),
             request_for(application, "/api/registrations/start"),
         )
         response = __import__("starlette.responses", fromlist=["Response"]).Response()
@@ -718,8 +715,8 @@ class PasswordlessApiTests(unittest.TestCase):
             registration = session.query(Registration).one()
             self.assertEqual(registration.registration_id, verified["registration_id"])
             self.assertEqual(registration.status, "active")
-            self.assertEqual(registration.details["category"], "medical")
-            self.assertEqual(registration.details["programme_label"], "Medical UG")
+            self.assertEqual(registration.details["category"], "pharmacy")
+            self.assertEqual(registration.details["programme_label"], "D.Pharm")
             self.assertNotIn("registration_fee_paise", registration.details)
             self.assertNotIn("payment_status", registration.details)
         cookie = SimpleCookie()
@@ -820,7 +817,7 @@ class PasswordlessApiTests(unittest.TestCase):
             request_for(self.application, "/api/registration/config", method="GET")
         )
         self.assertNotIn("payment", config)
-        self.assertEqual({item["id"] for item in config["categories"]}, {"nursing", "paramedical", "medical"})
+        self.assertEqual({item["id"] for item in config["categories"]}, {"nursing", "paramedical", "pharmacy"})
         for item in config["categories"]:
             self.assertNotIn("fee_paise", item)
 
