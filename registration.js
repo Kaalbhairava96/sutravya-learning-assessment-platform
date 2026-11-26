@@ -46,7 +46,7 @@
       {id:"bpharm",label:"B.Pharm",years:[1,2,3,4]},
       {id:"pharmd",label:"Pharm.D",years:[1,2,3,4,5,6]},
       {id:"mpharm",label:"M.Pharm",years:[1,2]}
-    ]}}
+    ]}
   };
 
   let registrationEnabled = false;
