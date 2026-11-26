@@ -1,7 +1,7 @@
 {
   "nursing": {
     "label": "Nursing",
-    "description": "Common five-subject healthcare syllabus at foundational nursing level. Original practice questions with 100 MCQs and 20 questions per subject.",
+    "description": "Common five-subject healthcare syllabus: Anatomy, Physiology, Microbiology, Artificial Intelligence in Healthcare and OET-style healthcare English. Foundational MCQs contextualised for Nursing.",
     "difficulty_label": "Foundational",
     "subjects": [
       {
@@ -15,18 +15,18 @@
         "question_count": 20
       },
       {
-        "key": "biochemistry",
-        "label": "Biochemistry",
+        "key": "microbiology",
+        "label": "Microbiology",
         "question_count": 20
       },
       {
-        "key": "healthcare_it",
-        "label": "Healthcare IT",
+        "key": "ai_healthcare",
+        "label": "Artificial Intelligence in Healthcare",
         "question_count": 20
       },
       {
         "key": "oet_english",
-        "label": "OET-style Healthcare English",
+        "label": "OET (Occupational English Test)",
         "question_count": 20
       }
     ],
@@ -672,646 +672,6 @@
         "subjectLabel": "Physiology"
       },
       {
-        "id": "NUR-041",
-        "question": "Which molecule is commonly described as the immediate energy currency of cells?",
-        "options": [
-          "ATP",
-          "DNA",
-          "Urea",
-          "Bilirubin"
-        ],
-        "answer": 0,
-        "explanation": "ATP stores and transfers usable energy for many cellular processes.",
-        "topic": "Energy metabolism",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-042",
-        "question": "The principal simple sugar measured in routine blood glucose testing is:",
-        "options": [
-          "Lactose",
-          "Glucose",
-          "Cellulose",
-          "Glycogen"
-        ],
-        "answer": 1,
-        "explanation": "Glucose is the main circulating monosaccharide and a key cellular fuel.",
-        "topic": "Carbohydrates",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-043",
-        "question": "Proteins are built from smaller units called:",
-        "options": [
-          "Fatty acids",
-          "Nucleotides",
-          "Amino acids",
-          "Monosaccharides"
-        ],
-        "answer": 2,
-        "explanation": "Amino acids join by peptide bonds to form proteins.",
-        "topic": "Proteins",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-044",
-        "question": "Most enzymes function by:",
-        "options": [
-          "Increasing activation energy",
-          "Being consumed in every reaction",
-          "Changing the final equilibrium",
-          "Lowering activation energy"
-        ],
-        "answer": 3,
-        "explanation": "Enzymes accelerate reactions by lowering activation energy without being consumed.",
-        "topic": "Enzymes",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-045",
-        "question": "Iron is essential for haemoglobin because it:",
-        "options": [
-          "Binds oxygen reversibly in the haem group",
-          "Forms the cell membrane",
-          "Digests proteins",
-          "Stores glucose"
-        ],
-        "answer": 0,
-        "explanation": "Ferrous iron in haem binds oxygen reversibly.",
-        "topic": "Haemoglobin",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-046",
-        "question": "Urea is formed mainly in the liver to help remove:",
-        "options": [
-          "Carbon dioxide from lungs",
-          "Excess nitrogen from amino-acid metabolism",
-          "Calcium from bone",
-          "Bile salts from intestine"
-        ],
-        "answer": 1,
-        "explanation": "The urea cycle converts toxic ammonia into urea for renal excretion.",
-        "topic": "Nitrogen metabolism",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-047",
-        "question": "The main storage form of glucose in human liver and muscle is:",
-        "options": [
-          "Cellulose",
-          "Lactose",
-          "Glycogen",
-          "Cholesterol"
-        ],
-        "answer": 2,
-        "explanation": "Glycogen is the principal storage polysaccharide in humans.",
-        "topic": "Glycogen",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-048",
-        "question": "Vitamin C is required for normal:",
-        "options": [
-          "Thyroid hormone storage",
-          "Bile production",
-          "Oxygen binding by iron",
-          "Collagen synthesis"
-        ],
-        "answer": 3,
-        "explanation": "Vitamin C supports hydroxylation reactions needed for collagen formation.",
-        "topic": "Vitamin function",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-049",
-        "question": "Vitamin D helps maintain calcium balance mainly by increasing:",
-        "options": [
-          "Intestinal calcium absorption",
-          "Urinary calcium loss only",
-          "Red-cell destruction",
-          "Bile secretion"
-        ],
-        "answer": 0,
-        "explanation": "Active vitamin D promotes intestinal calcium and phosphate absorption.",
-        "topic": "Vitamin D",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-050",
-        "question": "Albumin contributes significantly to:",
-        "options": [
-          "Oxygen synthesis",
-          "Plasma oncotic pressure",
-          "Platelet production",
-          "Bilirubin conjugation"
-        ],
-        "answer": 1,
-        "explanation": "Albumin is the major plasma protein maintaining colloid oncotic pressure.",
-        "topic": "Plasma proteins",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-051",
-        "question": "Triglycerides are primarily used for:",
-        "options": [
-          "Carrying genetic information",
-          "Forming antibodies",
-          "Long-term energy storage",
-          "Producing urea"
-        ],
-        "answer": 2,
-        "explanation": "Triglycerides store concentrated energy in adipose tissue.",
-        "topic": "Lipid metabolism",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-052",
-        "question": "Bilirubin is produced mainly during breakdown of:",
-        "options": [
-          "Insulin",
-          "Plasma glucose",
-          "Collagen",
-          "Haem from aged red blood cells"
-        ],
-        "answer": 3,
-        "explanation": "Haem catabolism produces bilirubin, which is processed by the liver.",
-        "topic": "Bilirubin",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-053",
-        "question": "The principal extracellular cation is:",
-        "options": [
-          "Sodium",
-          "Potassium",
-          "Magnesium",
-          "Calcium"
-        ],
-        "answer": 0,
-        "explanation": "Sodium is the main cation in extracellular fluid.",
-        "topic": "Electrolytes",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-054",
-        "question": "Bicarbonate in blood acts mainly as a:",
-        "options": [
-          "Digestive enzyme",
-          "Buffer",
-          "Hormone",
-          "Structural protein"
-        ],
-        "answer": 1,
-        "explanation": "The bicarbonate-carbonic acid system buffers changes in blood pH.",
-        "topic": "Acid-base chemistry",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-055",
-        "question": "HbA1c gives an estimate of average blood glucose over approximately:",
-        "options": [
-          "One hour",
-          "One day",
-          "Several months",
-          "One week"
-        ],
-        "answer": 2,
-        "explanation": "HbA1c reflects glycation over the lifespan of circulating red blood cells, roughly two to three months.",
-        "topic": "Diabetes monitoring",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-056",
-        "question": "Ketone bodies increase when the body relies heavily on:",
-        "options": [
-          "Protein synthesis after meals",
-          "Bile storage",
-          "Calcium absorption",
-          "Fat breakdown during low carbohydrate availability"
-        ],
-        "answer": 3,
-        "explanation": "Ketone production rises when hepatic fatty-acid oxidation is increased.",
-        "topic": "Ketone bodies",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-057",
-        "question": "ALT is commonly measured as a marker associated with injury to the:",
-        "options": [
-          "Liver",
-          "Thyroid",
-          "Lung alveoli",
-          "Bone marrow"
-        ],
-        "answer": 0,
-        "explanation": "Alanine aminotransferase is concentrated in hepatocytes and may rise with hepatocellular injury.",
-        "topic": "Liver enzymes",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-058",
-        "question": "Creatinine in blood is used clinically as part of assessing:",
-        "options": [
-          "Lung volume",
-          "Kidney filtration function",
-          "Thyroid size",
-          "Platelet adhesion"
-        ],
-        "answer": 1,
-        "explanation": "Serum creatinine helps estimate glomerular filtration when interpreted with clinical context.",
-        "topic": "Renal markers",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-059",
-        "question": "A very high temperature can reduce enzyme activity because it may:",
-        "options": [
-          "Create extra active sites indefinitely",
-          "Turn proteins into DNA",
-          "Denature the enzyme's structure",
-          "Stop all molecular motion"
-        ],
-        "answer": 2,
-        "explanation": "Heat can disrupt an enzyme's three-dimensional structure and active site.",
-        "topic": "Enzyme activity",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-060",
-        "question": "Glycolysis converts glucose primarily into:",
-        "options": [
-          "Urea",
-          "Bilirubin",
-          "Cholesterol",
-          "Pyruvate"
-        ],
-        "answer": 3,
-        "explanation": "Glycolysis breaks glucose down to pyruvate while generating ATP and NADH.",
-        "topic": "Metabolic pathways",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "NUR-061",
-        "question": "An electronic health record (EHR) is best described as:",
-        "options": [
-          "A digital longitudinal record of a patient's health information",
-          "A public social-media profile",
-          "A device used only to measure temperature",
-          "A paper prescription archive"
-        ],
-        "answer": 0,
-        "explanation": "An EHR organises patient information digitally across encounters and care settings.",
-        "topic": "Electronic health records",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-062",
-        "question": "Which action best protects a patient's electronic record from unauthorised viewing?",
-        "options": [
-          "Sharing a login with colleagues",
-          "Using an individual account with role-based access",
-          "Leaving the workstation unlocked",
-          "Sending screenshots to a personal email"
-        ],
-        "answer": 1,
-        "explanation": "Individual accounts and role-based access help ensure that users see only information required for their role.",
-        "topic": "Privacy",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-063",
-        "question": "Multi-factor authentication requires:",
-        "options": [
-          "Two usernames",
-          "A password written on paper",
-          "Two or more different verification factors",
-          "A shared department password"
-        ],
-        "answer": 2,
-        "explanation": "MFA combines different factors such as something known and something possessed.",
-        "topic": "Authentication",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-064",
-        "question": "A message asking a nurse to open an urgent unknown attachment and enter a password may be:",
-        "options": [
-          "A routine backup",
-          "A patient consent form",
-          "A laboratory calibration",
-          "A phishing attempt"
-        ],
-        "answer": 3,
-        "explanation": "Phishing messages impersonate trusted senders to steal credentials or deliver malware.",
-        "topic": "Cybersecurity",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-065",
-        "question": "An EHR audit trail is used to record:",
-        "options": [
-          "Who accessed or changed information and when",
-          "Only the patient's blood group",
-          "The colour of a computer screen",
-          "Only deleted files"
-        ],
-        "answer": 0,
-        "explanation": "Audit logs support accountability by recording access and changes to health information.",
-        "topic": "Audit trails",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-066",
-        "question": "Which practice most improves patient identification accuracy in a digital system?",
-        "options": [
-          "Searching by room number only",
-          "Using two approved patient identifiers",
-          "Reusing a previous patient's label",
-          "Using an abbreviated name without checking"
-        ],
-        "answer": 1,
-        "explanation": "Two identifiers reduce the risk of selecting the wrong patient record.",
-        "topic": "Data quality",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-067",
-        "question": "Healthcare interoperability means that systems can:",
-        "options": [
-          "Operate only without internet",
-          "Replace all clinical judgement",
-          "Exchange and use health information in a meaningful way",
-          "Store images without labels"
-        ],
-        "answer": 2,
-        "explanation": "Interoperability allows authorised systems to exchange and interpret information.",
-        "topic": "Interoperability",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-068",
-        "question": "FHIR is a healthcare standard primarily designed to support:",
-        "options": [
-          "Sterilisation of instruments",
-          "Measurement of blood pressure",
-          "Physical patient identification bands",
-          "Electronic exchange of healthcare information"
-        ],
-        "answer": 3,
-        "explanation": "FHIR provides standardised resources and interfaces for exchanging health data.",
-        "topic": "Healthcare standards",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-069",
-        "question": "A PACS is commonly used to:",
-        "options": [
-          "Store and access medical images",
-          "Schedule staff leave only",
-          "Dispense medicines",
-          "Measure blood glucose"
-        ],
-        "answer": 0,
-        "explanation": "Picture Archiving and Communication Systems manage storage and access to diagnostic images.",
-        "topic": "Imaging IT",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-070",
-        "question": "A laboratory information system (LIS) helps manage:",
-        "options": [
-          "Hospital catering orders",
-          "Specimen tracking and laboratory results",
-          "Ward furniture inventory only",
-          "Patient transport routes"
-        ],
-        "answer": 1,
-        "explanation": "An LIS supports laboratory workflows, specimen identification, test processing and result reporting.",
-        "topic": "Laboratory IT",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-071",
-        "question": "If the hospital EHR becomes unavailable, staff should first:",
-        "options": [
-          "Share personal passwords",
-          "Stop documenting care",
-          "Follow the approved downtime procedure and use authorised paper workflows",
-          "Enter all records into an unapproved public app"
-        ],
-        "answer": 2,
-        "explanation": "A downtime procedure preserves safe care and records until the system is restored.",
-        "topic": "Downtime planning",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-072",
-        "question": "Why are regular, tested backups important in healthcare IT?",
-        "options": [
-          "They replace user authentication",
-          "They make every email public",
-          "They prevent all human errors",
-          "They help restore data after system failure or ransomware"
-        ],
-        "answer": 3,
-        "explanation": "Tested backups help recover critical information after data loss or cyber incidents.",
-        "topic": "Backups",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-073",
-        "question": "Before a telehealth consultation, staff should verify:",
-        "options": [
-          "Patient identity, consent and a private communication setting",
-          "Only the screen brightness",
-          "That the patient uses social media",
-          "That no clinical record is created"
-        ],
-        "answer": 0,
-        "explanation": "Identity, consent and privacy are important parts of safe remote care.",
-        "topic": "Telehealth",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-074",
-        "question": "A clinical decision-support alert should be treated as:",
-        "options": [
-          "A command that always overrides the clinician",
-          "Information to be considered with clinical judgement",
-          "A replacement for patient assessment",
-          "A guaranteed diagnosis"
-        ],
-        "answer": 1,
-        "explanation": "Decision support can assist clinicians but does not replace assessment or professional judgement.",
-        "topic": "Clinical decision support",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-075",
-        "question": "An electronic medication administration record (eMAR) is used to document:",
-        "options": [
-          "Only a patient's appointment history",
-          "Staff payroll",
-          "Medication orders and administration events",
-          "Radiology equipment maintenance"
-        ],
-        "answer": 2,
-        "explanation": "An eMAR records medication administration and supports safer medication workflows.",
-        "topic": "Medication records",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-076",
-        "question": "Encryption helps protect information by:",
-        "options": [
-          "Automatically deleting incorrect records",
-          "Removing the need for consent",
-          "Making all passwords identical",
-          "Making data unreadable without the required key"
-        ],
-        "answer": 3,
-        "explanation": "Encryption transforms data so that only authorised parties with the key can read it.",
-        "topic": "Data security",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-077",
-        "question": "The principle of least privilege means users receive:",
-        "options": [
-          "Only the minimum access needed for their duties",
-          "Administrator access by default",
-          "Access to every patient record",
-          "No access logging"
-        ],
-        "answer": 0,
-        "explanation": "Least privilege reduces the exposure of sensitive information.",
-        "topic": "Least privilege",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-078",
-        "question": "If a staff member suspects a patient-data breach, they should:",
-        "options": [
-          "Delete all evidence",
-          "Report it promptly through the approved incident process",
-          "Post details in a group chat",
-          "Ignore it unless media report it"
-        ],
-        "answer": 1,
-        "explanation": "Prompt reporting allows the organisation to contain, investigate and manage a possible breach.",
-        "topic": "Incident response",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-079",
-        "question": "Patient information should be shared externally only when:",
-        "options": [
-          "A colleague asks informally",
-          "The file is easy to download",
-          "There is a lawful, authorised purpose and appropriate safeguards",
-          "The recipient promises not to forward it"
-        ],
-        "answer": 2,
-        "explanation": "Healthcare data sharing requires a justified purpose, authority and appropriate privacy safeguards.",
-        "topic": "Data sharing",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "NUR-080",
-        "question": "A good electronic clinical note should be:",
-        "options": [
-          "Written under another user's account",
-          "Altered without an audit trail",
-          "Filled with unexplained abbreviations",
-          "Accurate, timely, relevant and attributable to its author"
-        ],
-        "answer": 3,
-        "explanation": "Good documentation is accurate, timely and clearly linked to the responsible professional.",
-        "topic": "Clinical documentation",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
         "id": "NUR-081",
         "question": "A patient says, 'I am worried about the test.' Which response is most empathetic?",
         "options": [
@@ -1630,12 +990,652 @@
         "difficulty": "moderate",
         "subjectKey": "oet_english",
         "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "NURSING-MIC-001",
+        "question": "In a nursing-care setting, Which group contains organisms commonly studied in basic microbiology?",
+        "options": [
+          "Bacteria, viruses and fungi",
+          "Bones, muscles and joints",
+          "Hormones and enzymes only",
+          "Organs and tissues"
+        ],
+        "answer": 0,
+        "explanation": "Microbiology studies microorganisms such as bacteria, viruses and fungi.",
+        "topic": "Microorganism groups",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-002",
+        "question": "In a nursing-care setting, Which statement about viruses is correct?",
+        "options": [
+          "They multiply independently on any surface",
+          "They need living host cells to replicate",
+          "They are larger than all bacteria",
+          "They are killed by every antibiotic"
+        ],
+        "answer": 1,
+        "explanation": "Viruses require host-cell machinery to replicate; antibiotics do not treat viral infections.",
+        "topic": "Viruses",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-003",
+        "question": "In a nursing-care setting, Which organism is a fungus?",
+        "options": [
+          "Escherichia coli",
+          "Influenza virus",
+          "Candida",
+          "Plasmodium"
+        ],
+        "answer": 2,
+        "explanation": "Candida is a yeast and belongs to the fungi.",
+        "topic": "Fungi",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-004",
+        "question": "In a nursing-care setting, What is normal microbiota?",
+        "options": [
+          "Only disease-causing organisms",
+          "All organisms found in drinking water",
+          "A type of antibiotic",
+          "Microorganisms normally living on or in the body"
+        ],
+        "answer": 3,
+        "explanation": "Normal microbiota are microorganisms that commonly inhabit body sites without causing disease in usual circumstances.",
+        "topic": "Normal microbiota",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-005",
+        "question": "In a nursing-care setting, Which sequence best represents the chain of infection?",
+        "options": [
+          "Reservoir, exit, transmission, entry and susceptible host",
+          "Diagnosis, prescription and discharge",
+          "Cleaning, drying and packaging only",
+          "Exposure, immunity and vaccination only"
+        ],
+        "answer": 0,
+        "explanation": "The chain describes how an infectious agent moves from a reservoir to a susceptible host.",
+        "topic": "Chain of infection",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-006",
+        "question": "In a nursing-care setting, When should hand hygiene be performed in routine patient care?",
+        "options": [
+          "Only at the end of a shift",
+          "Before and after patient contact, as indicated",
+          "Only when hands look dirty",
+          "Only after removing a uniform"
+        ],
+        "answer": 1,
+        "explanation": "Hand hygiene at the appropriate moments reduces transfer of microorganisms.",
+        "topic": "Hand hygiene",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-007",
+        "question": "In a nursing-care setting, What is the main purpose of wearing gloves?",
+        "options": [
+          "To replace hand hygiene",
+          "To make every surface sterile",
+          "To protect against expected contact with blood or body fluids",
+          "To avoid changing gloves between tasks"
+        ],
+        "answer": 2,
+        "explanation": "Gloves provide a barrier for indicated exposure but do not replace hand hygiene.",
+        "topic": "PPE",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-008",
+        "question": "In a nursing-care setting, Which process destroys all forms of microbial life, including bacterial spores?",
+        "options": [
+          "Routine cleaning",
+          "Dusting",
+          "Rinsing with water",
+          "Sterilisation"
+        ],
+        "answer": 3,
+        "explanation": "Sterilisation is intended to eliminate all forms of microbial life, including spores.",
+        "topic": "Sterilisation",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-009",
+        "question": "In a nursing-care setting, What is the main difference between disinfection and sterilisation?",
+        "options": [
+          "Sterilisation destroys all microbial life; disinfection reduces or eliminates many pathogens",
+          "Disinfection always removes every spore",
+          "They mean exactly the same thing",
+          "Disinfection is only used on living skin"
+        ],
+        "answer": 0,
+        "explanation": "Disinfection is not necessarily sporicidal; sterilisation has the broader endpoint.",
+        "topic": "Disinfection",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-010",
+        "question": "In a nursing-care setting, Which term describes an antimicrobial product used on living tissue?",
+        "options": [
+          "Detergent",
+          "Antiseptic",
+          "Culture medium",
+          "Fixative"
+        ],
+        "answer": 1,
+        "explanation": "Antiseptics are applied to living tissue to reduce microorganisms.",
+        "topic": "Antiseptics",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-011",
+        "question": "In a nursing-care setting, Which equipment commonly uses pressurised steam for sterilisation?",
+        "options": [
+          "Refrigerator",
+          "Centrifuge",
+          "Autoclave",
+          "Microscope"
+        ],
+        "answer": 2,
+        "explanation": "An autoclave uses saturated steam under pressure for sterilisation.",
+        "topic": "Autoclave",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-012",
+        "question": "In a nursing-care setting, Why is a culture medium used in a microbiology laboratory?",
+        "options": [
+          "To measure blood pressure",
+          "To sterilise surgical instruments",
+          "To identify a patient's blood group",
+          "To support growth of microorganisms under suitable conditions"
+        ],
+        "answer": 3,
+        "explanation": "Culture media provide nutrients and conditions for microbial growth and study.",
+        "topic": "Culture media",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-013",
+        "question": "In a nursing-care setting, What does a Gram stain help demonstrate?",
+        "options": [
+          "Differences in bacterial cell-wall staining characteristics",
+          "The patient's blood glucose level",
+          "The size of a human organ",
+          "The presence of antibodies only"
+        ],
+        "answer": 0,
+        "explanation": "Gram staining differentiates bacteria by cell-wall properties and staining response.",
+        "topic": "Gram stain",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-014",
+        "question": "In a nursing-care setting, Why must a specimen container be labelled at the point of collection?",
+        "options": [
+          "To make the sample grow faster",
+          "To avoid patient and specimen identification errors",
+          "To change the sample colour",
+          "To avoid recording collection time"
+        ],
+        "answer": 1,
+        "explanation": "Correct identification and traceability are essential for reliable laboratory results.",
+        "topic": "Specimen identification",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-015",
+        "question": "In a nursing-care setting, What is specimen contamination?",
+        "options": [
+          "Correct storage at the recommended temperature",
+          "A result confirmed by repeat testing",
+          "Unwanted introduction of microorganisms or material into a sample",
+          "The normal growth of a pure culture"
+        ],
+        "answer": 2,
+        "explanation": "Contamination can distort results and lead to incorrect interpretation.",
+        "topic": "Specimen contamination",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-016",
+        "question": "In a nursing-care setting, What is antimicrobial resistance?",
+        "options": [
+          "The body becomes resistant to all infections",
+          "Antibiotics become vitamins",
+          "All microbes are harmless",
+          "Microorganisms become less susceptible to medicines that once worked against them"
+        ],
+        "answer": 3,
+        "explanation": "Antimicrobial resistance makes infections harder to treat with affected medicines.",
+        "topic": "Antimicrobial resistance",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-017",
+        "question": "In a nursing-care setting, Which route is commonly associated with transmission of larger respiratory droplets?",
+        "options": [
+          "Close-range respiratory exposure",
+          "Only contaminated soil",
+          "Only insect bites",
+          "Only food packaging"
+        ],
+        "answer": 0,
+        "explanation": "Respiratory droplets can spread infection during close contact, depending on the pathogen.",
+        "topic": "Transmission",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-018",
+        "question": "In a nursing-care setting, Which practice is appropriate for biomedical waste?",
+        "options": [
+          "Mix all waste in one bag",
+          "Segregate waste at the point of generation using prescribed categories",
+          "Store sharps loose in a general bin",
+          "Reuse disposable contaminated items"
+        ],
+        "answer": 1,
+        "explanation": "Segregation at source supports safe handling and disposal under applicable rules.",
+        "topic": "Biomedical waste",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-019",
+        "question": "In a nursing-care setting, Why are some specimens transported promptly or under specified temperature conditions?",
+        "options": [
+          "To increase contamination",
+          "To remove the need for labelling",
+          "To preserve specimen integrity and reduce changes before testing",
+          "To guarantee a positive result"
+        ],
+        "answer": 2,
+        "explanation": "Correct transport conditions help preserve organisms or analytes relevant to testing.",
+        "topic": "Specimen transport",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-MIC-020",
+        "question": "In a nursing-care setting, What should a healthcare worker do after a possible exposure to infectious material?",
+        "options": [
+          "Ignore it if gloves were worn",
+          "Wait until symptoms appear",
+          "Share the incident on social media",
+          "Follow the facility exposure protocol and report promptly"
+        ],
+        "answer": 3,
+        "explanation": "Prompt reporting and post-exposure procedures support timely risk assessment and care.",
+        "topic": "Exposure response",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "NURSING-AIH-001",
+        "question": "In a nursing-care setting, In healthcare, what is artificial intelligence (AI) mainly used for?",
+        "options": [
+          "Finding patterns in data to support tasks and decisions",
+          "Replacing every healthcare professional",
+          "Making all diagnoses without review",
+          "Guaranteeing that every prediction is correct"
+        ],
+        "answer": 0,
+        "explanation": "AI systems can analyse patterns and support defined tasks; they do not guarantee correct decisions.",
+        "topic": "AI basics",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-002",
+        "question": "In a nursing-care setting, An AI tool that highlights a possible finding on an X-ray is an example of:",
+        "options": [
+          "A sterilisation method",
+          "Clinical decision support",
+          "A patient consent form",
+          "A laboratory culture"
+        ],
+        "answer": 1,
+        "explanation": "Image-analysis systems can flag patterns for a qualified professional to review.",
+        "topic": "Medical imaging",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-003",
+        "question": "In a nursing-care setting, What is the safest way to use an AI-generated clinical suggestion?",
+        "options": [
+          "Follow it automatically",
+          "Ignore the patient's symptoms",
+          "Treat it as support and verify it against clinical information and professional judgement",
+          "Share it without checking"
+        ],
+        "answer": 2,
+        "explanation": "AI output should be checked by an appropriately trained human before it influences care.",
+        "topic": "Human oversight",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-004",
+        "question": "In a nursing-care setting, Why must electronic health-record information be accurate before AI analysis?",
+        "options": [
+          "AI automatically repairs every missing value",
+          "Accuracy matters only for billing",
+          "AI does not use patient data",
+          "Poor or incomplete input can produce unreliable output"
+        ],
+        "answer": 3,
+        "explanation": "The quality of AI output depends in part on the quality and relevance of input data.",
+        "topic": "Health records",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-005",
+        "question": "In a nursing-care setting, What is bias in a healthcare AI system?",
+        "options": [
+          "A systematic unfair difference in performance across groups",
+          "A type of blood cell",
+          "A guaranteed improvement in accuracy",
+          "A method of sterilising equipment"
+        ],
+        "answer": 0,
+        "explanation": "Biased data or design can lead to unequal performance and harm.",
+        "topic": "Bias and fairness",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-006",
+        "question": "In a nursing-care setting, Which information should not be entered into an unapproved public AI chatbot?",
+        "options": [
+          "A fictional example with no personal data",
+          "Identifiable patient details or confidential health records",
+          "A general question about anatomy",
+          "A public health definition"
+        ],
+        "answer": 1,
+        "explanation": "Confidential patient information must be protected and handled only through approved systems.",
+        "topic": "Privacy",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-007",
+        "question": "In a nursing-care setting, Before using patient data in an AI system, what should staff check?",
+        "options": [
+          "Whether the AI logo looks genuine",
+          "Whether the result is quick",
+          "Whether the use is authorised and follows consent, privacy and institutional rules",
+          "Whether the data can be copied to a personal device"
+        ],
+        "answer": 2,
+        "explanation": "Use of health data must follow applicable privacy, consent and governance requirements.",
+        "topic": "Consent and governance",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-008",
+        "question": "In a nursing-care setting, Who remains responsible for a clinical decision supported by AI?",
+        "options": [
+          "The computer alone",
+          "The software vendor alone in every case",
+          "The patient-record printer",
+          "The qualified healthcare professional and responsible care team"
+        ],
+        "answer": 3,
+        "explanation": "AI does not remove professional accountability or the need for clinical judgement.",
+        "topic": "Accountability",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-009",
+        "question": "In a nursing-care setting, A false positive from an AI screening tool means:",
+        "options": [
+          "The tool flags a possible condition when it is not actually present",
+          "The tool misses a real condition",
+          "The system has no input data",
+          "The patient has confirmed disease"
+        ],
+        "answer": 0,
+        "explanation": "A false positive is an alert that is not confirmed by the true condition status.",
+        "topic": "Screening",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-010",
+        "question": "In a nursing-care setting, Predictive analytics in a hospital may help estimate:",
+        "options": [
+          "The exact future of every patient with certainty",
+          "Which patients may be at higher risk of deterioration",
+          "A patient's identity from a random number",
+          "Whether a medicine has no side effects"
+        ],
+        "answer": 1,
+        "explanation": "Predictive models estimate risk from patterns; estimates are uncertain and need review.",
+        "topic": "Predictive analytics",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-011",
+        "question": "In a nursing-care setting, Can an AI triage tool replace emergency assessment by trained staff?",
+        "options": [
+          "Yes, in every situation",
+          "Yes, if the screen is green",
+          "No, it can only support a properly governed workflow",
+          "Only when the patient is unconscious"
+        ],
+        "answer": 2,
+        "explanation": "Triage tools must not replace urgent professional assessment or emergency protocols.",
+        "topic": "Triage support",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-012",
+        "question": "In a nursing-care setting, A wearable device sends heart-rate readings to a health app. AI may help:",
+        "options": [
+          "Confirm every heart disease diagnosis",
+          "Replace an ECG in all situations",
+          "Prescribe medicines independently",
+          "Identify patterns or unusual trends for review"
+        ],
+        "answer": 3,
+        "explanation": "Wearable data can support trend monitoring but does not establish a diagnosis by itself.",
+        "topic": "Wearables",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-013",
+        "question": "In a nursing-care setting, What should a healthcare worker do if an AI result conflicts with the patient's condition?",
+        "options": [
+          "Reassess the patient and escalate or seek qualified review",
+          "Accept the AI result without question",
+          "Delete the patient's record",
+          "Ask the patient to change symptoms"
+        ],
+        "answer": 0,
+        "explanation": "Clinical findings and professional assessment take priority over unverified automated output.",
+        "topic": "Verification",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-014",
+        "question": "In a nursing-care setting, Why can a generative AI tool sometimes produce an incorrect but convincing answer?",
+        "options": [
+          "It always checks an official medical database",
+          "It may generate plausible text that is not factually grounded",
+          "It cannot generate text",
+          "It only copies a clinician's signed note"
+        ],
+        "answer": 1,
+        "explanation": "Generative systems can produce inaccurate or fabricated information and require verification.",
+        "topic": "Generative AI limits",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-015",
+        "question": "In a nursing-care setting, Which is a sensible cybersecurity practice when using healthcare technology?",
+        "options": [
+          "Use one shared password for the whole ward",
+          "Disable all security updates",
+          "Use authorised accounts and never share passwords",
+          "Send login details through public chat"
+        ],
+        "answer": 2,
+        "explanation": "Access controls and secure account practices help protect sensitive health information.",
+        "topic": "Cybersecurity",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-016",
+        "question": "In a nursing-care setting, Why does the data used to train an AI model matter?",
+        "options": [
+          "It guarantees the model is unbiased",
+          "It removes the need for testing",
+          "It determines the patient's blood group",
+          "It influences what patterns the model learns and how well it works for different people"
+        ],
+        "answer": 3,
+        "explanation": "Training data shape model behaviour and may create gaps or bias if not representative.",
+        "topic": "Training data",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-017",
+        "question": "In a nursing-care setting, What is an accessible design principle for an AI-enabled health service?",
+        "options": [
+          "Make the service usable by people with different abilities, languages and levels of digital access",
+          "Require the newest phone for every user",
+          "Use only technical language",
+          "Remove human support"
+        ],
+        "answer": 0,
+        "explanation": "Inclusive design helps avoid excluding patients and healthcare workers.",
+        "topic": "Accessibility",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-018",
+        "question": "In a nursing-care setting, What should be done before an AI tool is introduced into a clinical workflow?",
+        "options": [
+          "Deploy it immediately without testing",
+          "Assess safety, evidence, privacy, training and local approval requirements",
+          "Allow unrestricted access to patient records",
+          "Assume another hospital's results guarantee local performance"
+        ],
+        "answer": 1,
+        "explanation": "Responsible implementation includes evaluation, governance, training and monitoring.",
+        "topic": "Safe implementation",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-019",
+        "question": "In a nursing-care setting, How should an AI-generated patient-information note be used?",
+        "options": [
+          "Send it without reading",
+          "Assume it is always personalised correctly",
+          "Check it for accuracy, clarity and suitability before sharing",
+          "Use it instead of confirming patient understanding"
+        ],
+        "answer": 2,
+        "explanation": "Human review is needed to correct errors and ensure the information suits the patient.",
+        "topic": "Patient communication",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "NURSING-AIH-020",
+        "question": "In a nursing-care setting, Which statement best describes responsible AI use in healthcare?",
+        "options": [
+          "AI should make every decision without explanation",
+          "Patient consent and confidentiality are optional",
+          "AI outputs are always more accurate than professionals",
+          "AI can assist care, but privacy, fairness, transparency and human oversight remain essential"
+        ],
+        "answer": 3,
+        "explanation": "Responsible AI requires safeguards, accountability and human oversight.",
+        "topic": "Responsible AI",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
       }
     ]
   },
   "paramedical": {
     "label": "Paramedical",
-    "description": "Common five-subject healthcare syllabus at applied diagnostic and technical level. Original practice questions with 100 MCQs and 20 questions per subject.",
+    "description": "Common five-subject healthcare syllabus: Anatomy, Physiology, Microbiology, Artificial Intelligence in Healthcare and OET-style healthcare English. Foundational MCQs contextualised for Paramedical.",
     "difficulty_label": "Applied",
     "subjects": [
       {
@@ -1649,18 +1649,18 @@
         "question_count": 20
       },
       {
-        "key": "biochemistry",
-        "label": "Biochemistry",
+        "key": "microbiology",
+        "label": "Microbiology",
         "question_count": 20
       },
       {
-        "key": "healthcare_it",
-        "label": "Healthcare IT",
+        "key": "ai_healthcare",
+        "label": "Artificial Intelligence in Healthcare",
         "question_count": 20
       },
       {
         "key": "oet_english",
-        "label": "OET-style Healthcare English",
+        "label": "OET (Occupational English Test)",
         "question_count": 20
       }
     ],
@@ -2306,646 +2306,6 @@
         "subjectLabel": "Physiology"
       },
       {
-        "id": "PAR-041",
-        "question": "A raised serum creatinine most directly suggests a possible reduction in:",
-        "options": [
-          "Glomerular filtration",
-          "Bile formation",
-          "Lung compliance",
-          "Platelet function"
-        ],
-        "answer": 0,
-        "explanation": "Creatinine rises when renal clearance is reduced, though interpretation depends on context.",
-        "topic": "Renal marker",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-042",
-        "question": "ALT is generally more liver-specific than:",
-        "options": [
-          "Sodium",
-          "AST",
-          "Urea",
-          "Troponin"
-        ],
-        "answer": 1,
-        "explanation": "ALT is more concentrated in hepatocytes than many extrahepatic tissues.",
-        "topic": "Liver marker",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-043",
-        "question": "Cardiac troponin is measured primarily to assess:",
-        "options": [
-          "Renal stone size",
-          "Thyroid volume",
-          "Myocardial injury",
-          "Lung capacity"
-        ],
-        "answer": 2,
-        "explanation": "Cardiac troponin is a sensitive biomarker of myocardial injury.",
-        "topic": "Cardiac marker",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-044",
-        "question": "C-reactive protein (CRP) is best described as:",
-        "options": [
-          "A digestive enzyme",
-          "A clotting platelet",
-          "A bile pigment",
-          "An acute-phase protein"
-        ],
-        "answer": 3,
-        "explanation": "CRP is produced by the liver in response to inflammatory signals.",
-        "topic": "Inflammation marker",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-045",
-        "question": "A fasting plasma glucose sample is used to assess:",
-        "options": [
-          "Glucose regulation",
-          "Serum calcium only",
-          "Liver imaging",
-          "Blood clotting time"
-        ],
-        "answer": 0,
-        "explanation": "Fasting glucose is one laboratory measure used to evaluate glycaemic status.",
-        "topic": "Glucose testing",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-046",
-        "question": "A markedly low potassium level can affect:",
-        "options": [
-          "Only skin pigmentation",
-          "Cardiac electrical activity and muscle function",
-          "Bile colour",
-          "Bone length immediately"
-        ],
-        "answer": 1,
-        "explanation": "Potassium is essential for membrane potentials in muscle and cardiac tissue.",
-        "topic": "Electrolytes",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-047",
-        "question": "A low bicarbonate with low pH is most consistent with:",
-        "options": [
-          "Metabolic alkalosis",
-          "Respiratory alkalosis",
-          "Metabolic acidosis",
-          "Normal acid-base status"
-        ],
-        "answer": 2,
-        "explanation": "Low bicarbonate with acidemia suggests a primary metabolic acidosis.",
-        "topic": "Acid-base testing",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-048",
-        "question": "A low serum albumin may contribute to oedema because it reduces:",
-        "options": [
-          "Haemoglobin synthesis directly",
-          "Oxygen diffusion in alveoli",
-          "Platelet count",
-          "Plasma oncotic pressure"
-        ],
-        "answer": 3,
-        "explanation": "Reduced albumin lowers plasma oncotic pressure and can favour fluid movement into tissues.",
-        "topic": "Proteins",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-049",
-        "question": "LDL cholesterol is often described clinically as:",
-        "options": [
-          "A lipoprotein associated with cholesterol delivery to tissues",
-          "The main blood glucose carrier",
-          "A clotting factor",
-          "A digestive hormone"
-        ],
-        "answer": 0,
-        "explanation": "LDL transports cholesterol to peripheral tissues and is atherogenic when elevated.",
-        "topic": "Lipid profile",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-050",
-        "question": "Ferritin is most commonly used as an indicator of:",
-        "options": [
-          "Vitamin C stores",
-          "Iron stores",
-          "Serum sodium",
-          "Blood pH"
-        ],
-        "answer": 1,
-        "explanation": "Ferritin reflects iron stores, though it can rise during inflammation.",
-        "topic": "Haematology chemistry",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-051",
-        "question": "A raised blood lactate may occur when:",
-        "options": [
-          "The patient has excess vitamin D only",
-          "Bile flow is increased",
-          "Tissue oxygen delivery is inadequate or metabolism is stressed",
-          "Platelets are elevated"
-        ],
-        "answer": 2,
-        "explanation": "Lactate can rise with impaired tissue perfusion and several other metabolic stresses.",
-        "topic": "Lactate",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-052",
-        "question": "Alkaline phosphatase is commonly associated with pathology involving:",
-        "options": [
-          "Retina only",
-          "Skeletal muscle only",
-          "Hair follicles",
-          "Bile ducts or bone"
-        ],
-        "answer": 3,
-        "explanation": "ALP is present in liver and bone; elevation must be interpreted with other tests.",
-        "topic": "Enzyme marker",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-053",
-        "question": "Unconjugated bilirubin is transported in plasma mainly bound to:",
-        "options": [
-          "Albumin",
-          "Fibrinogen",
-          "Insulin",
-          "Sodium"
-        ],
-        "answer": 0,
-        "explanation": "Unconjugated bilirubin is poorly water-soluble and travels bound to albumin.",
-        "topic": "Bilirubin",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-054",
-        "question": "HbA1c is formed by non-enzymatic attachment of glucose to:",
-        "options": [
-          "Albumin only",
-          "Haemoglobin",
-          "Collagen",
-          "DNA"
-        ],
-        "answer": 1,
-        "explanation": "HbA1c reflects glucose exposure through glycation of haemoglobin.",
-        "topic": "Glycated proteins",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-055",
-        "question": "The principal product of anaerobic glycolysis in human muscle is:",
-        "options": [
-          "Urea",
-          "Bilirubin",
-          "Lactate",
-          "Creatinine"
-        ],
-        "answer": 2,
-        "explanation": "Under anaerobic conditions pyruvate is reduced to lactate to regenerate NAD+.",
-        "topic": "Metabolism",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-056",
-        "question": "Lipase is commonly measured when evaluating suspected:",
-        "options": [
-          "Iron deficiency",
-          "Thyroid storm",
-          "Anaemia",
-          "Acute pancreatitis"
-        ],
-        "answer": 3,
-        "explanation": "Serum lipase is a useful biochemical marker in suspected acute pancreatitis.",
-        "topic": "Pancreatic marker",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-057",
-        "question": "Calcium is important for:",
-        "options": [
-          "Muscle contraction and coagulation",
-          "DNA replication only",
-          "Bile storage",
-          "Oxygen transport"
-        ],
-        "answer": 0,
-        "explanation": "Calcium participates in muscle contraction, neurotransmission and coagulation.",
-        "topic": "Calcium",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-058",
-        "question": "Amino groups removed during amino-acid catabolism are ultimately converted largely into:",
-        "options": [
-          "Cholesterol",
-          "Urea",
-          "Bilirubin",
-          "Glycogen"
-        ],
-        "answer": 1,
-        "explanation": "The liver converts ammonia from amino-acid catabolism into urea.",
-        "topic": "Protein metabolism",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-059",
-        "question": "Haemolysis of a blood sample can falsely increase measured:",
-        "options": [
-          "Sodium in all circumstances",
-          "Chloride only",
-          "Potassium",
-          "Bicarbonate always"
-        ],
-        "answer": 2,
-        "explanation": "Cell rupture releases intracellular potassium and can produce a falsely high result.",
-        "topic": "Quality of specimen",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-060",
-        "question": "A competitive inhibitor usually binds to the enzyme's:",
-        "options": [
-          "Nucleus",
-          "Cell membrane only",
-          "Mitochondrial DNA",
-          "Active site"
-        ],
-        "answer": 3,
-        "explanation": "Competitive inhibitors compete with substrate for the active site.",
-        "topic": "Enzyme kinetics",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PAR-061",
-        "question": "A laboratory information system (LIS) should link a specimen to:",
-        "options": [
-          "A unique patient and test order identifier",
-          "A technician's personal email",
-          "A ward colour only",
-          "An unverified handwritten nickname"
-        ],
-        "answer": 0,
-        "explanation": "Unique identifiers support traceability from collection through reporting.",
-        "topic": "LIS workflow",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-062",
-        "question": "Scanning a specimen barcode at receipt helps reduce:",
-        "options": [
-          "The need for quality control",
-          "Patient and specimen identification errors",
-          "The need for trained staff",
-          "All laboratory variation"
-        ],
-        "answer": 1,
-        "explanation": "Barcode scanning reduces manual transcription and identification errors.",
-        "topic": "Specimen barcoding",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-063",
-        "question": "DICOM is widely used for:",
-        "options": [
-          "Writing discharge prescriptions",
-          "Measuring blood pressure",
-          "Medical imaging data and communication",
-          "Patient diet planning"
-        ],
-        "answer": 2,
-        "explanation": "DICOM defines formats and communication for medical imaging.",
-        "topic": "Imaging standard",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-064",
-        "question": "A radiology PACS allows authorised staff to:",
-        "options": [
-          "Issue pharmacy stock orders only",
-          "Record staff attendance",
-          "Replace radiologist reporting",
-          "Store, retrieve and view diagnostic images"
-        ],
-        "answer": 3,
-        "explanation": "PACS manages image archiving and distribution.",
-        "topic": "PACS workflow",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-065",
-        "question": "HL7 standards are used to support:",
-        "options": [
-          "Exchange of healthcare information between systems",
-          "Instrument sterilisation",
-          "Clinical examination of reflexes",
-          "Blood sample centrifugation"
-        ],
-        "answer": 0,
-        "explanation": "HL7 standards support healthcare data messaging and exchange.",
-        "topic": "Interoperability",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-066",
-        "question": "A laboratory system should support prompt escalation of:",
-        "options": [
-          "Every normal result by public notice",
-          "Critical or life-threatening results",
-          "Staff birthdays",
-          "Routine stationery requests"
-        ],
-        "answer": 1,
-        "explanation": "Critical results require timely communication and documentation to support clinical action.",
-        "topic": "Critical result reporting",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-067",
-        "question": "An electronic quality-control log helps a laboratory:",
-        "options": [
-          "Avoid calibration forever",
-          "Change results without trace",
-          "Trend control results and identify shifts or trends",
-          "Remove instrument maintenance"
-        ],
-        "answer": 2,
-        "explanation": "QC records help identify analytical problems before patient results are released.",
-        "topic": "Quality control",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-068",
-        "question": "A system audit trail is important because it:",
-        "options": [
-          "Automatically proves the clinical diagnosis",
-          "Replaces staff training",
-          "Deletes all previous results",
-          "Records user actions and changes to data"
-        ],
-        "answer": 3,
-        "explanation": "Audit trails support traceability and accountability.",
-        "topic": "Audit",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-069",
-        "question": "A technician should access patient data:",
-        "options": [
-          "Only when required for assigned duties",
-          "Out of curiosity",
-          "To share with friends",
-          "Using another person's account"
-        ],
-        "answer": 0,
-        "explanation": "Access should be limited to legitimate role-related needs.",
-        "topic": "Information privacy",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-070",
-        "question": "A suspicious link in a hospital email should be:",
-        "options": [
-          "Forwarded to all patients",
-          "Reported through IT/security procedures without opening it",
-          "Opened on a clinical workstation",
-          "Used to verify the sender's password"
-        ],
-        "answer": 1,
-        "explanation": "Reporting suspicious messages helps prevent phishing and malware.",
-        "topic": "Cybersecurity",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-071",
-        "question": "During an LIS outage, specimen identity should be maintained using:",
-        "options": [
-          "Memory alone",
-          "Unlabelled tubes",
-          "The approved downtime procedure and unique identifiers",
-          "Shared spreadsheets on personal devices"
-        ],
-        "answer": 2,
-        "explanation": "Approved downtime processes maintain traceability and safe reporting.",
-        "topic": "Downtime",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-072",
-        "question": "A backup is useful only if:",
-        "options": [
-          "It is never checked",
-          "It is stored on the same infected workstation only",
-          "No one knows where it is",
-          "It can be restored and its integrity is tested"
-        ],
-        "answer": 3,
-        "explanation": "Restore testing confirms that backups are usable after a disruption.",
-        "topic": "Backup",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-073",
-        "question": "When a staff member changes role, system access should be:",
-        "options": [
-          "Reviewed and adjusted to match the new role",
-          "Left unchanged forever",
-          "Shared with the replacement",
-          "Removed from audit logs"
-        ],
-        "answer": 0,
-        "explanation": "Role changes require access review to maintain least privilege.",
-        "topic": "Access management",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-074",
-        "question": "A result correction in an LIS should be:",
-        "options": [
-          "Overwritten without history",
-          "Traceable with an authorised amendment and audit record",
-          "Changed by any user",
-          "Communicated only verbally"
-        ],
-        "answer": 1,
-        "explanation": "Traceable amendments preserve the original record and explain the correction.",
-        "topic": "Data integrity",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-075",
-        "question": "Secure image transfer for remote reporting requires:",
-        "options": [
-          "Public file-sharing links",
-          "Images without patient identifiers or controls",
-          "Authorised access and protected transmission",
-          "Personal messaging accounts"
-        ],
-        "answer": 2,
-        "explanation": "Secure transfer protects patient confidentiality and image integrity.",
-        "topic": "Tele-radiology",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-076",
-        "question": "An electronic medical record differs from a paper chart because it:",
-        "options": [
-          "Removes the need for documentation",
-          "Automatically treats the patient",
-          "Guarantees zero data-entry errors",
-          "Stores clinical information in a searchable digital system"
-        ],
-        "answer": 3,
-        "explanation": "Digital records improve access and organisation but still require accurate documentation.",
-        "topic": "Clinical systems",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-077",
-        "question": "A result flag generated by a clinical system should be:",
-        "options": [
-          "Reviewed in clinical context by an authorised professional",
-          "Accepted without verification in every case",
-          "Removed from the record",
-          "Used as the only diagnosis"
-        ],
-        "answer": 0,
-        "explanation": "Flags support attention but require professional interpretation.",
-        "topic": "Decision support",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-078",
-        "question": "If ransomware is suspected on a workstation, staff should:",
-        "options": [
-          "Pay from a personal account",
-          "Disconnect or isolate it according to policy and report immediately",
-          "Continue entering patient data",
-          "Disable all security controls"
-        ],
-        "answer": 1,
-        "explanation": "Prompt isolation and incident reporting can limit spread and support response.",
-        "topic": "Cyber incident",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-079",
-        "question": "Before sharing images for teaching or presentation, staff should check:",
-        "options": [
-          "Only whether the image looks clear",
-          "The patient's room number",
-          "Applicable consent, de-identification and institutional policy",
-          "The file name"
-        ],
-        "answer": 2,
-        "explanation": "Patient images require privacy protection and appropriate authorisation.",
-        "topic": "Patient consent",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PAR-080",
-        "question": "Before releasing a laboratory result electronically, the system should ensure:",
-        "options": [
-          "The screen is full-size",
-          "The computer has no mouse",
-          "A colleague has viewed the result informally",
-          "Correct patient, test, validation status and authorised release"
-        ],
-        "answer": 3,
-        "explanation": "Identity matching and validation support safe electronic result release.",
-        "topic": "Result release",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
         "id": "PAR-081",
         "question": "Which instruction best explains a fasting blood test?",
         "options": [
@@ -3264,12 +2624,652 @@
         "difficulty": "moderate",
         "subjectKey": "oet_english",
         "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-001",
+        "question": "In a diagnostic or allied-health setting, Which group contains organisms commonly studied in basic microbiology?",
+        "options": [
+          "Bacteria, viruses and fungi",
+          "Bones, muscles and joints",
+          "Hormones and enzymes only",
+          "Organs and tissues"
+        ],
+        "answer": 0,
+        "explanation": "Microbiology studies microorganisms such as bacteria, viruses and fungi.",
+        "topic": "Microorganism groups",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-002",
+        "question": "In a diagnostic or allied-health setting, Which statement about viruses is correct?",
+        "options": [
+          "They multiply independently on any surface",
+          "They need living host cells to replicate",
+          "They are larger than all bacteria",
+          "They are killed by every antibiotic"
+        ],
+        "answer": 1,
+        "explanation": "Viruses require host-cell machinery to replicate; antibiotics do not treat viral infections.",
+        "topic": "Viruses",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-003",
+        "question": "In a diagnostic or allied-health setting, Which organism is a fungus?",
+        "options": [
+          "Escherichia coli",
+          "Influenza virus",
+          "Candida",
+          "Plasmodium"
+        ],
+        "answer": 2,
+        "explanation": "Candida is a yeast and belongs to the fungi.",
+        "topic": "Fungi",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-004",
+        "question": "In a diagnostic or allied-health setting, What is normal microbiota?",
+        "options": [
+          "Only disease-causing organisms",
+          "All organisms found in drinking water",
+          "A type of antibiotic",
+          "Microorganisms normally living on or in the body"
+        ],
+        "answer": 3,
+        "explanation": "Normal microbiota are microorganisms that commonly inhabit body sites without causing disease in usual circumstances.",
+        "topic": "Normal microbiota",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-005",
+        "question": "In a diagnostic or allied-health setting, Which sequence best represents the chain of infection?",
+        "options": [
+          "Reservoir, exit, transmission, entry and susceptible host",
+          "Diagnosis, prescription and discharge",
+          "Cleaning, drying and packaging only",
+          "Exposure, immunity and vaccination only"
+        ],
+        "answer": 0,
+        "explanation": "The chain describes how an infectious agent moves from a reservoir to a susceptible host.",
+        "topic": "Chain of infection",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-006",
+        "question": "In a diagnostic or allied-health setting, When should hand hygiene be performed in routine patient care?",
+        "options": [
+          "Only at the end of a shift",
+          "Before and after patient contact, as indicated",
+          "Only when hands look dirty",
+          "Only after removing a uniform"
+        ],
+        "answer": 1,
+        "explanation": "Hand hygiene at the appropriate moments reduces transfer of microorganisms.",
+        "topic": "Hand hygiene",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-007",
+        "question": "In a diagnostic or allied-health setting, What is the main purpose of wearing gloves?",
+        "options": [
+          "To replace hand hygiene",
+          "To make every surface sterile",
+          "To protect against expected contact with blood or body fluids",
+          "To avoid changing gloves between tasks"
+        ],
+        "answer": 2,
+        "explanation": "Gloves provide a barrier for indicated exposure but do not replace hand hygiene.",
+        "topic": "PPE",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-008",
+        "question": "In a diagnostic or allied-health setting, Which process destroys all forms of microbial life, including bacterial spores?",
+        "options": [
+          "Routine cleaning",
+          "Dusting",
+          "Rinsing with water",
+          "Sterilisation"
+        ],
+        "answer": 3,
+        "explanation": "Sterilisation is intended to eliminate all forms of microbial life, including spores.",
+        "topic": "Sterilisation",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-009",
+        "question": "In a diagnostic or allied-health setting, What is the main difference between disinfection and sterilisation?",
+        "options": [
+          "Sterilisation destroys all microbial life; disinfection reduces or eliminates many pathogens",
+          "Disinfection always removes every spore",
+          "They mean exactly the same thing",
+          "Disinfection is only used on living skin"
+        ],
+        "answer": 0,
+        "explanation": "Disinfection is not necessarily sporicidal; sterilisation has the broader endpoint.",
+        "topic": "Disinfection",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-010",
+        "question": "In a diagnostic or allied-health setting, Which term describes an antimicrobial product used on living tissue?",
+        "options": [
+          "Detergent",
+          "Antiseptic",
+          "Culture medium",
+          "Fixative"
+        ],
+        "answer": 1,
+        "explanation": "Antiseptics are applied to living tissue to reduce microorganisms.",
+        "topic": "Antiseptics",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-011",
+        "question": "In a diagnostic or allied-health setting, Which equipment commonly uses pressurised steam for sterilisation?",
+        "options": [
+          "Refrigerator",
+          "Centrifuge",
+          "Autoclave",
+          "Microscope"
+        ],
+        "answer": 2,
+        "explanation": "An autoclave uses saturated steam under pressure for sterilisation.",
+        "topic": "Autoclave",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-012",
+        "question": "In a diagnostic or allied-health setting, Why is a culture medium used in a microbiology laboratory?",
+        "options": [
+          "To measure blood pressure",
+          "To sterilise surgical instruments",
+          "To identify a patient's blood group",
+          "To support growth of microorganisms under suitable conditions"
+        ],
+        "answer": 3,
+        "explanation": "Culture media provide nutrients and conditions for microbial growth and study.",
+        "topic": "Culture media",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-013",
+        "question": "In a diagnostic or allied-health setting, What does a Gram stain help demonstrate?",
+        "options": [
+          "Differences in bacterial cell-wall staining characteristics",
+          "The patient's blood glucose level",
+          "The size of a human organ",
+          "The presence of antibodies only"
+        ],
+        "answer": 0,
+        "explanation": "Gram staining differentiates bacteria by cell-wall properties and staining response.",
+        "topic": "Gram stain",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-014",
+        "question": "In a diagnostic or allied-health setting, Why must a specimen container be labelled at the point of collection?",
+        "options": [
+          "To make the sample grow faster",
+          "To avoid patient and specimen identification errors",
+          "To change the sample colour",
+          "To avoid recording collection time"
+        ],
+        "answer": 1,
+        "explanation": "Correct identification and traceability are essential for reliable laboratory results.",
+        "topic": "Specimen identification",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-015",
+        "question": "In a diagnostic or allied-health setting, What is specimen contamination?",
+        "options": [
+          "Correct storage at the recommended temperature",
+          "A result confirmed by repeat testing",
+          "Unwanted introduction of microorganisms or material into a sample",
+          "The normal growth of a pure culture"
+        ],
+        "answer": 2,
+        "explanation": "Contamination can distort results and lead to incorrect interpretation.",
+        "topic": "Specimen contamination",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-016",
+        "question": "In a diagnostic or allied-health setting, What is antimicrobial resistance?",
+        "options": [
+          "The body becomes resistant to all infections",
+          "Antibiotics become vitamins",
+          "All microbes are harmless",
+          "Microorganisms become less susceptible to medicines that once worked against them"
+        ],
+        "answer": 3,
+        "explanation": "Antimicrobial resistance makes infections harder to treat with affected medicines.",
+        "topic": "Antimicrobial resistance",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-017",
+        "question": "In a diagnostic or allied-health setting, Which route is commonly associated with transmission of larger respiratory droplets?",
+        "options": [
+          "Close-range respiratory exposure",
+          "Only contaminated soil",
+          "Only insect bites",
+          "Only food packaging"
+        ],
+        "answer": 0,
+        "explanation": "Respiratory droplets can spread infection during close contact, depending on the pathogen.",
+        "topic": "Transmission",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-018",
+        "question": "In a diagnostic or allied-health setting, Which practice is appropriate for biomedical waste?",
+        "options": [
+          "Mix all waste in one bag",
+          "Segregate waste at the point of generation using prescribed categories",
+          "Store sharps loose in a general bin",
+          "Reuse disposable contaminated items"
+        ],
+        "answer": 1,
+        "explanation": "Segregation at source supports safe handling and disposal under applicable rules.",
+        "topic": "Biomedical waste",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-019",
+        "question": "In a diagnostic or allied-health setting, Why are some specimens transported promptly or under specified temperature conditions?",
+        "options": [
+          "To increase contamination",
+          "To remove the need for labelling",
+          "To preserve specimen integrity and reduce changes before testing",
+          "To guarantee a positive result"
+        ],
+        "answer": 2,
+        "explanation": "Correct transport conditions help preserve organisms or analytes relevant to testing.",
+        "topic": "Specimen transport",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-MIC-020",
+        "question": "In a diagnostic or allied-health setting, What should a healthcare worker do after a possible exposure to infectious material?",
+        "options": [
+          "Ignore it if gloves were worn",
+          "Wait until symptoms appear",
+          "Share the incident on social media",
+          "Follow the facility exposure protocol and report promptly"
+        ],
+        "answer": 3,
+        "explanation": "Prompt reporting and post-exposure procedures support timely risk assessment and care.",
+        "topic": "Exposure response",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-001",
+        "question": "In a diagnostic or allied-health setting, In healthcare, what is artificial intelligence (AI) mainly used for?",
+        "options": [
+          "Finding patterns in data to support tasks and decisions",
+          "Replacing every healthcare professional",
+          "Making all diagnoses without review",
+          "Guaranteeing that every prediction is correct"
+        ],
+        "answer": 0,
+        "explanation": "AI systems can analyse patterns and support defined tasks; they do not guarantee correct decisions.",
+        "topic": "AI basics",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-002",
+        "question": "In a diagnostic or allied-health setting, An AI tool that highlights a possible finding on an X-ray is an example of:",
+        "options": [
+          "A sterilisation method",
+          "Clinical decision support",
+          "A patient consent form",
+          "A laboratory culture"
+        ],
+        "answer": 1,
+        "explanation": "Image-analysis systems can flag patterns for a qualified professional to review.",
+        "topic": "Medical imaging",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-003",
+        "question": "In a diagnostic or allied-health setting, What is the safest way to use an AI-generated clinical suggestion?",
+        "options": [
+          "Follow it automatically",
+          "Ignore the patient's symptoms",
+          "Treat it as support and verify it against clinical information and professional judgement",
+          "Share it without checking"
+        ],
+        "answer": 2,
+        "explanation": "AI output should be checked by an appropriately trained human before it influences care.",
+        "topic": "Human oversight",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-004",
+        "question": "In a diagnostic or allied-health setting, Why must electronic health-record information be accurate before AI analysis?",
+        "options": [
+          "AI automatically repairs every missing value",
+          "Accuracy matters only for billing",
+          "AI does not use patient data",
+          "Poor or incomplete input can produce unreliable output"
+        ],
+        "answer": 3,
+        "explanation": "The quality of AI output depends in part on the quality and relevance of input data.",
+        "topic": "Health records",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-005",
+        "question": "In a diagnostic or allied-health setting, What is bias in a healthcare AI system?",
+        "options": [
+          "A systematic unfair difference in performance across groups",
+          "A type of blood cell",
+          "A guaranteed improvement in accuracy",
+          "A method of sterilising equipment"
+        ],
+        "answer": 0,
+        "explanation": "Biased data or design can lead to unequal performance and harm.",
+        "topic": "Bias and fairness",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-006",
+        "question": "In a diagnostic or allied-health setting, Which information should not be entered into an unapproved public AI chatbot?",
+        "options": [
+          "A fictional example with no personal data",
+          "Identifiable patient details or confidential health records",
+          "A general question about anatomy",
+          "A public health definition"
+        ],
+        "answer": 1,
+        "explanation": "Confidential patient information must be protected and handled only through approved systems.",
+        "topic": "Privacy",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-007",
+        "question": "In a diagnostic or allied-health setting, Before using patient data in an AI system, what should staff check?",
+        "options": [
+          "Whether the AI logo looks genuine",
+          "Whether the result is quick",
+          "Whether the use is authorised and follows consent, privacy and institutional rules",
+          "Whether the data can be copied to a personal device"
+        ],
+        "answer": 2,
+        "explanation": "Use of health data must follow applicable privacy, consent and governance requirements.",
+        "topic": "Consent and governance",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-008",
+        "question": "In a diagnostic or allied-health setting, Who remains responsible for a clinical decision supported by AI?",
+        "options": [
+          "The computer alone",
+          "The software vendor alone in every case",
+          "The patient-record printer",
+          "The qualified healthcare professional and responsible care team"
+        ],
+        "answer": 3,
+        "explanation": "AI does not remove professional accountability or the need for clinical judgement.",
+        "topic": "Accountability",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-009",
+        "question": "In a diagnostic or allied-health setting, A false positive from an AI screening tool means:",
+        "options": [
+          "The tool flags a possible condition when it is not actually present",
+          "The tool misses a real condition",
+          "The system has no input data",
+          "The patient has confirmed disease"
+        ],
+        "answer": 0,
+        "explanation": "A false positive is an alert that is not confirmed by the true condition status.",
+        "topic": "Screening",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-010",
+        "question": "In a diagnostic or allied-health setting, Predictive analytics in a hospital may help estimate:",
+        "options": [
+          "The exact future of every patient with certainty",
+          "Which patients may be at higher risk of deterioration",
+          "A patient's identity from a random number",
+          "Whether a medicine has no side effects"
+        ],
+        "answer": 1,
+        "explanation": "Predictive models estimate risk from patterns; estimates are uncertain and need review.",
+        "topic": "Predictive analytics",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-011",
+        "question": "In a diagnostic or allied-health setting, Can an AI triage tool replace emergency assessment by trained staff?",
+        "options": [
+          "Yes, in every situation",
+          "Yes, if the screen is green",
+          "No, it can only support a properly governed workflow",
+          "Only when the patient is unconscious"
+        ],
+        "answer": 2,
+        "explanation": "Triage tools must not replace urgent professional assessment or emergency protocols.",
+        "topic": "Triage support",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-012",
+        "question": "In a diagnostic or allied-health setting, A wearable device sends heart-rate readings to a health app. AI may help:",
+        "options": [
+          "Confirm every heart disease diagnosis",
+          "Replace an ECG in all situations",
+          "Prescribe medicines independently",
+          "Identify patterns or unusual trends for review"
+        ],
+        "answer": 3,
+        "explanation": "Wearable data can support trend monitoring but does not establish a diagnosis by itself.",
+        "topic": "Wearables",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-013",
+        "question": "In a diagnostic or allied-health setting, What should a healthcare worker do if an AI result conflicts with the patient's condition?",
+        "options": [
+          "Reassess the patient and escalate or seek qualified review",
+          "Accept the AI result without question",
+          "Delete the patient's record",
+          "Ask the patient to change symptoms"
+        ],
+        "answer": 0,
+        "explanation": "Clinical findings and professional assessment take priority over unverified automated output.",
+        "topic": "Verification",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-014",
+        "question": "In a diagnostic or allied-health setting, Why can a generative AI tool sometimes produce an incorrect but convincing answer?",
+        "options": [
+          "It always checks an official medical database",
+          "It may generate plausible text that is not factually grounded",
+          "It cannot generate text",
+          "It only copies a clinician's signed note"
+        ],
+        "answer": 1,
+        "explanation": "Generative systems can produce inaccurate or fabricated information and require verification.",
+        "topic": "Generative AI limits",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-015",
+        "question": "In a diagnostic or allied-health setting, Which is a sensible cybersecurity practice when using healthcare technology?",
+        "options": [
+          "Use one shared password for the whole ward",
+          "Disable all security updates",
+          "Use authorised accounts and never share passwords",
+          "Send login details through public chat"
+        ],
+        "answer": 2,
+        "explanation": "Access controls and secure account practices help protect sensitive health information.",
+        "topic": "Cybersecurity",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-016",
+        "question": "In a diagnostic or allied-health setting, Why does the data used to train an AI model matter?",
+        "options": [
+          "It guarantees the model is unbiased",
+          "It removes the need for testing",
+          "It determines the patient's blood group",
+          "It influences what patterns the model learns and how well it works for different people"
+        ],
+        "answer": 3,
+        "explanation": "Training data shape model behaviour and may create gaps or bias if not representative.",
+        "topic": "Training data",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-017",
+        "question": "In a diagnostic or allied-health setting, What is an accessible design principle for an AI-enabled health service?",
+        "options": [
+          "Make the service usable by people with different abilities, languages and levels of digital access",
+          "Require the newest phone for every user",
+          "Use only technical language",
+          "Remove human support"
+        ],
+        "answer": 0,
+        "explanation": "Inclusive design helps avoid excluding patients and healthcare workers.",
+        "topic": "Accessibility",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-018",
+        "question": "In a diagnostic or allied-health setting, What should be done before an AI tool is introduced into a clinical workflow?",
+        "options": [
+          "Deploy it immediately without testing",
+          "Assess safety, evidence, privacy, training and local approval requirements",
+          "Allow unrestricted access to patient records",
+          "Assume another hospital's results guarantee local performance"
+        ],
+        "answer": 1,
+        "explanation": "Responsible implementation includes evaluation, governance, training and monitoring.",
+        "topic": "Safe implementation",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-019",
+        "question": "In a diagnostic or allied-health setting, How should an AI-generated patient-information note be used?",
+        "options": [
+          "Send it without reading",
+          "Assume it is always personalised correctly",
+          "Check it for accuracy, clarity and suitability before sharing",
+          "Use it instead of confirming patient understanding"
+        ],
+        "answer": 2,
+        "explanation": "Human review is needed to correct errors and ensure the information suits the patient.",
+        "topic": "Patient communication",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PARAMEDICAL-AIH-020",
+        "question": "In a diagnostic or allied-health setting, Which statement best describes responsible AI use in healthcare?",
+        "options": [
+          "AI should make every decision without explanation",
+          "Patient consent and confidentiality are optional",
+          "AI outputs are always more accurate than professionals",
+          "AI can assist care, but privacy, fairness, transparency and human oversight remain essential"
+        ],
+        "answer": 3,
+        "explanation": "Responsible AI requires safeguards, accountability and human oversight.",
+        "topic": "Responsible AI",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
       }
     ]
   },
   "pharmacy": {
     "label": "Pharmacy",
-    "description": "Common five-subject healthcare syllabus applied to medicines, pharmacy practice and patient safety. Original practice questions with 100 MCQs and 20 questions per subject.",
+    "description": "Common five-subject healthcare syllabus: Anatomy, Physiology, Microbiology, Artificial Intelligence in Healthcare and OET-style healthcare English. Foundational MCQs contextualised for Pharmacy.",
     "difficulty_label": "Applied",
     "subjects": [
       {
@@ -3283,18 +3283,18 @@
         "question_count": 20
       },
       {
-        "key": "biochemistry",
-        "label": "Biochemistry",
+        "key": "microbiology",
+        "label": "Microbiology",
         "question_count": 20
       },
       {
-        "key": "healthcare_it",
-        "label": "Healthcare IT",
+        "key": "ai_healthcare",
+        "label": "Artificial Intelligence in Healthcare",
         "question_count": 20
       },
       {
         "key": "oet_english",
-        "label": "OET-style Healthcare English",
+        "label": "OET (Occupational English Test)",
         "question_count": 20
       }
     ],
@@ -3940,646 +3940,6 @@
         "subjectLabel": "Physiology"
       },
       {
-        "id": "PHA-041",
-        "question": "Cytochrome P450 enzymes are important in:",
-        "options": [
-          "Drug metabolism",
-          "Oxygen transport only",
-          "Bone mineralisation only",
-          "Platelet aggregation"
-        ],
-        "answer": 0,
-        "explanation": "CYP enzymes metabolise many drugs and other compounds, especially in the liver.",
-        "topic": "Pharmacological biochemistry",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-042",
-        "question": "A competitive enzyme inhibitor typically increases the apparent:",
-        "options": [
-          "Vmax",
-          "Km",
-          "Enzyme concentration",
-          "Product equilibrium constant"
-        ],
-        "answer": 1,
-        "explanation": "Competitive inhibition increases apparent Km while Vmax can be reached at high substrate concentration.",
-        "topic": "Enzyme inhibition",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-043",
-        "question": "The major structural lipid component of cell membranes is:",
-        "options": [
-          "Triglyceride only",
-          "Cholesteryl ester only",
-          "Phospholipid",
-          "Free fatty acid only"
-        ],
-        "answer": 2,
-        "explanation": "Phospholipids form the bilayer structure of biological membranes.",
-        "topic": "Lipid chemistry",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-044",
-        "question": "Disulfide bonds form between residues of:",
-        "options": [
-          "Glycine",
-          "Alanine",
-          "Valine",
-          "Cysteine"
-        ],
-        "answer": 3,
-        "explanation": "Oxidation of cysteine thiol groups forms stabilising disulfide bonds.",
-        "topic": "Protein chemistry",
-        "difficulty": "easy",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-045",
-        "question": "Vitamin K is required for gamma-carboxylation of several:",
-        "options": [
-          "Coagulation factors",
-          "Thyroid hormones",
-          "Bile acids only",
-          "Plasma glucose molecules"
-        ],
-        "answer": 0,
-        "explanation": "Vitamin K enables activation of factors II, VII, IX and X and proteins C and S.",
-        "topic": "Vitamins",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-046",
-        "question": "Phase II drug metabolism commonly involves:",
-        "options": [
-          "Only oxidation",
-          "Conjugation reactions",
-          "Passive filtration in glomerulus",
-          "Drug absorption in stomach"
-        ],
-        "answer": 1,
-        "explanation": "Phase II reactions conjugate drugs or metabolites with polar groups to aid elimination.",
-        "topic": "Drug metabolism",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-047",
-        "question": "The pentose phosphate pathway produces NADPH and:",
-        "options": [
-          "Urea",
-          "Lactate only",
-          "Ribose-5-phosphate",
-          "Bile salts"
-        ],
-        "answer": 2,
-        "explanation": "The pathway provides NADPH for reductive biosynthesis and ribose-5-phosphate for nucleotides.",
-        "topic": "Metabolic pathways",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-048",
-        "question": "An increased unconjugated bilirubin may occur with:",
-        "options": [
-          "Obstructive bile duct stone only",
-          "Reduced red cell destruction",
-          "Low haem synthesis only",
-          "Increased haemolysis"
-        ],
-        "answer": 3,
-        "explanation": "Increased red-cell breakdown can raise unconjugated bilirubin production.",
-        "topic": "Clinical chemistry",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-049",
-        "question": "Severe hyperkalaemia is dangerous partly because it can cause:",
-        "options": [
-          "Cardiac conduction disturbances",
-          "Improved clotting",
-          "Increased haemoglobin synthesis",
-          "Reduced neuronal excitability only"
-        ],
-        "answer": 0,
-        "explanation": "High extracellular potassium alters cardiac membrane potential and can provoke arrhythmias.",
-        "topic": "Electrolytes",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-050",
-        "question": "The Henderson-Hasselbalch equation relates pH to bicarbonate and:",
-        "options": [
-          "Serum calcium",
-          "Dissolved carbon dioxide",
-          "Haemoglobin concentration only",
-          "Chloride alone"
-        ],
-        "answer": 1,
-        "explanation": "The bicarbonate buffer equation relates pH to bicarbonate and dissolved CO2.",
-        "topic": "Acid-base",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-051",
-        "question": "Gluconeogenesis occurs predominantly in the:",
-        "options": [
-          "Spleen",
-          "Skin",
-          "Liver",
-          "Red blood cells"
-        ],
-        "answer": 2,
-        "explanation": "The liver is the principal site of gluconeogenesis, with the kidney contributing in prolonged fasting.",
-        "topic": "Carbohydrate metabolism",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-052",
-        "question": "Phenylketonuria is associated with impaired metabolism of:",
-        "options": [
-          "Tyrosine only due to iodine lack",
-          "Glycine",
-          "Histidine",
-          "Phenylalanine"
-        ],
-        "answer": 3,
-        "explanation": "Classical PKU is usually due to phenylalanine hydroxylase deficiency.",
-        "topic": "Amino acid metabolism",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-053",
-        "question": "A spectrophotometer estimates analyte concentration by measuring:",
-        "options": [
-          "Light absorbance",
-          "Electrical resistance only",
-          "Sound frequency",
-          "Magnetic field strength"
-        ],
-        "answer": 0,
-        "explanation": "Absorbance at an appropriate wavelength is related to concentration under defined conditions.",
-        "topic": "Biochemical testing",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-054",
-        "question": "Creatine kinase-MB has historically been associated with injury to:",
-        "options": [
-          "Kidney glomeruli",
-          "Cardiac muscle",
-          "Thyroid follicles",
-          "Pancreatic islets"
-        ],
-        "answer": 1,
-        "explanation": "CK-MB can rise with myocardial injury, though cardiac troponin is preferred in most modern settings.",
-        "topic": "Enzyme marker",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-055",
-        "question": "A weak acid drug is generally more ionised in:",
-        "options": [
-          "Acidic solution",
-          "Pure lipid",
-          "Alkaline solution",
-          "A vacuum"
-        ],
-        "answer": 2,
-        "explanation": "Weak acids donate protons more readily at higher pH and become more ionised.",
-        "topic": "Drug chemistry",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-056",
-        "question": "Glutathione helps protect cells by:",
-        "options": [
-          "Producing bile",
-          "Transporting oxygen",
-          "Breaking down DNA",
-          "Reducing reactive oxidants"
-        ],
-        "answer": 3,
-        "explanation": "Reduced glutathione participates in antioxidant defence and peroxide detoxification.",
-        "topic": "Oxidative stress",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-057",
-        "question": "Albumin is synthesised mainly by the:",
-        "options": [
-          "Liver",
-          "Kidney",
-          "Spleen",
-          "Pancreas"
-        ],
-        "answer": 0,
-        "explanation": "Hepatocytes synthesise albumin, a major plasma protein.",
-        "topic": "Liver function",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-058",
-        "question": "RNA differs from DNA because RNA normally contains:",
-        "options": [
-          "Thymine",
-          "Uracil",
-          "Deoxyribose only",
-          "No phosphate"
-        ],
-        "answer": 1,
-        "explanation": "RNA contains uracil and ribose, whereas DNA contains thymine and deoxyribose.",
-        "topic": "Nucleic acids",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-059",
-        "question": "Transferrin transports:",
-        "options": [
-          "Calcium in bone",
-          "Glucose into cells",
-          "Iron in plasma",
-          "Bilirubin into urine"
-        ],
-        "answer": 2,
-        "explanation": "Transferrin binds and transports ferric iron in the bloodstream.",
-        "topic": "Iron metabolism",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-060",
-        "question": "Procalcitonin may be used as an adjunct marker in assessment of:",
-        "options": [
-          "Bone fracture alignment",
-          "Renal stone location",
-          "Thyroid size",
-          "Bacterial infection"
-        ],
-        "answer": 3,
-        "explanation": "Procalcitonin may support assessment of bacterial infection but should not replace clinical judgement.",
-        "topic": "Clinical markers",
-        "difficulty": "moderate",
-        "subjectKey": "biochemistry",
-        "subjectLabel": "Biochemistry"
-      },
-      {
-        "id": "PHA-061",
-        "question": "A pharmacy information system should maintain an auditable record of:",
-        "options": [
-          "Prescription processing and dispensing",
-          "Staff personal social accounts",
-          "Patient entertainment preferences only",
-          "Unverified medicine stock"
-        ],
-        "answer": 0,
-        "explanation": "Auditability supports safe prescribing, dispensing and traceability.",
-        "topic": "Pharmacy information systems",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-062",
-        "question": "Medication reconciliation is performed to:",
-        "options": [
-          "Automatically stop every chronic medicine",
-          "Compare current medicines with new orders and resolve discrepancies",
-          "Replace patient identity checks",
-          "Delete old prescriptions"
-        ],
-        "answer": 1,
-        "explanation": "Reconciliation identifies omissions, duplications, dosing errors and unintended changes.",
-        "topic": "Medication reconciliation",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-063",
-        "question": "A safe electronic prescription should include:",
-        "options": [
-          "Only a medicine brand name",
-          "A prescriber's first name only",
-          "Patient identity, drug, dose, route and frequency",
-          "No date or patient identifier"
-        ],
-        "answer": 2,
-        "explanation": "Complete prescription data reduces ambiguity and supports safe dispensing.",
-        "topic": "E-prescribing",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-064",
-        "question": "Barcode medication administration helps verify:",
-        "options": [
-          "The patient's diet preference only",
-          "Hospital building access",
-          "The prescriber's payroll",
-          "The right patient and medication at administration"
-        ],
-        "answer": 3,
-        "explanation": "Barcode checks can support the medication rights when used with clinical verification.",
-        "topic": "Barcode medication administration",
-        "difficulty": "easy",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-065",
-        "question": "A pharmacy stock system should flag medicines approaching expiry to support:",
-        "options": [
-          "Stock rotation and reduction of expired products",
-          "Automatic dose escalation",
-          "Removal of batch numbers",
-          "Public release of patient records"
-        ],
-        "answer": 0,
-        "explanation": "Expiry alerts support FEFO stock rotation and safe inventory management.",
-        "topic": "Inventory management",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-066",
-        "question": "A drug-interaction alert should be:",
-        "options": [
-          "Accepted blindly in every situation",
-          "Reviewed in patient context by an authorised clinician or pharmacist",
-          "Deleted without documentation",
-          "Shared publicly"
-        ],
-        "answer": 1,
-        "explanation": "Clinical decision support assists but requires contextual professional review.",
-        "topic": "Drug interaction software",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-067",
-        "question": "Pharmacy staff should open a patient's medication profile only:",
-        "options": [
-          "Out of curiosity",
-          "To share with friends",
-          "For an authorised work-related purpose",
-          "Using another worker's login"
-        ],
-        "answer": 2,
-        "explanation": "Role-based authorised access protects confidential health information.",
-        "topic": "Patient privacy",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-068",
-        "question": "Interoperability is valuable because it can:",
-        "options": [
-          "Make prescriptions anonymous to providers",
-          "Remove the need for validation",
-          "Guarantee no adverse drug events",
-          "Support exchange of medication and clinical information across systems"
-        ],
-        "answer": 3,
-        "explanation": "Interoperability can reduce fragmentation when information is exchanged accurately and securely.",
-        "topic": "EHR interoperability",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-069",
-        "question": "A pharmacist receives an email asking to reset their password through an unfamiliar link. The safest action is to:",
-        "options": [
-          "Use the official portal and report the suspicious email",
-          "Click immediately",
-          "Forward the link to all patients",
-          "Reply with current credentials"
-        ],
-        "answer": 0,
-        "explanation": "Using trusted routes and reporting phishing helps protect account security.",
-        "topic": "Cybersecurity",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-070",
-        "question": "An electronic dispensing audit trail records:",
-        "options": [
-          "Only the medicine colour",
-          "Who performed key actions and when",
-          "Patient's social-media username",
-          "The pharmacist's private messages"
-        ],
-        "answer": 1,
-        "explanation": "Audit trails provide accountability and traceability for dispensing actions.",
-        "topic": "Clinical audit trails",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-071",
-        "question": "A duplicate patient profile can increase the risk of:",
-        "options": [
-          "Improved allergy checking",
-          "Automatic identity certainty",
-          "Incomplete or fragmented medication history",
-          "Reduced need for reconciliation"
-        ],
-        "answer": 2,
-        "explanation": "Duplicate records may split allergies and medication data, increasing safety risk.",
-        "topic": "Data quality",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-072",
-        "question": "A remote pharmacy consultation should protect:",
-        "options": [
-          "Only the camera background",
-          "The internet speed alone",
-          "The pharmacy logo",
-          "Patient identity, consent and confidentiality"
-        ],
-        "answer": 3,
-        "explanation": "Telepharmacy must preserve the same privacy and professional standards as in-person services.",
-        "topic": "Telepharmacy",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-073",
-        "question": "A pharmacy system backup should be:",
-        "options": [
-          "Regularly tested for restoration",
-          "Stored only on the live workstation",
-          "Never monitored",
-          "Accessible to every public user"
-        ],
-        "answer": 0,
-        "explanation": "Tested backups support continuity after hardware failure or cyberattack.",
-        "topic": "Backup and recovery",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-074",
-        "question": "When a pharmacist leaves an organisation, their access should be:",
-        "options": [
-          "Kept active indefinitely",
-          "Revoked promptly",
-          "Shared with a new employee",
-          "Removed from the audit database"
-        ],
-        "answer": 1,
-        "explanation": "Prompt deprovisioning prevents former staff from retaining unauthorised access.",
-        "topic": "Access control",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-075",
-        "question": "A digital batch and lot record helps support:",
-        "options": [
-          "Patient appointment reminders only",
-          "Staff attendance",
-          "Product recall and traceability",
-          "Unrelated laboratory calibration"
-        ],
-        "answer": 2,
-        "explanation": "Batch traceability helps identify and locate affected products during a recall.",
-        "topic": "Batch traceability",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-076",
-        "question": "A medicine code system in an EHR helps improve:",
-        "options": [
-          "The colour of tablets",
-          "Internet connectivity",
-          "Clinical examination speed",
-          "Consistent identification of medicinal products"
-        ],
-        "answer": 3,
-        "explanation": "Standardised medicine identifiers improve consistency in prescribing and data exchange.",
-        "topic": "Digital health standards",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-077",
-        "question": "A suspected dispensing system error should be:",
-        "options": [
-          "Reported and documented through the approved safety process",
-          "Hidden by changing the record",
-          "Ignored if the patient has left",
-          "Posted on social media"
-        ],
-        "answer": 0,
-        "explanation": "Prompt incident reporting supports review, correction and prevention.",
-        "topic": "Incident reporting",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-078",
-        "question": "A high-dose warning in prescribing software should prompt the user to:",
-        "options": [
-          "Ignore all warnings",
-          "Check the order, patient factors and approved reference before proceeding",
-          "Increase the dose automatically",
-          "Delete the patient's allergy list"
-        ],
-        "answer": 1,
-        "explanation": "Dose alerts require contextual review and appropriate clinical action.",
-        "topic": "Decision support",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-079",
-        "question": "Sending a prescription screenshot to a personal messaging group may:",
-        "options": [
-          "Improve access control",
-          "Create a valid clinical audit trail",
-          "Expose sensitive personal health information",
-          "Encrypt the record automatically"
-        ],
-        "answer": 2,
-        "explanation": "Personal messaging may bypass approved safeguards and disclose confidential information.",
-        "topic": "Data protection",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
-        "id": "PHA-080",
-        "question": "During pharmacy software downtime, staff should use:",
-        "options": [
-          "A shared personal account",
-          "Memory without records",
-          "An unapproved public spreadsheet",
-          "The approved downtime and reconciliation procedure"
-        ],
-        "answer": 3,
-        "explanation": "Approved downtime procedures protect dispensing safety and ensure later reconciliation.",
-        "topic": "System downtime",
-        "difficulty": "moderate",
-        "subjectKey": "healthcare_it",
-        "subjectLabel": "Healthcare IT"
-      },
-      {
         "id": "PHA-081",
         "question": "Which phrase best checks a patient's understanding of a new medicine?",
         "options": [
@@ -4898,6 +4258,646 @@
         "difficulty": "moderate",
         "subjectKey": "oet_english",
         "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PHARMACY-MIC-001",
+        "question": "In a pharmacy-care setting, Which group contains organisms commonly studied in basic microbiology?",
+        "options": [
+          "Bacteria, viruses and fungi",
+          "Bones, muscles and joints",
+          "Hormones and enzymes only",
+          "Organs and tissues"
+        ],
+        "answer": 0,
+        "explanation": "Microbiology studies microorganisms such as bacteria, viruses and fungi.",
+        "topic": "Microorganism groups",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-002",
+        "question": "In a pharmacy-care setting, Which statement about viruses is correct?",
+        "options": [
+          "They multiply independently on any surface",
+          "They need living host cells to replicate",
+          "They are larger than all bacteria",
+          "They are killed by every antibiotic"
+        ],
+        "answer": 1,
+        "explanation": "Viruses require host-cell machinery to replicate; antibiotics do not treat viral infections.",
+        "topic": "Viruses",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-003",
+        "question": "In a pharmacy-care setting, Which organism is a fungus?",
+        "options": [
+          "Escherichia coli",
+          "Influenza virus",
+          "Candida",
+          "Plasmodium"
+        ],
+        "answer": 2,
+        "explanation": "Candida is a yeast and belongs to the fungi.",
+        "topic": "Fungi",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-004",
+        "question": "In a pharmacy-care setting, What is normal microbiota?",
+        "options": [
+          "Only disease-causing organisms",
+          "All organisms found in drinking water",
+          "A type of antibiotic",
+          "Microorganisms normally living on or in the body"
+        ],
+        "answer": 3,
+        "explanation": "Normal microbiota are microorganisms that commonly inhabit body sites without causing disease in usual circumstances.",
+        "topic": "Normal microbiota",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-005",
+        "question": "In a pharmacy-care setting, Which sequence best represents the chain of infection?",
+        "options": [
+          "Reservoir, exit, transmission, entry and susceptible host",
+          "Diagnosis, prescription and discharge",
+          "Cleaning, drying and packaging only",
+          "Exposure, immunity and vaccination only"
+        ],
+        "answer": 0,
+        "explanation": "The chain describes how an infectious agent moves from a reservoir to a susceptible host.",
+        "topic": "Chain of infection",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-006",
+        "question": "In a pharmacy-care setting, When should hand hygiene be performed in routine patient care?",
+        "options": [
+          "Only at the end of a shift",
+          "Before and after patient contact, as indicated",
+          "Only when hands look dirty",
+          "Only after removing a uniform"
+        ],
+        "answer": 1,
+        "explanation": "Hand hygiene at the appropriate moments reduces transfer of microorganisms.",
+        "topic": "Hand hygiene",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-007",
+        "question": "In a pharmacy-care setting, What is the main purpose of wearing gloves?",
+        "options": [
+          "To replace hand hygiene",
+          "To make every surface sterile",
+          "To protect against expected contact with blood or body fluids",
+          "To avoid changing gloves between tasks"
+        ],
+        "answer": 2,
+        "explanation": "Gloves provide a barrier for indicated exposure but do not replace hand hygiene.",
+        "topic": "PPE",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-008",
+        "question": "In a pharmacy-care setting, Which process destroys all forms of microbial life, including bacterial spores?",
+        "options": [
+          "Routine cleaning",
+          "Dusting",
+          "Rinsing with water",
+          "Sterilisation"
+        ],
+        "answer": 3,
+        "explanation": "Sterilisation is intended to eliminate all forms of microbial life, including spores.",
+        "topic": "Sterilisation",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-009",
+        "question": "In a pharmacy-care setting, What is the main difference between disinfection and sterilisation?",
+        "options": [
+          "Sterilisation destroys all microbial life; disinfection reduces or eliminates many pathogens",
+          "Disinfection always removes every spore",
+          "They mean exactly the same thing",
+          "Disinfection is only used on living skin"
+        ],
+        "answer": 0,
+        "explanation": "Disinfection is not necessarily sporicidal; sterilisation has the broader endpoint.",
+        "topic": "Disinfection",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-010",
+        "question": "In a pharmacy-care setting, Which term describes an antimicrobial product used on living tissue?",
+        "options": [
+          "Detergent",
+          "Antiseptic",
+          "Culture medium",
+          "Fixative"
+        ],
+        "answer": 1,
+        "explanation": "Antiseptics are applied to living tissue to reduce microorganisms.",
+        "topic": "Antiseptics",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-011",
+        "question": "In a pharmacy-care setting, Which equipment commonly uses pressurised steam for sterilisation?",
+        "options": [
+          "Refrigerator",
+          "Centrifuge",
+          "Autoclave",
+          "Microscope"
+        ],
+        "answer": 2,
+        "explanation": "An autoclave uses saturated steam under pressure for sterilisation.",
+        "topic": "Autoclave",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-012",
+        "question": "In a pharmacy-care setting, Why is a culture medium used in a microbiology laboratory?",
+        "options": [
+          "To measure blood pressure",
+          "To sterilise surgical instruments",
+          "To identify a patient's blood group",
+          "To support growth of microorganisms under suitable conditions"
+        ],
+        "answer": 3,
+        "explanation": "Culture media provide nutrients and conditions for microbial growth and study.",
+        "topic": "Culture media",
+        "difficulty": "easy",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-013",
+        "question": "In a pharmacy-care setting, What does a Gram stain help demonstrate?",
+        "options": [
+          "Differences in bacterial cell-wall staining characteristics",
+          "The patient's blood glucose level",
+          "The size of a human organ",
+          "The presence of antibodies only"
+        ],
+        "answer": 0,
+        "explanation": "Gram staining differentiates bacteria by cell-wall properties and staining response.",
+        "topic": "Gram stain",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-014",
+        "question": "In a pharmacy-care setting, Why must a specimen container be labelled at the point of collection?",
+        "options": [
+          "To make the sample grow faster",
+          "To avoid patient and specimen identification errors",
+          "To change the sample colour",
+          "To avoid recording collection time"
+        ],
+        "answer": 1,
+        "explanation": "Correct identification and traceability are essential for reliable laboratory results.",
+        "topic": "Specimen identification",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-015",
+        "question": "In a pharmacy-care setting, What is specimen contamination?",
+        "options": [
+          "Correct storage at the recommended temperature",
+          "A result confirmed by repeat testing",
+          "Unwanted introduction of microorganisms or material into a sample",
+          "The normal growth of a pure culture"
+        ],
+        "answer": 2,
+        "explanation": "Contamination can distort results and lead to incorrect interpretation.",
+        "topic": "Specimen contamination",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-016",
+        "question": "In a pharmacy-care setting, What is antimicrobial resistance?",
+        "options": [
+          "The body becomes resistant to all infections",
+          "Antibiotics become vitamins",
+          "All microbes are harmless",
+          "Microorganisms become less susceptible to medicines that once worked against them"
+        ],
+        "answer": 3,
+        "explanation": "Antimicrobial resistance makes infections harder to treat with affected medicines.",
+        "topic": "Antimicrobial resistance",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-017",
+        "question": "In a pharmacy-care setting, Which route is commonly associated with transmission of larger respiratory droplets?",
+        "options": [
+          "Close-range respiratory exposure",
+          "Only contaminated soil",
+          "Only insect bites",
+          "Only food packaging"
+        ],
+        "answer": 0,
+        "explanation": "Respiratory droplets can spread infection during close contact, depending on the pathogen.",
+        "topic": "Transmission",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-018",
+        "question": "In a pharmacy-care setting, Which practice is appropriate for biomedical waste?",
+        "options": [
+          "Mix all waste in one bag",
+          "Segregate waste at the point of generation using prescribed categories",
+          "Store sharps loose in a general bin",
+          "Reuse disposable contaminated items"
+        ],
+        "answer": 1,
+        "explanation": "Segregation at source supports safe handling and disposal under applicable rules.",
+        "topic": "Biomedical waste",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-019",
+        "question": "In a pharmacy-care setting, Why are some specimens transported promptly or under specified temperature conditions?",
+        "options": [
+          "To increase contamination",
+          "To remove the need for labelling",
+          "To preserve specimen integrity and reduce changes before testing",
+          "To guarantee a positive result"
+        ],
+        "answer": 2,
+        "explanation": "Correct transport conditions help preserve organisms or analytes relevant to testing.",
+        "topic": "Specimen transport",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-MIC-020",
+        "question": "In a pharmacy-care setting, What should a healthcare worker do after a possible exposure to infectious material?",
+        "options": [
+          "Ignore it if gloves were worn",
+          "Wait until symptoms appear",
+          "Share the incident on social media",
+          "Follow the facility exposure protocol and report promptly"
+        ],
+        "answer": 3,
+        "explanation": "Prompt reporting and post-exposure procedures support timely risk assessment and care.",
+        "topic": "Exposure response",
+        "difficulty": "moderate",
+        "subjectKey": "microbiology",
+        "subjectLabel": "Microbiology"
+      },
+      {
+        "id": "PHARMACY-AIH-001",
+        "question": "In a pharmacy-care setting, In healthcare, what is artificial intelligence (AI) mainly used for?",
+        "options": [
+          "Finding patterns in data to support tasks and decisions",
+          "Replacing every healthcare professional",
+          "Making all diagnoses without review",
+          "Guaranteeing that every prediction is correct"
+        ],
+        "answer": 0,
+        "explanation": "AI systems can analyse patterns and support defined tasks; they do not guarantee correct decisions.",
+        "topic": "AI basics",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-002",
+        "question": "In a pharmacy-care setting, An AI tool that highlights a possible finding on an X-ray is an example of:",
+        "options": [
+          "A sterilisation method",
+          "Clinical decision support",
+          "A patient consent form",
+          "A laboratory culture"
+        ],
+        "answer": 1,
+        "explanation": "Image-analysis systems can flag patterns for a qualified professional to review.",
+        "topic": "Medical imaging",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-003",
+        "question": "In a pharmacy-care setting, What is the safest way to use an AI-generated clinical suggestion?",
+        "options": [
+          "Follow it automatically",
+          "Ignore the patient's symptoms",
+          "Treat it as support and verify it against clinical information and professional judgement",
+          "Share it without checking"
+        ],
+        "answer": 2,
+        "explanation": "AI output should be checked by an appropriately trained human before it influences care.",
+        "topic": "Human oversight",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-004",
+        "question": "In a pharmacy-care setting, Why must electronic health-record information be accurate before AI analysis?",
+        "options": [
+          "AI automatically repairs every missing value",
+          "Accuracy matters only for billing",
+          "AI does not use patient data",
+          "Poor or incomplete input can produce unreliable output"
+        ],
+        "answer": 3,
+        "explanation": "The quality of AI output depends in part on the quality and relevance of input data.",
+        "topic": "Health records",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-005",
+        "question": "In a pharmacy-care setting, What is bias in a healthcare AI system?",
+        "options": [
+          "A systematic unfair difference in performance across groups",
+          "A type of blood cell",
+          "A guaranteed improvement in accuracy",
+          "A method of sterilising equipment"
+        ],
+        "answer": 0,
+        "explanation": "Biased data or design can lead to unequal performance and harm.",
+        "topic": "Bias and fairness",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-006",
+        "question": "In a pharmacy-care setting, Which information should not be entered into an unapproved public AI chatbot?",
+        "options": [
+          "A fictional example with no personal data",
+          "Identifiable patient details or confidential health records",
+          "A general question about anatomy",
+          "A public health definition"
+        ],
+        "answer": 1,
+        "explanation": "Confidential patient information must be protected and handled only through approved systems.",
+        "topic": "Privacy",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-007",
+        "question": "In a pharmacy-care setting, Before using patient data in an AI system, what should staff check?",
+        "options": [
+          "Whether the AI logo looks genuine",
+          "Whether the result is quick",
+          "Whether the use is authorised and follows consent, privacy and institutional rules",
+          "Whether the data can be copied to a personal device"
+        ],
+        "answer": 2,
+        "explanation": "Use of health data must follow applicable privacy, consent and governance requirements.",
+        "topic": "Consent and governance",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-008",
+        "question": "In a pharmacy-care setting, Who remains responsible for a clinical decision supported by AI?",
+        "options": [
+          "The computer alone",
+          "The software vendor alone in every case",
+          "The patient-record printer",
+          "The qualified healthcare professional and responsible care team"
+        ],
+        "answer": 3,
+        "explanation": "AI does not remove professional accountability or the need for clinical judgement.",
+        "topic": "Accountability",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-009",
+        "question": "In a pharmacy-care setting, A false positive from an AI screening tool means:",
+        "options": [
+          "The tool flags a possible condition when it is not actually present",
+          "The tool misses a real condition",
+          "The system has no input data",
+          "The patient has confirmed disease"
+        ],
+        "answer": 0,
+        "explanation": "A false positive is an alert that is not confirmed by the true condition status.",
+        "topic": "Screening",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-010",
+        "question": "In a pharmacy-care setting, Predictive analytics in a hospital may help estimate:",
+        "options": [
+          "The exact future of every patient with certainty",
+          "Which patients may be at higher risk of deterioration",
+          "A patient's identity from a random number",
+          "Whether a medicine has no side effects"
+        ],
+        "answer": 1,
+        "explanation": "Predictive models estimate risk from patterns; estimates are uncertain and need review.",
+        "topic": "Predictive analytics",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-011",
+        "question": "In a pharmacy-care setting, Can an AI triage tool replace emergency assessment by trained staff?",
+        "options": [
+          "Yes, in every situation",
+          "Yes, if the screen is green",
+          "No, it can only support a properly governed workflow",
+          "Only when the patient is unconscious"
+        ],
+        "answer": 2,
+        "explanation": "Triage tools must not replace urgent professional assessment or emergency protocols.",
+        "topic": "Triage support",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-012",
+        "question": "In a pharmacy-care setting, A wearable device sends heart-rate readings to a health app. AI may help:",
+        "options": [
+          "Confirm every heart disease diagnosis",
+          "Replace an ECG in all situations",
+          "Prescribe medicines independently",
+          "Identify patterns or unusual trends for review"
+        ],
+        "answer": 3,
+        "explanation": "Wearable data can support trend monitoring but does not establish a diagnosis by itself.",
+        "topic": "Wearables",
+        "difficulty": "easy",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-013",
+        "question": "In a pharmacy-care setting, What should a healthcare worker do if an AI result conflicts with the patient's condition?",
+        "options": [
+          "Reassess the patient and escalate or seek qualified review",
+          "Accept the AI result without question",
+          "Delete the patient's record",
+          "Ask the patient to change symptoms"
+        ],
+        "answer": 0,
+        "explanation": "Clinical findings and professional assessment take priority over unverified automated output.",
+        "topic": "Verification",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-014",
+        "question": "In a pharmacy-care setting, Why can a generative AI tool sometimes produce an incorrect but convincing answer?",
+        "options": [
+          "It always checks an official medical database",
+          "It may generate plausible text that is not factually grounded",
+          "It cannot generate text",
+          "It only copies a clinician's signed note"
+        ],
+        "answer": 1,
+        "explanation": "Generative systems can produce inaccurate or fabricated information and require verification.",
+        "topic": "Generative AI limits",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-015",
+        "question": "In a pharmacy-care setting, Which is a sensible cybersecurity practice when using healthcare technology?",
+        "options": [
+          "Use one shared password for the whole ward",
+          "Disable all security updates",
+          "Use authorised accounts and never share passwords",
+          "Send login details through public chat"
+        ],
+        "answer": 2,
+        "explanation": "Access controls and secure account practices help protect sensitive health information.",
+        "topic": "Cybersecurity",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-016",
+        "question": "In a pharmacy-care setting, Why does the data used to train an AI model matter?",
+        "options": [
+          "It guarantees the model is unbiased",
+          "It removes the need for testing",
+          "It determines the patient's blood group",
+          "It influences what patterns the model learns and how well it works for different people"
+        ],
+        "answer": 3,
+        "explanation": "Training data shape model behaviour and may create gaps or bias if not representative.",
+        "topic": "Training data",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-017",
+        "question": "In a pharmacy-care setting, What is an accessible design principle for an AI-enabled health service?",
+        "options": [
+          "Make the service usable by people with different abilities, languages and levels of digital access",
+          "Require the newest phone for every user",
+          "Use only technical language",
+          "Remove human support"
+        ],
+        "answer": 0,
+        "explanation": "Inclusive design helps avoid excluding patients and healthcare workers.",
+        "topic": "Accessibility",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-018",
+        "question": "In a pharmacy-care setting, What should be done before an AI tool is introduced into a clinical workflow?",
+        "options": [
+          "Deploy it immediately without testing",
+          "Assess safety, evidence, privacy, training and local approval requirements",
+          "Allow unrestricted access to patient records",
+          "Assume another hospital's results guarantee local performance"
+        ],
+        "answer": 1,
+        "explanation": "Responsible implementation includes evaluation, governance, training and monitoring.",
+        "topic": "Safe implementation",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-019",
+        "question": "In a pharmacy-care setting, How should an AI-generated patient-information note be used?",
+        "options": [
+          "Send it without reading",
+          "Assume it is always personalised correctly",
+          "Check it for accuracy, clarity and suitability before sharing",
+          "Use it instead of confirming patient understanding"
+        ],
+        "answer": 2,
+        "explanation": "Human review is needed to correct errors and ensure the information suits the patient.",
+        "topic": "Patient communication",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
+      },
+      {
+        "id": "PHARMACY-AIH-020",
+        "question": "In a pharmacy-care setting, Which statement best describes responsible AI use in healthcare?",
+        "options": [
+          "AI should make every decision without explanation",
+          "Patient consent and confidentiality are optional",
+          "AI outputs are always more accurate than professionals",
+          "AI can assist care, but privacy, fairness, transparency and human oversight remain essential"
+        ],
+        "answer": 3,
+        "explanation": "Responsible AI requires safeguards, accountability and human oversight.",
+        "topic": "Responsible AI",
+        "difficulty": "moderate",
+        "subjectKey": "ai_healthcare",
+        "subjectLabel": "Artificial Intelligence in Healthcare"
       }
     ]
   }
