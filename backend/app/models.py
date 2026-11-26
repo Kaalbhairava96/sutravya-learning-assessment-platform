@@ -179,7 +179,7 @@ class ExamSlot(Base):
         CheckConstraint("ends_at > starts_at", name="ck_exam_slots_end_after_start"),
         CheckConstraint("capacity IS NULL OR capacity > 0", name="ck_exam_slots_positive_capacity"),
         CheckConstraint(
-            "stream IS NULL OR stream IN ('paramedical', 'nursing', 'mbbs_ug', 'mbbs_pg', 'mbbs_1st_year')",
+            "stream IS NULL OR stream IN ('nursing', 'paramedical', 'pharmacy')",
             name="ck_exam_slots_stream_approved",
         ),
         Index("ix_exam_slots_event_start", "event_key", "starts_at"),
