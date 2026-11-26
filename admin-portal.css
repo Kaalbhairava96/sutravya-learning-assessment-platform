@@ -229,3 +229,27 @@
  .admin-export-controls{display:grid;grid-template-columns:1fr}
  .admin-export-controls button{width:100%}
 }
+
+
+/* Admin password recovery links and OTP flow */
+.admin-text-button {
+  justify-self:start;
+  min-height:34px;
+  padding:2px 0;
+  border:0;
+  background:transparent;
+  color:var(--brand-teal-700);
+  font:800 11px var(--font);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  cursor:pointer;
+}
+.admin-text-button:hover {color:var(--brand-navy)}
+.admin-text-button:focus-visible {
+  outline:2px solid var(--brand-teal);
+  outline-offset:3px;
+  border-radius:3px;
+}
+#admin-reset-otp {letter-spacing:.22em;font-weight:850;text-align:center;font-variant-numeric:tabular-nums}
+#admin-reset-confirm-email[readonly] {background:#F0F4F6;color:var(--brand-muted)}
+.admin-login-form .admin-login-hint {grid-column:1/-1}
