@@ -2729,3 +2729,10 @@ body.qv2-home .qv2-home-art-stage .qv2-art-glow-two{transform:translateZ(-18px) 
 @media(max-width:900px){.htse-countdown-panel{grid-template-columns:minmax(170px,.8fr) minmax(260px,1.2fr);gap:22px}.htse-countdown-place{grid-column:1/-1}.htse-countdown-status{grid-column:1/-1}}
 @media(max-width:620px){.htse-countdown-panel{width:calc(100% - 34px);grid-template-columns:1fr;margin:-6px auto 22px;padding:19px 18px 21px;gap:17px;border-radius:16px}.htse-countdown-intro h2{font-size:34px}.htse-countdown-clock{gap:4px}.htse-countdown-unit strong{font-size:34px}.htse-countdown-unit small{font-size:8px}.htse-countdown-place{grid-column:auto}.htse-countdown-status{grid-column:auto;font-size:9px}.htse-countdown-place b{font-size:15px}}
 @media(prefers-reduced-motion:reduce){body.qv2-home .qv2-ecosystem-image{animation:none;transform:none}}
+
+.htse-countdown-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.htse-countdown-action{display:inline-flex;min-height:36px;align-items:center;justify-content:center;gap:8px;padding:0 12px;border:1px solid rgba(215,227,244,.42);border-radius:9px;color:#f5f7fb;text-decoration:none;font-size:10px;font-weight:850;letter-spacing:.02em;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.htse-countdown-action:hover{transform:translateY(-2px);border-color:rgba(236,196,121,.85);background:rgba(255,255,255,.09)}
+.htse-countdown-action-primary{border-color:rgba(225,183,96,.72);background:linear-gradient(135deg,#b78c48,#e5c783);color:#152442}
+.htse-countdown-action-primary:hover{background:linear-gradient(135deg,#c99d55,#f1d99f)}
+@media(max-width:620px){.htse-countdown-actions{margin-top:11px}.htse-countdown-action{flex:1 1 auto}}
