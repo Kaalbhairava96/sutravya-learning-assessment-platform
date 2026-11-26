@@ -5,18 +5,18 @@ const eventConfig = Object.freeze({
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
-  registrationClosesLabel: '25 November 2026 at 11:59:59 PM IST',
-  registrationClosesDate: '25 November 2026',
+  registrationClosesLabel: '1 December 2026 at 11:59:59 PM IST',
+  registrationClosesDate: '1 December 2026',
   registrationClosesTime: '11:59:59 PM IST',
-  examDate: '4 December 2026',
+  examDate: '6 December 2026',
   registrationOpensAt: Date.parse('2026-10-31T18:30:00.000Z'), // 1 Nov, 00:00 IST
-  registrationClosesAt: Date.parse('2026-11-25T18:29:59.999Z'), // 25 Nov, 23:59:59 IST
+  registrationClosesAt: Date.parse('2026-12-01T18:29:59.999Z'), // 1 Dec, 23:59:59 IST
   timeZone: 'Asia/Kolkata',
-  assessmentStreams: Object.freeze(['Paramedical', 'Nursing', 'Medical UG', 'Medical PG']),
-  registrationCategories: Object.freeze(['Nursing', 'Paramedical', 'Medical']),
-  streams: Object.freeze(['Paramedical', 'Nursing', 'Medical UG', 'Medical PG']),
+  assessmentStreams: Object.freeze(['Nursing', 'Paramedical', 'Pharmacy']),
+  registrationCategories: Object.freeze(['Nursing', 'Paramedical', 'Pharmacy']),
+  streams: Object.freeze(['Nursing', 'Paramedical', 'Pharmacy']),
   questionCount: 100,
-  durationMinutes: 47,
+  durationMinutes: 30,
   negativeMarking: true,
   awardsPublished: true,
   nursingSyllabusApproved: false,
@@ -263,7 +263,7 @@ if(footer){
     '<p class="footer-tagline">The Digital Thread of Healthcare</p><p>Assessment and technology partner for the Healthcare Talent Search Exam 2026, organised by QualiNova.</p>' +
     '<a class="footer-site-link" href="https://sutravya.in" target="_blank" rel="noopener">Visit sutravya.in '+icon('arrow')+'</a></div>' +
     '<div class="footer-column"><h2>Explore</h2>'+navigation.slice(0,7).map(([url,label])=>'<a href="'+url+'">'+label+'</a>').join('')+'</div>' +
-    '<div class="footer-column"><h2>Candidate access</h2><a href="register.html">Healthcare exam registration '+icon('arrow')+'</a><a href="login.html">Candidate sign-in '+icon('arrow')+'</a><a href="hackathon.html#hackathon-register">Free Hackathon registration '+icon('arrow')+'</a><a href="hackathon-portal.html">Hackathon participant portal '+icon('arrow')+'</a><div class="footer-exam-note"><b>4 December 2026</b><span>Healthcare Talent Search Exam</span><span>100 MCQs · approximately 47 minutes</span></div></div>' +
+    '<div class="footer-column"><h2>Candidate access</h2><a href="register.html">Healthcare exam registration '+icon('arrow')+'</a><a href="login.html">Candidate sign-in '+icon('arrow')+'</a><a href="hackathon.html#hackathon-register">Free Hackathon registration '+icon('arrow')+'</a><a href="hackathon-portal.html">Hackathon participant portal '+icon('arrow')+'</a><div class="footer-exam-note"><b>6 December 2026</b><span>Healthcare Talent Search Exam</span><span>100 MCQs · 30 minutes</span></div></div>' +
     '<div class="footer-column footer-partners"><h2>Connect with SUTRAVYA</h2>'+
     contactLink('tel:+916239646429','phone','+91 62396 46429','CALL SUTRAVYA')+
     contactLink('mailto:sutravya.connect@gmail.com','mail','sutravya.connect@gmail.com','EMAIL SUTRAVYA')+
@@ -446,7 +446,7 @@ function updateCountdown() {
   if (description) description.textContent = state === 'before'
     ? `Public registration opens ${eventConfig.registrationOpensLabel}.`
     : state === 'open' ? `Complete registration by ${eventConfig.registrationClosesLabel}.`
-      : 'The registration period ended on 25 November 2026.';
+      : 'The registration period ended on 1 December 2026.';
   box.classList.toggle('countdown-closed', state === 'closed');
   updateRegistrationSlideStatus();
 }
@@ -607,7 +607,7 @@ document.querySelectorAll('[data-login-form]').forEach(form => {
   const revealExamAccess = async () => {
     try {
       const account = await apiRequest('/api/auth/session', undefined, 'GET');
-      const eligibleStream = ['nursing', 'paramedical', 'mbbs_ug', 'mbbs_pg', 'mbbs_1st_year'].includes(account.stream);
+      const eligibleStream = ['nursing', 'paramedical', 'pharmacy'].includes(account.stream);
       const examEligible = eligibleStream && account.registration_status === 'active';
       if (examAccess) examAccess.hidden = !examEligible;
       const card = form.parentElement.querySelector('[data-candidate-application]');
