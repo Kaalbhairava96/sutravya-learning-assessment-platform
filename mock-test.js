@@ -6,7 +6,7 @@
   const resultsPanel = document.querySelector('#mock-results');
   if (!streamButtons.length || !testPanel || !resultsPanel) return;
 
-  const totalSeconds = 47 * 60;
+  const totalSeconds = 30 * 60;
   const state = { streamKey: null, questions: [], current: 0, answers: new Map(), review: new Set(), deadline: 0, interval: null, submitted: false };
   const $ = selector => document.querySelector(selector);
   const escapeHTML = (value = '') => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -33,7 +33,7 @@
     resultsPanel.hidden = true;
     testPanel.hidden = false;
     $('[data-test-title]').textContent = `${stream.label} Practice Mock Test`;
-    $('[data-test-subtitle]').textContent = '100 questions · approximately 47 minutes · +1 correct · −0.25 incorrect · 0 unanswered';
+    $('[data-test-subtitle]').textContent = '100 questions · 30 minutes total · +1 correct · −0.25 incorrect · 0 unanswered';
     renderNavigator();
     renderQuestion();
     updateTimer();
