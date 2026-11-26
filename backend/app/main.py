@@ -243,7 +243,7 @@ class AdminQuestionRequest(BaseModel):
 
 
 class AdminQuestionBankRequest(BaseModel):
-    stream: Literal["paramedical", "nursing", "mbbs_ug", "mbbs_pg"]
+    stream: Literal["nursing", "paramedical", "pharmacy"]
     title: str = Field(min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=2000)
     correct_points: Decimal = Field(default=Decimal("1"), ge=1, le=1, max_digits=10, decimal_places=3)
@@ -816,24 +816,22 @@ def create_app(
             "registration_opens_at": REGISTRATION_OPENS_AT.isoformat(),
             "registration_closes_at": REGISTRATION_CLOSES_AT.isoformat(),
             "categories": [
-                {"id": "nursing", "label": "Nursing", 
-                 "programmes": [
-                     {"id": "bsc_nursing", "label": "B.Sc Nursing", "years": [1, 2, 3, 4]},
-                     {"id": "msc_nursing", "label": "M.Sc Nursing", "years": [1, 2]},
-                 ]},
-                {"id": "paramedical", "label": "Paramedical", 
-                 "programmes": [
-                     {"id": "bmlt", "label": "BMLT"}, {"id": "bott", "label": "BOTT"},
-                     {"id": "bhm", "label": "BHM"}, {"id": "bopt", "label": "B.Opt"},
-                     {"id": "brit", "label": "BRIT"},
-                 ],
-                 "academic_stage_help": "Enter the current year, semester or internship stage exactly as shown by your institution."},
-                {"id": "medical", "label": "Medical", 
-                 "programmes": [
-                     {"id": "medical_ug", "label": "Medical UG", "years": [1, 2, 3, 4, 5]},
-                     {"id": "medical_pg", "label": "Medical PG", "years": [1, 2, 3]},
-                 ]},
-            ],
+                {"id": "nursing", "label": "Nursing", "programmes": [
+                    {"id": "bsc_nursing", "label": "B.Sc Nursing", "years": [1, 2, 3, 4]},
+                    {"id": "msc_nursing", "label": "M.Sc Nursing", "years": [1, 2]},
+                ]},
+                {"id": "paramedical", "label": "Paramedical", "programmes": [
+                    {"id": "bmlt", "label": "BMLT"}, {"id": "bott", "label": "BOTT"},
+                    {"id": "bhm", "label": "BHM"}, {"id": "bopt", "label": "B.Opt"},
+                    {"id": "brit", "label": "BRIT"},
+                ], "academic_stage_help": "Enter your current year, semester or internship stage."},
+                {"id": "pharmacy", "label": "Pharmacy", "programmes": [
+                    {"id": "dpharm", "label": "D.Pharm", "years": [1, 2]},
+                    {"id": "bpharm", "label": "B.Pharm", "years": [1, 2, 3, 4]},
+                    {"id": "pharmd", "label": "Pharm.D", "years": [1, 2, 3, 4, 5, 6]},
+                    {"id": "mpharm", "label": "M.Pharm", "years": [1, 2]},
+                ]},
+            ],,
         }
 
 
