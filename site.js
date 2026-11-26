@@ -5,8 +5,8 @@ const eventConfig = Object.freeze({
   registrationOpensLabel: '1 November 2026 at 12:00 AM IST',
   registrationOpensDate: '1 November 2026',
   registrationOpensTime: '12:00 AM IST',
-  registrationClosesLabel: '1 December 2026 at 11:59:59 PM IST',
-  registrationClosesDate: '1 December 2026',
+  registrationClosesLabel: '6 December 2026 at 11:59:59 PM IST',
+  registrationClosesDate: '6 December 2026',
   registrationClosesTime: '11:59:59 PM IST',
   examDate: '6 December 2026',
   examStartsAt: Date.parse('2026-12-06T10:00:00+05:30'),
@@ -450,7 +450,7 @@ function updateCountdown() {
   if (description) description.textContent = state === 'before'
     ? `Public registration opens ${eventConfig.registrationOpensLabel}.`
     : state === 'open' ? `Complete registration by ${eventConfig.registrationClosesLabel}.`
-      : 'The registration period ended on 1 December 2026.';
+      : 'The registration period ended on 6 December 2026.';
   box.classList.toggle('countdown-closed', state === 'closed');
   updateRegistrationSlideStatus();
 }
