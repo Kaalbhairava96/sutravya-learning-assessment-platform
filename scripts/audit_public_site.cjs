@@ -40,6 +40,11 @@ const portal=fs.readFileSync(path.join(root,'hackathon-portal.html'),'utf8');
 const faqPage=fs.readFileSync(path.join(root,'faqs.html'),'utf8');
 if(!homepage.includes('healthcare-talent-search-badge.svg'))errors.push('index.html: Healthcare Talent Search Exam badge is missing');
 if(!homepage.includes('htse-healthcare-hero.webp'))errors.push('index.html: original 3D healthcare hero artwork is missing');
+if(!homepage.includes('data-event-countdown'))errors.push('index.html: live assessment countdown is missing');
+if(!homepage.includes('2026-12-06T10:00:00+05:30'))errors.push('index.html: HTSE countdown must use the official 10:00 AM IST start');
+if(!homepage.includes('Online Examination'))errors.push('index.html: online examination venue must be stated in the countdown');
+if(!homepage.includes('Candidate sign in'))errors.push('index.html: candidate login action is missing from the countdown');
+
 for(const asset of ['brand-home-learning-premium.svg','brand-home-hackathon-premium.svg','brand-home-recognition-premium.svg'])if(!homepage.includes(asset))errors.push('index.html: missing coordinated 3D section artwork '+asset);
 if(!homepage.includes('Healthcare Talent<br><em>Search Examination 2026</em>'))errors.push('index.html: official HTSE headline is missing');
 if(!homepage.includes('qv2-home-partners')||!homepage.includes('qualinova-logo.png')||!homepage.includes('sutravya-logo.png'))errors.push('index.html: organiser and technology partner logo lockup is incomplete');
