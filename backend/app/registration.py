@@ -17,7 +17,7 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.config import Settings
-from app.models import Candidate, CandidateSession, RateLimitBucket, Registration, VerificationChallenge
+from app.models import Candidate, CandidateSession, ExamSlot, RateLimitBucket, Registration, VerificationChallenge
 from app.verification import (
     ChallengeVerification,
     digest_destination,
@@ -34,8 +34,7 @@ TEAM_PRELAUNCH_SOURCE = "team_prelaunch"
 PUBLIC_REGISTRATION_SOURCE = "public_registration"
 LEGACY_INTERNAL_TEST_SOURCE = "legacy_internal_test"
 REGISTRATION_SOURCES = frozenset({TEAM_PRELAUNCH_SOURCE, PUBLIC_REGISTRATION_SOURCE})
-# Keep legacy MBBS stream identifiers for historical records; JDN is retired.
-ALLOWED_STREAMS = frozenset({"paramedical", "nursing", "mbbs_ug", "mbbs_pg", "mbbs_1st_year", "mbbs"})
+ALLOWED_STREAMS = frozenset({"paramedical", "nursing", "pharmacy"})
 SESSION_SECONDS = 24 * 60 * 60
 REGISTRATION_ID_SEQUENCE = "registration_id_serial_seq"
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
@@ -418,11 +417,18 @@ def verify_registration_email(
             ).with_for_update()
         )
         if registration is None:
+            scheduled_slot = session.scalar(
+                select(ExamSlot)
+                .where(ExamSlot.event_key == EVENT_KEY, ExamSlot.stream == candidate.pending_stream)
+                .order_by(ExamSlot.starts_at.asc())
+                .limit(1)
+            )
             registration = Registration(
                 candidate_id=candidate.id,
                 event_key=EVENT_KEY,
                 registration_id=_new_registration_id(session, current),
                 stream=candidate.pending_stream,
+                exam_slot_id=scheduled_slot.id if scheduled_slot else None,
                 status="active",
                 is_internal_test=False,
                 registration_source=challenge.registration_source,
