@@ -91,7 +91,7 @@ HACKATHON_LOGIN_PURPOSE = "hackathon_login"
 HACKATHON_SYNOPSIS_DEADLINE = datetime(2026, 12, 8, 23, 59, 0, tzinfo=ZoneInfo("Asia/Kolkata"))
 REGISTRATION_TIMEZONE = ZoneInfo("Asia/Kolkata")
 REGISTRATION_OPENS_AT = datetime(2026, 11, 1, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
-REGISTRATION_CLOSES_AT = datetime(2026, 12, 2, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
+REGISTRATION_CLOSES_AT = datetime(2026, 12, 7, 0, 0, 0, tzinfo=REGISTRATION_TIMEZONE)
 
 
 def _registration_now() -> datetime:
@@ -319,7 +319,7 @@ def _registration_error(error: RegistrationError) -> HTTPException:
         "challenge_unavailable": "This code request is unavailable. Request a new code.",
         "registration_unavailable": "Registration could not be completed. Check the details or contact support.",
         "registration_not_open": "Registration opens 1 November 2026 at 12:00 AM IST.",
-        "registration_closed": "Registration closed after 1 December 2026 at 11:59:59 PM IST.",
+        "registration_closed": "Hackathon registration closed after 6 December 2026 at 11:59:59 PM IST.",
         "internal_test_unauthorized": "Internal testing access could not be authorized.",
         "internal_test_unavailable": "Internal testing access is no longer available.",
     }
@@ -969,7 +969,7 @@ def create_app(
             "registration_id": delivery_data["registration_id"],
             "confirmation_email_sent": confirmation_sent,
             "submission_instructions_email_sent": instructions_sent,
-            "message": "Your free Hackathon registration is complete. Save your unique Registration ID. Email your synopsis only to sutravya.connect@gmail.com by 08 December 2026, 11:59 PM IST.",
+            "message": "Your free Hackathon registration is complete. Save your unique Registration ID. Email your synopsis / MVP details only to sutravya.connect@gmail.com by 08 December 2026, 11:59 PM IST. The selected top three teams will get an opportunity to showcase their projects at Bihar Healthcare Conclave on 11 December 2026.",
         }
 
     @application.post("/api/hackathon/auth/request-otp", status_code=202, tags=["Hackathon participant account"])
