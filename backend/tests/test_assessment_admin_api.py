@@ -118,20 +118,20 @@ class AssessmentAdminApiTests(unittest.TestCase):
             row = session.query(Registration).one()
             self.assertEqual(str(row.exam_slot_id), created["slot_id"])
 
-    def test_exam_slot_must_cover_the_full_47_minute_assessment(self) -> None:
+    def test_exam_slot_must_cover_the_full_eight_hour_self_paced_window(self) -> None:
         create_slot = endpoint(self.application, "/api/admin/assessment/slots")
-        starts = datetime(2026, 12, 4, 10, 0, tzinfo=timezone.utc)
+        starts = datetime(2026, 12, 6, 4, 30, tzinfo=timezone.utc)
         with self.assertRaises(HTTPException) as rejected:
             create_slot(
                 AdminSlotRequest(
                     stream="paramedical", starts_at=starts,
-                    ends_at=starts + timedelta(minutes=46), capacity=1000,
+                    ends_at=starts + timedelta(hours=7, minutes=59), capacity=1000,
                 ),
                 request_for(self.application, "/api/admin/assessment/slots"),
                 x_admin_key=ADMIN_KEY,
             )
         self.assertEqual(rejected.exception.status_code, 422)
-        self.assertIn("47 minutes", rejected.exception.detail)
+        self.assertIn("eight hours", rejected.exception.detail)
 
     def test_import_exactly_one_hundred_mcqs_and_overview_counts(self) -> None:
         options = [
@@ -141,7 +141,7 @@ class AssessmentAdminApiTests(unittest.TestCase):
         questions = [
             AdminQuestionRequest(
                 question_text=f"Approved synthetic question {number}",
-                section=("anatomy_physiology", "laboratory_sciences", "microbiology_infection_control", "diagnostic_technology", "patient_safety_communication")[(number - 1) // 20],
+                section=("anatomy", "physiology", "biochemistry", "healthcare_it", "oet_english")[(number - 1) // 20],
                 difficulty="easy" if number % 2 == 0 else "moderate",
                 time_limit_seconds=20 + (number % 5),
                 category="General",
