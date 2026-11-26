@@ -45,8 +45,6 @@ def upgrade() -> None:
     now = datetime.now(timezone.utc)
     starts_at = datetime(2026, 12, 6, 10, 0, tzinfo=IST).astimezone(timezone.utc)
     ends_at = datetime(2026, 12, 6, 18, 0, tzinfo=IST).astimezone(timezone.utc)
-    slot_ids: dict[str, str] = {}
-    bank_ids: dict[str, str] = {}
 
     existing_slots = connection.execute(
         sa.text("SELECT stream FROM exam_slots WHERE event_key = :event_key AND stream IN ('nursing', 'paramedical', 'pharmacy')"),
@@ -73,8 +71,6 @@ def upgrade() -> None:
 
         bank_id = str(uuid4())
         slot_id = str(uuid4())
-        bank_ids[stream] = bank_id
-        slot_ids[stream] = slot_id
         connection.execute(
             sa.text("""
                 INSERT INTO question_banks (id, bank_code, title, description, created_at, updated_at)
