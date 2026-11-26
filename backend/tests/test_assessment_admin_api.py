@@ -177,9 +177,8 @@ class AssessmentAdminApiTests(unittest.TestCase):
             self.assertEqual(str(rule.correct_points), "1.000")
             self.assertEqual(str(rule.incorrect_points), "-0.250")
             expected_sections = (
-                "anatomy_physiology", "laboratory_sciences",
-                "microbiology_infection_control", "diagnostic_technology",
-                "patient_safety_communication",
+                "anatomy", "physiology", "biochemistry",
+                "healthcare_it", "oet_english",
             )
             for section in expected_sections:
                 self.assertEqual(session.query(Question).filter_by(section=section).count(), 20)
