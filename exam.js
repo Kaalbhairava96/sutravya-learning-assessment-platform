@@ -156,7 +156,9 @@
     try {
       currentQuestion = await request('/api/exam/attempts/' + attempt.attempt_id + '/questions/' + position);
       questionRemaining = currentQuestion.remaining_seconds;
-      visitedPositions.add(position);\n      if(currentQuestion.answered||currentQuestion.selected_option_id){answeredPositions.add(position);skippedPositions.delete(position);completedPositions.add(position);}else{answeredPositions.delete(position);skippedPositions.add(position);}
+      visitedPositions.add(position);
+      if (currentQuestion.answered || currentQuestion.selected_option_id) { answeredPositions.add(position); skippedPositions.delete(position); completedPositions.add(position); }
+      else { answeredPositions.delete(position); skippedPositions.add(position); }
       renderQuestion();
       
       message('Your answer is saved securely when selected.');
