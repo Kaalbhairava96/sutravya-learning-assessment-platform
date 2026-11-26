@@ -25,6 +25,8 @@ _TEST_ENVIRONMENT = {
 with patch.dict(os.environ, _TEST_ENVIRONMENT), patch("app.config._read_dotenv", return_value={}):
     from app.main import (
         HACKATHON_SESSION_COOKIE,
+        REGISTRATION_CLOSES_AT,
+        REGISTRATION_OPENS_AT,
         EmailOtpRequest,
         HackathonLoginRequest,
         HackathonRegistrationRequest,
@@ -92,6 +94,10 @@ class HackathonRegistrationFlowTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.engine.dispose()
 
+    def test_hackathon_registration_window_matches_published_dates(self) -> None:
+        self.assertEqual(REGISTRATION_OPENS_AT.isoformat(), "2026-11-01T00:00:00+05:30")
+        self.assertEqual(REGISTRATION_CLOSES_AT.isoformat(), "2026-12-07T00:00:00+05:30")
+
     def test_free_registration_email_otp_login_and_logout(self) -> None:
         payload = HackathonRegistrationRequest(
             full_name="Aarav Sharma",
@@ -121,6 +127,7 @@ class HackathonRegistrationFlowTests(unittest.TestCase):
         self.assertTrue(registered["confirmation_email_sent"])
         self.assertTrue(registered["submission_instructions_email_sent"])
         self.assertIn("08 December 2026", registered["message"])
+        self.assertIn("Bihar Healthcare Conclave on 11 December 2026", registered["message"])
         self.assertEqual(len(self.confirmations), 1)
         self.assertEqual(len(self.instructions), 1)
         self.assertEqual(self.instructions[0]["recipient_email"], payload.email)
