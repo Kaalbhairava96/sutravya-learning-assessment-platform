@@ -541,6 +541,39 @@ class AdminSession(Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
+
+class AdminPasswordReset(Base):
+    """One-time email challenge for resetting an administrator password."""
+
+    __tablename__ = "admin_password_resets"
+    __table_args__ = (
+        CheckConstraint("attempt_count >= 0", name="ck_admin_password_resets_attempt_nonnegative"),
+        CheckConstraint("length(otp_digest) = 64", name="ck_admin_password_resets_digest_length"),
+        CheckConstraint("expires_at > created_at", name="ck_admin_password_resets_expiry_after_creation"),
+        CheckConstraint(
+            "consumed_at IS NULL OR invalidated_at IS NULL",
+            name="ck_admin_password_resets_single_terminal_state",
+        ),
+        Index("ix_admin_password_resets_admin_created", "admin_user_id", "created_at"),
+        Index("ix_admin_password_resets_expires_at", "expires_at"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)
+    admin_user_id: Mapped[UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("admin_users.id", ondelete="CASCADE", name="fk_admin_password_resets_admin_user_id_admin_users"),
+        nullable=False,
+    )
+    otp_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default=text("0"))
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class Result(TimestampMixin, Base):
     __tablename__ = "results"
     __table_args__ = (UniqueConstraint("attempt_id", name="uq_results_attempt_id"),)
