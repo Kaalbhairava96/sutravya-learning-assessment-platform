@@ -15,8 +15,7 @@
     return String(value);
   };
   const compact = value => {
-    const streamLabels = {mbbs_ug:'Medical UG',mbbs_pg:'Medical PG',mbbs_1st_year:'Medical UG'};
-    const text = typeof value === 'string' ? (streamLabels[value] || value) : format(value);
+    const text = typeof value === 'string' ? value : format(value);
     return text.length > 100 ? text.slice(0, 97) + '…' : text;
   };
   const setGlobal = (message, kind = '') => {
@@ -229,7 +228,7 @@
     try {
       const summary = await api('/api/admin/assessment/summary');
       const streams = summary.streams || {};
-      const labels = {paramedical:'Paramedical',nursing:'Nursing',mbbs_ug:'Medical UG',mbbs_pg:'Medical PG'};
+      const labels = {nursing:'Nursing',paramedical:'Paramedical',pharmacy:'Pharmacy'};
       $('#admin-readiness').innerHTML = Object.entries(labels).map(([key,label]) =>
         '<article><span>'+escapeHtml(label)+'</span><b>'+Number(streams[key] || 0).toLocaleString('en-IN')+'</b><small>Candidate registrations</small></article>'
       ).join('') + (summary.unassigned ? '<article><span>Unassigned</span><b>'+Number(summary.unassigned).toLocaleString('en-IN')+'</b><small>Legacy or unmatched records</small></article>' : '');
@@ -295,7 +294,7 @@
       const data = await api('/api/admin/database/tables/exam_slots?limit=100&offset=0');
       const slots = data.records || [];
       $('#admin-assign-slot').innerHTML = '<option value="">Choose a configured slot</option>' + slots.map(slot =>
-        '<option value="'+escapeHtml(slot.id)+'">'+escapeHtml(({mbbs_ug:'Medical UG',mbbs_pg:'Medical PG'}[slot.stream] || slot.stream))+' · '+escapeHtml(new Date(slot.starts_at).toLocaleString())+'</option>'
+        '<option value="'+escapeHtml(slot.id)+'">'+escapeHtml(slot.stream)+' · '+escapeHtml(new Date(slot.starts_at).toLocaleString())+'</option>'
       ).join('');
       const cols = ['stream','starts_at','ends_at','capacity'].filter(key=>data.columns.some(c=>c.name===key));
       $('#admin-slot-table').innerHTML = slots.length
