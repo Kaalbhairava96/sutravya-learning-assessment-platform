@@ -136,7 +136,7 @@ class CandidateExamServiceTests(unittest.TestCase):
         self.assertNotIn("questions", started)
         first = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
         self.assertEqual(first["section"], "anatomy_physiology")
-        self.assertGreaterEqual(first["time_limit_seconds"], 20)
+        self.assertIsNone(first["time_limit_seconds"])
         self.assertEqual(len(first["options"]), 4)
         self.assertNotIn("correct_option", first)
         first_id = UUID(first["question_id"])
@@ -165,28 +165,30 @@ class CandidateExamServiceTests(unittest.TestCase):
         repeated = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(seconds=7))
         self.assertEqual(repeated["score"], result["score"])
 
-    def test_candidates_cannot_skip_a_live_question_or_return_after_passing(self) -> None:
+    def test_candidates_can_navigate_back_and_change_answers_before_submission(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
         attempt_id = UUID(started["attempt_id"])
-        first = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW)
-        with self.assertRaises(ExamError) as locked:
-            get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=1, now=NOW + timedelta(seconds=1))
-        self.assertEqual(locked.exception.code, "question_time_not_complete")
-        skipped = skip_question(
-            self.session, RAW_TOKEN, attempt_id=attempt_id, position=0,
-            now=NOW + timedelta(seconds=2),
-        )
-        self.assertTrue(skipped["skipped"])
-        second = get_question(
-            self.session, RAW_TOKEN, attempt_id=attempt_id, position=1,
-            now=NOW + timedelta(seconds=3),
-        )
-        self.assertEqual(second["position"], 1)
-        with self.assertRaises(ExamError) as passed:
-            get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW + timedelta(seconds=4))
-        self.assertEqual(passed.exception.code, "question_already_passed")
+        self.assertEqual(started["total_time_seconds"], 30 * 60)
 
-    def test_question_timer_is_server_enforced_and_unanswered_is_zero(self) -> None:
+        first = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW)
+        second = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=1, now=NOW + timedelta(seconds=1))
+        self.assertEqual(second["position"], 1)
+
+        first_id = UUID(first["question_id"])
+        index = next(i for i, q in enumerate(self.questions) if q.id == first_id)
+        right = self.correct_options[index].id
+        wrong = self.wrong_options[index].id
+        self.assertTrue(save_answer(self.session, RAW_TOKEN, attempt_id=attempt_id, question_id=first_id, option_id=wrong, now=NOW + timedelta(seconds=2))["saved"])
+        revisited = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=0, now=NOW + timedelta(seconds=3))
+        self.assertEqual(revisited["selected_option_id"], str(wrong))
+        self.assertTrue(save_answer(self.session, RAW_TOKEN, attempt_id=attempt_id, question_id=first_id, option_id=right, now=NOW + timedelta(seconds=4))["saved"])
+
+        skipped = skip_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=1, now=NOW + timedelta(seconds=5))
+        self.assertTrue(skipped["skipped"])
+        revisited_unanswered = get_question(self.session, RAW_TOKEN, attempt_id=attempt_id, position=1, now=NOW + timedelta(seconds=6))
+        self.assertFalse(revisited_unanswered["answered"])
+
+    def test_shared_30_minute_deadline_is_server_enforced_and_unanswered_scores_zero(self) -> None:
         started = start_exam(self.session, RAW_TOKEN, now=NOW)
         question = get_question(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), position=0, now=NOW)
         question_id = UUID(question["question_id"])
@@ -196,11 +198,11 @@ class CandidateExamServiceTests(unittest.TestCase):
             save_answer(
                 self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]),
                 question_id=question_id, option_id=wrong_id,
-                now=NOW + timedelta(seconds=question["time_limit_seconds"] + 1),
+                now=NOW + timedelta(minutes=30, seconds=1),
             )
-        self.assertEqual(expired.exception.code, "question_time_expired")
+        self.assertEqual(expired.exception.code, "exam_time_expired")
         self.session.rollback()
-        result = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(seconds=60))
+        result = submit_exam(self.session, RAW_TOKEN, attempt_id=UUID(started["attempt_id"]), now=NOW + timedelta(minutes=30, seconds=1))
         self.assertEqual(result["unanswered_count"], 100)
         self.assertEqual(result["score"], "0.000")
 
