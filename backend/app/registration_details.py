@@ -14,9 +14,9 @@ PROGRAMMES = {
         "bmlt": "BMLT", "bott": "BOTT", "bhm": "BHM",
         "bopt": "B.Opt", "brit": "BRIT",
     },
-    "medical": {
-        "medical_ug": "Medical UG",
-        "medical_pg": "Medical PG",
+    "pharmacy": {
+        "dpharm": "D.Pharm", "bpharm": "B.Pharm",
+        "pharmd": "Pharm.D", "mpharm": "M.Pharm",
     },
 }
 _MOBILE = re.compile(r"^[6-9][0-9]{9}$")
@@ -83,18 +83,13 @@ def validate_pin_code_for_location(pin_code: str, state_name: str, district_name
     }
 
 def build_registration_details(payload, session=None) -> dict:
-    """Validate the selected category and academic pathway."""
-    raw_category = (payload.category or "").strip().lower()
-    # Backward compatibility for older API clients sending the retired MBBS labels.
-    # Persisted details and all new public-facing records use canonical Medical labels.
-    category = "medical" if raw_category == "mbbs" else raw_category
+    """Validate one of the three HTSE 2026 registration streams."""
+    category = (payload.category or "").strip().lower()
     if category not in PROGRAMMES:
-        raise HTTPException(status_code=422, detail="Choose Nursing, Paramedical or Medical.")
-    raw_programme = (payload.programme or "").strip().lower()
-    legacy_programmes = {"mbbs_ug": "medical_ug", "mbbs_pg": "medical_pg"}
-    programme = legacy_programmes.get(raw_programme, raw_programme) if category == "medical" else raw_programme
+        raise HTTPException(status_code=422, detail="Choose Nursing, Paramedical or Pharmacy.")
+    programme = (payload.programme or "").strip().lower()
     if programme not in PROGRAMMES[category]:
-        raise HTTPException(status_code=422, detail="Choose a valid programme or Medical sub-category.")
+        raise HTTPException(status_code=422, detail="Choose a valid programme for the selected category.")
     _required(payload.full_name, "full name", 200)
     _required(payload.email, "email address", 320)
     if payload.declaration_accepted is not True:
@@ -121,33 +116,27 @@ def build_registration_details(payload, session=None) -> dict:
 
     year = payload.year
     academic_stage = (payload.academic_stage or "").strip()
-    subcategory = None
-    if category == "nursing":
-        allowed = {1, 2, 3, 4} if programme == "bsc_nursing" else {1, 2}
-        if year not in allowed:
-            raise HTTPException(status_code=422, detail="Select the current year for the selected Nursing programme.")
-        academic_stage = f"Year {year}"
-        stream = "nursing"
-    elif category == "medical":
-        subcategory = "UG" if programme == "medical_ug" else "PG"
-        allowed = set(range(1, 6)) if subcategory == "UG" else {1, 2, 3}
-        if year not in allowed:
-            stage = "1st to 5th" if subcategory == "UG" else "1st to 3rd"
-            raise HTTPException(status_code=422, detail=f"Select your current Medical {subcategory} year ({stage}).")
-        academic_stage = f"Year {year}"
-        stream = "mbbs_ug" if programme == "medical_ug" else "mbbs_pg"
-    else:
+    if category == "paramedical":
         academic_stage = _required(academic_stage, "current year / semester / internship details", 120)
-        stream = "paramedical"
+    else:
+        if year is None or year < 1:
+            raise HTTPException(status_code=422, detail="Select your current academic year.")
+        programme_years = {
+            "bsc_nursing": 4, "msc_nursing": 2,
+            "dpharm": 2, "bpharm": 4, "pharmd": 6, "mpharm": 2,
+        }
+        maximum = programme_years[programme]
+        if year > maximum:
+            raise HTTPException(status_code=422, detail=f"Select a year between 1 and {maximum} for {PROGRAMMES[category][programme]}.")
+        academic_stage = f"Year {year}"
 
-    labels = {"nursing": "Nursing", "paramedical": "Paramedical", "medical": "Medical"}
     details = {
         "category": category,
-        "category_label": labels[category],
+        "category_label": PROGRAMMES[category][programme] if category == "pharmacy" else category.title(),
         "programme": programme,
         "programme_label": PROGRAMMES[category][programme],
         "academic_stage": academic_stage,
-        "stream": stream,
+        "stream": category,
         "house_number": house,
         "address_line1": address1,
         "address_line2": address2,
@@ -155,9 +144,6 @@ def build_registration_details(payload, session=None) -> dict:
         "state": state,
         "pin_code": pin,
     }
-    if category in {"nursing", "medical"}:
+    if category in {"nursing", "pharmacy"}:
         details["year"] = year
-    if category == "medical":
-        details["subcategory"] = subcategory
-        details["subcategory_label"] = f"Medical {subcategory}"
     return details
