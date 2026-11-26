@@ -120,6 +120,7 @@ class HackathonRegistrationFlowTests(unittest.TestCase):
         self.assertRegex(registered["registration_id"], r"^HTSE26-HK-[A-F0-9]{10}$")
         self.assertTrue(registered["confirmation_email_sent"])
         self.assertTrue(registered["submission_instructions_email_sent"])
+        self.assertIn("08 December 2026", registered["message"])
         self.assertEqual(len(self.confirmations), 1)
         self.assertEqual(len(self.instructions), 1)
         self.assertEqual(self.instructions[0]["recipient_email"], payload.email)
@@ -169,6 +170,7 @@ class HackathonRegistrationFlowTests(unittest.TestCase):
         self.assertEqual(profile["college_name"], "Institute of Health Sciences")
         self.assertEqual(profile["year_of_study"], 2)
         self.assertEqual(profile["submission_email"], "sutravya.connect@gmail.com")
+        self.assertEqual(profile["synopsis_deadline"], "2026-12-08T23:59:00+05:30")
 
         logout_response = Response()
         endpoint(self.application, "/api/hackathon/auth/logout")(
