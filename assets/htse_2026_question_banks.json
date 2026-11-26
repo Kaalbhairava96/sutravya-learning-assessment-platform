@@ -1632,5 +1632,1639 @@
         "subjectLabel": "OET-style Healthcare English"
       }
     ]
+  },
+  "paramedical": {
+    "label": "Paramedical",
+    "description": "Common five-subject healthcare syllabus at applied diagnostic and technical level. Original practice questions with 100 MCQs and 20 questions per subject.",
+    "difficulty_label": "Applied",
+    "subjects": [
+      {
+        "key": "anatomy",
+        "label": "Anatomy",
+        "question_count": 20
+      },
+      {
+        "key": "physiology",
+        "label": "Physiology",
+        "question_count": 20
+      },
+      {
+        "key": "biochemistry",
+        "label": "Biochemistry",
+        "question_count": 20
+      },
+      {
+        "key": "healthcare_it",
+        "label": "Healthcare IT",
+        "question_count": 20
+      },
+      {
+        "key": "oet_english",
+        "label": "OET-style Healthcare English",
+        "question_count": 20
+      }
+    ],
+    "questions": [
+      {
+        "id": "PAR-001",
+        "question": "A standard axial CT image divides the body into which portions?",
+        "options": [
+          "Anterior and posterior",
+          "Superior and inferior",
+          "Right and left",
+          "Medial and lateral"
+        ],
+        "answer": 1,
+        "explanation": "An axial plane divides the body into superior and inferior portions.",
+        "topic": "Imaging orientation",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-002",
+        "question": "The right lung normally has how many lobes?",
+        "options": [
+          "One",
+          "Two",
+          "Three",
+          "Four"
+        ],
+        "answer": 2,
+        "explanation": "The right lung has superior, middle and inferior lobes.",
+        "topic": "Thoracic anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-003",
+        "question": "The renal cortex is located:",
+        "options": [
+          "At the outer region of the kidney",
+          "Only inside the renal pelvis",
+          "Around the ureter",
+          "Within the urinary bladder"
+        ],
+        "answer": 0,
+        "explanation": "The renal cortex forms the outer region beneath the renal capsule.",
+        "topic": "Renal anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-004",
+        "question": "The common bile duct carries bile towards the:",
+        "options": [
+          "Urinary bladder",
+          "Duodenum",
+          "Oesophagus",
+          "Large intestine only"
+        ],
+        "answer": 1,
+        "explanation": "The common bile duct delivers bile into the duodenum.",
+        "topic": "Hepatobiliary anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-005",
+        "question": "The coronary arteries primarily supply blood to the:",
+        "options": [
+          "Lung alveoli",
+          "Myocardium",
+          "Liver capsule",
+          "Kidney pelvis"
+        ],
+        "answer": 1,
+        "explanation": "Coronary arteries supply oxygenated blood to the heart muscle.",
+        "topic": "Cardiac anatomy",
+        "difficulty": "easy",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-006",
+        "question": "Cerebrospinal fluid is found in the:",
+        "options": [
+          "Pleural space",
+          "Peritoneal cavity",
+          "Ventricles and subarachnoid space",
+          "Bone marrow"
+        ],
+        "answer": 2,
+        "explanation": "CSF circulates through the ventricles and subarachnoid space around the CNS.",
+        "topic": "Neuroanatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-007",
+        "question": "The hepatic portal vein connects the venous drainage of the gut to the:",
+        "options": [
+          "Liver",
+          "Lung",
+          "Heart valves",
+          "Thyroid gland"
+        ],
+        "answer": 0,
+        "explanation": "The portal vein carries nutrient-rich blood from the gastrointestinal tract to the liver.",
+        "topic": "Vascular anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-008",
+        "question": "The pleural cavity is the potential space between the:",
+        "options": [
+          "Two lungs",
+          "Visceral and parietal pleura",
+          "Trachea and oesophagus",
+          "Ribs and sternum"
+        ],
+        "answer": 1,
+        "explanation": "The pleural cavity lies between the visceral and parietal pleural layers.",
+        "topic": "Respiratory anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-009",
+        "question": "The spleen is located mainly in the:",
+        "options": [
+          "Right iliac fossa",
+          "Left upper quadrant",
+          "Pelvic cavity",
+          "Anterior neck"
+        ],
+        "answer": 1,
+        "explanation": "The spleen lies in the left upper abdomen beneath the diaphragm.",
+        "topic": "Lymphatic anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-010",
+        "question": "The endocrine portion of the pancreas is organised into:",
+        "options": [
+          "Alveoli",
+          "Islets of Langerhans",
+          "Nephrons",
+          "Lymph follicles"
+        ],
+        "answer": 1,
+        "explanation": "Pancreatic islets contain hormone-secreting endocrine cells.",
+        "topic": "Pancreatic anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-011",
+        "question": "A tendon connects:",
+        "options": [
+          "Bone to bone",
+          "Muscle to bone",
+          "Nerve to muscle",
+          "Cartilage to skin"
+        ],
+        "answer": 1,
+        "explanation": "Tendons transmit force from muscle to bone.",
+        "topic": "Musculoskeletal anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-012",
+        "question": "Capillaries are specialised for exchange because they have:",
+        "options": [
+          "A thick muscular wall",
+          "A very thin endothelial wall",
+          "No lumen",
+          "Multiple valves"
+        ],
+        "answer": 1,
+        "explanation": "A thin endothelial barrier supports exchange between blood and tissue.",
+        "topic": "Vascular anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-013",
+        "question": "The duodenum is the first part of the:",
+        "options": [
+          "Large intestine",
+          "Small intestine",
+          "Oesophagus",
+          "Stomach"
+        ],
+        "answer": 1,
+        "explanation": "The duodenum receives gastric contents, bile and pancreatic secretions.",
+        "topic": "GI anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-014",
+        "question": "The glomerulus is located within the:",
+        "options": [
+          "Renal corpuscle",
+          "Ureter",
+          "Bladder wall",
+          "Adrenal medulla"
+        ],
+        "answer": 0,
+        "explanation": "The glomerular capillary tuft sits inside Bowman's capsule in the renal corpuscle.",
+        "topic": "Urinary anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-015",
+        "question": "The adrenal glands sit:",
+        "options": [
+          "Inside the lungs",
+          "On the superior poles of the kidneys",
+          "Behind the eyes",
+          "Within the pancreas"
+        ],
+        "answer": 1,
+        "explanation": "Each adrenal gland is positioned above a kidney.",
+        "topic": "Endocrine anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-016",
+        "question": "The prostate gland lies inferior to the:",
+        "options": [
+          "Urinary bladder",
+          "Kidneys",
+          "Liver",
+          "Diaphragm"
+        ],
+        "answer": 0,
+        "explanation": "The prostate is located below the bladder and surrounds the proximal urethra.",
+        "topic": "Reproductive anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-017",
+        "question": "The thyroid gland is usually anterior to the:",
+        "options": [
+          "Trachea",
+          "Cerebellum",
+          "Spinal cord",
+          "Maxilla"
+        ],
+        "answer": 0,
+        "explanation": "The thyroid lies in the anterior neck, adjacent to the upper trachea.",
+        "topic": "Head and neck",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-018",
+        "question": "The retina contains photoreceptors that detect:",
+        "options": [
+          "Sound",
+          "Light",
+          "Pressure in joints",
+          "Blood glucose"
+        ],
+        "answer": 1,
+        "explanation": "Rods and cones in the retina convert light into neural signals.",
+        "topic": "Eye anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-019",
+        "question": "Haematopoietic stem cells in adults are mainly found in:",
+        "options": [
+          "Red bone marrow",
+          "Pleural fluid",
+          "Bile ducts",
+          "Cartilage"
+        ],
+        "answer": 0,
+        "explanation": "Adult haematopoiesis occurs mainly in red marrow.",
+        "topic": "Haematology anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-020",
+        "question": "The pancreas is situated mainly:",
+        "options": [
+          "Posterior to the stomach",
+          "Inside the urinary bladder",
+          "Within the thoracic cavity",
+          "Anterior to the sternum"
+        ],
+        "answer": 0,
+        "explanation": "The pancreas lies mostly retroperitoneally, posterior to the stomach.",
+        "topic": "Abdominal anatomy",
+        "difficulty": "moderate",
+        "subjectKey": "anatomy",
+        "subjectLabel": "Anatomy"
+      },
+      {
+        "id": "PAR-021",
+        "question": "Cardiac output is calculated as:",
+        "options": [
+          "Heart rate multiplied by stroke volume",
+          "Blood pressure divided by temperature",
+          "Respiratory rate multiplied by tidal volume",
+          "Haemoglobin multiplied by oxygen saturation"
+        ],
+        "answer": 0,
+        "explanation": "Cardiac output equals heart rate multiplied by stroke volume.",
+        "topic": "Cardiac output",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-022",
+        "question": "The QRS complex on an ECG represents:",
+        "options": [
+          "Atrial depolarisation",
+          "Ventricular depolarisation",
+          "Ventricular repolarisation",
+          "SA node recovery only"
+        ],
+        "answer": 1,
+        "explanation": "The QRS complex corresponds to ventricular depolarisation.",
+        "topic": "ECG physiology",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-023",
+        "question": "FEV1 measures the volume of air:",
+        "options": [
+          "Exhaled forcefully in the first second",
+          "Remaining after maximal expiration",
+          "Inhaled during quiet breathing",
+          "In the pleural space"
+        ],
+        "answer": 0,
+        "explanation": "FEV1 is the forced expiratory volume exhaled in the first second.",
+        "topic": "Pulmonary function",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-024",
+        "question": "A reduced ventilation-perfusion ratio means an alveolar region has:",
+        "options": [
+          "More ventilation relative to perfusion",
+          "Less ventilation relative to perfusion",
+          "No blood supply in every case",
+          "No effect on oxygenation"
+        ],
+        "answer": 1,
+        "explanation": "A low V/Q ratio means ventilation is low relative to perfusion.",
+        "topic": "Gas exchange",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-025",
+        "question": "Glomerular filtration is driven mainly by:",
+        "options": [
+          "Net pressure gradients across glomerular capillaries",
+          "Bile concentration",
+          "Skeletal muscle contraction",
+          "Skin temperature"
+        ],
+        "answer": 0,
+        "explanation": "Hydrostatic and oncotic pressures determine net filtration pressure.",
+        "topic": "Renal physiology",
+        "difficulty": "easy",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-026",
+        "question": "A primary rise in arterial carbon dioxide tends to cause:",
+        "options": [
+          "Respiratory acidosis",
+          "Respiratory alkalosis",
+          "Metabolic alkalosis",
+          "No pH change"
+        ],
+        "answer": 0,
+        "explanation": "Increased CO2 increases carbonic acid and lowers blood pH.",
+        "topic": "Acid-base physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-027",
+        "question": "The PR interval on an ECG reflects conduction from the:",
+        "options": [
+          "Atria through the AV conduction system to the ventricles",
+          "Ventricles to the aorta",
+          "Lungs to the left atrium",
+          "Purkinje fibres to the skin"
+        ],
+        "answer": 0,
+        "explanation": "The PR interval includes atrial depolarisation and AV nodal conduction time.",
+        "topic": "Cardiac physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-028",
+        "question": "A right shift of the oxyhaemoglobin dissociation curve indicates:",
+        "options": [
+          "Increased haemoglobin affinity for oxygen",
+          "Reduced affinity and easier oxygen unloading",
+          "No oxygen binding",
+          "Conversion of haemoglobin to albumin"
+        ],
+        "answer": 1,
+        "explanation": "A right shift reduces oxygen affinity and facilitates tissue unloading.",
+        "topic": "Oxygen transport",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-029",
+        "question": "An isotonic solution generally causes red blood cells to:",
+        "options": [
+          "Swell markedly",
+          "Shrink markedly",
+          "Maintain approximately their volume",
+          "Burst immediately"
+        ],
+        "answer": 2,
+        "explanation": "An isotonic extracellular solution produces no major net water shift.",
+        "topic": "Fluid physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-030",
+        "question": "The resting membrane potential of many neurons is maintained primarily by:",
+        "options": [
+          "Ion gradients and selective membrane permeability",
+          "Bile salts",
+          "Haemoglobin breakdown",
+          "Platelet aggregation"
+        ],
+        "answer": 0,
+        "explanation": "Ion gradients, potassium permeability and the sodium-potassium pump maintain resting potential.",
+        "topic": "Neurophysiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-031",
+        "question": "Parathyroid hormone generally increases serum calcium by acting on:",
+        "options": [
+          "Bone, kidney and indirectly intestine",
+          "Lungs only",
+          "Skin glands only",
+          "Red blood cells only"
+        ],
+        "answer": 0,
+        "explanation": "PTH affects bone and renal calcium handling and promotes active vitamin D formation.",
+        "topic": "Endocrine physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-032",
+        "question": "The main stimulus for ventilation in a healthy adult at rest is usually a rise in:",
+        "options": [
+          "Arterial carbon dioxide",
+          "Serum albumin",
+          "Plasma cholesterol",
+          "Bilirubin"
+        ],
+        "answer": 0,
+        "explanation": "Central chemoreceptor responses to CO2-related pH changes are a major ventilatory drive.",
+        "topic": "Respiratory physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-033",
+        "question": "Fever involves an elevated hypothalamic temperature set point, often mediated by:",
+        "options": [
+          "Prostaglandin E2",
+          "Insulin",
+          "Haemoglobin",
+          "Bile"
+        ],
+        "answer": 0,
+        "explanation": "Prostaglandin E2 contributes to raising the hypothalamic set point during fever.",
+        "topic": "Temperature physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-034",
+        "question": "Bile salts aid fat digestion by:",
+        "options": [
+          "Emulsifying dietary fats",
+          "Breaking peptide bonds",
+          "Digesting nucleic acids",
+          "Producing insulin"
+        ],
+        "answer": 0,
+        "explanation": "Bile salts emulsify fats and support micelle formation for lipid absorption.",
+        "topic": "Digestive physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-035",
+        "question": "The loop of Henle contributes to urine concentration by establishing:",
+        "options": [
+          "A medullary osmotic gradient",
+          "A pulmonary pressure gradient",
+          "A cardiac electrical gradient",
+          "A bile salt gradient"
+        ],
+        "answer": 0,
+        "explanation": "Countercurrent multiplication creates a medullary gradient used to concentrate urine.",
+        "topic": "Renal physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-036",
+        "question": "A prolonged activated partial thromboplastin time (aPTT) can reflect abnormality in the:",
+        "options": [
+          "Intrinsic or common coagulation pathway",
+          "Oxygen transport pathway",
+          "Renal filtration pathway",
+          "Bile production pathway"
+        ],
+        "answer": 0,
+        "explanation": "aPTT assesses intrinsic and common pathway clotting factors.",
+        "topic": "Blood physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-037",
+        "question": "During ventricular systole, the mitral valve should be:",
+        "options": [
+          "Open",
+          "Closed",
+          "Absent",
+          "Partially removed"
+        ],
+        "answer": 1,
+        "explanation": "The mitral valve closes during ventricular systole to prevent backflow into the left atrium.",
+        "topic": "Cardiac physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-038",
+        "question": "A rise in plasma osmolality normally stimulates:",
+        "options": [
+          "Thirst and ADH release",
+          "Bile secretion only",
+          "Insulin destruction",
+          "Reduced water conservation"
+        ],
+        "answer": 0,
+        "explanation": "Osmoreceptors trigger thirst and ADH release to conserve water.",
+        "topic": "Osmoregulation",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-039",
+        "question": "Active transport differs from simple diffusion because it:",
+        "options": [
+          "Can move substances against a gradient using energy",
+          "Never uses membrane proteins",
+          "Always moves water only",
+          "Occurs only outside cells"
+        ],
+        "answer": 0,
+        "explanation": "Active transport uses energy to move substances against an electrochemical gradient.",
+        "topic": "Cell physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-040",
+        "question": "The oxygen saturation measured by a pulse oximeter is an estimate of:",
+        "options": [
+          "Haemoglobin oxygen saturation in pulsatile arterial blood",
+          "Total lung capacity",
+          "Serum bicarbonate",
+          "Cardiac valve area"
+        ],
+        "answer": 0,
+        "explanation": "Pulse oximetry estimates arterial haemoglobin oxygen saturation from light absorption.",
+        "topic": "Respiratory physiology",
+        "difficulty": "moderate",
+        "subjectKey": "physiology",
+        "subjectLabel": "Physiology"
+      },
+      {
+        "id": "PAR-041",
+        "question": "A raised serum creatinine most directly suggests a possible reduction in:",
+        "options": [
+          "Glomerular filtration",
+          "Bile formation",
+          "Lung compliance",
+          "Platelet function"
+        ],
+        "answer": 0,
+        "explanation": "Creatinine rises when renal clearance is reduced, though interpretation depends on context.",
+        "topic": "Renal marker",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-042",
+        "question": "ALT is generally more liver-specific than:",
+        "options": [
+          "AST",
+          "Sodium",
+          "Urea",
+          "Troponin"
+        ],
+        "answer": 0,
+        "explanation": "ALT is more concentrated in hepatocytes than many extrahepatic tissues.",
+        "topic": "Liver marker",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-043",
+        "question": "Cardiac troponin is measured primarily to assess:",
+        "options": [
+          "Myocardial injury",
+          "Renal stone size",
+          "Thyroid volume",
+          "Lung capacity"
+        ],
+        "answer": 0,
+        "explanation": "Cardiac troponin is a sensitive biomarker of myocardial injury.",
+        "topic": "Cardiac marker",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-044",
+        "question": "C-reactive protein (CRP) is best described as:",
+        "options": [
+          "An acute-phase protein",
+          "A digestive enzyme",
+          "A clotting platelet",
+          "A bile pigment"
+        ],
+        "answer": 0,
+        "explanation": "CRP is produced by the liver in response to inflammatory signals.",
+        "topic": "Inflammation marker",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-045",
+        "question": "A fasting plasma glucose sample is used to assess:",
+        "options": [
+          "Glucose regulation",
+          "Serum calcium only",
+          "Liver imaging",
+          "Blood clotting time"
+        ],
+        "answer": 0,
+        "explanation": "Fasting glucose is one laboratory measure used to evaluate glycaemic status.",
+        "topic": "Glucose testing",
+        "difficulty": "easy",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-046",
+        "question": "A markedly low potassium level can affect:",
+        "options": [
+          "Cardiac electrical activity and muscle function",
+          "Only skin pigmentation",
+          "Bile colour",
+          "Bone length immediately"
+        ],
+        "answer": 0,
+        "explanation": "Potassium is essential for membrane potentials in muscle and cardiac tissue.",
+        "topic": "Electrolytes",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-047",
+        "question": "A low bicarbonate with low pH is most consistent with:",
+        "options": [
+          "Metabolic acidosis",
+          "Metabolic alkalosis",
+          "Respiratory alkalosis",
+          "Normal acid-base status"
+        ],
+        "answer": 0,
+        "explanation": "Low bicarbonate with acidemia suggests a primary metabolic acidosis.",
+        "topic": "Acid-base testing",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-048",
+        "question": "A low serum albumin may contribute to oedema because it reduces:",
+        "options": [
+          "Plasma oncotic pressure",
+          "Haemoglobin synthesis directly",
+          "Oxygen diffusion in alveoli",
+          "Platelet count"
+        ],
+        "answer": 0,
+        "explanation": "Reduced albumin lowers plasma oncotic pressure and can favour fluid movement into tissues.",
+        "topic": "Proteins",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-049",
+        "question": "LDL cholesterol is often described clinically as:",
+        "options": [
+          "A lipoprotein associated with cholesterol delivery to tissues",
+          "The main blood glucose carrier",
+          "A clotting factor",
+          "A digestive hormone"
+        ],
+        "answer": 0,
+        "explanation": "LDL transports cholesterol to peripheral tissues and is atherogenic when elevated.",
+        "topic": "Lipid profile",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-050",
+        "question": "Ferritin is most commonly used as an indicator of:",
+        "options": [
+          "Iron stores",
+          "Vitamin C stores",
+          "Serum sodium",
+          "Blood pH"
+        ],
+        "answer": 0,
+        "explanation": "Ferritin reflects iron stores, though it can rise during inflammation.",
+        "topic": "Haematology chemistry",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-051",
+        "question": "A raised blood lactate may occur when:",
+        "options": [
+          "Tissue oxygen delivery is inadequate or metabolism is stressed",
+          "The patient has excess vitamin D only",
+          "Bile flow is increased",
+          "Platelets are elevated"
+        ],
+        "answer": 0,
+        "explanation": "Lactate can rise with impaired tissue perfusion and several other metabolic stresses.",
+        "topic": "Lactate",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-052",
+        "question": "Alkaline phosphatase is commonly associated with pathology involving:",
+        "options": [
+          "Bile ducts or bone",
+          "Retina only",
+          "Skeletal muscle only",
+          "Hair follicles"
+        ],
+        "answer": 0,
+        "explanation": "ALP is present in liver and bone; elevation must be interpreted with other tests.",
+        "topic": "Enzyme marker",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-053",
+        "question": "Unconjugated bilirubin is transported in plasma mainly bound to:",
+        "options": [
+          "Albumin",
+          "Fibrinogen",
+          "Insulin",
+          "Sodium"
+        ],
+        "answer": 0,
+        "explanation": "Unconjugated bilirubin is poorly water-soluble and travels bound to albumin.",
+        "topic": "Bilirubin",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-054",
+        "question": "HbA1c is formed by non-enzymatic attachment of glucose to:",
+        "options": [
+          "Haemoglobin",
+          "Albumin only",
+          "Collagen",
+          "DNA"
+        ],
+        "answer": 0,
+        "explanation": "HbA1c reflects glucose exposure through glycation of haemoglobin.",
+        "topic": "Glycated proteins",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-055",
+        "question": "The principal product of anaerobic glycolysis in human muscle is:",
+        "options": [
+          "Lactate",
+          "Urea",
+          "Bilirubin",
+          "Creatinine"
+        ],
+        "answer": 0,
+        "explanation": "Under anaerobic conditions pyruvate is reduced to lactate to regenerate NAD+.",
+        "topic": "Metabolism",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-056",
+        "question": "Lipase is commonly measured when evaluating suspected:",
+        "options": [
+          "Acute pancreatitis",
+          "Iron deficiency",
+          "Thyroid storm",
+          "Anaemia"
+        ],
+        "answer": 0,
+        "explanation": "Serum lipase is a useful biochemical marker in suspected acute pancreatitis.",
+        "topic": "Pancreatic marker",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-057",
+        "question": "Calcium is important for:",
+        "options": [
+          "Muscle contraction and coagulation",
+          "DNA replication only",
+          "Bile storage",
+          "Oxygen transport"
+        ],
+        "answer": 0,
+        "explanation": "Calcium participates in muscle contraction, neurotransmission and coagulation.",
+        "topic": "Calcium",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-058",
+        "question": "Amino groups removed during amino-acid catabolism are ultimately converted largely into:",
+        "options": [
+          "Urea",
+          "Cholesterol",
+          "Bilirubin",
+          "Glycogen"
+        ],
+        "answer": 0,
+        "explanation": "The liver converts ammonia from amino-acid catabolism into urea.",
+        "topic": "Protein metabolism",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-059",
+        "question": "Haemolysis of a blood sample can falsely increase measured:",
+        "options": [
+          "Potassium",
+          "Sodium in all circumstances",
+          "Chloride only",
+          "Bicarbonate always"
+        ],
+        "answer": 0,
+        "explanation": "Cell rupture releases intracellular potassium and can produce a falsely high result.",
+        "topic": "Quality of specimen",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-060",
+        "question": "A competitive inhibitor usually binds to the enzyme's:",
+        "options": [
+          "Active site",
+          "Nucleus",
+          "Cell membrane only",
+          "Mitochondrial DNA"
+        ],
+        "answer": 0,
+        "explanation": "Competitive inhibitors compete with substrate for the active site.",
+        "topic": "Enzyme kinetics",
+        "difficulty": "moderate",
+        "subjectKey": "biochemistry",
+        "subjectLabel": "Biochemistry"
+      },
+      {
+        "id": "PAR-061",
+        "question": "A laboratory information system (LIS) should link a specimen to:",
+        "options": [
+          "A unique patient and test order identifier",
+          "A technician's personal email",
+          "A ward colour only",
+          "An unverified handwritten nickname"
+        ],
+        "answer": 0,
+        "explanation": "Unique identifiers support traceability from collection through reporting.",
+        "topic": "LIS workflow",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-062",
+        "question": "Scanning a specimen barcode at receipt helps reduce:",
+        "options": [
+          "Patient and specimen identification errors",
+          "The need for quality control",
+          "The need for trained staff",
+          "All laboratory variation"
+        ],
+        "answer": 0,
+        "explanation": "Barcode scanning reduces manual transcription and identification errors.",
+        "topic": "Specimen barcoding",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-063",
+        "question": "DICOM is widely used for:",
+        "options": [
+          "Medical imaging data and communication",
+          "Writing discharge prescriptions",
+          "Measuring blood pressure",
+          "Patient diet planning"
+        ],
+        "answer": 0,
+        "explanation": "DICOM defines formats and communication for medical imaging.",
+        "topic": "Imaging standard",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-064",
+        "question": "A radiology PACS allows authorised staff to:",
+        "options": [
+          "Store, retrieve and view diagnostic images",
+          "Issue pharmacy stock orders only",
+          "Record staff attendance",
+          "Replace radiologist reporting"
+        ],
+        "answer": 0,
+        "explanation": "PACS manages image archiving and distribution.",
+        "topic": "PACS workflow",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-065",
+        "question": "HL7 standards are used to support:",
+        "options": [
+          "Exchange of healthcare information between systems",
+          "Instrument sterilisation",
+          "Clinical examination of reflexes",
+          "Blood sample centrifugation"
+        ],
+        "answer": 0,
+        "explanation": "HL7 standards support healthcare data messaging and exchange.",
+        "topic": "Interoperability",
+        "difficulty": "easy",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-066",
+        "question": "A laboratory system should support prompt escalation of:",
+        "options": [
+          "Critical or life-threatening results",
+          "Every normal result by public notice",
+          "Staff birthdays",
+          "Routine stationery requests"
+        ],
+        "answer": 0,
+        "explanation": "Critical results require timely communication and documentation to support clinical action.",
+        "topic": "Critical result reporting",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-067",
+        "question": "An electronic quality-control log helps a laboratory:",
+        "options": [
+          "Trend control results and identify shifts or trends",
+          "Avoid calibration forever",
+          "Change results without trace",
+          "Remove instrument maintenance"
+        ],
+        "answer": 0,
+        "explanation": "QC records help identify analytical problems before patient results are released.",
+        "topic": "Quality control",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-068",
+        "question": "A system audit trail is important because it:",
+        "options": [
+          "Records user actions and changes to data",
+          "Automatically proves the clinical diagnosis",
+          "Replaces staff training",
+          "Deletes all previous results"
+        ],
+        "answer": 0,
+        "explanation": "Audit trails support traceability and accountability.",
+        "topic": "Audit",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-069",
+        "question": "A technician should access patient data:",
+        "options": [
+          "Only when required for assigned duties",
+          "Out of curiosity",
+          "To share with friends",
+          "Using another person's account"
+        ],
+        "answer": 0,
+        "explanation": "Access should be limited to legitimate role-related needs.",
+        "topic": "Information privacy",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-070",
+        "question": "A suspicious link in a hospital email should be:",
+        "options": [
+          "Reported through IT/security procedures without opening it",
+          "Forwarded to all patients",
+          "Opened on a clinical workstation",
+          "Used to verify the sender's password"
+        ],
+        "answer": 0,
+        "explanation": "Reporting suspicious messages helps prevent phishing and malware.",
+        "topic": "Cybersecurity",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-071",
+        "question": "During an LIS outage, specimen identity should be maintained using:",
+        "options": [
+          "The approved downtime procedure and unique identifiers",
+          "Memory alone",
+          "Unlabelled tubes",
+          "Shared spreadsheets on personal devices"
+        ],
+        "answer": 0,
+        "explanation": "Approved downtime processes maintain traceability and safe reporting.",
+        "topic": "Downtime",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-072",
+        "question": "A backup is useful only if:",
+        "options": [
+          "It can be restored and its integrity is tested",
+          "It is never checked",
+          "It is stored on the same infected workstation only",
+          "No one knows where it is"
+        ],
+        "answer": 0,
+        "explanation": "Restore testing confirms that backups are usable after a disruption.",
+        "topic": "Backup",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-073",
+        "question": "When a staff member changes role, system access should be:",
+        "options": [
+          "Reviewed and adjusted to match the new role",
+          "Left unchanged forever",
+          "Shared with the replacement",
+          "Removed from audit logs"
+        ],
+        "answer": 0,
+        "explanation": "Role changes require access review to maintain least privilege.",
+        "topic": "Access management",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-074",
+        "question": "A result correction in an LIS should be:",
+        "options": [
+          "Traceable with an authorised amendment and audit record",
+          "Overwritten without history",
+          "Changed by any user",
+          "Communicated only verbally"
+        ],
+        "answer": 0,
+        "explanation": "Traceable amendments preserve the original record and explain the correction.",
+        "topic": "Data integrity",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-075",
+        "question": "Secure image transfer for remote reporting requires:",
+        "options": [
+          "Authorised access and protected transmission",
+          "Public file-sharing links",
+          "Images without patient identifiers or controls",
+          "Personal messaging accounts"
+        ],
+        "answer": 0,
+        "explanation": "Secure transfer protects patient confidentiality and image integrity.",
+        "topic": "Tele-radiology",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-076",
+        "question": "An electronic medical record differs from a paper chart because it:",
+        "options": [
+          "Stores clinical information in a searchable digital system",
+          "Removes the need for documentation",
+          "Automatically treats the patient",
+          "Guarantees zero data-entry errors"
+        ],
+        "answer": 0,
+        "explanation": "Digital records improve access and organisation but still require accurate documentation.",
+        "topic": "Clinical systems",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-077",
+        "question": "A result flag generated by a clinical system should be:",
+        "options": [
+          "Reviewed in clinical context by an authorised professional",
+          "Accepted without verification in every case",
+          "Removed from the record",
+          "Used as the only diagnosis"
+        ],
+        "answer": 0,
+        "explanation": "Flags support attention but require professional interpretation.",
+        "topic": "Decision support",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-078",
+        "question": "If ransomware is suspected on a workstation, staff should:",
+        "options": [
+          "Disconnect or isolate it according to policy and report immediately",
+          "Pay from a personal account",
+          "Continue entering patient data",
+          "Disable all security controls"
+        ],
+        "answer": 0,
+        "explanation": "Prompt isolation and incident reporting can limit spread and support response.",
+        "topic": "Cyber incident",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-079",
+        "question": "Before sharing images for teaching or presentation, staff should check:",
+        "options": [
+          "Applicable consent, de-identification and institutional policy",
+          "Only whether the image looks clear",
+          "The patient's room number",
+          "The file name"
+        ],
+        "answer": 0,
+        "explanation": "Patient images require privacy protection and appropriate authorisation.",
+        "topic": "Patient consent",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-080",
+        "question": "Before releasing a laboratory result electronically, the system should ensure:",
+        "options": [
+          "Correct patient, test, validation status and authorised release",
+          "The screen is full-size",
+          "The computer has no mouse",
+          "A colleague has viewed the result informally"
+        ],
+        "answer": 0,
+        "explanation": "Identity matching and validation support safe electronic result release.",
+        "topic": "Result release",
+        "difficulty": "moderate",
+        "subjectKey": "healthcare_it",
+        "subjectLabel": "Healthcare IT"
+      },
+      {
+        "id": "PAR-081",
+        "question": "Which instruction best explains a fasting blood test?",
+        "options": [
+          "Do not eat for the specified period before the test; follow the clinic's advice about water and medicines.",
+          "Come whenever you like.",
+          "Eat a large breakfast first.",
+          "Stop all medicines without asking."
+        ],
+        "answer": 0,
+        "explanation": "Clear instructions specify the fasting period and direct the patient to confirm medication advice.",
+        "topic": "Specimen instructions",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-082",
+        "question": "A patient asks why a sample must be labelled at the bedside. The best response is:",
+        "options": [
+          "It is just a hospital rule.",
+          "Labelling beside you helps us make sure the sample belongs to the correct patient.",
+          "The label is mainly for decoration.",
+          "We can identify it later."
+        ],
+        "answer": 1,
+        "explanation": "Bedside labelling reduces the chance of a specimen being assigned to the wrong patient.",
+        "topic": "Patient preparation",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-083",
+        "question": "Which handover statement is most precise?",
+        "options": [
+          "The potassium result is 6.4 mmol/L; I have repeated the patient and sample checks and am escalating it now.",
+          "The result looks a bit odd.",
+          "Someone should check a result later.",
+          "The patient is probably fine."
+        ],
+        "answer": 0,
+        "explanation": "A precise handover communicates the result, verification and immediate action.",
+        "topic": "Professional handover",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-084",
+        "question": "In a laboratory report, 'specimen' means:",
+        "options": [
+          "The sample collected for testing",
+          "The test machine",
+          "The patient's appointment",
+          "The final invoice"
+        ],
+        "answer": 0,
+        "explanation": "A specimen is a sample of blood, urine or another material submitted for analysis.",
+        "topic": "Vocabulary",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-085",
+        "question": "Choose the grammatically correct sentence.",
+        "options": [
+          "The samples was received at 9 am.",
+          "The samples were received at 9 am.",
+          "The samples is received at 9 am.",
+          "The samples be received at 9 am."
+        ],
+        "answer": 1,
+        "explanation": "The plural subject 'samples' takes 'were' in the past passive.",
+        "topic": "Grammar",
+        "difficulty": "easy",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-086",
+        "question": "Which statement best explains a repeat sample request?",
+        "options": [
+          "Your sample was not suitable for this test, so we need to collect another one to obtain a reliable result.",
+          "You did it incorrectly.",
+          "The machine is always wrong.",
+          "We do not know what happened."
+        ],
+        "answer": 0,
+        "explanation": "A neutral explanation gives the reason and next step without blaming the patient.",
+        "topic": "Clinical explanation",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-087",
+        "question": "Which phrase is most appropriate in a referral note?",
+        "options": [
+          "Please assess the patient for persistent shortness of breath and advise on further management.",
+          "Do something about this patient.",
+          "The patient has a problem, maybe.",
+          "This is not our responsibility."
+        ],
+        "answer": 0,
+        "explanation": "A referral should state the clinical concern and the requested assessment clearly.",
+        "topic": "Referral language",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-088",
+        "question": "A report says 'repeat testing is advised due to a haemolysed sample.' What does this mean?",
+        "options": [
+          "The sample may have been affected by red-cell breakdown and a new sample may be needed.",
+          "The patient has confirmed anaemia.",
+          "The test was not ordered.",
+          "The result has been permanently deleted."
+        ],
+        "answer": 0,
+        "explanation": "Haemolysis can affect some analytes; repeat testing may be required for a reliable result.",
+        "topic": "Comprehension",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-089",
+        "question": "Which sentence is best when asking a patient to provide a midstream urine sample?",
+        "options": [
+          "Give us urine now.",
+          "Please begin urinating, then collect the middle part of the stream in the sterile container.",
+          "Fill any bottle you can find.",
+          "Do not ask questions."
+        ],
+        "answer": 1,
+        "explanation": "The instruction is specific and respectful, while identifying the correct collection method.",
+        "topic": "Polite request",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-090",
+        "question": "Which item should a laboratory report clearly include?",
+        "options": [
+          "Patient identifiers, test name, result, units and relevant reference information",
+          "Only the technician's initials",
+          "A nickname and no date",
+          "An unlabelled numerical value"
+        ],
+        "answer": 0,
+        "explanation": "A report must identify the patient and test and make the result interpretable.",
+        "topic": "Written communication",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-091",
+        "question": "'Confidentiality' in healthcare refers to:",
+        "options": [
+          "Protecting private patient information from unauthorised disclosure",
+          "Keeping all results secret from the patient",
+          "Avoiding all documentation",
+          "Sharing information with anyone who asks"
+        ],
+        "answer": 0,
+        "explanation": "Confidentiality protects patient information and limits disclosure to authorised purposes.",
+        "topic": "Vocabulary",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-092",
+        "question": "A patient says they do not understand a test result. The best response is:",
+        "options": [
+          "It is too complicated for you.",
+          "Let me explain the result in everyday language and answer your questions.",
+          "Just read the report.",
+          "Ask someone else."
+        ],
+        "answer": 1,
+        "explanation": "Plain language and a willingness to answer questions support understanding.",
+        "topic": "Patient-centred language",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-093",
+        "question": "Choose the correct phrase: 'The report has been sent ___ the referring clinician.'",
+        "options": [
+          "to",
+          "for",
+          "at",
+          "with"
+        ],
+        "answer": 0,
+        "explanation": "The correct construction is 'sent to the clinician'.",
+        "topic": "Grammar",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-094",
+        "question": "Which note is most objective?",
+        "options": [
+          "Patient is difficult.",
+          "Patient declined the procedure after the risks and benefits were explained.",
+          "Patient is careless.",
+          "Patient is not cooperative for no reason."
+        ],
+        "answer": 1,
+        "explanation": "Objective documentation records observable events and relevant discussion without judgement.",
+        "topic": "Clinical note",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-095",
+        "question": "A test is scheduled for 'fortnightly' review. This means:",
+        "options": [
+          "Twice a day",
+          "Every two weeks",
+          "Every two months",
+          "Once a year"
+        ],
+        "answer": 1,
+        "explanation": "A fortnight is a period of two weeks.",
+        "topic": "Time expression",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-096",
+        "question": "Which instruction is safest when a patient is unsure about stopping a medicine before a test?",
+        "options": [
+          "Stop it immediately.",
+          "Continue or stop it based on advice from the prescribing clinician or testing service.",
+          "Ask a neighbour.",
+          "Double the dose later."
+        ],
+        "answer": 1,
+        "explanation": "Medication changes should be confirmed with the responsible clinician or testing service.",
+        "topic": "Safety communication",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-097",
+        "question": "A report says 'within reference interval'. This usually means the result:",
+        "options": [
+          "Falls within the laboratory's stated reference range",
+          "Confirms that no disease is present",
+          "Does not need clinical review ever",
+          "Was not measured"
+        ],
+        "answer": 0,
+        "explanation": "A reference interval provides context but does not alone rule out all disease.",
+        "topic": "Reading a result",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-098",
+        "question": "Which opening is most appropriate when calling a ward about a critical result?",
+        "options": [
+          "Hello, this is the laboratory calling about a critical result for [patient identifier]. Could I speak to the responsible clinician?",
+          "Who is there?",
+          "You need to check a result now.",
+          "I am calling about a number."
+        ],
+        "answer": 0,
+        "explanation": "The speaker identifies the service, purpose and patient using approved identifiers.",
+        "topic": "Polite telephone call",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-099",
+        "question": "Choose the best completion: 'The sample must be transported ___ the recommended temperature range.'",
+        "options": [
+          "within",
+          "between of",
+          "among",
+          "beside"
+        ],
+        "answer": 0,
+        "explanation": "'Within the recommended temperature range' is grammatically correct and precise.",
+        "topic": "Word choice",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      },
+      {
+        "id": "PAR-100",
+        "question": "After explaining a procedure, which question best checks understanding?",
+        "options": [
+          "You understand, yes?",
+          "Can you tell me in your own words what will happen next?",
+          "Are you listening?",
+          "Do not forget what I said."
+        ],
+        "answer": 1,
+        "explanation": "Teach-back checks understanding in a respectful, non-judgemental way.",
+        "topic": "Communication",
+        "difficulty": "moderate",
+        "subjectKey": "oet_english",
+        "subjectLabel": "OET-style Healthcare English"
+      }
+    ]
   }
 }
