@@ -132,7 +132,7 @@ def _scoring_rule(session: Session, bank: QuestionBank) -> ScoringRule:
 
 def _deadline(attempt: ExamAttempt, slot: ExamSlot) -> datetime:
     started = _aware(attempt.started_at)
-    return min(started + timedelta(seconds=EXAM_MAX_DURATION_SECONDS), _aware(slot.ends_at))
+    # Slot end closes admission; candidates who begin before it receive the full 30 minutes.\n    return started + timedelta(seconds=EXAM_MAX_DURATION_SECONDS)
 
 
 def _question_payload(session: Session, question: Question, *, reveal: bool) -> dict:
