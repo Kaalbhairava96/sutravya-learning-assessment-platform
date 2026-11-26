@@ -6,6 +6,9 @@
   const content = $('#admin-login-content');
   const loginForm = $('#admin-login-form');
   const setupForm = $('#admin-setup-form');
+  const resetRequestForm = $('#admin-reset-request-form');
+  const resetConfirmForm = $('#admin-reset-confirm-form');
+  const forgotPasswordButton = $('#admin-forgot-password');
   const status = $('#admin-login-status');
   const retryButton = $('#admin-retry');
   const TOKEN_KEY = 'sutravya_admin_access_token';
@@ -76,6 +79,30 @@
     $('#admin-login-intro').textContent = 'Sign in with your administrator account to open the private console.';
     loginForm.hidden = false;
     setupForm.hidden = true;
+    resetRequestForm.hidden = true;
+    resetConfirmForm.hidden = true;
+  };
+  const showResetRequest = () => {
+    $('#admin-login-eyebrow').textContent = 'ACCOUNT RECOVERY';
+    $('#admin-login-title').textContent = 'Reset your password';
+    $('#admin-login-intro').textContent = 'Enter your administrator email. If an active account matches, we will send a one-time recovery code.';
+    loginForm.hidden = true;
+    setupForm.hidden = true;
+    resetRequestForm.hidden = false;
+    resetConfirmForm.hidden = true;
+    $('#admin-reset-request-email').value = $('#admin-email').value.trim();
+    $('#admin-reset-request-email').focus();
+  };
+  const showResetConfirm = email => {
+    $('#admin-login-eyebrow').textContent = 'VERIFY YOUR EMAIL';
+    $('#admin-login-title').textContent = 'Create a new password';
+    $('#admin-login-intro').textContent = 'Enter the six-digit code sent to your administrator email and choose a new password.';
+    loginForm.hidden = true;
+    setupForm.hidden = true;
+    resetRequestForm.hidden = true;
+    resetConfirmForm.hidden = false;
+    $('#admin-reset-confirm-email').value = email;
+    $('#admin-reset-otp').focus();
   };
   const showSetup = () => {
     $('#admin-login-eyebrow').textContent = 'FIRST-TIME SECURE SETUP';
@@ -83,6 +110,8 @@
     $('#admin-login-intro').textContent = 'Use the one-time setup token supplied by the service owner. This setup can only be completed once.';
     loginForm.hidden = true;
     setupForm.hidden = false;
+    resetRequestForm.hidden = true;
+    resetConfirmForm.hidden = true;
   };
   async function initialise() {
     if(retryButton)retryButton.hidden=true;
@@ -140,6 +169,80 @@
       button.disabled = false;
     }
   });
+
+  forgotPasswordButton?.addEventListener('click', () => {
+    setStatus('');
+    showResetRequest();
+  });
+  $('#admin-reset-request-back')?.addEventListener('click', () => {
+    $('#admin-email').value = $('#admin-reset-request-email').value.trim();
+    showLogin();
+    setStatus('');
+  });
+  $('#admin-reset-confirm-back')?.addEventListener('click', () => {
+    $('#admin-email').value = $('#admin-reset-confirm-email').value.trim();
+    showLogin();
+    setStatus('');
+  });
+
+  resetRequestForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!resetRequestForm.reportValidity()) return;
+    const button = resetRequestForm.querySelector('button[type="submit"]');
+    const email = $('#admin-reset-request-email').value.trim();
+    button.disabled = true;
+    setStatus('Requesting a secure recovery code…');
+    try {
+      const result = await request('/api/admin/auth/password-reset/request', {
+        method:'POST', write:true, body:{email}
+      });
+      showResetConfirm(email);
+      setStatus(result.message || 'If an active administrator account matches this email, a reset code has been sent. Check your inbox and spam folder.', 'success');
+    } catch (error) {
+      setStatus(error.message, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  resetConfirmForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!resetConfirmForm.reportValidity()) return;
+    const password = $('#admin-reset-new-password').value;
+    if (password !== $('#admin-reset-confirm-password').value) {
+      setStatus('The two passwords do not match.', 'error');
+      $('#admin-reset-confirm-password').focus();
+      return;
+    }
+    const button = resetConfirmForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    setStatus('Verifying the code and updating your password…');
+    try {
+      const result = await request('/api/admin/auth/password-reset/confirm', {
+        method:'POST', write:true,
+        body:{
+          email:$('#admin-reset-confirm-email').value.trim(),
+          otp:$('#admin-reset-otp').value.trim(),
+          new_password:password
+        }
+      });
+      sessionStorage.removeItem(TOKEN_KEY);
+      $('#admin-password').value = '';
+      $('#admin-reset-otp').value = '';
+      $('#admin-reset-new-password').value = '';
+      $('#admin-reset-confirm-password').value = '';
+      $('#admin-email').value = $('#admin-reset-confirm-email').value.trim();
+      showLogin();
+      setStatus(result.message || 'Your administrator password has been updated. Sign in with your new password.', 'success');
+      $('#admin-password').focus();
+    } catch (error) {
+      setStatus(error.message, 'error');
+      if (/invalid or expired/i.test(error.message)) $('#admin-reset-otp').focus();
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   setupForm.addEventListener('submit', async event => {
     event.preventDefault();
     if (!setupForm.reportValidity()) return;
