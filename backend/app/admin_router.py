@@ -23,7 +23,7 @@ from sqlalchemy.orm import Session
 
 from app.registration import EVENT_KEY
 from app.models import (
-    AdminSession, AdminUser, AnswerOption, AuditEvent, Base, Candidate,
+    AdminPasswordReset, AdminSession, AdminUser, AnswerOption, AuditEvent, Base, Candidate,
     ExamAttempt, ExamSlot, Question, QuestionBank, RateLimitBucket,
     Registration, Result, ScoringRule,
 )
@@ -34,7 +34,7 @@ ITERATIONS = 600_000
 SESSION_TOUCH = timedelta(minutes=5)
 
 RESTRICTED_TABLES = {
-    "verification_challenges", "candidate_sessions", "admin_sessions", "rate_limit_buckets"
+    "verification_challenges", "candidate_sessions", "admin_sessions", "admin_password_resets", "rate_limit_buckets"
 }
 SECRET_COLUMNS = {
     "password_hash", "token_digest", "otp_digest", "destination_digest",
@@ -81,6 +81,7 @@ TABLE_DESCRIPTIONS = {
     "verification_challenges": "Restricted OTP and verification state; metadata only.",
     "candidate_sessions": "Restricted candidate session state; metadata only.",
     "admin_sessions": "Restricted administrator session state; metadata only.",
+    "admin_password_resets": "Restricted administrator password recovery state; OTP digests and reset tokens are never displayed.",
     "rate_limit_buckets": "Restricted abuse-control counters; metadata only.",
 }
 
